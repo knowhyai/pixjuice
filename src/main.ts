@@ -2,9 +2,14 @@
 // view; clicking one opens the editor with that effect.
 
 import "./style.css";
-import { actBounds } from "pixelfx";
 import { CATALOG, CATEGORIES, isScreen, type CatalogEntry } from "./lib/catalog";
 import { Player, defaultStyle } from "./lib/player";
+
+/** Display name for a category id: "spawn & death" → "Spawn & Death", "scifi" → "Sci-Fi". */
+const CAT_FIX: Record<string, string> = { "sci-fi": "Sci-Fi", ui: "UI" };
+function catLabel(name: string): string {
+  return CAT_FIX[name] ?? name.replace(/(^|[\s&-])([a-z])/g, (_, d: string, c: string) => d + c.toUpperCase());
+}
 
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector(s) as T;
@@ -37,7 +42,7 @@ function build() {
     const grid = el("div", { className: "grid" });
     const sec = el("section", { className: "cat", id: `cat-${c.id}` }, [
       el("div", { className: "sec-head" }, [
-        el("h2", { textContent: c.name }),
+        el("h2", { textContent: catLabel(c.name) }),
         el("p", { className: "blurb", textContent: c.blurb }),
       ]),
       grid,
@@ -45,12 +50,7 @@ function build() {
     sections.push({ id: c.id, sec, list });
     for (const fx of list) {
       const cv = el("canvas", { ariaLabel: fx.name });
-      const act = fx.mod.act;
-      const b = act ? actBounds(fx.mod) : null;
-      const [fw, fh] = b ? [b.x1 - b.x0, b.y1 - b.y0] : fx.meta.size;
-      const big = fw > 200 || fh > 170 || (b && (fw > 130 || !!(act?.target || act?.targets)));
-      const cls = isScreen(fx.meta) ? "tile screen" : big ? "tile big" : "tile";
-      const fig = el("figure", { className: cls, tabIndex: 0 }, [
+      const fig = el("figure", { className: "tile", tabIndex: 0 }, [
         el("div", { className: "stage" }, [cv]),
         el("figcaption", {}, [
           el("b", { textContent: fx.name }),
@@ -112,8 +112,9 @@ function chips() {
     b.addEventListener("click", () => setCat(id));
     box.append(b);
   };
-  mk("all", "all", CATALOG.length);
-  for (const s of sections) mk(s.id, CATEGORIES.find((c) => c.id === s.id)?.name ?? s.id, s.list.length);
+  mk("all", "All", CATALOG.length);
+  for (const s of sections)
+    mk(s.id, catLabel(CATEGORIES.find((c) => c.id === s.id)?.name ?? s.id), s.list.length);
 }
 
 function setCat(id: string, fromHash = false) {

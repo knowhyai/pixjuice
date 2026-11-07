@@ -101,9 +101,12 @@ export class Player {
     this.y = acted ? Math.max(oy + 2, this.H - b!.y1 - 2) : Math.floor((this.H - h) / 2) + oy;
     this.canvas.width = this.W;
     this.canvas.height = this.H;
-    // shrinking pixel art nearest-neighbour drops whole 1px lines; smooth only when it has to shrink
-    const shown = this.canvas.getBoundingClientRect().width * (window.devicePixelRatio || 1);
-    this.canvas.style.imageRendering = shown && shown < this.W ? "auto" : "pixelated";
+    // shrinking pixel art nearest-neighbour drops whole 1px lines; smooth only when the drawn
+    // pixels really shrink — the canvas may be letterboxed (object-fit) inside its box
+    const r = this.canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const fit = r.width && r.height ? Math.min((r.width * dpr) / this.W, (r.height * dpr) / this.H) : 1;
+    this.canvas.style.imageRendering = fit < 1 ? "auto" : "pixelated";
     this.frame = createFrame(this.W, this.H);
     this.img = this.ctx.createImageData(this.W, this.H);
     this.setBg(this.style.backdrop);

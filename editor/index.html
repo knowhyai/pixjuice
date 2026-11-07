@@ -61,7 +61,9 @@
         </div>
         <div class="ed-meta">
           <p class="desc" id="fx-desc"></p>
+          <button class="more" id="fx-more" type="button" hidden aria-expanded="false">more</button>
           <dl id="fx-facts"></dl>
+          <div class="tags" id="fx-tags" hidden></div>
         </div>
       </div>
 
@@ -72,7 +74,7 @@
             <label for="pal">palette</label>
             <select id="pal" class="grow" aria-label="Palette preset"></select>
           </div>
-          <div class="swatches" id="swatches" aria-hidden="true"></div>
+          <div class="swatches" id="swatches" role="group" aria-label="Palette stops — click one to edit that color"></div>
           <div class="row">
             <label for="c0">custom</label>
             <input type="color" id="c0" value="#1a0b16"> <input type="color" id="c1" value="#a8304a"> <input type="color" id="c2" value="#ffe2ea">
@@ -80,9 +82,10 @@
           </div>
           <div class="row">
             <label for="seed">seed</label>
-            <input type="number" id="seed" min="0" max="999999" step="1" style="width: 90px">
+            <input type="number" id="seed" min="0" max="999999" step="1" style="width: 90px" placeholder="auto">
             <button class="btn" id="dice" type="button" title="Random seed">🎲 random</button>
           </div>
+          <p class="hint">seed blank = the effect's own; any number rerolls the variation.</p>
           <div class="row">
             <label>mirror</label>
             <div class="btnrow">
@@ -106,12 +109,38 @@
           </div>
           <div class="row" id="actor-row">
             <label>character</label>
-            <button class="btn" id="actor" type="button" aria-pressed="true">shown</button>
+            <button class="btn" id="actor" type="button" aria-pressed="true">✓ shown</button>
           </div>
           <div class="row" id="replay-row">
             <label>replay</label>
-            <button class="btn" id="replay" type="button" aria-pressed="true">auto</button>
+            <button class="btn" id="replay" type="button" aria-pressed="true">✓ auto</button>
           </div>
+        </section>
+
+        <section class="panel">
+          <h3>Export</h3>
+          <div class="btnrow" style="margin-bottom: 10px;">
+            <button class="btn primary" id="exp-zip" type="button">⬇ sheet + JSON (.zip)</button>
+            <button class="btn" id="exp-sheet" type="button">PNG sheet</button>
+            <button class="btn" id="exp-json" type="button">JSON</button>
+          </div>
+          <div class="btnrow">
+            <button class="btn" id="exp-gif" type="button">GIF</button>
+            <label class="gif-scale" for="gif-scale">GIF scale</label>
+            <select id="gif-scale" style="width: 74px">
+              <option value="1">1×</option>
+              <option value="2" selected>2×</option>
+              <option value="3">3×</option>
+            </select>
+            <button class="btn" id="exp-frame" type="button">current frame PNG</button>
+            <button class="btn" id="exp-wav" type="button">WAV</button>
+          </div>
+          <div class="btnrow" style="margin-top: 10px;">
+            <button class="btn" id="exp-src" type="button" title="This effect's pixelfx module, with your palette/seed/flip/angle noted in a header comment">⬇ JS source</button>
+            <button class="btn" id="copy-src" type="button">⧉ copy source</button>
+            <button class="btn" id="copy-prompt" type="button" title="Name, description, tags and your current dials — written so any model can recreate or vary this effect">⧉ copy prompt</button>
+          </div>
+          <p class="export-note" id="exp-note">Sprite sheets are transparent PNGs with an Aseprite-style JSON sidecar (frame rects, durations, fps, loop, columns, pivot).</p>
         </section>
 
         <section class="panel">
@@ -133,26 +162,6 @@
             <input class="grow" type="range" id="sfx-vol" min="0" max="1" step="0.05" value="0.5">
           </div>
           <p class="export-note">Chip-style SFX synthesized with Web Audio, tuned to the effect's family. It fires when the effect restarts.</p>
-        </section>
-
-        <section class="panel">
-          <h3>Export</h3>
-          <div class="btnrow" style="margin-bottom: 10px;">
-            <button class="btn primary" id="exp-zip" type="button">⬇ sheet + JSON (.zip)</button>
-            <button class="btn" id="exp-sheet" type="button">PNG sheet</button>
-            <button class="btn" id="exp-json" type="button">JSON</button>
-          </div>
-          <div class="btnrow">
-            <button class="btn" id="exp-gif" type="button">GIF</button>
-            <select id="gif-scale" aria-label="GIF scale" style="width: 74px">
-              <option value="1">1×</option>
-              <option value="2" selected>2×</option>
-              <option value="3">3×</option>
-            </select>
-            <button class="btn" id="exp-frame" type="button">current frame PNG</button>
-            <button class="btn" id="exp-wav" type="button">WAV</button>
-          </div>
-          <p class="export-note" id="exp-note">Sprite sheets are transparent PNGs with an Aseprite-style JSON sidecar (frame rects, durations, fps, loop, columns, pivot).</p>
         </section>
       </aside>
     </div>

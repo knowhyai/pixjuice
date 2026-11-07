@@ -1,5 +1,16 @@
 # PixJuice — finish summary
 
+> **Polish + ship pass (Nov 2026)** — kept the uncommitted layout polish (uniform 16:10 catalog
+> tiles with no `.tile.big`/`.tile.screen` spans, wrapping category chips, 1180px centered column,
+> sticky editor stage, compact description/fact chips/tags, "Pixel Art VFX Maker" subtitle) and
+> finished the leftovers: wired the editor's `⬇ JS source` / `⧉ copy source` / `⧉ copy prompt`
+> buttons (the verbatim pixelfx module from `node_modules/pixelfx/src/fx/<id>.js`, bundled at build
+> time as lazy `?raw` chunks via `import.meta.glob`, plus a header comment with palette/seed/flip/
+> angle and the MIT credit — and a recreate-it prompt carrying name/description/tags/format/dials);
+> made the palette swatch strip click-to-edit (each stop opens the native picker); the sound family
+> row no longer shows "ice · ice"; the editor crumb shows the effect's display name; the homepage
+> `<title>`/og:title now read "PixJuice — Pixel Art VFX Maker for game devs". `pnpm build` green.
+
 PixJuice is a fully static Vite + vanilla TS site (no backend, no analytics, no payments) that
 recolors, previews, and exports the pixel effects from
 [pixelfx](https://github.com/patch-gg/pixelfx) (MIT, by Patch and Hugo Duprez — credited in the

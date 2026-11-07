@@ -60,9 +60,10 @@ a:hover { text-decoration: underline; }
 
 .mark { width: 40px; height: 40px; image-rendering: pixelated; flex: none; }
 
-.brand h1 { font-size: 26px; line-height: 1.1; margin: 0; letter-spacing: 0.5px; }
+.brand h1 { font-size: 30px; line-height: 1.05; margin: 0; letter-spacing: 0.5px; font-weight: 800; }
 .brand h1 em { font-style: normal; color: var(--acc); }
-.brand .sub { margin: 2px 0 0; color: var(--dim); font-size: 13.5px; }
+.brand .sub { margin: 3px 0 0; color: var(--dim); font-size: 14px; }
+.brand .sub b { color: var(--text); font-weight: 700; }
 
 .nav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .nav a { color: var(--dim); font-weight: 600; font-size: 14px; padding: 6px 2px; }
@@ -138,7 +139,8 @@ input[type="color"] {
   gap: 12px;
   align-items: center;
 }
-.chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; flex: 1; padding-bottom: 2px; }
+/* chips wrap (a row or two) so no category is clipped; search sits beside them */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
 .chip {
   font: 600 12.5px/1 inherit;
   white-space: nowrap;
@@ -158,17 +160,17 @@ input[type="color"] {
 
 /* ---- catalog grid ---- */
 
-main.grid-main { padding: 26px 0 60px; }
+main.grid-main { padding: 26px 20px 60px; max-width: 1180px; margin: 0 auto; }
 
 section.cat .sec-head { display: flex; align-items: baseline; gap: 14px; margin: 34px 0 14px; flex-wrap: wrap; }
 section.cat h2 { font-size: 21px; margin: 0; letter-spacing: 0.3px; }
-section.cat h2::after { content: "."; color: var(--acc); }
 section.cat .blurb { margin: 0; color: var(--dim); font-size: 13.5px; }
 
+/* one consistent tile size: ~4 per row, fixed 16:10 dark stage, canvas letterboxed inside */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
 }
 
 .tile {
@@ -182,11 +184,17 @@ section.cat .blurb { margin: 0; color: var(--dim); font-size: 13.5px; }
 }
 .tile:hover { border-color: var(--faint); transform: translateY(-1px); }
 .tile:focus-visible { outline: 2px solid var(--acc2); outline-offset: 2px; }
-.tile.big { grid-column: span 2; }
-.tile.screen { grid-column: span 2; grid-row: span 2; }
 
-.stage { position: relative; background: #08070c; }
-.stage canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.stage { position: relative; aspect-ratio: 16 / 10; background: #08070c; overflow: hidden; }
+.stage canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
 
 .tile figcaption {
   display: flex;
@@ -198,11 +206,11 @@ section.cat .blurb { margin: 0; color: var(--dim); font-size: 13.5px; }
 .tile figcaption b { font-size: 13px; font-weight: 650; }
 .tile figcaption small { color: var(--faint); font: 600 11px/1.4 var(--mono); white-space: nowrap; }
 
-.empty { color: var(--dim); text-align: center; padding: 60px 0; font-size: 15px; }
+.empty { color: var(--dim); text-align: center; padding: 60px 20px; font-size: 15px; max-width: 1180px; margin: 0 auto; }
 
 /* ---- editor ---- */
 
-.editor-main { padding: 22px 0 70px; }
+.editor-main { padding: 22px 20px 70px; }
 
 .ed-grid {
   display: grid;
@@ -222,6 +230,17 @@ section.cat .blurb { margin: 0; color: var(--dim); font-size: 13.5px; }
 }
 .stagewrap canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; }
 
+/* Desktop: cap the stage so canvas + transport + meta fit the viewport — that is what
+   lets the sticky column actually stay pinned instead of being taller than the screen.
+   Tall (portrait) effects letterbox sideways via object-fit instead of growing. */
+@media (min-width: 941px) {
+  .stagewrap canvas {
+    max-height: max(240px, calc(100vh - 270px));
+    max-height: max(240px, calc(100dvh - 270px));
+    object-fit: contain;
+  }
+}
+
 .transport {
   display: flex;
   align-items: center;
@@ -232,11 +251,57 @@ section.cat .blurb { margin: 0; color: var(--dim); font-size: 13.5px; }
 .transport .time { font: 600 12px/1 var(--mono); color: var(--dim); white-space: nowrap; min-width: 130px; }
 .transport input[type="range"] { flex: 1; min-width: 140px; }
 
-.ed-meta { margin-top: 12px; color: var(--dim); font-size: 13.5px; }
-.ed-meta .desc { color: var(--text); }
-.ed-meta dl { display: flex; gap: 18px; flex-wrap: wrap; margin: 10px 0 0; padding: 0; }
-.ed-meta dt { color: var(--faint); font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; }
-.ed-meta dd { margin: 2px 0 0; font: 600 12.5px/1.3 var(--mono); }
+.ed-meta { margin-top: 10px; }
+.ed-meta .desc {
+  margin: 0;
+  color: var(--dim);
+  font-size: 13px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+/* expanded stays scrollable so the pinned column can still outgrow the viewport */
+.ed-meta .desc.open {
+  display: block;
+  -webkit-line-clamp: none;
+  max-height: 130px;
+  overflow-y: auto;
+}
+.ed-meta .more {
+  margin: 4px 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 600 12px/1 var(--mono);
+  color: var(--acc2);
+  cursor: pointer;
+}
+.ed-meta .more:hover { text-decoration: underline; }
+
+.ed-meta dl { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 0; padding: 0; }
+.ed-meta dl > div {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 4px 9px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+.ed-meta dt { color: var(--faint); font: 600 10.5px/1.2 var(--mono); letter-spacing: 0.4px; }
+.ed-meta dd { margin: 0; font: 600 12px/1.3 var(--mono); color: var(--text); }
+
+.ed-meta .tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 0; }
+.ed-meta .tags span {
+  font: 600 11px/1 var(--mono);
+  color: var(--dim);
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg2);
+}
 
 .panel {
   background: var(--panel);
@@ -260,7 +325,18 @@ section.cat .blurb { margin: 0; color: var(--dim); font-size: 13.5px; }
 .row .val { font: 600 11.5px/1 var(--mono); color: var(--faint); min-width: 42px; text-align: right; }
 
 .swatches { display: flex; gap: 4px; margin-top: 6px; }
-.swatches i { flex: 1; height: 14px; border-radius: 2px; }
+/* every stop is a swatch you can click: an invisible color input fills the chip */
+.swatches .swatch { position: relative; flex: 1; height: 14px; border-radius: 2px; overflow: hidden; cursor: pointer; }
+.swatches .swatch input[type="color"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
 
 .btnrow { display: flex; gap: 8px; flex-wrap: wrap; }
 .btnrow .btn { flex: none; }
@@ -324,15 +400,15 @@ footer {
 @media (max-width: 940px) {
   .ed-grid { grid-template-columns: 1fr; }
   .stagebox { position: static; }
+  .ed-meta .desc.open { max-height: none; overflow: visible; } /* nothing is pinned here, expand freely */
   .bar-in { flex-wrap: wrap; }
   .bar input[type="search"] { width: 100%; flex: 1; order: 2; }
 }
 
 @media (max-width: 560px) {
-  .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-  .tile.big, .tile.screen { grid-column: span 2; }
-  .tile.screen { grid-row: span 1; }
-  .brand h1 { font-size: 22px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .brand h1 { font-size: 24px; }
+  .brand .sub { font-size: 13px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

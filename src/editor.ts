@@ -36,6 +36,14 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return e;
 }
 
+// The pixelfx sources, verbatim: bundled at build time as lazy ?raw chunks keyed by their
+// node_modules path ("exhaustive" lifts glob's default node_modules ignore), fetched on demand.
+const fxSources = import.meta.glob("/node_modules/pixelfx/src/fx/**/*.js", {
+  query: "?raw",
+  import: "default",
+  exhaustive: true,
+});
+
 // Palette presets: upstream ramps, two renamed for the menu ("poison" → toxic, "stone" → mono).
 const PRESETS: { value: string; label: string }[] = (
   [
@@ -100,20 +108,39 @@ function runEditor(entry: CatalogEntry): void {
   const PAD = wide ? 1 : 1.25;
 
   document.title = `${meta.name} — PixJuice editor`;
-  $("#ed-crumb").textContent = entry.id;
-  $("#fx-desc").textContent = meta.desc ?? "";
+  $("#ed-crumb").textContent = `editor — ${meta.name}`;
 
-  const rows: [string, string][] = [
+  // ---- meta strip (kept compact so the pinned stage never outgrows the viewport)
+
+  const desc = $<HTMLParagraphElement>("#fx-desc");
+  desc.textContent = meta.desc ?? "";
+  desc.hidden = !meta.desc;
+
+  const facts: [string, string][] = [
     ["size", `${meta.size[0]} × ${meta.size[1]}`],
     ["fps", String(meta.fps ?? 30)],
     ["length", meta.loop ? `loop · ${meta.duration.toFixed(2)}s` : `${meta.duration.toFixed(2)}s`],
     ["frames", String(frameCount(meta))],
   ];
-  if (entry.mod.act) rows.push(["act", actFacts(entry.mod, meta)]);
-  if (meta.tags?.length) rows.push(["tags", meta.tags.join(", ")]);
+  if (entry.mod.act) facts.push(["act", actFacts(entry.mod, meta)]);
   $("#fx-facts").replaceChildren(
-    ...rows.flatMap(([k, v]) => [el("dt", { textContent: k }), el("dd", { textContent: v })]),
+    ...facts.map(([k, v]) => el("div", {}, [el("dt", { textContent: k }), el("dd", { textContent: v })])),
   );
+
+  const tags = $("#fx-tags");
+  tags.replaceChildren(...(meta.tags ?? []).map((t) => el("span", { textContent: t })));
+  tags.hidden = !meta.tags?.length;
+
+  // "more" only when the two-line clamp actually trims the description
+  const more = $<HTMLButtonElement>("#fx-more");
+  requestAnimationFrame(() => {
+    if (!desc.hidden) more.hidden = desc.scrollHeight <= desc.clientHeight + 1;
+  });
+  more.addEventListener("click", () => {
+    const open = desc.classList.toggle("open");
+    more.textContent = open ? "less" : "more";
+    more.setAttribute("aria-expanded", String(open));
+  });
 
   // ---- stage
 
@@ -186,11 +213,30 @@ function runEditor(entry: CatalogEntry): void {
     return style.palette ?? defaultPalette(entry);
   }
   function paintSwatches() {
+    const ramp = currentRamp() ?? [];
+    // same stop count: refresh in place so an open color picker isn't yanked mid-edit
+    if (swatches.children.length === ramp.length) {
+      [...swatches.children].forEach((node, i) => {
+        const lab = node as HTMLLabelElement;
+        lab.style.background = ramp[i];
+        lab.title = `stop ${i + 1} · ${ramp[i]}`;
+        (lab.firstElementChild as HTMLInputElement).value = ramp[i];
+      });
+      return;
+    }
     swatches.replaceChildren(
-      ...(currentRamp() ?? []).map((c) => {
-        const i = document.createElement("i");
-        i.style.background = c;
-        return i;
+      ...ramp.map((c, i) => {
+        // the input is invisible but fills the swatch, so clicking it opens the native picker
+        const inp = el("input", { type: "color", value: c, ariaLabel: `palette stop ${i + 1}` });
+        inp.addEventListener("input", () => {
+          const next = [...(currentRamp() ?? [])];
+          next[i] = inp.value;
+          pal.value = "custom";
+          applyPalette(next);
+        });
+        const lab = el("label", { className: "swatch", title: `stop ${i + 1} · ${c}` }, [inp]);
+        lab.style.background = c;
+        return lab;
       }),
     );
   }
@@ -328,7 +374,8 @@ function runEditor(entry: CatalogEntry): void {
 
   // ---- sound
 
-  $("#sfx-family").textContent = `${familyLabel(family)} · ${family}`;
+  const famLabel = familyLabel(family);
+  $("#sfx-family").textContent = famLabel === family ? famLabel : `${famLabel} · ${family}`;
   let syncOnRestart = true;
   const syncBtn = $<HTMLButtonElement>("#sfx-sync");
   const muteBtn = $<HTMLButtonElement>("#sfx-mute");
@@ -359,9 +406,17 @@ function runEditor(entry: CatalogEntry): void {
   // ---- export
 
   const expNote = $("#exp-note");
-  const expBtns = ["#exp-zip", "#exp-sheet", "#exp-json", "#exp-gif", "#exp-frame", "#exp-wav"].map((s) =>
-    $<HTMLButtonElement>(s),
-  );
+  const expBtns = [
+    "#exp-zip",
+    "#exp-sheet",
+    "#exp-json",
+    "#exp-gif",
+    "#exp-frame",
+    "#exp-wav",
+    "#exp-src",
+    "#copy-src",
+    "#copy-prompt",
+  ].map((s) => $<HTMLButtonElement>(s));
   const gifScale = $<HTMLSelectElement>("#gif-scale");
   let busy = false;
 
@@ -434,6 +489,95 @@ function runEditor(entry: CatalogEntry): void {
     guarded(async () => {
       note("rendering WAV…");
       done(`${base}.wav`, await sfx.renderWav(family, sfxSeed()));
+    }),
+  );
+
+  // ---- source + prompt export: the effect's own pixelfx module, credited and never rewritten
+
+  const flipWord = () =>
+    style.flipH && style.flipV ? "both (H+V)" : style.flipH ? "horizontal" : style.flipV ? "vertical" : "none";
+
+  /** Header comment recording the dials at export time + the upstream MIT credit. */
+  function settingsHeader(): string {
+    const ramp = style.palette ?? defaultPalette(entry);
+    return [
+      `PixJuice export — ${meta.name} (${entry.id})`,
+      `Module source: pixelfx by Patch & Hugo Duprez, MIT — https://github.com/patch-gg/pixelfx`,
+      `Dials in PixJuice when exported:`,
+      `  palette: ${ramp ? ramp.join(" ") : "default"}`,
+      `  seed: ${style.seed ?? "default"}`,
+      `  flip: ${flipWord()}`,
+      `  angle: ${style.angle}°`,
+    ]
+      .map((l) => `// ${l}`)
+      .join("\n");
+  }
+
+  /** The verbatim module text from the bundled pixelfx package — or an honest error. */
+  async function loadFxSource(): Promise<string> {
+    const load = fxSources[`/node_modules/pixelfx/src/fx/${entry.id}.js`];
+    if (!load) throw new Error(`couldn't fetch the pixelfx source for “${entry.id}” (not bundled)`);
+    const src = (await load()) as string;
+    if (!src.trim()) throw new Error(`the pixelfx source for “${entry.id}” came back empty`);
+    return src;
+  }
+
+  async function copyText(text: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = el("textarea", { value: text }); // fallback for non-secure contexts
+      ta.style.cssText = "position:fixed;opacity:0";
+      document.body.append(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      ta.remove();
+      if (!ok) throw new Error("the browser blocked the clipboard copy");
+    }
+  }
+
+  /** A prompt carrying name, description, tags, format and the current dials, ready for any model. */
+  function buildPrompt(): string {
+    const ramp = style.palette ?? defaultPalette(entry);
+    return [
+      "Recreate (or vary) this pixel-art game VFX as a sprite sheet.",
+      "",
+      `Effect: ${meta.name} (${entry.id})`,
+      ...(meta.desc ? [`Description: ${meta.desc}`] : []),
+      ...(meta.tags?.length ? [`Tags: ${meta.tags.join(", ")}`] : []),
+      `Format: ${meta.size[0]}×${meta.size[1]} px, ${meta.fps ?? 30} fps, ${meta.duration.toFixed(2)}s, ${
+        meta.loop ? "looping" : "one-shot"
+      }, ${frameCount(meta)} frames`,
+      "",
+      "Current look (dialed in PixJuice):",
+      `- palette: ${ramp ? ramp.join(" ") : "the effect's own default ramp"}`,
+      `- seed: ${style.seed ?? "default (the effect's own variation)"}`,
+      `- flip: ${flipWord()}`,
+      `- angle: ${style.angle}°`,
+      "",
+      "Render it as crisp pixel art with hard edges and a limited palette on transparency. To vary it: keep the motion and silhouette, but shift the palette, reroll the seed for a new variation, or mirror/rotate it.",
+    ].join("\n");
+  }
+
+  expBtns[6].addEventListener("click", () =>
+    guarded(async () => {
+      note("fetching source…");
+      const file = `${settingsHeader()}\n\n${await loadFxSource()}\n`;
+      done(`${base}.js`, new Blob([file], { type: "text/javascript" }));
+    }),
+  );
+  expBtns[7].addEventListener("click", () =>
+    guarded(async () => {
+      note("fetching source…");
+      const file = `${settingsHeader()}\n\n${await loadFxSource()}\n`;
+      await copyText(file);
+      note(`✓ ${base}.js copied to the clipboard (${(file.length / 1024).toFixed(1)} KB)`, true);
+    }),
+  );
+  expBtns[8].addEventListener("click", () =>
+    guarded(async () => {
+      await copyText(buildPrompt());
+      note("✓ prompt copied — paste it into any model", true);
     }),
   );
 
