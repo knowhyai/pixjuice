@@ -50,6 +50,8 @@ a:hover { text-decoration: underline; }
   justify-content: space-between;
   gap: 16px;
   padding: 18px 20px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
   max-width: 1180px;
   margin: 0 auto;
   flex-wrap: wrap;
@@ -135,6 +137,8 @@ input[type="color"] {
   max-width: 1180px;
   margin: 0 auto;
   padding: 10px 20px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
   display: flex;
   gap: 12px;
   align-items: center;
@@ -158,9 +162,29 @@ input[type="color"] {
 
 .bar input[type="search"] { width: 210px; flex: none; }
 
+/* phones: the chip row collapses behind this toggle (see the ≤940px block) */
+.cat-toggle {
+  display: none;
+  font: 600 13px/1.2 inherit;
+  color: var(--dim);
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.cat-toggle[data-on="true"] { color: #fff; border-color: var(--acc); background: #2a1524; }
+.cat-toggle:focus-visible { outline: 2px solid var(--acc2); outline-offset: 2px; }
+
 /* ---- catalog grid ---- */
 
-main.grid-main { padding: 26px 20px 60px; max-width: 1180px; margin: 0 auto; }
+main.grid-main {
+  padding: 26px 20px 60px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+  max-width: 1180px;
+  margin: 0 auto;
+}
 
 section.cat .sec-head { display: flex; align-items: baseline; gap: 14px; margin: 34px 0 14px; flex-wrap: wrap; }
 section.cat h2 { font-size: 21px; margin: 0; letter-spacing: 0.3px; }
@@ -210,7 +234,11 @@ section.cat .blurb { margin: 0; color: var(--dim); font-size: 13.5px; }
 
 /* ---- editor ---- */
 
-.editor-main { padding: 22px 20px 70px; }
+.editor-main {
+  padding: 22px 20px 70px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
 
 .ed-grid {
   display: grid;
@@ -340,6 +368,8 @@ section.cat .blurb { margin: 0; color: var(--dim); font-size: 13.5px; }
 
 .btnrow { display: flex; gap: 8px; flex-wrap: wrap; }
 .btnrow .btn { flex: none; }
+/* the GIF button rides with its scale control; `contents` keeps the desktop row flat */
+.gif-group { display: contents; }
 
 .export-note { color: var(--faint); font-size: 12.5px; margin: 10px 0 0; }
 .export-ok { color: var(--good); font-weight: 600; }
@@ -355,6 +385,8 @@ footer {
   max-width: 1180px;
   margin: 0 auto;
   padding: 22px 20px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -365,7 +397,13 @@ footer {
 
 /* ---- prose (credits) ---- */
 
-.prose { max-width: 760px; margin: 0 auto; padding: 34px 20px 80px; }
+.prose {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 34px 20px 80px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
 .prose h1 { font-size: 30px; margin: 0 0 6px; }
 .prose h1::after { content: "."; color: var(--acc); }
 .prose h2 { font-size: 19px; margin: 34px 0 10px; }
@@ -401,8 +439,31 @@ footer {
   .ed-grid { grid-template-columns: 1fr; }
   .stagebox { position: static; }
   .ed-meta .desc.open { max-height: none; overflow: visible; } /* nothing is pinned here, expand freely */
-  .bar-in { flex-wrap: wrap; }
-  .bar input[type="search"] { width: 100%; flex: 1; order: 2; }
+
+  /* catalog bar: search first and full-width; the chip row collapses behind the toggle */
+  .bar-in { flex-wrap: wrap; gap: 8px; }
+  .bar input[type="search"] { order: 1; width: 100%; flex: 1 1 auto; padding: 12px 10px; }
+  .cat-toggle { order: 2; flex: 1 1 100%; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .chips { order: 3; flex-basis: 100%; display: none; }
+  .chips.open { display: flex; } /* expanded chips wrap; that's fine — the user asked for them */
+  .chip { padding: 9px 11px; }
+
+  /* editor: the stage letterboxes in a shorter box so the dials stay reachable */
+  .stagewrap { aspect-ratio: 16 / 10; max-height: 56vh; max-height: 56dvh; }
+  .stagewrap canvas { width: 100%; height: 100%; object-fit: contain; }
+
+  .transport input[type="range"] { order: 4; flex-basis: 100%; } /* scrubber gets a full-width row */
+  .transport .time { min-width: 0; margin-left: auto; }
+
+  /* touch: comfortable heights for every control */
+  .btn { min-height: 44px; }
+  .nav a { padding: 9px 0; }
+
+  /* export rows become a tidy 2-per-row grid; the zip button and the GIF+scale group keep whole rows */
+  .ex-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .ex-grid .btn { width: 100%; }
+  .ex-grid .primary { grid-column: 1 / -1; }
+  .gif-group { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 }
 
 @media (max-width: 560px) {

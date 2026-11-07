@@ -119,23 +119,25 @@
 
         <section class="panel">
           <h3>Export</h3>
-          <div class="btnrow" style="margin-bottom: 10px;">
+          <div class="btnrow ex-grid" style="margin-bottom: 10px;">
             <button class="btn primary" id="exp-zip" type="button">⬇ sheet + JSON (.zip)</button>
             <button class="btn" id="exp-sheet" type="button">PNG sheet</button>
             <button class="btn" id="exp-json" type="button">JSON</button>
           </div>
-          <div class="btnrow">
-            <button class="btn" id="exp-gif" type="button">GIF</button>
-            <label class="gif-scale" for="gif-scale">GIF scale</label>
-            <select id="gif-scale" style="width: 74px">
-              <option value="1">1×</option>
-              <option value="2" selected>2×</option>
-              <option value="3">3×</option>
-            </select>
+          <div class="btnrow ex-grid">
+            <span class="gif-group">
+              <button class="btn" id="exp-gif" type="button">GIF</button>
+              <label class="gif-scale" for="gif-scale">GIF scale</label>
+              <select id="gif-scale" style="width: 74px">
+                <option value="1">1×</option>
+                <option value="2" selected>2×</option>
+                <option value="3">3×</option>
+              </select>
+            </span>
             <button class="btn" id="exp-frame" type="button">current frame PNG</button>
             <button class="btn" id="exp-wav" type="button">WAV</button>
           </div>
-          <div class="btnrow" style="margin-top: 10px;">
+          <div class="btnrow ex-grid" style="margin-top: 10px;">
             <button class="btn" id="exp-src" type="button" title="This effect's pixelfx module, with your palette/seed/flip/angle noted in a header comment">⬇ JS source</button>
             <button class="btn" id="copy-src" type="button">⧉ copy source</button>
             <button class="btn" id="copy-prompt" type="button" title="Name, description, tags and your current dials — written so any model can recreate or vary this effect">⧉ copy prompt</button>

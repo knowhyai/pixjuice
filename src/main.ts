@@ -117,6 +117,36 @@ function chips() {
     mk(s.id, catLabel(CATEGORIES.find((c) => c.id === s.id)?.name ?? s.id), s.list.length);
 }
 
+// ---- mobile: categories hide behind a toggle so the first screen shows tiles
+
+const catToggle = $<HTMLButtonElement>("#cat-toggle");
+const chipsBox = $("#chips");
+
+/** The toggle names the active category (and shows ▾/▴ for the drawer state). */
+function syncCatToggle() {
+  const name =
+    state.cat === "all"
+      ? "categories"
+      : catLabel(CATEGORIES.find((c) => c.id === state.cat)?.name ?? state.cat);
+  catToggle.textContent = `${name} ${chipsBox.classList.contains("open") ? "▴" : "▾"}`;
+  catToggle.dataset.on = String(state.cat !== "all");
+}
+
+catToggle.addEventListener("click", () => {
+  const open = chipsBox.classList.toggle("open");
+  catToggle.setAttribute("aria-expanded", String(open));
+  syncCatToggle();
+});
+
+// a desktop-width window shows the chip row itself; don't leave drawer state behind
+matchMedia("(max-width: 940px)").addEventListener("change", (e) => {
+  if (!e.matches) {
+    chipsBox.classList.remove("open");
+    catToggle.setAttribute("aria-expanded", "false");
+    syncCatToggle();
+  }
+});
+
 function setCat(id: string, fromHash = false) {
   state.cat = sections.some((s) => s.id === id) ? id : "all";
   document.querySelectorAll(".chip").forEach((b) =>
@@ -126,6 +156,9 @@ function setCat(id: string, fromHash = false) {
     history.replaceState(null, "", state.cat === "all" ? location.pathname : `#${state.cat}`);
   filter();
   if (!fromHash) window.scrollTo({ top: 0 });
+  chipsBox.classList.remove("open"); // picking a category closes the drawer; tiles come back
+  catToggle.setAttribute("aria-expanded", "false");
+  syncCatToggle();
 }
 
 function filter() {

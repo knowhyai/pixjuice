@@ -1,5 +1,19 @@
 # PixJuice — finish summary
 
+> **Mobile pass (Nov 8, 2026)** — made the site usable on phones (checked at 390×844; desktop
+> >940px unchanged). Home: the sticky filter bar collapsed from ~719px of wrapping category chips
+> to ~112px — search is now full-width at the top and the chip row hides behind a "categories ▾"
+> toggle (collapsed by default; picking a category closes it; expanded chips wrap). Effect tiles
+> start at ~y460 instead of ~y1060, still the uniform 2-column grid. Editor: the preview stage is
+> letterboxed into a 16:10 box capped at 56dvh (289→215px on a 390px phone) so Look/Sound/Export
+> controls start ~y630; transport buttons are ≥44px with the scrubber on its own full-width row;
+> export rows are a tidy 2-per-row grid with `sheet + JSON (.zip)` full-width and "GIF scale"
+> kept on the GIF button's row. Fixed `/credits/` shipping with **no stylesheet at all** (raw
+> unstyled HTML, 618px horizontal overflow at 390px) — it now links the bundled CSS like 404.html.
+> Safe-area insets honored via `max(20px, env(safe-area-inset-*))` paddings. Note: the editor
+> timer can read negative (e.g. "-0.24s / 3.40s" on frost-nova) — that's the act timeline, not a
+> bug: acted effects start at their first wind-up pose (t<0) and the total includes recovery.
+
 > **Polish + ship pass (Nov 2026)** — kept the uncommitted layout polish (uniform 16:10 catalog
 > tiles with no `.tile.big`/`.tile.screen` spans, wrapping category chips, 1180px centered column,
 > sticky editor stage, compact description/fact chips/tags, "Pixel Art VFX Maker" subtitle) and
