@@ -1,0 +1,25 @@
+{
+  "name": "pixjuice",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Recolor, preview, and export pixel skill effects for games.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "check": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "gifenc": "^1.0.3",
+    "pixelfx": "github:patch-gg/pixelfx"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^7.1.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}

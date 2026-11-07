@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>PixJuice — pixel VFX studio for game devs</title>
+  <meta name="description" content="Recolor, preview and export 244 pixel skill effects for Godot, Unity, Phaser and Aseprite. Sprite sheets, JSON and GIF in the browser — plus matching 8-bit sound effects.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="PixJuice — pixel VFX studio for game devs">
+  <meta property="og:description" content="Recolor, preview and export 244 pixel skill effects as sprite sheets, JSON and GIF — with matching 8-bit SFX. All in the browser.">
+  <meta property="og:image" content="/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b0a10">
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="PixJuice home">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub">Recolor, preview and export pixel skill effects for games.</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="/credits/">credits &amp; licenses</a>
+        <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="bar">
+    <div class="bar-in">
+      <div class="chips" id="chips" role="toolbar" aria-label="Effect categories"></div>
+      <input id="q" type="search" placeholder="search 244 effects…  ( / )" aria-label="Search effects" autocomplete="off">
+    </div>
+  </div>
+
+  <main class="grid-main" id="grid"></main>
+  <p class="empty" id="none" hidden>Nothing matches that. Try <b>fire</b>, <b>slash</b> or <b>loop</b>.</p>
+
+  <footer>
+    <div class="foot-in">
+      <span>Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
+      <span><a href="/credits/">credits &amp; licenses</a> · made for indie game devs</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Editor — PixJuice</title>
+  <meta name="description" content="Recolor a pixel effect, preview it live, and export sprite sheets, Aseprite-style JSON, GIF and WAV sound — all in the browser.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="PixJuice editor — pixel VFX, recolored and exported">
+  <meta property="og:description" content="Live pixel effect editor: palette, seed, flip, angle, speed, sprite sheet + JSON + GIF + WAV export.">
+  <meta property="og:image" content="/og.png">
+  <meta name="theme-color" content="#0b0a10">
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="Back to the PixJuice catalog">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub" id="ed-crumb">editor</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="/">← catalog</a>
+        <a href="/credits/">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="editor-main wrap">
+    <div id="ed-error" class="center-box" hidden>
+      <h1>4<span>0</span>4</h1>
+      <p id="ed-error-msg">That effect doesn't exist.</p>
+      <p><a class="btn primary" href="/">Back to the catalog</a></p>
+    </div>
+
+    <div class="ed-grid" id="ed-grid">
+      <div class="stagebox">
+        <div class="stagewrap"><canvas id="stage" aria-label="Live effect preview"></canvas></div>
+        <div class="transport">
+          <button class="btn" id="play" type="button" aria-pressed="true">⏸ pause</button>
+          <button class="btn" id="replay-btn" type="button" title="Play from the start">↺ replay</button>
+          <input id="scrub" type="range" min="0" max="1000" value="0" step="1" aria-label="Scrub timeline">
+          <span class="time" id="time">0.00s</span>
+        </div>
+        <div class="ed-meta">
+          <p class="desc" id="fx-desc"></p>
+          <dl id="fx-facts"></dl>
+        </div>
+      </div>
+
+      <aside>
+        <section class="panel" id="look-panel">
+          <h3>Look</h3>
+          <div class="row">
+            <label for="pal">palette</label>
+            <select id="pal" class="grow" aria-label="Palette preset"></select>
+          </div>
+          <div class="swatches" id="swatches" aria-hidden="true"></div>
+          <div class="row">
+            <label for="c0">custom</label>
+            <input type="color" id="c0" value="#1a0b16"> <input type="color" id="c1" value="#a8304a"> <input type="color" id="c2" value="#ffe2ea">
+            <button class="btn" id="pal-reset" type="button" title="Back to the effect's own palette">reset</button>
+          </div>
+          <div class="row">
+            <label for="seed">seed</label>
+            <input type="number" id="seed" min="0" max="999999" step="1" style="width: 90px">
+            <button class="btn" id="dice" type="button" title="Random seed">🎲 random</button>
+          </div>
+          <div class="row">
+            <label>mirror</label>
+            <div class="btnrow">
+              <button class="btn" id="flip-h" type="button" aria-pressed="false">flip H</button>
+              <button class="btn" id="flip-v" type="button" aria-pressed="false">flip V</button>
+            </div>
+          </div>
+          <div class="row">
+            <label for="angle">angle</label>
+            <input class="grow" type="range" id="angle" min="0" max="360" step="1" value="0">
+            <span class="val" id="angle-val">0°</span>
+          </div>
+          <div class="row">
+            <label for="glow">glow</label>
+            <input class="grow" type="range" id="glow" min="0" max="2" step="0.05" value="1">
+            <span class="val" id="glow-val">1.00</span>
+          </div>
+          <div class="row">
+            <label>backdrop</label>
+            <div class="btnrow" id="bgs"></div>
+          </div>
+          <div class="row" id="actor-row">
+            <label>character</label>
+            <button class="btn" id="actor" type="button" aria-pressed="true">shown</button>
+          </div>
+          <div class="row" id="replay-row">
+            <label>replay</label>
+            <button class="btn" id="replay" type="button" aria-pressed="true">auto</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Sound</h3>
+          <div class="row">
+            <label for="speed2">family</label>
+            <span class="grow" id="sfx-family" style="font: 600 13px var(--mono); color: var(--acc2);">—</span>
+          </div>
+          <div class="row">
+            <label></label>
+            <div class="btnrow">
+              <button class="btn" id="sfx-play" type="button">▶ play SFX</button>
+              <button class="btn" id="sfx-sync" type="button" aria-pressed="true">sync: on</button>
+              <button class="btn" id="sfx-mute" type="button" aria-pressed="false">mute</button>
+            </div>
+          </div>
+          <div class="row">
+            <label for="sfx-vol">volume</label>
+            <input class="grow" type="range" id="sfx-vol" min="0" max="1" step="0.05" value="0.5">
+          </div>
+          <p class="export-note">Chip-style SFX synthesized with Web Audio, tuned to the effect's family. It fires when the effect restarts.</p>
+        </section>
+
+        <section class="panel">
+          <h3>Export</h3>
+          <div class="btnrow" style="margin-bottom: 10px;">
+            <button class="btn primary" id="exp-zip" type="button">⬇ sheet + JSON (.zip)</button>
+            <button class="btn" id="exp-sheet" type="button">PNG sheet</button>
+            <button class="btn" id="exp-json" type="button">JSON</button>
+          </div>
+          <div class="btnrow">
+            <button class="btn" id="exp-gif" type="button">GIF</button>
+            <select id="gif-scale" aria-label="GIF scale" style="width: 74px">
+              <option value="1">1×</option>
+              <option value="2" selected>2×</option>
+              <option value="3">3×</option>
+            </select>
+            <button class="btn" id="exp-frame" type="button">current frame PNG</button>
+            <button class="btn" id="exp-wav" type="button">WAV</button>
+          </div>
+          <p class="export-note" id="exp-note">Sprite sheets are transparent PNGs with an Aseprite-style JSON sidecar (frame rects, durations, fps, loop, columns, pivot).</p>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span>Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
+      <span><a href="/credits/">credits &amp; licenses</a></span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/editor.ts"></script>
+</body>
+</html>

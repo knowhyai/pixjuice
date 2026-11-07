@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Credits &amp; licenses — PixJuice</title>
+  <meta name="description" content="PixJuice credits: the pixelfx effect library by Patch and Hugo Duprez (MIT), and the licenses that cover this site.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0b0a10">
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="PixJuice home">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub">credits &amp; licenses</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="/">← catalog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="prose">
+    <h1>Credits &amp; licenses</h1>
+    <p class="lede">PixJuice is a thin studio around other people's excellent pixel art. Here is who made what, and the licenses that let us ship it.</p>
+
+    <h2>The effects: pixelfx</h2>
+    <p>
+      <strong>Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a>
+      by Patch and Hugo Duprez, MIT License.</strong>
+      All 244 effects in this catalog — fire, explosions, ice, melee, arcane, weather and the rest — are rendered live
+      from the pixelfx library's own code. Nothing here would exist without it.
+    </p>
+    <p>
+      pixelfx itself builds on more good work, described in its NOTICE file:
+      <code>src/core/sim.js</code> and some effects adapt
+      <a href="https://www.spritefusion.com/pixel-art-vfx" target="_blank" rel="noopener">Hugo Duprez's open-source pixel art VFX</a> (MIT),
+      and <code>src/core/act.js</code> adapts ideas from
+      <a href="https://github.com/rehan-remade/hollow-crown" target="_blank" rel="noopener">Hollow Crown</a> (MIT).
+    </p>
+    <ul>
+      <li><a href="/licenses/pixelfx-LICENSE.txt" download>pixelfx LICENSE (MIT)</a> — full text, as required by the license</li>
+      <li><a href="/licenses/pixelfx-NOTICE.md" download>pixelfx NOTICE.md</a> — the third-party notices above</li>
+      <li><a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">github.com/patch-gg/pixelfx</a> — source and docs</li>
+    </ul>
+
+    <h2>The MIT License (pixelfx)</h2>
+    <pre>MIT License
+
+Copyright (c) 2026 Patch
+Copyright (c) 2026 Hugo Duprez
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</pre>
+
+    <h2>What's PixJuice's, and what isn't</h2>
+    <ul>
+      <li><strong>PixJuice is not "pixelfx".</strong> pixelfx is the upstream library and its name belongs to its authors. PixJuice is an independent tool built on top of it, and is not affiliated with or endorsed by Patch or Hugo Duprez.</li>
+      <li><strong>Fonts:</strong> this site uses your system UI fonts. The pixel font used by the official pixelfx gallery ("Patch Pixel") is <em>not</em> MIT-licensed and is deliberately not used here.</li>
+      <li><strong>GIF encoding</strong> is done in the browser with <a href="https://github.com/mattdesl/gifenc" target="_blank" rel="noopener">gifenc</a> (MIT).</li>
+      <li><strong>The PixJuice app code</strong> (editor, exports, sound synthesis, styling) is MIT too; the exported effect art is covered by pixelfx's MIT license, so you can use it in your games, commercial included.</li>
+    </ul>
+
+    <h2>Exported files &amp; attribution</h2>
+    <p>
+      Every exported sprite sheet and JSON sidecar records where the art came from: the JSON's <code>meta.app</code> points at
+      the pixelfx repository and <code>meta.pixelfx.id</code> names the effect. You don't owe PixJuice anything for exports —
+      but a nod to <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> in your credits screen
+      would make the artists' day.
+    </p>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span>Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
+      <span><a href="/">catalog</a></span>
+    </div>
+  </footer>
+</body>
+</html>
