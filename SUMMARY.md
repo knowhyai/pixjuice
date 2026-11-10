@@ -1,5 +1,18 @@
 # PixJuice — finish summary
 
+> **sfx-jsfxr merged into main (Nov 10, 2026)** — merged the jsfxr sound branch (00e231c) into
+> main on top of the desktop editor shell (ed7405d); the merge auto-resolved with both intact:
+> the pinned one-viewport desktop shell stays, and the Sound panel now generates real 8-bit SFX
+> per effect family via [jsfxr](https://github.com/chr15m/jsfxr) (Unlicense, credited on
+> `/credits/`) — ▶ play, 🎲 mutate (rerolls a variation), pitch/length/punch dials, and ⬇
+> download WAV rendered offline with the current dials; the old Web-Audio WAV button in Export
+> was replaced by the panel's. All 5 locales gained the new sound keys (runtime-switch
+> verified). Headless-checked at 1280×800 (panel visible & usable incl. a real 68 KB RIFF/WAVE
+> download; preview still pinned — stagebox unmoved while the pane scrolls; whole-pixel stage
+> scale) and 390×844 (panel usable, dial labels update, zero horizontal overflow before/after
+> interaction); no console/page errors; `pnpm build` green. Deployed to Cloudflare Pages
+> (main → pixjuice.pages.dev).
+
 > **Desktop editor shell (Nov 10, 2026)** — the editor tool now owns exactly one viewport on
 > desktop (≥941px): the left column is preview + transport only and never moves; description,
 > facts, and tags moved into a compact strip at the top of the right pane. The aside scrolls on
