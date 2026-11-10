@@ -1,0 +1,23 @@
+name = "pixjuice"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-11-04"
+compatibility_flags = ["nodejs_compat"]
+
+# Stay on Workers/Pages Free and D1 Free. No paid flags, no metered extras.
+# IDs are not secrets. Product IDs and merchant/store ids are set here as plain
+# vars once they exist in the Waffo dashboard; WAFFO_PRIVATE_KEY and
+# LICENSE_SIGNING_KEY are secrets (`wrangler pages secret put`, or .dev.vars
+# locally) and never enter this file.
+
+[vars]
+# WAFFO_MERCHANT_ID = "MER_..."
+# WAFFO_STORE_ID = "STO_..."
+# WAFFO_PRODUCT_LIFETIME = "PROD_..."
+# WAFFO_PRODUCT_YEARLY = "PROD_..."
+# WAFFO_PRODUCT_MONTHLY = "PROD_..."
+
+[[d1_databases]]
+binding = "LICENSES_DB"
+database_name = "pixjuice-licenses"
+database_id = "62bef1ff-916a-496d-b6d5-4424bdcee86b"
+migrations_dir = "migrations"

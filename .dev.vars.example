@@ -1,0 +1,25 @@
+# Copy to .dev.vars (gitignored) for local `wrangler pages dev`. Never commit
+# real values. On the deployed Pages project set these via
+#   npx wrangler pages secret put WAFFO_PRIVATE_KEY --project-name=pixjuice
+#   npx wrangler pages secret put LICENSE_SIGNING_KEY --project-name=pixjuice
+# and the plain vars below via the Pages dashboard or the [vars] block in
+# wrangler.toml.
+
+# From the Waffo dashboard (merchant + store the PixJuice products live in).
+WAFFO_MERCHANT_ID="MER_..."
+WAFFO_STORE_ID="STO_..."
+
+# Waffo API private key (RSA PEM, from the dashboard API-key page).
+WAFFO_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----"
+
+# Waffo product IDs; leave a plan unset until the product exists — its buy
+# button then reports "not available yet" instead of opening checkout.
+WAFFO_PRODUCT_LIFETIME="PROD_..."
+WAFFO_PRODUCT_YEARLY="PROD_..."
+WAFFO_PRODUCT_MONTHLY="PROD_..."
+
+# ECDSA P-256 private JWK that signs license tokens (generate one below);
+# the public half is derived and served by /api/license/pubkey.
+LICENSE_SIGNING_KEY={"kty":"EC","crv":"P-256","d":"...","x":"...","y":"..."}
+# Generate with:
+#   node -e 'const{generateKeyPairSync}=require("crypto");const{privateKey}=generateKeyPairSync("ec",{namedCurve:"P-256"});const j=privateKey.export({format:"jwk"});console.log(JSON.stringify(j))'

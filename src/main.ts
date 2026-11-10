@@ -5,6 +5,8 @@ import "./style.css";
 import { CATALOG, CATEGORIES, isScreen, type CatalogEntry } from "./lib/catalog";
 import { Player, defaultStyle } from "./lib/player";
 import { applyStaticText, fxDesc, fxName, getLocale, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
+import { download } from "./lib/exports";
+import { vipInit } from "./lib/vip";
 
 /** Localized display name for a category id; unknown ids fall back to the id itself. */
 function catLabel(id: string): string {
@@ -212,6 +214,62 @@ function wireSearch() {
   });
 }
 
+// ---- VIP pack builder: category / whole-library ZIPs (VIP; the button itself
+// is intercepted by the license guard until activated, so the batch chunk only
+// ever loads after activation)
+
+function wireVipStrip() {
+  const catSel = $<HTMLSelectElement>("#vip-cat");
+  const prog = $("#vip-prog");
+  const buildBtn = $<HTMLButtonElement>("#vip-build");
+  if (!catSel || !buildBtn) return;
+
+  function fillCats(): void {
+    const current = catSel.value || "all";
+    const all = el("option", { value: "all", textContent: t("home.vipAll", { n: CATALOG.length }) });
+    const opts = [all, ...CATEGORIES.map((c) => el("option", { value: c.id, textContent: `${catLabel(c.id)} (${CATALOG.filter((f) => f.cat === c.id).length})` }))];
+    catSel.replaceChildren(...opts);
+    catSel.value = [...catSel.options].some((o) => o.value === current) ? current : "all";
+  }
+  fillCats();
+
+  let busy = false;
+  buildBtn.addEventListener("click", () => {
+    if (busy) return;
+    busy = true;
+    buildBtn.disabled = true;
+    void (async () => {
+      try {
+        const { buildBatchZip } = await import("./vip/batch");
+        const zip = await buildBatchZip({
+          cat: catSel.value || "all",
+          sfx: $<HTMLInputElement>("#vip-sfx").checked,
+          engine: ($<HTMLSelectElement>("#vip-engine").value || "none") as "none" | "godot" | "phaser",
+          onProgress: (done, total, name) => {
+            prog.textContent = name ? t("home.vipProgress", { done, total, name: fxName(findFxLoose(name) ?? { id: name, name }) }) : t("home.vipZipping", { total });
+          },
+        });
+        const mb = (zip.size / 1048576).toFixed(1);
+        const label = catSel.value === "all" ? t("home.vipAllName") : catLabel(catSel.value);
+        download(zip, `pixjuice-vip-${catSel.value}.zip`);
+        prog.textContent = t("home.vipDone", { cat: label, mb });
+      } catch (err) {
+        console.error(err);
+        prog.textContent = t("home.vipFail", { msg: err instanceof Error ? err.message : String(err) });
+      } finally {
+        busy = false;
+        buildBtn.disabled = false;
+      }
+    })();
+  });
+
+  onLocaleChange(fillCats);
+}
+
+function findFxLoose(id: string): CatalogEntry | undefined {
+  return CATALOG.find((f) => f.id === id);
+}
+
 // ---- one clock for every live tile
 
 function run() {
@@ -228,6 +286,8 @@ function run() {
 build();
 chips();
 wireSearch();
+wireVipStrip();
+void vipInit();
 const hash = location.hash.replace("#", "");
 if (hash && sections.some((s) => s.id === hash)) setCat(hash, true);
 else setCat("all", true);

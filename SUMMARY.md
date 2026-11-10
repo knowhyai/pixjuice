@@ -1,5 +1,26 @@
 # PixJuice — finish summary
 
+> **VIP tier on the vip branch (Nov 10, 2026)** — added the paid tier end to end, free tier
+> untouched: **/pricing/** (5 languages, SEO, three plans — Lifetime $19 / Yearly $19 / Monthly
+> $4.99 — buttons open Waffo hosted checkout created server-side by a new Pages Function,
+> `functions/api/waffo/checkout`, product IDs from env so unsold plans degrade to a friendly
+> "not on sale yet" notice). Webhooks verify with the Waffo SDK's RSA-SHA256 `verifyWebhook`
+> over the raw body and write license keys into free-tier D1 (`pixjuice-licenses`, tables
+> `webhook_events` + `licenses`, one key per order; refunds revoke, cancels/past-due stop,
+> renewals extend). `/api/license/verify` signs an ECDSA token whose public half is served by
+> `/api/license/pubkey`, so the browser verifies signature + expiry locally and re-checks
+> against the server once a day; lost keys are retrievable by email via `/api/license/lookup`.
+> The editor gained a VIP panel (paste key → activate/deactivate), a free "VFX + SFX" bundle
+> ZIP, free Lospec palette import, and VIP-locked exports that load as separate chunks only
+> after activation: hand-written **APNG** and **lossless animated WebP (VP8L)** encoders
+> (both round-trip pixel-exact in Chrome's ImageDecoder and a spec decoder), per-frame PNG
+> ZIPs, **Godot 4 SpriteFrames .tres** and **Phaser atlas** packs (Unity/GameMaker marked
+> "soon"), and 4×–8× scales. The homepage got a VIP pack builder: any category or all 244
+> effects as one deflated ZIP with optional WAVs and engine files + manifest + license.
+> Secrets stay in `.dev.vars` / `wrangler secret`; `pnpm build` also type-checks `functions/`;
+> 68 headless checks pass at 1280×800 and 390×844 (pricing, locks, activation, exports,
+> batch), no console errors, no horizontal overflow.
+
 > **sheet-tool merged into main (Nov 10, 2026)** — merged the sprite-sheet branch (85f5452,
 > auto-resolved, both sides intact: fx translations + og.png + sfx + editor shell all kept) and
 > shipped **/sprite-sheet/** — a client-side sprite sheet cutter & GIF maker: drop a PNG, slice

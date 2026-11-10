@@ -176,8 +176,8 @@ export function canvasToBlob(cv: HTMLCanvasElement): Promise<Blob> {
   );
 }
 
-/** Nearest-neighbour upscale, so GIFs stay crisp at 2x/3x. */
-function upscale(rgba: Uint8ClampedArray, w: number, h: number, k: number): Uint8ClampedArray {
+/** Nearest-neighbour upscale, so GIFs stay crisp at 2x/3x (and VIP exports at 4x-8x). */
+export function upscale(rgba: Uint8ClampedArray, w: number, h: number, k: number): Uint8ClampedArray {
   if (k === 1) return rgba;
   const out = new Uint8ClampedArray(w * k * h * k * 4);
   const src = new Uint32Array(rgba.buffer, rgba.byteOffset, w * h);

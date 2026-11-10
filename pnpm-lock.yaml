@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@waffo/pancake-ts':
+        specifier: 0.27.0
+        version: 0.27.0
       gifenc:
         specifier: ^1.0.3
         version: 1.0.3
@@ -18,12 +21,15 @@ importers:
         specifier: github:patch-gg/pixelfx
         version: https://codeload.github.com/patch-gg/pixelfx/tar.gz/a84159688af3ca37a4be05a0d422b94451b2e24e
     devDependencies:
+      '@types/node':
+        specifier: 20.5.6
+        version: 20.5.6
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       vite:
         specifier: ^7.1.0
-        version: 7.3.7
+        version: 7.3.7(@types/node@20.5.6)
 
 packages:
 
@@ -329,6 +335,13 @@ packages:
   '@types/estree@1.0.10':
     resolution: {integrity: sha512-lTyOMnOcmRBzdCv6/4zUZCrEhV0xrqQiUZBZtVcbmLHBXKLnN8q89v/wKRF/Q0HbwVsqbIG3o5HDoFl9sduM+g==}
 
+  '@types/node@20.5.6':
+    resolution: {integrity: sha512-Gi5wRGPbbyOTX+4Y2iULQ27oUPrefaB0PxGQJnfyWN3kvEDGM3mIB5M/gQLmitZf7A9FmLeaqxD3L1CXpm3VKQ==}
+
+  '@waffo/pancake-ts@0.27.0':
+    resolution: {integrity: sha512-aw9NOEhjwzjzkKmR/JNLTftFZiJDD5puCMACZCVeh/N6CYk3IHsYpMSKA3iK10coF88SgmTDPpF07Gk/Tw6llw==}
+    engines: {node: '>=20.0.0'}
+
   esbuild@0.28.2:
     resolution: {integrity: sha512-HKVLS8dvII+xoKW9kmqxbRKrnWEXfJJr/FZhhJmiqIB0e053QNYFqOBouTMO/k5sID4MvCiUCvv8b9M4h32wIA==}
     engines: {node: '>=18'}
@@ -594,6 +607,10 @@ snapshots:
 
   '@types/estree@1.0.10': {}
 
+  '@types/node@20.5.6': {}
+
+  '@waffo/pancake-ts@0.27.0': {}
+
   esbuild@0.28.2:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.28.2
@@ -689,7 +706,7 @@ snapshots:
 
   typescript@5.9.3: {}
 
-  vite@7.3.7:
+  vite@7.3.7(@types/node@20.5.6):
     dependencies:
       esbuild: 0.28.2
       fdir: 6.5.0(picomatch@4.0.7)
@@ -698,4 +715,5 @@ snapshots:
       rollup: 4.68.0
       tinyglobby: 0.2.17
     optionalDependencies:
+      '@types/node': 20.5.6
       fsevents: 2.3.3

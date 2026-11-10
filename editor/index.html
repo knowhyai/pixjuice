@@ -46,6 +46,7 @@
         </select>
         <a href="/" data-i18n="nav.backCatalog">← catalog</a>
         <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+        <a href="/pricing/" class="nav-vip" data-i18n="nav.vip">VIP</a>
         <a href="/credits/" data-i18n="nav.credits">credits</a>
       </nav>
     </div>
@@ -87,6 +88,11 @@
             <label for="c0" data-i18n="ed.custom">custom</label>
             <input type="color" id="c0" value="#1a0b16"> <input type="color" id="c1" value="#a8304a"> <input type="color" id="c2" value="#ffe2ea">
             <button class="btn" id="pal-reset" type="button" title="Back to the effect's own palette" data-i18n="ed.reset" data-i18n-title="ed.resetTitle">reset</button>
+          </div>
+          <div class="row">
+            <label for="lospec" data-i18n="ed.lospec">lospec</label>
+            <input type="text" id="lospec" class="grow" style="max-width: 130px" placeholder="slimefulness" data-i18n-ph="ed.lospecPh" autocomplete="off" spellcheck="false">
+            <button class="btn" id="lospec-go" type="button" title="Import a palette by its lospec.com slug" data-i18n="ed.lospecGo" data-i18n-title="ed.lospecTitle">⬇ import</button>
           </div>
           <div class="row">
             <label for="seed" data-i18n="ed.seed">seed</label>
@@ -136,13 +142,16 @@
             <span class="gif-group">
               <button class="btn" id="exp-gif" type="button">GIF</button>
               <label class="gif-scale" for="gif-scale" data-i18n="ed.gifScale">GIF scale</label>
-              <select id="gif-scale" style="width: 74px">
+              <select id="gif-scale" style="width: 84px">
                 <option value="1">1×</option>
                 <option value="2" selected>2×</option>
                 <option value="3">3×</option>
+                <option value="4">4× 🔒</option>
+                <option value="8">8× 🔒</option>
               </select>
             </span>
             <button class="btn" id="exp-frame" type="button" data-i18n="ed.expFrame">current frame PNG</button>
+            <button class="btn" id="exp-bundle" type="button" title="This effect's sheet + JSON + its matching WAV in one download" data-i18n="ed.expBundle" data-i18n-title="ed.expBundleTitle">⬇ VFX + SFX (.zip)</button>
           </div>
           <div class="btnrow ex-grid" style="margin-top: 10px;">
             <button class="btn" id="exp-src" type="button" title="This effect's pixelfx module, with your palette/seed/flip/angle noted in a header comment" data-i18n="ed.expSrc" data-i18n-title="ed.expSrcTitle">⬇ JS source</button>
@@ -150,6 +159,35 @@
             <button class="btn" id="copy-prompt" type="button" title="Name, description, tags and your current dials — written so any model can recreate or vary this effect" data-i18n="ed.copyPrompt" data-i18n-title="ed.copyPromptTitle">⧉ copy prompt</button>
           </div>
           <p class="export-note" id="exp-note" data-i18n="ed.expNote">Sprite sheets are transparent PNGs with an Aseprite-style JSON sidecar (frame rects, durations, fps, loop, columns, pivot).</p>
+        </section>
+
+        <section class="panel" id="vip-exports">
+          <h3><span data-i18n="ed.vipExports">VIP exports</span> <span class="vip-tag" data-i18n="vip.name">VIP</span></h3>
+          <div class="btnrow ex-grid">
+            <button class="btn" id="exp-apng" type="button" data-vip="1">APNG</button>
+            <button class="btn" id="exp-webp" type="button" data-vip="1">WebP</button>
+            <button class="btn" id="exp-frames" type="button" data-vip="1" data-i18n="ed.expFrames">frames ZIP</button>
+          </div>
+          <div class="btnrow ex-grid" style="margin-top: 10px;">
+            <button class="btn" id="exp-godot" type="button" data-vip="1" data-i18n="ed.expGodot">Godot 4 pack</button>
+            <button class="btn" id="exp-phaser" type="button" data-vip="1" data-i18n="ed.expPhaser">Phaser pack</button>
+            <span class="btn soon" data-i18n="ed.expUnity">Unity — soon</span>
+          </div>
+          <p class="export-note" data-i18n="ed.vipNote">APNG and animated WebP, per-frame PNG sequences, Godot 4 and Phaser packs, and 4×–8× scales are VIP.</p>
+        </section>
+
+        <section class="panel" id="vip-panel">
+          <h3><span data-i18n="vip.name">VIP</span></h3>
+          <p class="vip-status" id="vip-status">…</p>
+          <div class="row" id="vip-activate-row">
+            <input type="text" id="vip-key" class="grow" placeholder="PJV-XXXX-XXXX-XXXX-XXXX" data-i18n-ph="vip.ph" autocomplete="off" spellcheck="false">
+            <button class="btn primary" id="vip-activate" type="button" data-i18n="vip.activate">activate</button>
+          </div>
+          <div class="btnrow" id="vip-active-row" hidden>
+            <button class="btn" id="vip-deactivate" type="button" data-i18n="vip.remove">deactivate</button>
+            <a class="btn" href="/pricing/" data-i18n="vip.buy">get VIP</a>
+          </div>
+          <p class="export-note" data-i18n="vip.note">Paste the license key from your purchase. Batch packs and hi-res exports unlock on this browser.</p>
         </section>
 
         <section class="panel">

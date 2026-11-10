@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 //   /               catalog (index.html)
 //   /editor/        effect editor (editor/index.html)
 //   /sprite-sheet/  sprite sheet cutter & GIF maker (sprite-sheet/index.html)
+//   /pricing/       VIP pricing + activation (pricing/index.html)
 //   /credits/       attribution + licenses (credits/index.html)
 //   /404.html       served by Cloudflare Pages for unknown routes
 export default defineConfig({
@@ -14,6 +15,7 @@ export default defineConfig({
         main: "index.html",
         editor: "editor/index.html",
         sheet: "sprite-sheet/index.html",
+        pricing: "pricing/index.html",
         credits: "credits/index.html",
         notfound: "404.html",
       },

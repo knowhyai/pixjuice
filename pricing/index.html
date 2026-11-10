@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>PixJuice VIP — batch VFX packs, engine exports, hi-res</title>
+  <meta name="description" content="PixJuice VIP pricing: batch ZIP packs of all 244 pixel VFX, Godot 4 and Phaser engine packs, effect+SFX sets, APNG/WebP and 4x-8x exports. Lifetime $19, yearly $19, monthly $4.99.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="PixJuice VIP — batch packs &amp; engine exports">
+  <meta property="og:description" content="Batch ZIPs of 244 pixel VFX, Godot 4 &amp; Phaser packs, APNG/WebP, 4x-8x exports. Lifetime $19.">
+  <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
+  <meta name="theme-color" content="#0b0a10">
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="PixJuice home">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em> <span class="vip-tag" data-i18n="vip.name">VIP</span></h1>
+          <p class="sub" data-i18n="pricing.sub">pricing</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/" data-i18n="nav.backCatalog">← catalog</a>
+        <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap pricing-main">
+    <h2 class="pricing-h1" data-i18n="pricing.h1">PixJuice VIP</h2>
+    <p class="pricing-lede" data-i18n="pricing.lede">The free tier already covers single-effect exports. VIP is the time-saver: whole libraries in one ZIP, engine-ready packs, and the formats free skips.</p>
+
+    <div class="plans">
+      <section class="plan plan-life">
+        <div class="plan-flag" data-i18n="pricing.best">best value</div>
+        <h3 data-i18n="pricing.planLife">Lifetime</h3>
+        <p class="price">$19 <small data-i18n="pricing.once">once</small></p>
+        <ul>
+          <li data-i18n="pricing.life1">Every VIP feature, forever</li>
+          <li data-i18n="pricing.life2">All 244 effects, every future effect</li>
+          <li data-i18n="pricing.life3">One key, any browser</li>
+        </ul>
+        <button class="btn primary buy" id="buy-lifetime" type="button" data-plan="lifetime" data-i18n="pricing.ctaLife">Get lifetime VIP — $19</button>
+        <p class="plan-note" data-i18n="pricing.payNote">Secure checkout by Waffo · card, Apple&nbsp;Pay, Google&nbsp;Pay</p>
+      </section>
+
+      <section class="plan">
+        <h3 data-i18n="pricing.planYear">Yearly</h3>
+        <p class="price">$19 <small data-i18n="pricing.perYear">/ year</small></p>
+        <ul>
+          <li data-i18n="pricing.year1">All VIP features for 12 months</li>
+          <li data-i18n="pricing.year2">Cancel anytime — keeps working to the term's end</li>
+        </ul>
+        <button class="btn buy" id="buy-yearly" type="button" data-plan="yearly" data-i18n="pricing.ctaYear">Get yearly — $19/yr</button>
+        <p class="plan-note" data-i18n="pricing.payNote2">Secure checkout by Waffo · card, Apple&nbsp;Pay, Google&nbsp;Pay</p>
+      </section>
+
+      <section class="plan">
+        <h3 data-i18n="pricing.planMonth">Monthly</h3>
+        <p class="price">$4.99 <small data-i18n="pricing.perMonth">/ month</small></p>
+        <ul>
+          <li data-i18n="pricing.month1">All VIP features, month to month</li>
+          <li data-i18n="pricing.month2">For a game jam, a sprint, a weekend</li>
+        </ul>
+        <button class="btn buy" id="buy-monthly" type="button" data-plan="monthly" data-i18n="pricing.ctaMonth">Get monthly — $4.99/mo</button>
+        <p class="plan-note" data-i18n="pricing.payNote2">Secure checkout by Waffo · card, Apple&nbsp;Pay, Google&nbsp;Pay</p>
+      </section>
+    </div>
+
+    <div class="compare">
+      <section class="free-col">
+        <h3 data-i18n="pricing.freeH">Free — stays free</h3>
+        <ul>
+          <li data-i18n="pricing.f1">All 244 effects, live preview, recolor, dials</li>
+          <li data-i18n="pricing.f2">Single-effect GIF / PNG sheet / JSON exports</li>
+          <li data-i18n="pricing.f3">Single sound effect WAV</li>
+          <li data-i18n="pricing.f4">Single VFX + SFX bundle ZIP</li>
+          <li data-i18n="pricing.f5">Lospec palette import</li>
+          <li data-i18n="pricing.f6">The /sprite-sheet/ cutter, five languages</li>
+        </ul>
+      </section>
+      <section class="vip-col">
+        <h3 data-i18n="pricing.vipH">VIP unlocks</h3>
+        <ul>
+          <li data-i18n="pricing.v1">Batch ZIPs by category or the whole library</li>
+          <li data-i18n="pricing.v2">Godot 4 packs (SpriteFrames .tres)</li>
+          <li data-i18n="pricing.v3">Phaser atlas JSON packs (PixiJS too)</li>
+          <li data-i18n="pricing.v4">Effect + sound sets, exported together</li>
+          <li data-i18n="pricing.v5">APNG and animated WebP</li>
+          <li data-i18n="pricing.v6">Per-frame PNG sequences</li>
+          <li data-i18n="pricing.v7">4×–8× hi-res exports</li>
+          <li data-i18n="pricing.v8">Unity &amp; GameMaker packs — coming soon</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="panel pricing-activate" id="activate">
+      <h3 data-i18n="pricing.activateH">Already bought? Activate VIP</h3>
+      <p class="hint" data-i18n="pricing.activateP">Paste the license key from your purchase email or checkout page. It unlocks VIP on this browser — the key is your license, keep it somewhere safe.</p>
+      <div class="row">
+        <input type="text" id="vip-key" class="grow" placeholder="PJV-XXXX-XXXX-XXXX-XXXX" data-i18n-ph="vip.ph" autocomplete="off" spellcheck="false">
+        <button class="btn primary" id="vip-activate" type="button" data-i18n="vip.activate">activate</button>
+      </div>
+      <p class="hint" id="vip-status" role="status"></p>
+      <div class="btnrow" id="vip-active-row" hidden>
+        <a class="btn primary" href="/" data-i18n="pricing.goUse">start packing →</a>
+        <button class="btn" id="vip-deactivate" type="button" data-i18n="vip.remove">deactivate</button>
+      </div>
+      <details class="lost-key">
+        <summary data-i18n="pricing.lostH">Lost your key?</summary>
+        <p class="hint" data-i18n="pricing.lostP">Enter the email you paid with and your active keys will be shown.</p>
+        <div class="row">
+          <input type="email" id="lookup-email" class="grow" placeholder="you@example.com" autocomplete="email">
+          <button class="btn" id="lookup-go" type="button" data-i18n="pricing.lostBtn">find my keys</button>
+        </div>
+        <p class="hint" id="lookup-out" role="status"></p>
+      </details>
+    </section>
+
+    <section class="faq">
+      <h3 data-i18n="pricing.faqH">Pricing FAQ</h3>
+      <details>
+        <summary data-i18n="pricing.q1">What exactly does VIP add?</summary>
+        <p data-i18n-html="pricing.a1">Time: batch ZIPs (a category or all 244 effects at once), Godot 4 <code>.tres</code> and Phaser atlas packs, effect+sound sets, APNG / animated WebP / frame sequences, and 4×–8× scales. Free single-effect exports stay free — VIP never takes them away.</p>
+      </details>
+      <details>
+        <summary data-i18n="pricing.q2">How do I get my license key?</summary>
+        <p data-i18n-html="pricing.a2">Checkout opens on Waffo's hosted page (card details never touch PixJuice). After payment you return here with your key and VIP turns on immediately; the same key re-activates VIP on any browser.</p>
+      </details>
+      <details>
+        <summary data-i18n="pricing.q3">Can I use the effects in a commercial game?</summary>
+        <p data-i18n-html="pricing.a3">Yes — with or without VIP. The effects are <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch &amp; Hugo Duprez (MIT); keep the license notice that ships inside every export. VIP buys convenience, not extra rights.</p>
+      </details>
+      <details>
+        <summary data-i18n="pricing.q4">What happens when yearly / monthly ends?</summary>
+        <p data-i18n="pricing.a4">The VIP exports lock again; everything you already downloaded keeps working — the files are yours. Lifetime never expires.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.credit">Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
+      <span data-i18n-html="foot.credits2"><a href="/credits/">credits &amp; licenses</a></span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/pricing.ts"></script>
+</body>
+</html>

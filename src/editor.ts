@@ -24,6 +24,8 @@ import {
 import { makeZip } from "./lib/zip";
 import { familyForCategory, sfx, type SfxDials, type SfxFamily } from "./lib/sfx";
 import { applyStaticText, fxDesc, fxName, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
+import { onVipChange, planLabel, vipActivate, vipActive, vipDeactivate, vipInit, vipState, vipToast } from "./lib/vip";
+import type { ZipEntry } from "./lib/zip";
 
 const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector(s) as T;
 function el<K extends keyof HTMLElementTagNameMap>(
@@ -474,9 +476,15 @@ function runEditor(entry: CatalogEntry): void {
     "#exp-json",
     "#exp-gif",
     "#exp-frame",
+    "#exp-bundle",
     "#exp-src",
     "#copy-src",
     "#copy-prompt",
+    "#exp-apng",
+    "#exp-webp",
+    "#exp-frames",
+    "#exp-godot",
+    "#exp-phaser",
   ].map((s) => $<HTMLButtonElement>(s));
   // the WAV download lives in the Sound panel, but is guarded (disabled) like an export too
   const sfxWavBtn = $<HTMLButtonElement>("#sfx-wav");
@@ -556,6 +564,151 @@ function runEditor(entry: CatalogEntry): void {
       done(`${base}.wav`, await sfx.renderWav(family, sfxSeed()));
     }),
   );
+
+  // the free VFX + SFX bundle: sheet, JSON and the matching WAV in one ZIP
+  $<HTMLButtonElement>("#exp-bundle").addEventListener("click", () =>
+    guarded(async () => {
+      const r = renderBareFrames(entry, style);
+      note(t("ed.notePacking", { n: r.n }));
+      const png = new Uint8Array(await (await canvasToBlob(sheetCanvas(r))).arrayBuffer());
+      const wav = new Uint8Array(await (await sfx.renderWav(family, sfxSeed())).arrayBuffer());
+      const zip = makeZip([
+        { name: `${base}.png`, data: png },
+        { name: `${base}.json`, data: new TextEncoder().encode(sheetJsonText(r)) },
+        { name: `${base}.wav`, data: wav },
+      ]);
+      done(`${base}-vfx-sfx.zip`, zip);
+    }),
+  );
+
+  // ---- VIP exports: the encoders and engine packs load as their own chunks,
+  // only after activation (import() below — never on the free path)
+
+  $<HTMLButtonElement>("#exp-apng").addEventListener("click", () =>
+    guarded(async () => {
+      if (!vipActive()) return vipToast();
+      const { buildApng } = await import("./vip/apng");
+      const r = renderBareFrames(entry, style);
+      done(`${base}.png`, await buildApng(r, 1, (i, n) => note(t("ed.noteApng", { i, n }))));
+    }),
+  );
+
+  $<HTMLButtonElement>("#exp-webp").addEventListener("click", () =>
+    guarded(async () => {
+      if (!vipActive()) return vipToast();
+      const { buildWebp } = await import("./vip/webp");
+      const r = renderBareFrames(entry, style);
+      done(`${base}.webp`, await buildWebp(r, 1, (i, n) => note(t("ed.noteWebp", { i, n }))));
+    }),
+  );
+
+  $<HTMLButtonElement>("#exp-frames").addEventListener("click", () =>
+    guarded(async () => {
+      if (!vipActive()) return vipToast();
+      const r = renderBareFrames(entry, style);
+      note(t("ed.noteFrames", { n: r.n }));
+      const entries: ZipEntry[] = [];
+      for (let i = 0; i < r.n; i++) {
+        const cv = document.createElement("canvas");
+        cv.width = r.w;
+        cv.height = r.h;
+        cv.getContext("2d")!.putImageData(new ImageData(new Uint8ClampedArray(r.frames[i]), r.w, r.h), 0, 0);
+        entries.push({ name: `${base}/frame-${String(i).padStart(3, "0")}.png`, data: new Uint8Array(await (await canvasToBlob(cv)).arrayBuffer()) });
+        if (i % 4 === 3) await new Promise((res) => setTimeout(res, 0));
+      }
+      done(`${base}-frames.zip`, makeZip(entries));
+    }),
+  );
+
+  async function enginePackZip(engine: "godot" | "phaser"): Promise<void> {
+    if (!vipActive()) return vipToast();
+    note(t("ed.noteEngine", { engine }));
+    const { enginePack } = await import("./vip/engines");
+    const r = renderBareFrames(entry, style);
+    const png = new Uint8Array(await (await canvasToBlob(sheetCanvas(r))).arrayBuffer());
+    const files = await enginePack(engine, entry, r, style, png);
+    done(`${base}-${engine}.zip`, makeZip(files));
+  }
+  $<HTMLButtonElement>("#exp-godot").addEventListener("click", () => guarded(() => enginePackZip("godot")));
+  $<HTMLButtonElement>("#exp-phaser").addEventListener("click", () => guarded(() => enginePackZip("phaser")));
+
+  // 4×/8× GIF scales are VIP; the select snaps back (with a hint) when locked
+  let gifScaleOk = "2";
+  gifScale.addEventListener("change", () => {
+    const v = gifScale.value;
+    if ((v === "4" || v === "8") && !vipActive()) {
+      gifScale.value = gifScaleOk;
+      return vipToast();
+    }
+    gifScaleOk = v;
+  });
+  onVipChange(() => {
+    if ((gifScale.value === "4" || gifScale.value === "8") && !vipActive()) {
+      gifScale.value = gifScaleOk = "2";
+    }
+  });
+
+  // ---- Lospec palette import (free): paste a palette slug, get its ramp
+
+  $<HTMLButtonElement>("#lospec-go").addEventListener("click", () => {
+    const slug = $<HTMLInputElement>("#lospec").value
+      .trim()
+      .toLowerCase()
+      .replace(/^https?:\/\/lospec\.com\/palette-list\//, "")
+      .replace(/[^a-z0-9-]/g, "");
+    if (!slug) return;
+    void (async () => {
+      try {
+        const res = await fetch(`https://lospec.com/palette-list/${encodeURIComponent(slug)}.json`);
+        if (!res.ok) throw new Error(String(res.status));
+        const data = (await res.json()) as { name?: string; colors: string[] };
+        if (!Array.isArray(data.colors) || !data.colors.length) throw new Error("empty");
+        applyPalette(data.colors.map((c) => (c.startsWith("#") ? c : `#${c}`)));
+        pal.value = "custom";
+        note(t("ed.lospecOk", { name: data.name ?? slug }), true);
+      } catch {
+        note(t("ed.lospecBad", { slug }));
+      }
+    })();
+  });
+
+  // ---- VIP panel: status + activation
+
+  const vipStatus = $("#vip-status");
+  function syncVip(): void {
+    const s = vipState();
+    $("#vip-activate-row").hidden = !!s;
+    $("#vip-active-row").hidden = !s;
+    if (s) {
+      const active = vipActive();
+      const label = planLabel(s.plan);
+      vipStatus.textContent = active
+        ? s.expiresAt
+          ? t("vip.statusExp", { plan: label, date: new Date(s.expiresAt).toLocaleDateString() })
+          : t("vip.status", { plan: label })
+        : t("vip.expired");
+    } else {
+      vipStatus.textContent = t("vip.inactive");
+    }
+  }
+  syncVip();
+  onVipChange(syncVip);
+  $<HTMLButtonElement>("#vip-activate").addEventListener("click", () => {
+    const input = $<HTMLInputElement>("#vip-key");
+    const btn = $<HTMLButtonElement>("#vip-activate");
+    btn.disabled = true;
+    btn.textContent = t("vip.checking");
+    void vipActivate(input.value).then((r) => {
+      btn.disabled = false;
+      btn.textContent = t("vip.activate");
+      input.value = "";
+      if (r === "ok") note(t("vip.ok"), true);
+      else if (r === "invalid") note(t("vip.bad"));
+      else note(t("vip.err"));
+    });
+  });
+  $<HTMLButtonElement>("#vip-deactivate").addEventListener("click", () => vipDeactivate());
+  void vipInit();
 
   // ---- source + prompt export: the effect's own pixelfx module, credited and never rewritten
 
@@ -672,6 +825,7 @@ function runEditor(entry: CatalogEntry): void {
     speedLabel.textContent = t("ed.speed");
     $("#sfx-family").textContent = famText();
     syncSfxBtns();
+    syncVip();
     note(t("ed.expNote"));
   });
 

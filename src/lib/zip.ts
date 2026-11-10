@@ -24,6 +24,29 @@ export interface ZipEntry {
 
 /** Build a stored (uncompressed) ZIP archive. */
 export function makeZip(entries: ZipEntry[]): Blob {
+  return assemble(entries, entries.map((e) => ({ name: e.name, data: e.data, crc: crc32(e.data), method: 0 })));
+}
+
+/** Build a deflated ZIP — the method VIP batch packs use (hundreds of files). */
+export async function makeZipDeflated(entries: ZipEntry[]): Promise<Blob> {
+  const packed = await Promise.all(
+    entries.map(async (e) => {
+      const stream = new Blob([e.data as unknown as BlobPart]).stream().pipeThrough(new CompressionStream("deflate-raw"));
+      const data = new Uint8Array(await new Response(stream).arrayBuffer());
+      return { name: e.name, data, crc: crc32(e.data), method: 8 };
+    }),
+  );
+  return assemble(entries, packed);
+}
+
+interface Packed {
+  name: string;
+  data: Uint8Array;
+  crc: number;
+  method: number;
+}
+
+function assemble(entries: ZipEntry[], packed: Packed[]): Blob {
   const chunks: Uint8Array[] = [];
   const central: Uint8Array[] = [];
   let offset = 0;
@@ -43,37 +66,37 @@ export function makeZip(entries: ZipEntry[]): Blob {
     return out;
   };
 
-  for (const e of entries) {
-    const name = new TextEncoder().encode(e.name);
-    if (name.length > 0xffff) throw new Error(`zip: name too long: ${e.name}`);
-    const crc = crc32(e.data);
+  packed.forEach((p, i) => {
+    void entries[i];
+    const name = new TextEncoder().encode(p.name);
+    if (name.length > 0xffff) throw new Error(`zip: name too long: ${p.name}`);
     const local = header(
       0x04034b50,
       u16(20), // version needed
       u16(0), // flags
-      u16(0), // method: store
+      u16(p.method),
       u16(0), // time
       u16(0x2100), // date (1980-01-01, fixed for reproducibility)
-      u32(crc),
-      u32(e.data.length),
-      u32(e.data.length),
+      u32(p.crc),
+      u32(p.data.length),
+      u32(p.data.length),
       u16(name.length),
       u16(0),
       name,
     );
-    chunks.push(local, e.data);
+    chunks.push(local, p.data);
     central.push(
       header(
         0x02014b50,
         u16(20), // version made by
         u16(20), // version needed
         u16(0), // flags
-        u16(0), // method
+        u16(p.method),
         u16(0), // time
         u16(0x2100), // date
-        u32(crc),
-        u32(e.data.length),
-        u32(e.data.length),
+        u32(p.crc),
+        u32(p.data.length),
+        u32(p.data.length),
         u16(name.length),
         u16(0), // extra len
         u16(0), // comment len
@@ -84,16 +107,16 @@ export function makeZip(entries: ZipEntry[]): Blob {
         name,
       ),
     );
-    offset += local.length + e.data.length;
-  }
+    offset += local.length + p.data.length;
+  });
 
   const cdSize = central.reduce((n, c) => n + c.length, 0);
   const eocd = header(
     0x06054b50,
     u16(0), // disk
     u16(0), // cd disk
-    u16(entries.length),
-    u16(entries.length),
+    u16(packed.length),
+    u16(packed.length),
     u32(cdSize),
     u32(offset),
     u16(0),

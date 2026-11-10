@@ -46,6 +46,7 @@
           <option value="es">Español</option>
         </select>
         <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+        <a href="/pricing/" class="nav-vip" data-i18n="nav.vip">VIP</a>
         <a href="/credits/" data-i18n="nav.credits">credits</a>
       </nav>
     </div>
@@ -58,6 +59,21 @@
       <button id="cat-toggle" class="cat-toggle" type="button" aria-expanded="false" aria-controls="chips">categories ▾</button>
     </div>
   </div>
+
+  <section class="vip-strip">
+    <div class="vip-strip-in">
+      <b data-i18n="home.vipTitle">VIP pack builder</b>
+      <select id="vip-cat" aria-label="Which effects to pack"></select>
+      <label class="chk"><input type="checkbox" id="vip-sfx"> <span data-i18n="home.vipSfx">+ WAV sounds</span></label>
+      <select id="vip-engine">
+        <option value="none" data-i18n="home.vipEngineNone">sheets + JSON</option>
+        <option value="godot" data-i18n="home.vipEngineGodot">+ Godot 4 packs</option>
+        <option value="phaser" data-i18n="home.vipEnginePhaser">+ Phaser atlases</option>
+      </select>
+      <button class="btn primary" id="vip-build" type="button" data-vip="1" data-i18n="home.vipGo">⬇ build ZIP</button>
+      <span class="vip-prog" id="vip-prog" role="status"></span>
+    </div>
+  </section>
 
   <main class="grid-main" id="grid"></main>
   <p class="empty" id="none" hidden data-i18n-html="home.empty">Nothing matches that. Try <b>fire</b>, <b>slash</b> or <b>loop</b>.</p>
