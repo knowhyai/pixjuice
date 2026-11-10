@@ -22,7 +22,7 @@ import {
   sheetJson,
 } from "./lib/exports";
 import { makeZip } from "./lib/zip";
-import { familyForCategory, sfx, type SfxFamily } from "./lib/sfx";
+import { familyForCategory, sfx, type SfxDials, type SfxFamily } from "./lib/sfx";
 import { applyStaticText, fxDesc, fxName, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
 
 const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector(s) as T;
@@ -409,6 +409,22 @@ function runEditor(entry: CatalogEntry): void {
     sfx.ensure();
     sfx.play(family, sfxSeed());
   });
+  // mutate: reroll a fresh variation of the family preset; it sticks (sync + WAV included)
+  $<HTMLButtonElement>("#sfx-mutate").addEventListener("click", () => {
+    sfx.ensure();
+    sfx.setVariantSeed(Math.floor(Math.random() * 0x7fffffff));
+    sfx.play(family, sfxSeed());
+  });
+  const sfxDials: [HTMLInputElement, HTMLElement, keyof SfxDials, (v: number) => string][] = [
+    [$<HTMLInputElement>("#sfx-pitch"), $("#sfx-pitch-val"), "pitch", (v) => `${v.toFixed(2)}×`],
+    [$<HTMLInputElement>("#sfx-length"), $("#sfx-length-val"), "length", (v) => `${v.toFixed(2)}×`],
+    [$<HTMLInputElement>("#sfx-punch"), $("#sfx-punch-val"), "punch", (v) => `${Math.round(v * 100)}%`],
+  ];
+  for (const [inp, val, key, fmt] of sfxDials)
+    inp.addEventListener("input", () => {
+      sfx.setDial(key, +inp.value);
+      val.textContent = fmt(+inp.value);
+    });
   syncBtn.addEventListener("click", () => {
     syncOnRestart = !syncOnRestart;
     syncBtn.setAttribute("aria-pressed", String(syncOnRestart));
@@ -438,11 +454,12 @@ function runEditor(entry: CatalogEntry): void {
     "#exp-json",
     "#exp-gif",
     "#exp-frame",
-    "#exp-wav",
     "#exp-src",
     "#copy-src",
     "#copy-prompt",
   ].map((s) => $<HTMLButtonElement>(s));
+  // the WAV download lives in the Sound panel, but is guarded (disabled) like an export too
+  const sfxWavBtn = $<HTMLButtonElement>("#sfx-wav");
   const gifScale = $<HTMLSelectElement>("#gif-scale");
   let busy = false;
 
@@ -457,7 +474,7 @@ function runEditor(entry: CatalogEntry): void {
   async function guarded(fn: () => Promise<void>) {
     if (busy) return;
     busy = true;
-    for (const b of expBtns) b.disabled = true;
+    for (const b of [...expBtns, sfxWavBtn]) b.disabled = true;
     try {
       await fn();
     } catch (err) {
@@ -465,7 +482,7 @@ function runEditor(entry: CatalogEntry): void {
       note(t("ed.noteFail", { msg: err instanceof Error ? err.message : String(err) }));
     } finally {
       busy = false;
-      for (const b of expBtns) b.disabled = false;
+      for (const b of [...expBtns, sfxWavBtn]) b.disabled = false;
     }
   }
 
@@ -511,7 +528,9 @@ function runEditor(entry: CatalogEntry): void {
       done(`${base}-frame.png`, await canvasToBlob(cv));
     }),
   );
-  expBtns[5].addEventListener("click", () =>
+
+  // the Sound panel's WAV download: the same generation path, with the current dials applied
+  sfxWavBtn.addEventListener("click", () =>
     guarded(async () => {
       note(t("ed.noteWav"));
       done(`${base}.wav`, await sfx.renderWav(family, sfxSeed()));
@@ -585,14 +604,14 @@ function runEditor(entry: CatalogEntry): void {
     ].join("\n");
   }
 
-  expBtns[6].addEventListener("click", () =>
+  expBtns[5].addEventListener("click", () =>
     guarded(async () => {
       note(t("ed.noteSrc"));
       const file = `${settingsHeader()}\n\n${await loadFxSource()}\n`;
       done(`${base}.js`, new Blob([file], { type: "text/javascript" }));
     }),
   );
-  expBtns[7].addEventListener("click", () =>
+  expBtns[6].addEventListener("click", () =>
     guarded(async () => {
       note(t("ed.noteSrc"));
       const file = `${settingsHeader()}\n\n${await loadFxSource()}\n`;
@@ -600,7 +619,7 @@ function runEditor(entry: CatalogEntry): void {
       note(t("ed.noteCopied", { name: `${base}.js`, kb: (file.length / 1024).toFixed(1) }), true);
     }),
   );
-  expBtns[8].addEventListener("click", () =>
+  expBtns[7].addEventListener("click", () =>
     guarded(async () => {
       await copyText(buildPrompt());
       note(t("ed.notePrompt"), true);
