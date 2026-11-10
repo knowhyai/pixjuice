@@ -1,1 +1,978 @@
-{}
+{
+  "moves/arrow-shot": {
+    "n": "Disparo de flecha",
+    "d": "Levanta el arco, tensa hasta la mejilla, contiene la respiración y suelta: la cuerda se dispara hacia delante, la flecha cruza el suelo y se clava."
+  },
+  "moves/dash-strike": {
+    "n": "Golpe con embestida",
+    "d": "Se agacha y cruza el suelo en un borrón de imágenes residuales ya cortando: un golpe crítico, un compás, y salta de vuelta a donde empezó."
+  },
+  "moves/earth-stomp": {
+    "n": "Pisotón de tierra",
+    "d": "Levanta la rodilla, la bota golpea el suelo, el piso se alza bajo el objetivo y una púa de piedra emerge atravesándolo."
+  },
+  "moves/fireball-throw": {
+    "n": "Lanzamiento de bola de fuego",
+    "d": "Reúne fuego en la mano, se echa atrás y lo lanza: la bola vuela, el objetivo la recibe en una explosión y queda calcinado."
+  },
+  "moves/ground-pound": {
+    "n": "Machaque al suelo",
+    "d": "Se encoje, salta fuera de cuadro, queda suspendido y cae como una roca: el suelo se agrieta, las ondas de choque se expanden y zarandean al objetivo a su paso."
+  },
+  "moves/holy-smite": {
+    "n": "Castigo sagrado",
+    "d": "Ambas manos suben y un destello marca al objetivo; las baja y un rayo de luz cae como un martillo, dejando al objetivo pálido."
+  },
+  "moves/ice-lance-throw": {
+    "n": "Lanzamiento de lanza de hielo",
+    "d": "La escarcha se congrega en una lanza en su mano, la lanza como una jabalina, y el objetivo se cubre de hielo en un estallido de copos y escalofríos."
+  },
+  "moves/lightning-call": {
+    "n": "Invocación de rayo",
+    "d": "Un brazo sube, un sigilo se ilumina bajo el objetivo, y al bajar el brazo un grueso rayo cae sobre él; el objetivo se sacude con las réplicas."
+  },
+  "moves/meteor-call": {
+    "n": "Invocación de meteoro",
+    "d": "Un largo cántico: un círculo se dibuja a su alrededor, destella, señala, y una roca ardiente cae sobre el objetivo y aplana la escena."
+  },
+  "moves/pistol-shots": {
+    "n": "Disparos de pistola",
+    "d": "Tres disparos apuntados: la pistola se alza con cada uno y se asienta, los trazadores cruzan el suelo, y el objetivo se tambalea con cada impacto."
+  },
+  "moves/rocket-launcher": {
+    "n": "Lanzacohetes",
+    "d": "Cae sobre una rodilla, apoya el tubo al hombro y dispara: el retroceso lo empuja hacia atrás por el suelo, el cohete sale impulsado por su chorro y el objetivo estalla."
+  },
+  "moves/sword-combo": {
+    "n": "Combo de espada",
+    "d": "Tres tajos avanzando: un corte, un doble tajo cruzado, y una cuchillada a dos manos contra el suelo que zarandea al objetivo."
+  },
+  "fire/brazier": {
+    "n": "Brasero",
+    "d": "Un cuenco de hierro sobre un trípode colmado de brasas incandescentes y un gran fuego rugiente, chispas y ascuas brotando hacia arriba, luz sobre el hierro y el suelo."
+  },
+  "fire/campfire": {
+    "n": "Hoguera",
+    "d": "Troncos cruzados sobre un lecho de brasas y un fuego vivo: lenguas que lamen y saltan, chispas crepitantes, ascuas que se elevan, humo que se enrosca, un charco de luz cálida."
+  },
+  "fire/candle": {
+    "n": "Vela",
+    "d": "Una vela de cera en un plato de latón: una llama tranquila con raíz azul que se mece y se estira, un halo de luz, motas flotando en él, una gota de cera que resbala por un chorretón."
+  },
+  "fire/fire-breath": {
+    "n": "Aliento de fuego",
+    "d": "Un cono rugiente de fuego que fluye hacia la derecha desde la boca: blanco incandescente en los labios, se hincha y se enfría a rojo y humo en los bordes, chispas lanzadas hacia delante."
+  },
+  "fire/fire-ring": {
+    "n": "Anillo de fuego",
+    "d": "Un destello blanco en los pies, luego las llamas se extienden hacia fuera por el suelo en un anillo, estallando al paso del frente y ardiendo a su espalda sobre una quemadura humeante."
+  },
+  "fire/fire-tornado": {
+    "n": "Tornado de fuego",
+    "d": "Un embudo giratorio de fuego: bandas espirales girando a su alrededor, lenguas despedidas por sus lados, un anillo de llama arremolinándose en su base, ascuas orbitando dentro y fuera de vista."
+  },
+  "fire/fireball": {
+    "n": "Bola de fuego",
+    "d": "Una bola de fuego volando hacia la derecha: una cabeza incandescente en agitación con una corona de llama, una larga cola desgarrada de jirones de fuego que se enfrían en humo, ascuas desprendidas detrás."
+  },
+  "fire/flame-pillar": {
+    "n": "Pilar de llamas",
+    "d": "El suelo se agrieta y brilla, una columna de fuego erupciona incandescente y ruge, arrojando ascuas y desprendiendo llamas, luego se derrumba en humo rodante."
+  },
+  "fire/flamethrower": {
+    "n": "Lanzallamas",
+    "d": "Un chorro a presión que dispara hacia la derecha: un piloto azul en la boquilla, un flujo compacto con oleadas recorriéndolo, un chisporroteo, gotas ardiendo que caen, una punta que se enrosca en humo."
+  },
+  "fire/meteor": {
+    "n": "Meteoro",
+    "d": "Una roca ardiente entra rauda desde la esquina superior izquierda en un cometa de fuego y choca contra el suelo: un destello blanco, una bola de fuego, rocas y astillas ardiendo lanzadas, un cráter incandescente que se enfría."
+  },
+  "fire/spirit-flame": {
+    "n": "Llama espiritual",
+    "d": "Un fuego fantasma frío azul turquesa flotando en el aire: un borde brillante alrededor de un corazón oscuro hueco, una onda que trepa por su cola vaporosa, rizos que se desprenden, chispas frías que suben."
+  },
+  "fire/torch": {
+    "n": "Antorcha",
+    "d": "Una antorcha de pared sobre un soporte de hierro: una llama lamedora que salta de un envoltorio empapado en brea, lenguas y bocanadas arrancadas de sus puntas, humo, ascuas, una luz parpadeante en la pared."
+  },
+  "explosions/barrel-explosion": {
+    "n": "Explosión de barril",
+    "d": "Un barril explosivo se estremece, su tapa se abomba y escupe llamas, luego revienta: una columna de bola de fuego, duelas y la tapa volando, combustible ardiente salpicado por el suelo."
+  },
+  "explosions/big-explosion": {
+    "n": "Gran explosión",
+    "d": "Una enorme explosión terrestre en tres tiempos: un domo blanco, una bola de fuego rodante que asciende en una columna de humo en hongo, rocas pesadas, y fuegos que quedan ardiendo."
+  },
+  "explosions/cartoon-pow": {
+    "n": "POW de cómic",
+    "d": "Un golpe de cómic: una estrella de explosión dentada de dos tonos irrumpe con un temblor y bordes hirvientes, POW! cae letra a letra, líneas de acción salen volando, y todo desaparece de golpe."
+  },
+  "explosions/dirt-explosion": {
+    "n": "Explosión de tierra",
+    "d": "Una carga enterrada detona: un destello bajo el suelo, una V de terrones y gravilla lanzada alto, una pluma de polvo marrón que se hincha y se posa, y un cráter que queda atrás."
+  },
+  "explosions/firework-burst": {
+    "n": "Estallido de fuegos artificiales",
+    "d": "Un proyectil asciende, se frena y estalla en una esfera de estrellas de colores con estela alrededor de un núcleo dorado; se desploman, crepitan en estallidos blancos y se desvanecen, dejando purpurina."
+  },
+  "explosions/firework-rocket": {
+    "n": "Cohete de fuegos artificiales",
+    "d": "Un cohete sale zumbando del suelo con una estela dorada chispeante, planea, y estalla en una palmera: pesadas frondas doradas se arquean, se desploman con estelas brillantes y crepitan en las puntas."
+  },
+  "explosions/grenade": {
+    "n": "Granada",
+    "d": "Una granada es lanzada, rebota, rueda hasta detenerse con la mecha chisporroteando, se estremece, luego estalla: un destello blanco, ráfagas de metralla, chispas, una pequeña bola de fuego y una quemadura."
+  },
+  "explosions/implosion": {
+    "n": "Implosión",
+    "d": "Todo es succionado: ráfagas y gravilla se precipitan hacia dentro, los anillos se contraen y una esfera oscura colapsa sobre un punto blanco comprimido; un compás de quietud, luego un chasquido seco."
+  },
+  "explosions/nuke": {
+    "n": "Explosión nuclear",
+    "d": "Un fotograma blanco cegador, luego una bola de fuego se eleva sobre un tallo fino hacia una ancha capa rodante que brilla desde dentro; una falda blanca destella y una oleada de polvo barre el suelo."
+  },
+  "explosions/plasma-explosion": {
+    "n": "Explosión de plasma",
+    "d": "Una explosión de energía azul violeta sin humo: un destello blanco, una bola de plasma que se hincha en un caparazón que se adelgaza, anillos de choque entrando y saliendo de profundidad, arcos de rayos crepitando."
+  },
+  "explosions/small-explosion": {
+    "n": "Explosión",
+    "d": "Una explosión terrestre: un destello blanco y anillos de choque, fuego que se enfría en una columna de humo rodante, chispas, astillas ardiendo que caen y siguen ardiendo, rocas que ruedan y una quemadura incandescente."
+  },
+  "explosions/smoke-bomb": {
+    "n": "Bomba de humo",
+    "d": "Un bote redondo tintinea al caer, la mecha chispea, y hace pop: un espeso humo gris violáceo brota, rueda por el suelo, se hincha en una nube que lo oculta todo, luego se adelgaza en jirones."
+  },
+  "water/bubbles": {
+    "n": "Burbujas",
+    "d": "Burbujas suben en chorro desde una grieta de guijarros, oscilando y creciendo al ascender, destellan al cruzar los haces de luz de la superficie, luego forman cúpula arriba y estallan."
+  },
+  "water/drip": {
+    "n": "Goteo",
+    "d": "Una gota se hincha bajo una punta de piedra húmeda y atrapa la luz, se desprende, cae estirada por su velocidad y chapotea en un charco con una corona, un anillo y un pequeño rebote."
+  },
+  "water/fountain": {
+    "n": "Fuente",
+    "d": "Una pila de piedra; un chorro sube por su caño y florece en arcos cristalinos que se rompen en gotas, caen de vuelta y chapotean en el agua con anillos."
+  },
+  "water/geyser": {
+    "n": "Géiser",
+    "d": "Un charco se agita y borbotea cada vez más rápido, luego dispara una columna blanca de agua hacia el cielo con una cabeza de espuma agitada; cae de vuelta en gotas y vapor, se desploma y se apaga a estertores."
+  },
+  "water/rain-splash": {
+    "n": "Salpicadura de lluvia",
+    "d": "Un primer plano bajo sobre un charco bajo la lluvia: grandes gotas caen en coronas que lanzan gotitas y un chorro de rebote, anillos se extienden e interfieren, el reflejo de una lámpara tiembla sobre el agua."
+  },
+  "water/ripples": {
+    "n": "Ondas",
+    "d": "Una gota chapotea sobre agua oscura y quieta y los anillos se extienden por ella en un ángulo bajo: la cresta de cada anillo atrapa la luz, las cimas destellan, y se desvanecen en la calma."
+  },
+  "water/splash": {
+    "n": "Salpicadura",
+    "d": "Una piedra cae en agua quieta: un impacto blanco, una corona que se desgarra en gotas que se arquean y caen con anillos, un chorro que rebota, espuma y neblina flotante."
+  },
+  "water/water-jet": {
+    "n": "Chorro de agua",
+    "d": "Un chorro a presión dispara hacia la derecha: una barra cristalina compacta con oleadas que la recorren, que se hincha, se vuelve áspera, se dobla bajo su peso y se rompe en trozos, rocío y neblina."
+  },
+  "water/water-orb": {
+    "n": "Orbe de agua",
+    "d": "Una esfera de agua flota y oscila: una corriente circula dentro, el suelo se ve al revés a través de ella, brilla, la luz se concentra en el suelo bajo ella, y caen gotas que chapotean."
+  },
+  "water/waterfall": {
+    "n": "Cascada",
+    "d": "Un río se vierte desde una muesca en un saliente rocoso: un rizo blanco, una sábana profunda que se divide en hebras, espuma agitada, rocío, neblina flotante y anillos en un charco oscuro."
+  },
+  "water/wave-crash": {
+    "n": "Choque de ola",
+    "d": "Una marejada se acerca y se empina, su labio se lanza hacia delante y se curva sobre un tubo oscuro, luego rompe en un estallido de espuma blanca y rocío que avanza y se desvanece en encaje."
+  },
+  "water/whirlpool": {
+    "n": "Remolino",
+    "d": "Visto desde arriba, agua oscura se enrosca en un vórtice: brazos de espuma espiralan hacia dentro, oscureciéndose al ser arrastrados hacia un ojo profundo con un borde lejano iluminado, motas de espuma girando tras ellos."
+  },
+  "ice/blizzard-vortex": {
+    "n": "Vórtice de ventisca",
+    "d": "Un tornado de nieve giratorio: bandas de viento levantan un embudo inclinado, copos y cristales de hielo orbitan delante y detrás, la nieve hierve en su base y una luz fría llena su garganta."
+  },
+  "ice/freeze": {
+    "n": "Congelación",
+    "d": "La escarcha entra rauda y trepa por el personaje, convirtiéndolo en hielo; un bloque facetado cristaliza a su alrededor panel a panel, destella, se agrieta y estalla, y el personaje se descongela libre."
+  },
+  "ice/frost-breath": {
+    "n": "Aliento de escarcha",
+    "d": "Un cono de viento helado que sopla hacia la derecha: bocanadas de escarcha se hinchan, crecen y se hunden, ráfagas de viento cruzan a toda velocidad, cristales de hielo ruedan y destellan desde una boca incandescente."
+  },
+  "ice/frost-nova": {
+    "n": "Nova de escarcha",
+    "d": "La escarcha espirala en un copo de nieve giratorio, luego una onda hace florecer tres anillos de cristales de hielo alrededor del lanzador; la nieve se desplaza, la escarcha se arrastra, y el hielo se derrite de vuelta en el suelo."
+  },
+  "ice/ice-crystal": {
+    "n": "Cristal de hielo",
+    "d": "Un cristal de hielo flotante que gira lentamente en su propia luz fría: sus facetas se iluminan y oscurecen al girar, destellos centellean en ellas, motas de escarcha lo rodean."
+  },
+  "ice/ice-lance": {
+    "n": "Lanza de hielo",
+    "d": "Una lanza de hielo facetada que vuela hacia la derecha: un pulso de luz recorre su núcleo, anillos de aire frío se desprenden de la punta, la escarcha se despega en una estela y cristales caen detrás."
+  },
+  "ice/ice-shatter": {
+    "n": "Rotura de hielo",
+    "d": "Un bloque de hielo recibe un impacto desde la izquierda: se sacude, grietas recorren sus caras, destella en blanco y estalla en trozos que ruedan, rebotan y se deslizan en un remolino de polvo de hielo."
+  },
+  "ice/ice-spikes": {
+    "n": "Púas de hielo",
+    "d": "Una línea de escarcha recorre el suelo y grupos de afiladas hojas de hielo brotan tras ella en una ola ascendente, destellan, fulguran en blanco a la vez y se rompen en esquirlas que caen."
+  },
+  "ice/icicle-fall": {
+    "n": "Caída de carámbano",
+    "d": "Un carámbano gotea y tiembla, se desprende de su raíz escarchada, cae, se clava en el suelo y estalla en esquirlas que se deslizan, astillas y escarcha rodante."
+  },
+  "ice/snowflake-burst": {
+    "n": "Estallido de copos",
+    "d": "Un pop frío: la escarcha se concentra y fulgura en blanco en un anillo, luego nítidos copos de nieve de seis brazos giran hacia fuera, se frenan, centellean y descienden a posarse y derretirse."
+  },
+  "lightning/ball-lightning": {
+    "n": "Rayo en bola",
+    "d": "Una bola de plasma crepitante flota en un bucle errante, escupiendo arcos por su superficie y dejando una estela de motas que se desvanecen, y chispea contra el suelo cuando baja."
+  },
+  "lightning/chain-lightning": {
+    "n": "Rayo en cadena",
+    "d": "Un rayo salta de la mano del lanzador a través de tres objetivos sucesivamente; cada uno destella, chispea y se conecta a tierra con el suelo mientras los arcos entre ellos parpadean, luego la cadena se rompe."
+  },
+  "lightning/charge-up": {
+    "n": "Carga",
+    "d": "Chispas y arcos se precipitan hacia un núcleo crepitante en la mano del lanzador que se hincha y pulsa más rápido, luego destella y estalla: rayos en todas direcciones, un anillo, un rocío de chispas."
+  },
+  "lightning/electrified": {
+    "n": "Electrizado",
+    "d": "La corriente recorre a un personaje: arcos se arrastran sobre el cuerpo y saltan a través de él, chispas salen despedidas, el cuerpo se enciende en una silueta eléctrica con cada sacudida, y los pies se descargan a tierra."
+  },
+  "lightning/lightning-strike": {
+    "n": "Rayo",
+    "d": "Un impacto dirigido: un sigilo se carga en el suelo, la escena se oscurece, un rayo grueso lo golpea, arcos salen disparados por las grietas que abre y el canal se desmorona en una marca de quemadura."
+  },
+  "lightning/plasma-ball": {
+    "n": "Bola de plasma",
+    "d": "Un globo de cristal sobre un pedestal oscuro: zarcillos de plasma errantes van del núcleo al cristal y se abren en pies brillantes donde lo tocan, iluminando el soporte y el suelo."
+  },
+  "lightning/spark-arc": {
+    "n": "Arco de chispas",
+    "d": "Un arco que trepa entre dos varillas: golpea en blanco en su pie estrecho, sube con el calor ascendente mientras se estira y se comba, chisporrotea y restalla en la cima, y vuelve a golpear."
+  },
+  "lightning/storm-cloud": {
+    "n": "Nube de tormenta",
+    "d": "Una nube de tormenta hierve sobre el cielo, masas henchidas iluminadas desde dentro por descargas parpadeantes, nubarrones deshilachados bajo su base oscura y plana; la lluvia cae sesgada y una vez por bucle un rayo revienta contra el suelo."
+  },
+  "lightning/tesla-coil": {
+    "n": "Bobina de Tesla",
+    "d": "Una bobina de cobre bajo un toro de acero lanza arcos ramificados que flagelan en ráfagas y de vez en cuando golpean el suelo en una lluvia de chispas, iluminando el metal y el terreno."
+  },
+  "lightning/thunderclap": {
+    "n": "Trueno",
+    "d": "Un trueno alrededor del lanzador: un destello blanco, rayos bifurcados estallan y apuñalan el suelo, un anillo de choque pesado arrasa el suelo levantando polvo y arenilla, chispas salen disparadas."
+  },
+  "lightning/zap-hit": {
+    "n": "Impacto de descarga",
+    "d": "Una descarga por contacto: un arco entra de golpe desde la izquierda, el punto de impacto se sobrecarga en un nudo de diminutos zigzags crepitantes, un helecho de marcas de quemadura brilla hacia fuera, chispas escapan zigzagueando, bocanadas de ozono."
+  },
+  "scifi/emp-blast": {
+    "n": "Explosión EMP",
+    "d": "Una carga de disco hace tic, estalla en blanco y una burbuja de líneas de barrido rodantes se hincha hacia fuera con arcos que reptan por su piel; parpadea, se rasga y se cortocircuita en píxeles muertos que caen."
+  },
+  "scifi/energy-core": {
+    "n": "Núcleo de energía",
+    "d": "Un núcleo de plasma que late en una jaula de acero: se hincha y lanza un anillo de choque en cada latido, dos anillos inclinados lo orbitan y los arcos saltan a las barras y sueltan chispas."
+  },
+  "scifi/force-field": {
+    "n": "Campo de fuerza",
+    "d": "Una cúpula vítrea de placas hexagonales sobre el héroe: las placas destellan, trazadoras desde la derecha chocan contra ella, una ondulación y grietas de luz la recorren, las chispas rebotan."
+  },
+  "scifi/glitch": {
+    "n": "Glitch",
+    "d": "La señal del héroe se rompe a ráfagas: una separación RGB, cortes rasgados de lado, filas emborronadas, bloques basura y píxeles muertos, y luego vuelve de golpe a estar limpia."
+  },
+  "scifi/hologram": {
+    "n": "Holograma",
+    "d": "Un proyector de suelo lanza un cono de luz que sostiene un modelo de malla alámbrica giratorio: líneas de barrido lo recorren, un anillo de datos lo rodea y parpadea, se rasga y tiembla."
+  },
+  "scifi/jetpack": {
+    "n": "Jetpack",
+    "d": "Dos propulsores disparan en vertical: núcleos al rojo blanco con rombos de choque dentro de llamas deshilachadas, bocanadas que se enfrían en humo que se arremolina debajo, iluminadas por el fuego."
+  },
+  "scifi/laser-grid": {
+    "n": "Rejilla láser",
+    "d": "Láseres de seguridad entre dos postes de acero: haces rojos se deslizan y se cruzan en tijera, el polvo y la neblina solo se iluminan donde los cortan, y los barredores del suelo se chamuscan y sueltan chispas."
+  },
+  "scifi/scanner": {
+    "n": "Escáner",
+    "d": "Unos corchetes se ajustan al héroe, una línea de escaneo barre de la cabeza a los pies dejando un contorno que se enfría, y una lectura sube hasta OK antes de que todo se suelte."
+  },
+  "scifi/teleporter-pad": {
+    "n": "Plataforma de teletransporte",
+    "d": "Una plataforma de acero brilla en el suelo, sus anillos ondulan hacia fuera; una columna suave de luz se alza de ella y anillos de luz se elevan y se van, con destellos que suben a la deriva entre ellos."
+  },
+  "scifi/tractor-beam": {
+    "n": "Rayo tractor",
+    "d": "Una cápsula flotante proyecta un cono de luz al suelo; las rocas se desprenden en bocanadas de polvo y suben en espiral girando hacia la lente mientras anillos de luz trepan por el haz."
+  },
+  "scifi/warp-in": {
+    "n": "Warp de entrada",
+    "d": "Un haz cae de golpe, anillos lo recorren y una línea de escaneo pinta al héroe de la cabeza a los pies, píxeles al rojo blanco que se enfrían a sus propios colores; el haz se cierra de golpe en chispas."
+  },
+  "scifi/warp-out": {
+    "n": "Warp de salida",
+    "d": "El contorno del héroe parpadea, destella en blanco y se rompe en luz de la cabeza hacia abajo, fluyendo hacia arriba por un haz que se eleva del suelo y se cierra de golpe."
+  },
+  "melee/claw-swipe": {
+    "n": "Zarpazo",
+    "d": "Tres marcas de garras arañan hacia abajo una tras otra, al rojo blanco, enfriándose del naranja al rojo, y luego se cierran desde ambos extremos y dejan una cicatriz punteada, con motas calientes y goteos."
+  },
+  "melee/dagger-flurry": {
+    "n": "Ráfaga de dagas",
+    "d": "Una ráfaga de medialunas pequeñas y rápidas en todos los ángulos frente al luchador, cada una con un golpe de chispas, rematada por un corte grande que destella y estalla."
+  },
+  "melee/double-slash": {
+    "n": "Doble tajo",
+    "d": "Un corte descendente y luego un corte ascendente que lo cruza: en el momento en que la X se cierra ambos trazos destellan en blanco, el cruce estalla en luz y chispas, y una X punteada permanece."
+  },
+  "melee/hammer-smash": {
+    "n": "Golpe de martillo",
+    "d": "Un martillo cae al frente en una cuña de movimiento: un golpe blanco con rayos, una cúpula de fuerza, una abolladura con grietas, rocas que salen despedidas y rebotan y se asientan, y polvo."
+  },
+  "melee/heavy-cleave": {
+    "n": "Tajo pesado",
+    "d": "Un destello sobre la cabeza, luego un arco de brasas grueso acelera por encima y se clava en el suelo: un golpe blanco, grietas brillantes, polvo que rueda hacia ambos lados, arenilla y brasas que suben."
+  },
+  "melee/scythe-reap": {
+    "n": "Siega de guadaña",
+    "d": "Una medialuna oscura enorme y lenta siega alrededor del frente con un borde pálido fantasmal; se queda suspendida y luego se desgarra desde la cola en jirones ondulantes y vapor frío."
+  },
+  "melee/spear-sweep": {
+    "n": "Barrido de lanza",
+    "d": "Un barrido amplio y bajo a la altura de las espinillas: una medialuna larga y plana gira desde detrás de las piernas hasta el frente, y el viento levanta una estela de polvo y arenilla por el suelo."
+  },
+  "melee/spin-slash": {
+    "n": "Tajo giratorio",
+    "d": "La hoja gira una vez alrededor de la cintura en un plano inclinado, por detrás del cuerpo y de vuelta al frente; el anillo cerrado destella en blanco, se disuelve en un trazo punteado y lanza chispas."
+  },
+  "melee/sword-slash": {
+    "n": "Tajo de espada",
+    "d": "Una medialuna inclinada restalla en dos fotogramas, se enfría del blanco al azul profundo mientras se desvanece, destella en la punta y lanza chispas."
+  },
+  "melee/thrust": {
+    "n": "Estocada",
+    "d": "Una estocada perforante: un haz de estelas sale disparado de la mano a un punto, una estrella larga de cuatro puntas brilla en la punta con un anillo de perforación, chispas y líneas de velocidad."
+  },
+  "melee/uppercut": {
+    "n": "Gancho ascendente",
+    "d": "Una medialuna sube desde el suelo pasando junto a la cara, y en la cima estalla una estrella de impacto de cómic: contorno grueso, núcleo candente, líneas de estallido, centelleos y chispas."
+  },
+  "melee/whip-crack": {
+    "n": "Chasquido de látigo",
+    "d": "Un látigo se despliega a la derecha como un bucle que recorre su longitud, cada vez más rápido, hasta que la punta se voltea y chasquea: un golpe blanco, un anillo de aire, chispas y una bocanada de humo."
+  },
+  "impacts/blunt-hit": {
+    "n": "Impacto contundente",
+    "d": "Un golpe sordo pesado y suave: una masa blanda al rojo blanco se enfría a crema en un charco cálido de luz, cuñas entintadas se clavan y retroceden, un anillo aplastado de polvo se hincha y se desvanece a la deriva, caen terrones."
+  },
+  "impacts/bullet-impact": {
+    "n": "Impacto de bala",
+    "d": "Una bala golpea una pared a la derecha: una media estrella candente, chispas rociadas hacia atrás en cono, una bocanada de arenilla, astillas que caen y rebotan, una marca de bala que se enfría a hollín."
+  },
+  "impacts/crit-hit": {
+    "n": "Golpe crítico",
+    "d": "Un golpe crítico: un estallido estrellado dentado golpea en blanco y se pasa, un anillo se rompe en arcos voladores, chispas salen disparadas, escombros caen al suelo bajo un gran destello."
+  },
+  "impacts/ground-slam": {
+    "n": "Golpe al suelo",
+    "d": "Algo aterriza con fuerza: el suelo destella y se agrieta, dos ondas de choque en medialuna corren por él, una ola de polvo y una nube alta de polvo se alzan, las rocas estallan, rebotan y se asientan."
+  },
+  "impacts/heavy-landing": {
+    "n": "Aterrizaje pesado",
+    "d": "Un personaje aterriza con fuerza: el suelo se hunde y se agrieta bajo sus pies, dos anillos de polvo ruedan por el suelo uno tras otro, y los guijarros saltan y se alejan."
+  },
+  "impacts/hit-flash": {
+    "n": "Destello de impacto",
+    "d": "El personaje recibe daño: un fotograma blanco, luego sus propios colores se tiñen de rojo y parpadean en blanco, enfriándose, mientras líneas de golpe de cómic se clavan hacia él."
+  },
+  "impacts/hit-spark": {
+    "n": "Chispa de impacto",
+    "d": "El golpe de cada día: un destello en cruz afilado y asimétrico con un rayo largo a lo largo del golpe alrededor de un núcleo de diamante blanco, y luego un cono de chispas y astillas candentes que caen y rebotan."
+  },
+  "impacts/impact-frame": {
+    "n": "Fotograma de impacto",
+    "d": "Un impacto de anime: dos fotogramas en blanco con líneas de estallido negras que se lanzan al golpe, dos fotogramas invertidos, y luego las líneas se extienden más allá de los bordes y desaparecen."
+  },
+  "impacts/parry": {
+    "n": "Parada",
+    "d": "Dos hojas chocan: sus filos destellan en una X, una estrella blanca de cuatro puntas resuena, un anillo se rompe en arcos y un abanico de chispas doradas se alza y cae como lluvia."
+  },
+  "impacts/ricochet": {
+    "n": "Rebote",
+    "d": "Un trazador baja a toda velocidad al suelo, rebota con una estrella al rojo blanco y se va a un ángulo, dejando un derrape brillante mientras las chispas corretean por el suelo."
+  },
+  "impacts/shield-block": {
+    "n": "Bloqueo con escudo",
+    "d": "Un golpe es atrapado en una media cúpula de energía frente al personaje: su retícula de diamante destella, una ondulación la recorre, las chispas rebotan y luego parpadea hasta apagarse celda a celda."
+  },
+  "projectiles/arrow": {
+    "n": "Flecha",
+    "d": "Una flecha en vuelo: una punta de acero ancha y plana que atrapa la luz, un astil de madera, plumas que ondean con el viento, estelas de aire que se desprenden de su punta y se arremolinan al dejar sus plumas."
+  },
+  "projectiles/bullet-tracer": {
+    "n": "Bala trazadora",
+    "d": "Un proyectil al rojo blanco que avanza rasgando el aire, su trazadora ardiendo detrás en una estela larga que chisporrotea y se enfría del blanco al dorado y al rojo, soltando chispas y un hilo de humo."
+  },
+  "projectiles/cannonball": {
+    "n": "Disparo de cañón",
+    "d": "Un cañón dispara desde una boca a `height` px por encima del suelo (el origen): un destello blanco, una lengua de fuego, la bala se arquea alejándose con humo, una gran nube de humo de pólvora se despliega."
+  },
+  "projectiles/energy-disc": {
+    "n": "Disco de energía",
+    "d": "Una hoja de sierra de energía crepitante que gira plana mientras vuela: dientes enganchados brillantes en sus bordes de ataque, un centro blanco, brazos en espiral batiendo, chispas lanzadas desde los dientes."
+  },
+  "projectiles/flare": {
+    "n": "Bengala de señal",
+    "d": "Una bengala de señal sale disparada del suelo dejando chispas y humo, estalla y queda suspendida como una estrella roja pulsante que gotea chispas bajo su propio humo teñido de rojo, y luego se apaga."
+  },
+  "projectiles/homing-missile": {
+    "n": "Misil teledirigido",
+    "d": "Un misil arranca, se arquea, gira y se lanza en picado sobre su objetivo (el origen), su estela de humo queda colgada en el aire, e impacta en una explosión ardiente de llamas, chispas y rocas."
+  },
+  "projectiles/laser-bolt": {
+    "n": "Rayo láser",
+    "d": "Un rayo láser rojo: un núcleo al rojo blanco en una cabeza redondeada, bandas rojas que se estrechan hacia atrás, pulsos que corren por él, una cola que se descompone en guiones ondulantes."
+  },
+  "projectiles/magic-missile": {
+    "n": "Proyectil mágico",
+    "d": "Las motas se reúnen en un orbe arcano en una mano a `height` px por encima del suelo (el origen); zigzaguea hasta su objetivo dejando una cinta retorcida y estalla en una estrella de luz."
+  },
+  "projectiles/muzzle-pistol": {
+    "n": "Disparo de pistola",
+    "d": "Un disparo de pistola desde una boca a `height` px por encima del suelo (el origen): un destello de núcleo blanco y puntas, chispas, un rizo de humo que se engancha hacia arriba y atrás, una vaina que rebota y se asienta."
+  },
+  "projectiles/muzzle-shotgun": {
+    "n": "Disparo de escopeta",
+    "d": "Un disparo de escopeta desde una boca a `height` px por encima del suelo (el origen): un abanico amplio y deshilachado de llamas, estelas de perdigones, una nube de humo pesada que rueda, un cartucho rojo expulsado al recargar."
+  },
+  "projectiles/muzzle-smg": {
+    "n": "Ráfaga de subfusil",
+    "d": "Fuego sostenido a doce balas por segundo: cada disparo un destello de puntas distinto con núcleo blanco, chispas, jirones de humo que se acumulan y se van a la deriva, vainas de latón que rebotan en el suelo."
+  },
+  "projectiles/plasma-shot": {
+    "n": "Disparo de plasma",
+    "d": "Una masa de plasma brillante: nudos candentes batiendo en su núcleo, una corona que crepita sobre su piel, su cola estrechándose en gotas que se desprenden, se enfrían y se apagan detrás."
+  },
+  "projectiles/rocket": {
+    "n": "Cohete",
+    "d": "Un cohete de acero ruge al avanzar: un chorro parpadeante con rombos de choque y una boquilla al rojo blanco, una estela de humo espesa y arremolinada iluminada por la llama, chispas desprendidas detrás."
+  },
+  "spawn/coin-drop": {
+    "n": "Caída de monedas",
+    "d": "Un enemigo se desvanece en una nube suave y monedas de oro salen girando de él, rebotan con un destello en cada golpe, se asientan en el suelo, centellean y se apagan una a una."
+  },
+  "spawn/disintegrate": {
+    "n": "Desintegración",
+    "d": "El personaje crepita con luz, destella en blanco y luego se desprende de la cabeza hacia abajo: cada píxel brilla al rojo blanco y sale volando con el viento como una mota de luz que se enfría."
+  },
+  "spawn/dissolve-burn": {
+    "n": "Disolución ardiente",
+    "d": "Una costura de brasas se enciende en los pies y trepa por el cuerpo: por encima, el cuerpo se chamusca y humea; en ella, las llamas lamen hacia arriba; por debajo, solo hay ceniza que cae, brasas y humo."
+  },
+  "spawn/egg-hatch": {
+    "n": "Eclosión de huevo",
+    "d": "Un huevo moteado se mece tres veces, cada balanceo lo agrieta más con luz cálida escapando, y luego revienta: la luz se derrama por la abertura y las mitades de cáscara iluminadas ruedan y caen."
+  },
+  "spawn/poof": {
+    "n": "Nube de humo",
+    "d": "Una desaparición de cómic: un estallido blanco, un anillo de bolas de humo suaves y redondas que brotan entre líneas de velocidad, pequeñas estrellas que giran y salen, y la nube que se eleva y se adelgaza hasta irse."
+  },
+  "spawn/respawn-beam": {
+    "n": "Haz de reaparición",
+    "d": "Una línea guía cae, un pilar de luz golpea el punto, y una barra de escaneo sube desde los pies escribiendo al personaje de vuelta fila por fila, líneas al rojo blanco que se enfrían a sus colores."
+  },
+  "spawn/shatter-death": {
+    "n": "Muerte por fragmentación",
+    "d": "La escarcha trepa por el cuerpo y lo sella en hielo facetado, un destello lo recorre, las grietas se extienden desde el pecho, y entonces estalla en sus propias facetas que caen, rebotan y se derriten."
+  },
+  "spawn/soul-rise": {
+    "n": "Ascenso del alma",
+    "d": "El contorno del cuerpo destella y se atenúa, luego una copia pálida y brillante se eleva, estirándose mientras sus piernas se funden en una voluta ondulante, desprendiendo motas hasta que se adelgaza en luz."
+  },
+  "spawn/spawn-portal": {
+    "n": "Portal de aparición",
+    "d": "Una grieta se abre en el suelo y gira, escupe humo violeta y chispas, lanza una fuente de volutas hacia arriba desde su interior y luego se cierra retorciéndose con un chasquido."
+  },
+  "spawn/summon-rise": {
+    "n": "Ascenso de invocación",
+    "d": "Un círculo rúnico se graba ardiente en el suelo, la tierra estalla y una bestia con cuernos emerge con esfuerzo entre polvo y escombros, iluminada desde abajo, hasta que sus ojos destellan."
+  },
+  "arcane/arcane-beam": {
+    "n": "Rayo arcano",
+    "d": "Un rayo se dispara hacia la derecha desde la mano: un núcleo blanco, hebras que se enroscan a su alrededor, pulsos que lo recorren, una fuente llameante y un extremo que rocía chispas."
+  },
+  "arcane/arcane-missiles": {
+    "n": "Misiles arcanos",
+    "d": "Una salva de proyectiles violeta se despliega desde la mano, gira sobre cintas retorcidas y estalla en el objetivo uno tras otro."
+  },
+  "arcane/arcane-orb": {
+    "n": "Orbe arcano",
+    "d": "Un orbe flotante de vidrio violeta ahumado con un remolino girando alrededor de un núcleo incandescente, dos anillos de luz inclinados que orbitan detrás y delante."
+  },
+  "arcane/blink-in": {
+    "n": "Parpadeo de entrada",
+    "d": "Fragmentos centelleantes giran en espiral hacia un punto de luz que se abre en una línea y luego en una silueta blanca que se enfría hasta convertirse en el lanzador."
+  },
+  "arcane/blink-out": {
+    "n": "Parpadeo de salida",
+    "d": "El lanzador crepita con luz que se acumula, destella en blanco, se comprime en una línea de luz que colapsa y desaparece con un estallido de chispas."
+  },
+  "arcane/magic-circle-cast": {
+    "n": "Círculo mágico de lanzamiento",
+    "d": "Un círculo se dibuja solo en el suelo, las runas se encienden una a una, destella y una columna de luz se dispara hacia arriba y se deshace en destellos."
+  },
+  "arcane/mana-burst": {
+    "n": "Estallido de maná",
+    "d": "La energía se precipita hacia un punto y estalla en un destello blanco y anillos, lanzando runas brillantes que destellan y revientan en chispas una tras otra."
+  },
+  "arcane/portal": {
+    "n": "Portal",
+    "d": "Una grieta vertical: brazos espirales fibrosos descienden hacia la oscuridad, un borde iluminado oscila, motas y estelas son atraídas hacia dentro, el suelo brilla."
+  },
+  "arcane/rune-circle": {
+    "n": "Círculo rúnico",
+    "d": "Un círculo rúnico gira en el suelo en perspectiva: un carrusel de runas iluminadas por una luz que las recorre, un cuadrado que gira, marcas, motas que se elevan de él."
+  },
+  "arcane/spell-charge": {
+    "n": "Carga de hechizo",
+    "d": "La energía se concentra en la mano del lanzador: estelas y motas giran en espiral hacia dentro, los anillos colapsan en un orbe que se hincha y crepita con arcos, listo para dispararse."
+  },
+  "arcane/star-fall": {
+    "n": "Caída de estrellas",
+    "d": "Las estrellas caen en estelas largas sobre un área, cada una impacta con un destello blanco, un anillo por el suelo y una ráfaga de chispas."
+  },
+  "arcane/time-stop": {
+    "n": "Detención del tiempo",
+    "d": "Una esfera de reloj se abre de golpe, marca más y más lento, se congela despojada de color, se agrieta y luego se hace añicos en fragmentos que caen."
+  },
+  "holy/blessing": {
+    "n": "Bendición",
+    "d": "Un cono de luz suave se posa sobre el personaje desde arriba; destellos descienden a través de él, titilando, y se apagan donde tocan la cabeza y los hombros."
+  },
+  "holy/divine-shield": {
+    "n": "Escudo divino",
+    "d": "Una burbuja de luz dorada alrededor del personaje: un borde brillante y una fina película dorada, meridianos que giran como un globo lento, un brillo que barre la superficie y destellos que titilan en ella."
+  },
+  "holy/feather-burst": {
+    "n": "Estallido de plumas",
+    "d": "Una nube blanca revienta y lanza plumas que frenan en seco, luego se mecen de un lado a otro mientras descienden y se desvanecen, con plumón flotando tras ellas."
+  },
+  "holy/halo": {
+    "n": "Halo",
+    "d": "Un anillo de luz dorada flota sobre la cabeza con un destello que lo recorre; polvo fino cae de él y la cabeza recoge su luz."
+  },
+  "holy/heal": {
+    "n": "Curación",
+    "d": "Pétalos de luz florecen bajo los pies, un aro de luz sube por el cuerpo restaurando su color y dejando destellos, y las motas ascienden en espiral y revientan en pequeños corazones."
+  },
+  "holy/heal-aoe": {
+    "n": "Anillo de curación",
+    "d": "Una semilla de luz verde se hunde en el suelo y un anillo suave se extiende desde ella; el suelo brilla a su paso y brotan signos de más que flotan hacia arriba."
+  },
+  "holy/holy-pillar": {
+    "n": "Pilar sagrado",
+    "d": "La luz irrumpe desde arriba: un sol se abre en lo alto y un abanico de haces converge sobre la marca, pulsando, mientras un sigilo arde en el suelo; luego el abanico se cierra."
+  },
+  "holy/resurrection": {
+    "n": "Resurrección",
+    "d": "La luz se derrama sobre el caído y la vida trepa de nuevo por el cuerpo; alas de luz se despliegan, se forma un halo, un gran aleteo y luego las alas se dispersan en plumas."
+  },
+  "holy/smite": {
+    "n": "Castigo",
+    "d": "Un destello marca el punto y luego un rayo de luz cae como un martillo: un destello blanco, una onda expansiva por el suelo, esquirlas de piedra que vuelan y grietas que brillan y se enfrían."
+  },
+  "holy/sunburst": {
+    "n": "Explosión solar",
+    "d": "Un núcleo incandescente en una corona dorada; rayos largos y cortos giran lentamente a su alrededor, respirando, con destellos que recorren su longitud y titilan en las puntas."
+  },
+  "shadow/black-hole": {
+    "n": "Agujero negro",
+    "d": "Un disco inclinado de anillos en bandas gira alrededor de un agujero negro, con su lado lejano curvado por encima y por debajo; los escombros giran en espiral hacia dentro, se estiran y son engullidos."
+  },
+  "shadow/curse": {
+    "n": "Maldición",
+    "d": "Las volutas se reúnen sobre la cabeza, una calavera se imprime con un destello, sus ojos arden mientras la maldición inunda el cuerpo de violeta, luego se agrieta y se desmorona."
+  },
+  "shadow/dark-explosion": {
+    "n": "Explosión oscura",
+    "d": "Las motas giran en remolino hacia un núcleo pulsante, una estrella negra cruza un destello violeta y blanco, y una esfera negra arde en el borde, lanza fragmentos iluminados y humo, luego colapsa."
+  },
+  "shadow/eclipse": {
+    "n": "Eclipse",
+    "d": "Una luna negra sobre el sol: una corona de perla que respira con largos jirones, un fino borde blanco y una cuenta de diamante que arde en su borde."
+  },
+  "shadow/grasping-hands": {
+    "n": "Manos aferradoras",
+    "d": "Brazos de sombra brotan de un charco oscuro con un chapoteo, cierran las manos en garras, forcejean y son arrastrados de nuevo hacia abajo, con los dedos arañando el aire."
+  },
+  "shadow/hex-sigil": {
+    "n": "Sigilo de maleficio",
+    "d": "Una pluma ardiente traza un sigilo maldito en el aire, sus glifos aparecen uno a uno, luego destella en blanco y se desmorona en brasas que caen."
+  },
+  "shadow/life-steal": {
+    "n": "Robo de vida",
+    "d": "Un objetivo a la derecha es golpeado y sangra orbes rojos; estos se suspenden un momento, luego vuelven como estelas de cometa y bañan al lanzador de carmesí."
+  },
+  "shadow/necro-skulls": {
+    "n": "Calaveras necróticas",
+    "d": "Calaveras espectrales orbitan una llama verde fría en una órbita inclinada, pasando por detrás y por delante, con los ojos encendidos, dejando volutas de humo fantasma."
+  },
+  "shadow/shadow-flames": {
+    "n": "Llamas de sombra",
+    "d": "Fuego invertido en el suelo: un núcleo negro envuelto en llama violeta con piel y puntas pálidas, desprendiendo brasas y humo oscuro."
+  },
+  "shadow/shadow-tendrils": {
+    "n": "Zarcillos de sombra",
+    "d": "Un charco oscuro se abre en el suelo; tentáculos con bordes iluminados y puntas ganchudas emergen de él con un chapoteo, se retuercen y se hunden de nuevo mientras se cierra."
+  },
+  "shadow/soul-drain": {
+    "n": "Drenaje de almas",
+    "d": "Almas pálidas son arrancadas a la derecha y arrastradas por un embudo de estelas hacia un recipiente de cristal negro, que destella en violeta cada vez que una llega."
+  },
+  "shadow/void-orb": {
+    "n": "Orbe del vacío",
+    "d": "Un orbe negro pende en el aire, con un borde pálido que lo recorre; un vórtice oscuro se enrosca hacia él, motas y estelas son atraídas hacia dentro, y la luz se curva alrededor de su borde."
+  },
+  "status/bleeding": {
+    "n": "Sangrado",
+    "d": "Sangrado: las gotas se forman en tres heridas, resbalan, se sueltan y caen salpicando en un charco brillante que ondula; cada latido brota un poco y hace destellar el cuerpo en rojo."
+  },
+  "status/burning": {
+    "n": "Ardiendo",
+    "d": "Ardiendo con el tiempo: pequeñas llamas lamen desde cuatro puntos calientes, dejando chispas y humo fino; cada 0,6 s se avivan, el cuerpo destella en blanco y luego en naranja, y las marcas de quemadura se extienden."
+  },
+  "status/charmed": {
+    "n": "Encantado",
+    "d": "Enamorado: un gran corazón late sobre la cabeza, lanzando un anillo y un rubor de luz con cada latido, pequeños corazones flotan hacia arriba, los ojos se vuelven rosas y las mejillas se sonrojan."
+  },
+  "status/confused": {
+    "n": "Confundido",
+    "d": "Cabeza dando vueltas: una espiral brillante gira sobre la cabeza, signos de interrogación aparecen a su alrededor y se balancean, los ojos miran de un lado a otro."
+  },
+  "status/cursed": {
+    "n": "Maldito",
+    "d": "Maldecido: humo violeta se eleva del cuerpo en estelas serpenteantes, una mancha oscura trepa desde los pies con un borde brillante, los ojos arden, una calavera parpadea sobre la cabeza."
+  },
+  "status/frozen": {
+    "n": "Congelado",
+    "d": "Helado hasta los huesos: helechos de escarcha trepan por el cuerpo, carámbanos cuelgan de la barbilla y las manos y gotean, el aliento echa vaho, la nieve se posa, un escalofrío cada segundo, la escarcha se extiende bajo los pies."
+  },
+  "status/haste": {
+    "n": "Celeridad",
+    "d": "Acelerado: imágenes residuales rayadas se extienden por detrás, líneas de velocidad pasan de largo, el polvo se levanta de los talones y el borde delantero se llena de viento. Mira a la derecha."
+  },
+  "status/petrified": {
+    "n": "Petrificado",
+    "d": "Convertido en piedra: el gris trepa desde los pies tras un borde crepitante que escupe arenilla, la estatua se mantiene, las grietas la recorren y estalla en trozos que caen y polvo."
+  },
+  "status/poisoned": {
+    "n": "Envenenado",
+    "d": "Enfermo hasta los huesos: el verde sube por el cuerpo en oleadas, venas oscuras trepan desde una herida, el sudor tóxico gotea y sisea; cada 0,8 s se tambalea, las ampollas revientan y un anillo pulsa hacia fuera."
+  },
+  "status/rage": {
+    "n": "Furia",
+    "d": "Furioso: el cuerpo se sacude con cada latido, una marca de ira palpita en la sien, los ojos arden, vapor sale disparado de la cabeza, líneas de tensión destellan y el suelo se agrieta caliente bajo los pies."
+  },
+  "status/sleep": {
+    "n": "Dormido",
+    "d": "Profundamente dormido: ojos cerrados, suaves zetas perfiladas flotan hacia arriba desde la cabeza una tras otra, meciéndose y creciendo mientras suben, motas de sueño flotan, un resplandor de respiración lenta."
+  },
+  "status/slowed": {
+    "n": "Ralentizado",
+    "d": "Arrastrado por el tiempo: una esfera de reloj vítrea detrás de la cabeza avanza con pasos pesados, destellando con cada uno, mientras las gotas caen a cámara lenta y extienden anillos lentos."
+  },
+  "status/stunned": {
+    "n": "Aturdido",
+    "d": "Viendo estrellas: tres estrellas giratorias y dos pajaritos rodean la cabeza en un anillo inclinado, agachándose tras ella y pasando por delante, dejando destellos."
+  },
+  "nature/acid-splash": {
+    "n": "Salpicadura de ácido",
+    "d": "Una masa de ácido estalla en una corona y salpica; corroe un pozo brillante y humeante en el suelo y hierve hacia dentro, escupiendo gotas brillantes, con vapor pálido ondulando."
+  },
+  "nature/boulder": {
+    "n": "Roca",
+    "d": "Una roca giratoria traza un arco hacia la derecha desprendiendo polvo y guijarros, choca contra el suelo en un destello blanco y estalla en trozos que caen, grava y polvo rodante."
+  },
+  "nature/earth-spike": {
+    "n": "Púa de tierra",
+    "d": "El suelo se agrieta con luz y se levanta, una púa de piedra facetada emerge de golpe con dos esquirlas laterales en una ráfaga de astillas, arenilla y polvo; llueven escombros, luego se parte y se desmorona."
+  },
+  "nature/healing-bloom": {
+    "n": "Floración curativa",
+    "d": "Un brote emerge y se despliega, un capullo se hincha y se abre alrededor de un corazón dorado brillante en un destello de luz curativa; sus pétalos se desprenden uno a uno como motas."
+  },
+  "nature/leaf-storm": {
+    "n": "Tormenta de hojas",
+    "d": "Las hojas suben dando vueltas en una espiral ascendente alrededor del personaje, pasando por detrás y por delante, girando y volteándose, envueltas en bandas brillantes de viento; la hojarasca gira en remolino a sus pies."
+  },
+  "nature/poison-cloud": {
+    "n": "Nube de veneno",
+    "d": "Un miasma pegado al suelo: capas irregulares de gas iluminadas de verde amarillento desde dentro, desvaneciéndose a violeta, se extienden en lenguas que se enrollan en las puntas; penachos se enroscan hacia arriba como cintas."
+  },
+  "nature/quake": {
+    "n": "Terremoto",
+    "d": "El suelo se sacude tres veces: una grieta se abre a lo largo del suelo brillando en su interior, losas del suelo se levantan y caen de nuevo torcidas, los guijarros saltan y el polvo estalla desde la fisura."
+  },
+  "nature/root-snare": {
+    "n": "Trampa de raíces",
+    "d": "El suelo se agrieta y las raíces brotan alrededor del personaje, enroscándose en espiral a sus piernas; se aprietan con un chasquido, aguantan, luego se agrietan y se desmoronan en corteza y polvo."
+  },
+  "nature/spore-burst": {
+    "n": "Estallido de esporas",
+    "d": "Un hongo emerge, se hincha y tiembla mientras sus láminas brillan, luego se aplasta y suelta una nube grumosa de esporas brillantes que se hincha hacia arriba y desciende titilando."
+  },
+  "nature/thorns": {
+    "n": "Espinas",
+    "d": "Una costura recorre el suelo a toda velocidad y espinas ganchudas emergen de ella una tras otra, cada vez más grandes, en ráfagas de tierra y luz verde; aguantan, luego se hunden."
+  },
+  "nature/tornado": {
+    "n": "Tornado",
+    "d": "Un embudo serpenteante de bandas de viento giratorias bajo una cima abocinada y agitada que centellea con relámpagos; hojas y escombros giran a su alrededor por delante y por detrás, el polvo hierve en su base."
+  },
+  "nature/toxic-puddle": {
+    "n": "Charco tóxico",
+    "d": "Alquitrán negro iluminado desde dentro por venas verde chartreuse y un borde brillante, con un brillo aceitoso flotando encima; burbujas relucientes se abomban, se estiran y revientan, el vapor se enrosca en cintas deshilachadas."
+  },
+  "nature/vine-whip": {
+    "n": "Látigo de liana",
+    "d": "Una liana espinosa brota del suelo, se yergue enrollada hacia atrás y se lanza en un chasquido de látigo que salpica savia y arranca hojas, antes de deslizarse de vuelta al suelo"
+  },
+  "weather/aurora": {
+    "n": "Aurora",
+    "d": "Cortinas ondulantes de luz de verde a violeta sobre un campo de estrellas: los bordes plisados arden brillantes, los rayos centellean hacia el violeta y todo el cielo respira lentamente"
+  },
+  "weather/blizzard": {
+    "n": "Ventisca",
+    "d": "Nieve arrastrada casi plana por un vendaval: ráfagas a tres profundidades pasan a toda velocidad, las rachas arrojan sábanas translúcidas de nieve por el cielo y la nieve pulverizada fluye desde los ventisqueros"
+  },
+  "weather/cherry-blossoms": {
+    "n": "Flores de cerezo",
+    "d": "Pétalos rosados caen revoloteando con la brisa primaveral, girando en pequeñas espirales y destellando al atrapar la luz, con algunas flores enteras girando entre ellos"
+  },
+  "weather/clouds": {
+    "n": "Nubes",
+    "d": "Capas de nubes pasan ante una luna brillante en la noche: cimas plateadas, vientres oscuros, bordes que se encienden al cruzar la luna, formándose y adelgazando al avanzar"
+  },
+  "weather/falling-leaves": {
+    "n": "Hojas que caen",
+    "d": "Hojas de otoño descienden balanceándose por el aire, inclinándose y girando para mostrar su envés pálido, cabalgan una racha de viento, caen planas en la hojarasca y se desvanecen"
+  },
+  "weather/fireflies": {
+    "n": "Luciérnagas",
+    "d": "Luciérnagas vagan sobre un prado de noche, cada una brillando y apagándose a su propio ritmo, dejando estelas de luz e iluminando las puntas de la hierba bajo ellas"
+  },
+  "weather/fog": {
+    "n": "Niebla",
+    "d": "Bancos lentos de niebla iluminada por la luna, a tres profundidades, se cruzan entre sí, con las crestas atrapando la luz, mientras finas franjas de bruma se deslizan por delante"
+  },
+  "weather/god-rays": {
+    "n": "Rayos de luz",
+    "d": "Haces de luz caen en diagonal desde lo alto a la izquierda, respirando y meciéndose, posándose en el suelo, mientras las motas de polvo a la deriva se iluminan cada vez que cruzan un haz"
+  },
+  "weather/rain": {
+    "n": "Lluvia",
+    "d": "Lluvia inclinada a cuatro profundidades: las gotas lejanas se funden en la oscuridad, las cercanas destellan y salpican, las gotas hacen ondas en los charcos y una niebla baja se desliza sobre el suelo mojado"
+  },
+  "weather/shooting-stars": {
+    "n": "Estrellas fugaces",
+    "d": "Meteoros arden cruzando un cielo estrellado, con cabezas blancas que arrastran colas doradas y rosadas; los grandes destellan y se rompen, y cada uno deja una estela luminosa que se retuerce y se desvanece"
+  },
+  "weather/snow": {
+    "n": "Nieve",
+    "d": "Nieve a tres profundidades con una brisa racheada: motas lejanas, copos a la deriva, cristales grandes y cercanos que giran y brillan; se posan en un ventisquero centelleante y se derriten"
+  },
+  "weather/storm": {
+    "n": "Tormenta",
+    "d": "Lluvia intensa a dos profundidades bajo un manto de nubes agitado; un rayo bifurcado cae en un doble destello que ilumina el cielo y la lluvia, y luego un relámpago de nube brilla entre las nubes"
+  },
+  "ui/achievement": {
+    "n": "Logro",
+    "d": "Un aviso se desliza sobre líneas de velocidad y se asienta; una medalla de oro aparece de golpe con una explosión de destellos, un brillo recorre todo el aviso y luego este se desliza fuera"
+  },
+  "ui/coin-collect": {
+    "n": "Recoger moneda",
+    "d": "Una moneda estalla en una fuente de monedas girando que quedan suspendidas y luego se lanzan una a una hacia un contador del HUD que da un salto y sube, destella y se pliega"
+  },
+  "ui/combo-counter": {
+    "n": "Contador de combo",
+    "d": "¡COMBO x5! entra disparado sobre líneas de velocidad fluidas, dejando estela, y se detiene en seco: un destello blanco, un anillo, chispas; pulsa mientras una barra de tiempo se agota y luego sale con un zumbido"
+  },
+  "ui/confetti": {
+    "n": "Confeti",
+    "d": "Dos cañones de confeti estallan uno tras otro: trozos de papel y serpentinas rizadas salen disparados, se frenan, luego caen dando vueltas y revolotean, girando, y se posan en el suelo"
+  },
+  "ui/countdown": {
+    "n": "Cuenta atrás",
+    "d": "3, 2, 1 se estrellan en un anillo de temporizador que se agota como una mecha encendida, arrojando chispas; entonces ¡YA! estalla cuando el anillo revienta en una onda expansiva con rayos"
+  },
+  "ui/crit-number": {
+    "n": "Número crítico",
+    "d": "¡CRÍTICO 128! se clava enorme y blanco sobre un estallido estrellado dentado con una sacudida fuerte y líneas de velocidad, se enfría a fuego, se mantiene con un brillo y luego revienta en chispas"
+  },
+  "ui/damage-number": {
+    "n": "Número de daño",
+    "d": "Un -27 rojo sale de golpe de una chispa de impacto, blanco por un fotograma, traza un arco, aterriza con un aplastamiento y un pequeño salto, y luego se desvanece mientras se eleva"
+  },
+  "ui/exclamation": {
+    "n": "Exclamación",
+    "d": "Un ! en negrita salta de la cabeza del héroe, estirándose al dispararse hacia arriba y aplastándose al aterrizar; le salen pequeños tics de sorpresa, se tambalea y luego revienta"
+  },
+  "ui/health-bar-hit": {
+    "n": "Golpe a la barra de vida",
+    "d": "Una barra de vida segmentada recibe un golpe: da un respingo y baja, el trozo perdido destella en blanco y suelta astillas, se mantiene y luego se drena tras un borde chispeante"
+  },
+  "ui/heart-lost": {
+    "n": "Corazón perdido",
+    "d": "Un corazón del HUD recibe un golpe: destella en blanco y da un respingo, una grieta lo recorre, se parte en dos mitades que caen dando vueltas, dejando un hueco vacío que se desvanece"
+  },
+  "ui/level-up": {
+    "n": "Subida de nivel",
+    "d": "El oro se concentra a los pies y estalla hacia arriba como un pilar de luz alrededor del héroe; anillos suben por él, ¡SUBIDA DE NIVEL! cae letra a letra, un brillo lo recorre, destellos centellean"
+  },
+  "ui/quest-complete": {
+    "n": "Misión completada",
+    "d": "Una cinta cosida se desenrolla desde el centro, ¡MISIÓN COMPLETADA! se escribe letra a letra, un sello dorado se estampa y marca, estrellas aparecen; luego todo se enrolla y se va"
+  },
+  "pickups/chest-open": {
+    "n": "Abrir cofre",
+    "d": "Un cofre con flejes tintinea con luz dorada filtrándose por su junta, la tapa salta, los rayos se abren en abanico y monedas y gemas salen en arco, rebotan, destellan y se recogen"
+  },
+  "pickups/coin-spin": {
+    "n": "Moneda girando",
+    "d": "Una moneda gruesa de oro girando sobre su canto: una cara con estrella en relieve, un borde estriado que se ve al ponerse de canto, un destello que barre la cara, flotando sobre su sombra"
+  },
+  "pickups/collect-burst": {
+    "n": "Estallido de recogida",
+    "d": "El instante de la recogida: un destello blanco y una cruz de luz, un anillo fino que se abre de golpe delante de otro más suave, centelleos lanzados a lo ancho en trayectorias curvas que frenan, se suspenden y se apagan"
+  },
+  "pickups/crystal-shard": {
+    "n": "Fragmento de cristal",
+    "d": "Un fragmento de ámbar roto flota y se mece: caras astilladas y desiguales, su parte superior cortada, luz que pulsa por grietas brillantes y estalla por la rotura; esquirlas orbitan a su alrededor"
+  },
+  "pickups/gem-spin": {
+    "n": "Gema girando",
+    "d": "Un rubí con talla brillante girando sobre su eje: facetas reales atrapan la luz por turnos, destellos ruedan por la corona, luz refractada se desliza por el suelo, centelleos parpadean a su alrededor"
+  },
+  "pickups/heart-pickup": {
+    "n": "Corazón recogible",
+    "d": "Un corazón rollizo y lustroso flotando sobre su sombra late lub-dub: un gran aplastamiento y estiramiento, un eco más pequeño, luz y un anillo fino que pulsa hacia fuera, corazones diminutos que se desprenden"
+  },
+  "pickups/key-glint": {
+    "n": "Destello de llave",
+    "d": "Una llave de plata ornamentada flota y se balancea; un destello recorre desde su anilla por el vástago hasta los dientes y estalla desde la punta en chispas que caen"
+  },
+  "pickups/loot-beam": {
+    "n": "Haz de botín",
+    "d": "Una espada caída dentro de un alto pilar de luz de rareza: un núcleo blanco que se afina hacia el cielo, anillos que pulsan por el suelo, motas que suben en corriente, un destello que asciende por el pilar"
+  },
+  "pickups/potion": {
+    "n": "Poción",
+    "d": "Un frasco redondo de vidrio con una poción brillante se mece en el aire: la poción chapotea detrás del balanceo, las burbujas suben y revientan, la luz brilla a través del vidrio, volutas se enroscan desde el corcho"
+  },
+  "pickups/power-star": {
+    "n": "Estrella de poder",
+    "d": "Una estrella gruesa y biselada se balancea de lado a lado y se hincha en cada pulso, rayos de luz girando lentamente tras ella, chispas saliendo girando de sus puntas"
+  },
+  "pickups/xp-orb": {
+    "n": "Orbe de XP",
+    "d": "Un pequeño orbe brillante recorre un ocho a toda velocidad, una cola de cometa que se afina tras él a lo largo de su trayectoria, motas que se desprenden de la cola y se apagan, su luz siguiéndolo sobre el suelo"
+  },
+  "transitions/blinds": {
+    "n": "Persianas",
+    "d": "Lamas que atrapan la luz de canto y luego se inclinan hasta cerrarse de arriba abajo, con bordes iluminados que destellan mientras la luz cálida se cuela por los huecos que se cierran con polvo en ella; después se inclinan para abrirse y se desvanecen"
+  },
+  "transitions/burn-away": {
+    "n": "Quemado",
+    "d": "La pantalla se quema desde sus bordes tras una línea irregular de brasas de llamas lamiendo, ascuas y humo; luego el negro arde lentamente y se abre desde el centro"
+  },
+  "transitions/crt-off": {
+    "n": "Apagado CRT",
+    "d": "La imagen se comprime en una línea resplandeciente al rojo blanco, la línea en un punto que perdura como un resplandor residual; luego se enciende de nuevo, del punto a la línea y a la imagen, con un brillo de calentamiento"
+  },
+  "transitions/diamond-wipe": {
+    "n": "Barrido de diamantes",
+    "d": "Una ola de diamantes facetados crece por la pantalla, bordes brillantes y aristas iluminadas, enfriándose a negro a medida que encajan; luego se alzan como gemas otra vez y se encogen hasta desaparecer con destellos"
+  },
+  "transitions/glitch-wipe": {
+    "n": "Barrido glitch",
+    "d": "Bandas desgarradas de negro parpadean por la pantalla, congelándose y dando sacudidas hacia atrás, sus bordes irregulares divididos en fantasmas magenta y cian que escupen fragmentos de datos; después siguen rasgando"
+  },
+  "transitions/iris": {
+    "n": "Iris",
+    "d": "Un iris iluminado se cierra sobre un foco cálido donde flota polvo, se mantiene mientras su borde centellea, se cierra de golpe en un destello y luego se abre de par en par desde un fogonazo con un borde al rojo blanco que arroja chispas"
+  },
+  "transitions/pixel-dissolve": {
+    "n": "Disolución de píxeles",
+    "d": "Grumos de bloques aparecen parpadeando, cada uno dibujado con un contorno blanco que se rellena de negro y se enfría, con destellos; luego se apagan, los contornos se colapsan y los últimos pequeños se desvanecen chispeando"
+  },
+  "transitions/shatter-wipe": {
+    "n": "Barrido de rotura",
+    "d": "Un panel de vidrio oscuro cae sobre la pantalla y rebota; las grietas se extienden a toda velocidad desde un impacto con un destello, y luego estalla en esquirlas de vidrio que caen dando vueltas con bordes iluminados"
+  },
+  "transitions/slash-wipe": {
+    "n": "Barrido de tajo",
+    "d": "Un filo al rojo blanco corta la pantalla, con luz delante de él y chispas que salpican hacia atrás sobre la capa; un segundo corte destella y la capa se parte"
+  },
+  "transitions/star-iris": {
+    "n": "Iris de estrella",
+    "d": "Un iris de estrella de cinco puntas gira hasta cerrarse en el centro de la pantalla, su borde dorado iluminado y sus puntas centelleando y soltando motas; se cierra sobre un destello y vuelve a girar hasta abrirse desde un fogonazo"
+  },
+  "critters/bat": {
+    "n": "Murciélago",
+    "d": "Un murciélago aletea en cuatro fotogramas rápidos de alas a lo largo de un ocho, su cuerpo se eleva en cada golpe de ala, luz de luna en los huesos de sus alas, ojos rojos brillando y destellando"
+  },
+  "critters/bird": {
+    "n": "Pájaro",
+    "d": "Un pájaro cantor vuela en el sitio: ráfagas de aleteos que elevan su cuerpo en cada bajada de alas, un planeo con las alas extendidas, su cola abriéndose en abanico, una pluma suelta que se aleja a la deriva"
+  },
+  "critters/butterfly": {
+    "n": "Mariposa",
+    "d": "Una mariposa iridiscente recorre un bucle a base de ráfagas de aleteos rápidos y planeos con las alas abiertas, sus alas con venas y manchas desprendiendo una estela centelleante de polvo luminoso"
+  },
+  "critters/eyeball": {
+    "n": "Globo ocular",
+    "d": "Un globo ocular inyectado en sangre flota entre sus párpados carnosos: su iris brillante salta de una mirada a la siguiente, parpadea, y su nervio se mece detrás mientras se balancea"
+  },
+  "critters/fish-school": {
+    "n": "Banco de peces",
+    "d": "Un banco de peces se mantiene en dos filas de profundidad: los cuerpos ondulan hasta convertirse en colas que se agitan, uno se lanza adelante de vez en cuando, burbujas suben y la luz cáustica ondula sobre ellos"
+  },
+  "critters/flying-skull": {
+    "n": "Calavera voladora",
+    "d": "Una calavera de hueso agrietada flota en el aire, la mandíbula castañeteando, los ojos ardiendo, un fuego rugiendo desde su coronilla que suelta bocanadas de llama, ascuas y humo y arroja luz cálida"
+  },
+  "critters/frog": {
+    "n": "Rana",
+    "d": "Una rana infla su garganta, parpadea, se agazapa y salta para atrapar al vuelo una mosca zumbando, luego aterriza con un aplastamiento y una nube de polvo, traga y se asienta"
+  },
+  "critters/ghost": {
+    "n": "Fantasma",
+    "d": "Un fantasma de sábana flota sobre el suelo: su borde festoneado ondula y sigue su deriva, sus bracitos aletean, mira a un lado y a otro y parpadea, motas caen de su borde"
+  },
+  "critters/jellyfish": {
+    "n": "Medusa",
+    "d": "Una medusa transparente pulsa: su campana se aprieta para impulsarla hacia arriba y se relaja al hundirse, brazos con volantes y largos tentáculos que arrastra, un brillo por dentro, burbujas que pasan a la deriva"
+  },
+  "critters/slime": {
+    "n": "Slime",
+    "d": "Un slime lustroso salta en el sitio: se aplasta para tomar impulso, se estira en el salto, se redondea en el aire, se despachurra al caer lanzando gotitas que se arrastran de vuelta, luego se tambalea y parpadea"
+  },
+  "critters/snake": {
+    "n": "Serpiente",
+    "d": "Una serpiente se desliza por el suelo con la cabeza alzada: jorobas se alzan y ruedan hacia abajo por su cuerpo estampado hasta la cola, nubes de polvo donde toca el suelo, su lengua bífida asoma"
+  },
+  "critters/wisp": {
+    "n": "Fuego fatuo",
+    "d": "Un fuego fatuo recorre un ocho sobre el suelo: una pequeña llama de alma con cara, su cola de llama lamiendo hacia arriba y fluyendo detrás, soltando bocanadas y chispas"
+  }
+}
