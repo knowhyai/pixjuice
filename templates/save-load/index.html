@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Save / Load System UI Template — Free, CC0 – PixJuice</title>
+  <meta name="description" content="Free game save menu template: multiple slots with thumbnails, timestamps, playtime and chapter; autosave; overwrite/delete confirmations; JSON import & export; localStorage persistence. Vanilla JS, CC0.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="Save / Load System UI Template — Free, CC0">
+  <meta property="og:description" content="A complete save menu: slots with thumbnails, autosave, confirm dialogs, JSON import/export, localStorage. Vanilla HTML/CSS/JS, zero dependencies, CC0.">
+  <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b0a10">
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PixJuice Save / Load System UI Template",
+      "url": "https://pixjuice.pages.dev/templates/save-load/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any (web browser)",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "description": "Game save menu template with multiple slots, thumbnails, playtime tracking, auto-save, JSON import/export and localStorage persistence. Vanilla HTML/CSS/JS, CC0 licensed."
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I add a save and load system to my game?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Keep your game state in one plain object, write it to storage behind a save menu, and read it back on load. This template ships the menu (slot cards, confirm dialogs, auto-save, import/export) plus a dependency-free engine (PixSave) that validates every read, so corrupt or foreign data can never crash your game." }
+        },
+        {
+          "@type": "Question",
+          "name": "How does save file import and export work?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Each slot can be exported as a pretty-printed JSON file (a download), and a JSON file can be imported into any slot through a picker. Imports are validated against the save schema and version tag, and the same format works for cloud-sync or clipboard sharing." }
+        },
+        {
+          "@type": "Question",
+          "name": "Where are saves stored?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The demo persists to localStorage, which is the right default for browser and web-view games. The storage layer is injected, so swapping in IndexedDB, a file, or a backend changes one adapter — the engine and UI are untouched." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use this save menu template in a commercial game?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. The template code is CC0 (public domain): copy, modify and ship it commercially with no attribution. The ZIP is a standalone vanilla HTML/CSS/JS build that runs offline with zero dependencies." }
+        }
+      ]
+    }
+  ]
+  </script>
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="Back to the PixJuice catalog">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub">game templates</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/templates/" class="cur" aria-current="page">templates</a>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+            <a href="/free-assets/" data-i18n="nav.assets">free assets</a>
+          </div>
+        </details>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="tpl-hero">
+    <p class="tpl-crumbs"><a href="/templates/" data-i18n="nav.templates">game templates</a> / <span data-i18n="sv.hero.crumb">save / load</span></p>
+    <h1 data-i18n="sv.hero.h1">Save / Load System — game UI template</h1>
+    <p class="lede" data-i18n="sv.hero.lede">A complete save menu: multiple slots with live thumbnails, timestamps, playtime and chapter; auto-save; overwrite &amp; delete confirmations; JSON import/export. Drive it with the little game below — everything persists.</p>
+    <div class="fa-tags" style="margin:16px 0"><a href="/free-assets/?tag=save load">save load</a><a href="/free-assets/?tag=menu">menu</a><a href="/free-assets/?tag=ui">ui</a><a href="/free-assets/?tag=vanilla-js">vanilla-js</a></div>
+    <div class="tpl-hero-actions"><a href="#codebox" data-i18n="tpl.download">Download code (.zip)</a><a href="/free-assets/" data-i18n="nav.assets">free assets</a></div>
+    <div class="tpl-badges">
+      <span class="hot">CC0</span>
+      <span>zero deps</span>
+      <span data-i18n="tpl.badgeSkins">4 skins</span>
+      <span data-i18n="tpl.badgeVanilla">vanilla JS</span>
+      <span data-i18n="tpl.badgeGodot">Godot: coming later</span>
+    </div>
+  </section>
+
+  <section class="tpl-sec">
+    <div id="app"></div>
+  </section>
+
+  <section class="tpl-sec">
+    <h2 data-i18n="sv.feat.h">What's inside</h2>
+    <p class="body" data-i18n-html="sv.feat.p"><b>Save engine</b> (slots, validated reads, versioned export/import, injectable storage) is one dependency-free file that runs headless for unit tests; the <b>menu UI</b> (slot cards, thumbnails, modals, toasts) is plain DOM. The demo game is only there to produce honest save data — swap in your own state object.</p>
+  </section>
+
+  <section class="code-sec" id="source">
+    <h2 data-i18n="tpl.source">Source code</h2>
+    <p class="code-lede" data-i18n-html="tpl.sourceLede">The exact files the ZIP contains — a standalone vanilla HTML/CSS/JS build that runs offline. Copy any file, or download the whole template as a ZIP with README (integration + config) and CC0 LICENSE.</p>
+    <div id="codebox"></div>
+  </section>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.templates"><a href="/templates/">game templates</a> · <a href="/free-assets/">free assets</a> · part of the PixJuice free library for indie devs</span>
+      <span data-i18n-html="foot.home2"><a href="/credits/">credits &amp; licenses</a> · made for indie game devs</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/templates/save-load/site.ts"></script>
+</body>
+</html>

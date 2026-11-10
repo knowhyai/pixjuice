@@ -1,3 +1,4 @@
+import { readdirSync, statSync } from "node:fs";
 import { defineConfig } from "vite";
 
 // Multi-page static build for Cloudflare Pages:
@@ -8,7 +9,27 @@ import { defineConfig } from "vite";
 //   /normal-map/          normal map generator (normal-map/index.html)
 //   /pixel-art-upscaler/  pixel art upscaler (pixel-art-upscaler/index.html)
 //   /credits/             attribution + licenses (credits/index.html)
+//   /templates/           game template library (templates/index.html)
+//   /templates/<slug>/    one template demo page (gacha, save-load)
+//   /free-assets/         2D/3D asset library (free-assets/index.html)
+//   /free-assets/<id>/    one asset detail page per manifest entry (generated)
 //   /404.html             served by Cloudflare Pages for unknown routes
+
+// asset detail pages are generated from the manifest — pick them up dynamically
+function assetDetailInputs(): Record<string, string> {
+  const out: Record<string, string> = {};
+  try {
+    for (const d of readdirSync("free-assets", { withFileTypes: true })) {
+      if (!d.isDirectory()) continue;
+      const p = `free-assets/${d.name}/index.html`;
+      if (statSync(p).isFile()) out[`asset-${d.name}`] = p;
+    }
+  } catch {
+    /* no generated pages yet */
+  }
+  return out;
+}
+
 export default defineConfig({
   build: {
     target: "es2022",
@@ -21,6 +42,11 @@ export default defineConfig({
         normalmap: "normal-map/index.html",
         upscaler: "pixel-art-upscaler/index.html",
         credits: "credits/index.html",
+        templates: "templates/index.html",
+        gacha: "templates/gacha/index.html",
+        save: "templates/save-load/index.html",
+        assets: "free-assets/index.html",
+        ...assetDetailInputs(),
         notfound: "404.html",
       },
       output: {

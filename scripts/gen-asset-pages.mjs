@@ -1,0 +1,180 @@
+#!/usr/bin/env node
+// Generates one static detail page per asset: free-assets/<id>/index.html
+// (SEO title/description, FAQ JSON-LD, header/footer, then the shared
+// src/pages/asset-detail.ts module renders the interactive parts client-side).
+// Data: public/free-assets/manifest.json — run again after regenerating assets.
+
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(HERE, "..");
+const MANIFEST = join(ROOT, "public/free-assets/manifest.json");
+const OUT = join(ROOT, "free-assets");
+
+const SITE = "https://pixjuice.pages.dev";
+
+function faqFor(name, kind) {
+  return [
+    {
+      "@type": "Question",
+      name: `Is the ${name} free for commercial use?`,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: `Yes — the ${name} ships with a free-commercial license published on this page: use it in commercial games at no cost, no attribution required.`,
+      },
+    },
+    {
+      "@type": "Question",
+      name: `What formats does the ${name} come in?`,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text:
+          kind === "2d"
+            ? "It ships as PNG sprite sheets (128px frames). Every file has a direct download link on this page."
+            : kind === "3d"
+              ? "It ships as GLB models in two detail levels (LOD0/LOD1), ready for Godot, Unity, Unreal and three.js."
+              : "It ships as GLB models (LOD0/LOD1) plus matching PNG sprite sheets — every file has a direct download link.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: `How do I download the ${name}?`,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Use the per-file links or the Download-all button on this page. The asset is also linked from the PixJuice free asset library and used by the PixJuice game templates.",
+      },
+    },
+  ];
+}
+
+const header = (crumb) => `  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="Back to the PixJuice catalog">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub">free game assets</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/templates/" data-i18n="nav.templates">game templates</a>
+        <a href="/free-assets/" class="cur" aria-current="page" data-i18n="nav.assets">free assets</a>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+          </div>
+        </details>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+${crumb}`;
+
+const crumbBlock = `  <section class="tpl-hero" style="padding-bottom:0">
+    <p class="tpl-crumbs"><a href="/free-assets/" data-i18n="nav.assets">free assets</a> / <span id="fa-crumb">asset</span></p>
+  </section>`;
+
+const footer = `  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.templates"><a href="/templates/">game templates</a> · <a href="/free-assets/">free assets</a> · part of the PixJuice free library for indie devs</span>
+      <span data-i18n-html="foot.home2"><a href="/credits/">credits &amp; licenses</a> · made for indie game devs</span>
+    </div>
+  </footer>`;
+
+const manifest = JSON.parse(await readFile(MANIFEST, "utf8"));
+let n = 0;
+for (const a of manifest.assets) {
+  const name = a.name?.en ?? a.id;
+  const kind = a.glb && a.sprites ? "2d3d" : a.glb ? "3d" : "2d";
+  const desc = a.placeholder
+    ? `${name} — a free PixJuice game asset, coming soon. Preview and details on this page; part of the free-for-commercial-use asset library.`
+    : `${name} — free PixJuice game asset: ${
+        kind === "2d" ? "PNG sprite sheets" : kind === "3d" ? "GLB models (LOD0/LOD1)" : "GLB models (LOD0/LOD1) + PNG sprite sheets"
+      }, free for commercial use. Preview, per-file downloads and license on this page.`;
+  const jsonld = JSON.stringify(
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        name,
+        url: `${SITE}/free-assets/${a.id}/`,
+        genre: "Game asset",
+        license: `${SITE}/free-assets/${a.license?.file ?? ""}`,
+        description: desc,
+        isAccessibleForFree: true,
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqFor(name, kind),
+      },
+    ],
+    null,
+    2,
+  ).replaceAll("\n", "\n  ");
+
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>${name} — Free Game Asset – PixJuice</title>
+  <meta name="description" content="${desc.replaceAll('"', "&quot;")}">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="${name} — Free Game Asset">
+  <meta property="og:description" content="${desc.replaceAll('"', "&quot;")}">
+  <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b0a10">
+  <script type="application/ld+json">
+  ${jsonld}
+  </script>
+</head>
+<body>
+${header(crumbBlock)}
+
+  <main class="fa-detail">
+    <div id="asset-root"></div>
+  </main>
+
+${footer}
+
+  <script type="module" src="/src/pages/asset-detail.ts"></script>
+</body>
+</html>
+`;
+  const dir = join(OUT, a.id);
+  await mkdir(dir, { recursive: true });
+  await writeFile(join(dir, "index.html"), html);
+  n++;
+}
+console.log(`gen-asset-pages: wrote ${n} detail pages -> free-assets/<id>/index.html`);

@@ -6,19 +6,23 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && node scripts/check-sfx-presets.mjs && vite build",
+    "build": "node scripts/gen-asset-pages.mjs && tsc --noEmit && node scripts/check-sfx-presets.mjs && vite build && node scripts/localize-pages.mjs",
     "preview": "vite preview",
+    "test": "node --test tests/index.mjs",
     "check": "tsc --noEmit",
     "check:sfx": "node scripts/check-sfx-presets.mjs"
   },
   "license": "MIT",
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",
+    "fflate": "^0.8.3",
     "gifenc": "^1.0.3",
     "jsfxr": "^1.4.1",
-    "pixelfx": "github:patch-gg/pixelfx"
+    "pixelfx": "github:patch-gg/pixelfx",
+    "three": "^0.187.0"
   },
   "devDependencies": {
+    "@types/node": "^26.6.6",
     "typescript": "^5.9.3",
     "vite": "^7.1.0"
   },

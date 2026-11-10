@@ -1,0 +1,307 @@
+/* PixJuice game templates — shared skin system.
+   One set of CSS variables, four official skins. Every template demo scopes its
+   look through the same tokens, so all templates stay visually consistent and a
+   new template gets all four skins for free. The demo root carries
+   data-skin="realistic|stylized|clean-low-poly|pixel-art". */
+
+.tpl-demo {
+  /* semantic tokens every skin must define */
+  --skin-bg: #17141f;
+  --skin-panel: #211d2c;
+  --skin-panel-2: #2a2537;
+  --skin-ink: #f2eef8;
+  --skin-muted: #a49cbd;
+  --skin-accent: #ff4d6d;
+  --skin-accent-ink: #ffffff;
+  --skin-border: #3a3450;
+  --skin-radius: 12px;
+  --skin-font: system-ui, sans-serif;
+  --skin-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --skin-sheen: rgba(255, 255, 255, 0.06);
+  --skin-btn-2: #3a3450;
+
+  /* rarity colors are shared across skins (semantic, not style) */
+  --r-n: #9aa3b2;
+  --r-r: #4c9df8;
+  --r-sr: #b46bf2;
+  --r-ssr: #ffb238;
+
+  color-scheme: dark;
+}
+
+/* --- Realistic: aged wood, bronze, parchment. Tavern-corner feel. --- */
+.tpl-demo[data-skin="realistic"] {
+  --skin-bg: radial-gradient(120% 100% at 50% 0%, #2e2317 0%, #1c140d 70%);
+  --skin-panel: #2b2114;
+  --skin-panel-2: #382a19;
+  --skin-ink: #f3e7cf;
+  --skin-muted: #b3a181;
+  --skin-accent: #d19a3f;
+  --skin-accent-ink: #241a0c;
+  --skin-border: #54402a;
+  --skin-radius: 10px;
+  --skin-font: Georgia, "Times New Roman", serif;
+  --skin-shadow: 0 10px 26px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 220, 160, 0.08);
+  --skin-sheen: rgba(255, 214, 150, 0.07);
+  --skin-btn-2: #4a3722;
+}
+
+/* --- Stylized: saturated arcade, chunky rounded, candy-lit. --- */
+.tpl-demo[data-skin="stylized"] {
+  --skin-bg: radial-gradient(120% 120% at 50% 0%, #2b3a8a 0%, #1c2148 70%);
+  --skin-panel: #2a3160;
+  --skin-panel-2: #364079;
+  --skin-ink: #f4f6ff;
+  --skin-muted: #a9b2e8;
+  --skin-accent: #ffc93c;
+  --skin-accent-ink: #3a2c00;
+  --skin-border: #4d59a8;
+  --skin-radius: 16px;
+  --skin-font: "Segoe UI", "Hiragino Sans", system-ui, sans-serif;
+  --skin-shadow: 0 10px 0 rgba(16, 18, 48, 0.55);
+  --skin-sheen: rgba(255, 255, 255, 0.12);
+  --skin-btn-2: #4d59a8;
+}
+
+/* --- Clean Low Poly: flat, light, crisp geometry. --- */
+.tpl-demo[data-skin="clean-low-poly"] {
+  --skin-bg: #eef1f6;
+  --skin-panel: #ffffff;
+  --skin-panel-2: #e6eaf2;
+  --skin-ink: #20263a;
+  --skin-muted: #64708c;
+  --skin-accent: #4f6df5;
+  --skin-accent-ink: #ffffff;
+  --skin-border: #d4dbe8;
+  --skin-radius: 8px;
+  --skin-font: "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+  --skin-shadow: 0 6px 18px rgba(32, 38, 58, 0.1);
+  --skin-sheen: rgba(79, 109, 245, 0.06);
+  --skin-btn-2: #dde3f0;
+  color-scheme: light;
+}
+
+/* --- Pixel Art: CRT dark, hard edges, monospace, everything squared. --- */
+.tpl-demo[data-skin="pixel-art"] {
+  --skin-bg: #100e18;
+  --skin-panel: #191627;
+  --skin-panel-2: #241f36;
+  --skin-ink: #e8e6f2;
+  --skin-muted: #8f8aa8;
+  --skin-accent: #ffd23f;
+  --skin-accent-ink: #201800;
+  --skin-border: #46405e;
+  --skin-radius: 0px;
+  --skin-font: ui-monospace, "Cascadia Mono", "Courier New", monospace;
+  --skin-shadow: 4px 4px 0 rgba(0, 0, 0, 0.7);
+  --skin-sheen: rgba(255, 255, 255, 0.05);
+  --skin-btn-2: #332c4c;
+}
+
+.tpl-demo[data-skin="pixel-art"] .pix-crisp {
+  image-rendering: pixelated;
+}
+
+/* --- shared controls (used by every template demo and the template pages) --- */
+
+.tpl-btn {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--skin-ink, #f2eef8);
+  background: var(--skin-btn-2, #3a3450);
+  border: 1px solid var(--skin-border, #3a3450);
+  border-radius: var(--skin-radius, 12px);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.tpl-btn:hover {
+  filter: brightness(1.12);
+}
+.tpl-btn:active {
+  transform: translateY(1px) scale(0.99);
+}
+.tpl-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.tpl-btn-accent {
+  background: var(--skin-accent, #ff4d6d);
+  color: var(--skin-accent-ink, #fff);
+  border-color: transparent;
+}
+.tpl-btn-ghost {
+  background: transparent;
+}
+.tpl-btn-big {
+  font-size: 15px;
+  padding: 12px 26px;
+}
+
+.gx-skins {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.gx-skin-btn {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 4px;
+  border-radius: calc(var(--skin-radius, 12px) / 1.6);
+  border: 1px solid var(--skin-border);
+  background: var(--skin-panel-2);
+  color: var(--skin-muted);
+  cursor: pointer;
+}
+.gx-skin-btn.on {
+  background: var(--skin-accent);
+  border-color: transparent;
+  color: var(--skin-accent-ink);
+}
+
+.gx-slider {
+  display: grid;
+  grid-template-columns: 34px 1fr 52px;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  font-size: 12px;
+}
+.gx-slider input[type="range"] {
+  accent-color: var(--skin-accent);
+  width: 100%;
+}
+.gx-slider input[type="number"] {
+  font: inherit;
+  color: var(--skin-ink);
+  background: var(--skin-panel-2);
+  border: 1px solid var(--skin-border);
+  border-radius: calc(var(--skin-radius, 12px) / 2);
+  padding: 4px 8px;
+  width: 90px;
+}
+.gx-slider output {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--skin-muted);
+}
+
+/* --- shared modal --- */
+.tpl-modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 6, 14, 0.66);
+  z-index: 70;
+  font-family: var(--skin-font);
+}
+.tpl-modal[hidden] {
+  display: none;
+}
+.tpl-modal-box {
+  width: min(92vw, 420px);
+  background: var(--skin-panel);
+  color: var(--skin-ink);
+  border: 1px solid var(--skin-border);
+  border-radius: var(--skin-radius);
+  box-shadow: var(--skin-shadow);
+  padding: 18px;
+}
+.tpl-modal-box h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+.tpl-modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+.tpl-modal-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* --- shared toast --- */
+.tpl-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  translate: -50% 16px;
+  background: var(--skin-panel-2);
+  color: var(--skin-ink);
+  border: 1px solid var(--skin-border);
+  border-radius: var(--skin-radius);
+  box-shadow: var(--skin-shadow);
+  font-family: var(--skin-font);
+  font-size: 13px;
+  padding: 10px 18px;
+  opacity: 0;
+  transition: opacity 0.3s ease, translate 0.3s ease;
+  z-index: 80;
+  max-width: min(90vw, 480px);
+  text-align: center;
+}
+.tpl-toast.on {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+/* --- shared badge / chip --- */
+.tpl-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--skin-accent);
+  color: var(--skin-accent-ink);
+}
+.tpl-badge-soft {
+  background: var(--skin-panel-2);
+  color: var(--skin-muted);
+  border: 1px solid var(--skin-border);
+}
+.tpl-chip {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--skin-panel-2);
+  border: 1px solid var(--skin-border);
+  color: var(--skin-muted);
+}
+
+/* Shared finishing and interaction rules also ship with the standalone builds. */
+.tpl-demo, .tpl-demo * { box-sizing: border-box; }
+.tpl-demo [hidden] { display: none !important; }
+.tpl-demo { position: relative; isolation: isolate; transition: background .25s, color .25s; }
+.tpl-demo :is(button,input):focus-visible { outline: 2px solid var(--skin-accent); outline-offset: 4px; }
+.tpl-demo :is(.tpl-side,.tpl-stage,.tpl-record) { min-width: 0; }
+.tpl-demo .tpl-side { background: linear-gradient(150deg,var(--skin-sheen),transparent 55%),var(--skin-panel); }
+.tpl-demo .tpl-stage { background: radial-gradient(ellipse at 50% 24%,var(--skin-sheen),transparent 70%),var(--skin-panel); }
+.tpl-demo .gx-skin-btn { min-height: 38px; transition: background .2s, transform .2s; }
+.tpl-demo .gx-skin-btn:hover { transform: translateY(-2px); }
+.tpl-demo[data-skin="realistic"] :is(.tpl-stage,.tpl-side,.tpl-record,.sv-slot) { border-top-color: #a17b43; box-shadow: inset 0 0 0 3px #241b1280,0 8px 24px #0003; }
+.tpl-demo[data-skin="realistic"] .tpl-btn-accent { background: linear-gradient(180deg,#edc47b,#b98132); }
+.tpl-demo[data-skin="stylized"] .tpl-btn-accent { box-shadow: 0 4px 0 #866213,0 8px 16px #0002; }
+.tpl-demo[data-skin="stylized"] .tpl-stage { border-width: 2px; }
+.tpl-demo[data-skin="clean-low-poly"] .tpl-stage { background: linear-gradient(145deg,transparent 65%,#4f6df50a 65%),var(--skin-panel); }
+.tpl-demo[data-skin="pixel-art"] :is(.tpl-btn,.gx-skin-btn,.sv-slot) { border-width: 2px; box-shadow: 3px 3px 0 #0008; }
+.tpl-demo[data-skin="pixel-art"] :is(.tpl-badge,.sv-hud span,.gx-tabs) { border-radius: 0; }
+.tpl-modal { backdrop-filter: blur(8px); }
+.tpl-modal-box { animation: modal-enter .18s ease-out; }
+@keyframes modal-enter { from { opacity: 0; transform: translateY(12px) scale(.97); } to {opacity:1;transform:none;} }
+@media (prefers-reduced-motion: reduce) {
+ .tpl-demo *, .tpl-demo *::before, .tpl-demo *::after { animation: none !important; transition: none !important; scroll-behavior:auto!important; }
+}
+@media(prefers-reduced-motion:reduce) { .tpl-demo { transition:none; } }
+.tpl-demo[data-skin="clean-low-poly"] { --r-n:#59657c;--r-r:#2264b5;--r-sr:#8543ad;--r-ssr:#925900; }

@@ -1,0 +1,23 @@
+PixJuice Free Assets — Wooden Chest #1
+Copyright 2026 PixJuice. Non-exclusive asset license.
+
+This asset was generated through a paid Tripo Studio premium account with the
+source project set to Private, then edited, animated and rendered locally.
+It is offered free of charge for personal and commercial creative projects,
+including games, films, websites, client work and promotional materials.
+You may use, modify and incorporate the models, textures, animations and sprites
+into those projects, and distribute the resulting projects to your users.
+Attribution to PixJuice is appreciated but is not required.
+
+You may NOT resell the original or substantially unchanged source files as an
+asset pack, or redistribute them as a standalone competing asset library.
+Distribution within a finished game/application is permitted. Contractors may
+receive source files solely to work on your project under these same terms.
+This is a non-exclusive license: similar AI-generated outputs may exist.
+No warranty of fitness, uniqueness or non-infringement is provided.
+Tripo's own service terms apply to the originating account; this license does
+not grant access to Tripo services or rights to third-party trademarks.
+
+Source service: https://www.tripo3d.ai/terms
+Third-party viewer code in vendor/ remains under its own MIT license:
+see vendor/THREE-LICENSE.txt. This asset license does not restrict that code.

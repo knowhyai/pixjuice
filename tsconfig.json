@@ -13,7 +13,9 @@
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "noEmit": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "allowJs": true
   },
   "include": ["src", "vite.config.ts"]
 }

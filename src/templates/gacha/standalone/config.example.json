@@ -1,0 +1,15 @@
+{
+  "currency": { "name": "Gems", "single": 100, "multi": 1000 },
+  "rates": { "N": 0.79, "R": 0.15, "SR": 0.05, "SSR": 0.01 },
+  "pity": { "ssr": 90, "sr": 10 },
+  "items": [
+    { "id": "wooden-sword", "name": "Wooden Sword", "rarity": "N", "weight": 1 },
+    { "id": "health-potion", "name": "Health Potion", "rarity": "N", "weight": 1 },
+    { "id": "copper-coin", "name": "Copper Coin", "rarity": "N", "weight": 1 },
+    { "id": "cloth-scrap", "name": "Cloth Scrap", "rarity": "N", "weight": 1 },
+    { "id": "steel-blade", "name": "Steel Blade", "rarity": "R", "weight": 1 },
+    { "id": "travelers-charm", "name": "Traveler's Charm", "rarity": "R", "weight": 1 },
+    { "id": "enchanted-grimoire", "name": "Enchanted Grimoire", "rarity": "SR", "weight": 1 },
+    { "id": "excalibur", "name": "Excalibur", "rarity": "SSR", "weight": 1 }
+  ]
+}

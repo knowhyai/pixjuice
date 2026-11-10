@@ -1,0 +1,284 @@
+/* PixJuice save/load template — demo styles (vanilla, zero deps).
+   Scope: .tpl-demo / .sv-* so the sheet coexists with any host page. Skin tokens
+   come from the [data-skin] blocks of the shared skin system (combined into this
+   file in the downloadable ZIP). */
+
+.tpl-demo.sv-demo {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding: 18px;
+  background: var(--skin-bg);
+  border: 1px solid var(--skin-border);
+  border-radius: calc(var(--skin-radius) + 4px);
+  box-shadow: var(--skin-shadow);
+  font-family: var(--skin-font);
+  color: var(--skin-ink);
+}
+
+.tpl-demo h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+.tpl-demo h4 {
+  margin: 14px 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--skin-muted);
+}
+.tpl-side {
+  background: var(--skin-panel);
+  border: 1px solid var(--skin-border);
+  border-radius: var(--skin-radius);
+  padding: 14px;
+  box-shadow: var(--skin-sheen);
+}
+.tpl-stage {
+  background: var(--skin-panel);
+  border: 1px solid var(--skin-border);
+  border-radius: var(--skin-radius);
+  padding: 16px;
+}
+.gx-note {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--skin-muted);
+  line-height: 1.5;
+}
+.gx-btnrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+}
+.gx-btnrow .sv-file {
+  display: none;
+}
+.gx-skins {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.gx-skin-btn {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 4px;
+  border-radius: calc(var(--skin-radius, 12px) / 1.6);
+  border: 1px solid var(--skin-border);
+  background: var(--skin-panel-2);
+  color: var(--skin-muted);
+  cursor: pointer;
+}
+.gx-skin-btn.on {
+  background: var(--skin-accent);
+  border-color: transparent;
+  color: var(--skin-accent-ink);
+}
+.gx-slider {
+  display: grid;
+  grid-template-columns: 1fr 40px;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.gx-slider input[type="range"] {
+  accent-color: var(--skin-accent);
+  width: 100%;
+}
+.gx-slider output {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--skin-muted);
+}
+.sv-autorow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-top: 12px;
+  cursor: pointer;
+}
+.sv-autorow input {
+  accent-color: var(--skin-accent);
+  width: 16px;
+  height: 16px;
+}
+
+/* --- HUD --- */
+.sv-hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.sv-hud span {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--skin-panel-2);
+  border: 1px solid var(--skin-border);
+  color: var(--skin-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- game canvas + pad --- */
+.sv-game {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.sv-game canvas {
+  border-radius: calc(var(--skin-radius) / 1.4);
+  box-shadow: var(--skin-sheen);
+  max-width: 100%;
+  height: auto;
+}
+.tpl-demo[data-skin="pixel-art"] .sv-game canvas {
+  border-radius: 0;
+  image-rendering: pixelated;
+}
+.sv-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(2, 44px);
+  gap: 6px;
+}
+.sv-pad-btn {
+  font: inherit;
+  font-size: 15px;
+  border: 1px solid var(--skin-border);
+  background: var(--skin-panel-2);
+  color: var(--skin-ink);
+  border-radius: calc(var(--skin-radius) / 1.6);
+  cursor: pointer;
+}
+.sv-pad-btn:hover {
+  filter: brightness(1.15);
+}
+.sv-pad-btn:active {
+  transform: translateY(1px);
+}
+.sv-pad-up { grid-column: 2; grid-row: 1; }
+.sv-pad-left { grid-column: 1; grid-row: 2; }
+.sv-pad-down { grid-column: 2; grid-row: 2; }
+.sv-pad-right { grid-column: 3; grid-row: 2; }
+
+/* --- slot cards --- */
+.sv-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+  margin-top: 6px;
+}
+.sv-slot {
+  background: var(--skin-panel-2);
+  border: 1px solid var(--skin-border);
+  border-radius: var(--skin-radius);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.sv-slot:hover {
+  transform: translateY(-2px);
+  border-color: var(--skin-accent);
+}
+.sv-slot-auto {
+  border-style: dashed;
+}
+.sv-slot-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+.sv-slot-head b {
+  letter-spacing: 0.04em;
+}
+.sv-slot-empty {
+  margin: 4px 0 auto;
+  color: var(--skin-muted);
+  font-size: 13px;
+}
+.sv-slot-filled .sv-slot-empty {
+  margin: 0;
+}
+.sv-slot > .tpl-btn {
+  align-self: flex-start;
+}
+.sv-slot-body {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.sv-thumb {
+  width: 84px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: calc(var(--skin-radius) / 2);
+  border: 1px solid var(--skin-border);
+  flex: none;
+}
+.sv-thumb-none {
+  background:
+    repeating-linear-gradient(45deg, var(--skin-panel) 0 6px, var(--skin-panel-2) 6px 12px);
+}
+.sv-slot-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--skin-muted);
+  min-width: 0;
+}
+.sv-slot-meta b {
+  font-size: 13px;
+  color: var(--skin-ink);
+}
+.sv-slot-meta time {
+  margin-top: auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+}
+.sv-slot-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sv-slot-actions .tpl-btn {
+  font-size: 12px;
+  padding: 5px 10px;
+}
+.sv-danger {
+  color: #ff8f9f;
+}
+.tpl-demo[data-skin="clean-low-poly"] .sv-danger {
+  color: #c2334d;
+}
+
+@media (max-width: 900px) {
+  .tpl-demo.sv-demo {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+}
+
+.sv-game { justify-content:center; padding:20px; margin:0 0 24px; background:radial-gradient(ellipse at 30% 50%,var(--skin-sheen),transparent),var(--skin-panel-2); border:1px solid var(--skin-border);border-radius:var(--skin-radius); }
+.sv-game canvas { width:324px; box-shadow:0 8px 20px #0003; }
+.sv-slot { min-height:158px; background:linear-gradient(145deg,var(--skin-sheen),transparent),var(--skin-panel-2); }
+.sv-slot-empty::before { content:"+"; display:block;font:300 26px/1.2 system-ui; opacity:.45;margin-bottom:8px; }
+.sv-slot-head { border-bottom:1px solid var(--skin-border);padding-bottom:10px; }
+.sv-slot-actions { margin-top:auto; }
+.sv-slots { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.sv-pad { flex:none; }
+@media(max-width:600px) { .sv-slots { grid-template-columns:1fr; } .sv-game {padding:12px;} }
+.sv-demo .gx-slider { grid-template-columns:minmax(0,1fr) 32px; }

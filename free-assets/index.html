@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Free Game Assets — 2D Sprites &amp; 3D Models, CC0 – PixJuice</title>
+  <meta name="description" content="Free game asset library: 2D sprites, icons and 3D models (GLB) for indie devs — free for commercial use. Starts with a wooden treasure chest in four art styles; more coming soon.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="Free Game Assets — 2D Sprites &amp; 3D Models, CC0">
+  <meta property="og:description" content="Free game asset library: 2D sprites and 3D GLB models, free for commercial use. Treasure chests in four art styles today; more coming soon.">
+  <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b0a10">
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "PixJuice Free Game Assets",
+      "url": "https://pixjuice.pages.dev/free-assets/",
+      "description": "Free game asset library with 2D and 3D categories and game UI templates: previews, direct downloads, CC0-style free-commercial licenses, per-asset detail pages."
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are these game assets free for commercial use?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every asset in the library ships with a published license on its detail page that allows commercial use at no cost — the chest models and sprite sets are released under a free-commercial license, and template code is CC0 public domain." }
+        },
+        {
+          "@type": "Question",
+          "name": "What formats are the 3D models and 2D sprites?",
+          "acceptedAnswer": { "@type": "Answer", "text": "3D assets come as GLB (LOD0 and LOD1) ready for Godot, Unity, Unreal and three.js; 2D assets are PNG sprite sheets. Each asset page lists every file with a direct download link, plus a Download-all ZIP." }
+        },
+        {
+          "@type": "Question",
+          "name": "What's coming soon to the library?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Dungeon walls and floors, a wall torch, a wooden barrel and a gold pile are in production (shown as 'coming soon'), alongside more props, icons, tiles and backgrounds — plus game UI templates, which are a category of the same library." }
+        }
+      ]
+    }
+  ]
+  </script>
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="Back to the PixJuice catalog">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub" data-i18n="fa.sub">free game assets</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/templates/" data-i18n="nav.templates">game templates</a>
+        <a href="/free-assets/" class="cur" aria-current="page" data-i18n="nav.assets">free assets</a>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+            <a href="/templates/" data-i18n="nav.templates">game templates</a>
+            <a href="/free-assets/" data-i18n="nav.assets">free assets</a>
+          </div>
+        </details>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="tpl-hero">
+    <h1 data-i18n="fa.h1">Free game assets</h1>
+    <p class="lede" data-i18n-html="fa.lede">2D sprites, icons and 3D models for indie games — <b>free for commercial use</b>, license on every detail page. Templates are a category of the same library: <a href="/templates/">game UI templates</a>.</p>
+  </section>
+
+  <section class="tpl-sec">
+    <div class="fa-toolbar" id="fa-filters" role="toolbar" aria-label="Filter assets"></div>
+    <div class="fa-grid" id="fa-grid"></div>
+    <p class="body" id="fa-error" hidden data-i18n="fa.loadErr">Couldn't load the asset list. Refresh to retry.</p>
+  </section>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.templates"><a href="/templates/">game templates</a> · <a href="/free-assets/">free assets</a> · part of the PixJuice free library for indie devs</span>
+      <span data-i18n-html="foot.home2"><a href="/credits/">credits &amp; licenses</a> · made for indie game devs</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/pages/assets.ts"></script>
+</body>
+</html>

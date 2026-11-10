@@ -1,0 +1,881 @@
+{
+  "version": 1,
+  "generated": "2026-11-10",
+  "base": "/free-assets/",
+  "note": "Curated sample of chest-wood outputs; placeholder entries render procedurally until real assets land. Regenerate with scripts/build-assets-manifest.mjs.",
+  "assets": [
+    {
+      "id": "chest-wood-realistic-wood-intact",
+      "name": {
+        "en": "Realistic Wood Treasure Chest (intact)",
+        "zh": "写实 · 木宝箱 · 完好"
+      },
+      "category": "props",
+      "style_tier": "realistic",
+      "palette": "wood",
+      "tags": [
+        "3d",
+        "chest",
+        "close",
+        "detailed-texture",
+        "dungeon",
+        "engine-agnostic",
+        "fantasy",
+        "fbx",
+        "game-prop",
+        "glb",
+        "godot",
+        "gold"
+      ],
+      "placeholder": false,
+      "animations": [
+        "idle",
+        "open",
+        "close",
+        "locked_shake",
+        "open_burst"
+      ],
+      "glb": {
+        "lod0": "chest-wood/realistic/wood/intact/chest_LOD0.glb",
+        "lod1": "chest-wood/realistic/wood/intact/chest_LOD1.glb"
+      },
+      "fbx": [
+        "chest-wood/realistic/wood/intact/fbx/chest_LOD0.fbx",
+        "chest-wood/realistic/wood/intact/fbx/chest_LOD1.fbx"
+      ],
+      "sprites": {
+        "idle": "chest-wood/realistic/wood/intact/sprites/idle.png",
+        "open": "chest-wood/realistic/wood/intact/sprites/open.png",
+        "close": "chest-wood/realistic/wood/intact/sprites/close.png",
+        "locked_shake": "chest-wood/realistic/wood/intact/sprites/locked_shake.png",
+        "open_burst": "chest-wood/realistic/wood/intact/sprites/open_burst.png"
+      },
+      "thumb": "chest-wood/realistic/wood/intact/thumb.png",
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": "chest-wood/realistic/LICENSE.txt",
+        "commercial_use": true
+      },
+      "dimensions_m": {
+        "units": "metres",
+        "width": 1.19212007522583,
+        "depth": 0.8458909392356873,
+        "closed_height": 0.9981756778433919,
+        "min_xyz": [
+          -0.5976220965385437,
+          -0.423569917678833,
+          -0.0030795903876423836
+        ],
+        "max_xyz": [
+          0.5944979786872864,
+          0.42232102155685425,
+          0.9950960874557495
+        ],
+        "hinge_blender_xyz": [
+          0,
+          0.3880000114440918,
+          0.5239999890327454
+        ]
+      },
+      "polycount_lod0": 2598
+    },
+    {
+      "id": "chest-wood-realistic-gold-intact",
+      "name": {
+        "en": "Realistic Gold Treasure Chest (intact)",
+        "zh": "写实 · 金宝箱 · 完好"
+      },
+      "category": "props",
+      "style_tier": "realistic",
+      "palette": "gold",
+      "tags": [
+        "3d",
+        "chest",
+        "close",
+        "detailed-texture",
+        "dungeon",
+        "engine-agnostic",
+        "fantasy",
+        "fbx",
+        "game-prop",
+        "glb",
+        "godot",
+        "gold"
+      ],
+      "placeholder": false,
+      "animations": [
+        "idle",
+        "open",
+        "close",
+        "locked_shake",
+        "open_burst"
+      ],
+      "glb": {
+        "lod0": "chest-wood/realistic/gold/intact/chest_LOD0.glb",
+        "lod1": "chest-wood/realistic/gold/intact/chest_LOD1.glb"
+      },
+      "fbx": [],
+      "sprites": {
+        "idle": "chest-wood/realistic/gold/intact/sprites/idle.png",
+        "open": "chest-wood/realistic/gold/intact/sprites/open.png",
+        "close": "chest-wood/realistic/gold/intact/sprites/close.png",
+        "locked_shake": "chest-wood/realistic/gold/intact/sprites/locked_shake.png",
+        "open_burst": "chest-wood/realistic/gold/intact/sprites/open_burst.png"
+      },
+      "thumb": "chest-wood/realistic/gold/intact/thumb.png",
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": "chest-wood/realistic/LICENSE.txt",
+        "commercial_use": true
+      },
+      "dimensions_m": {
+        "units": "metres",
+        "width": 1.19212007522583,
+        "depth": 0.8458909392356873,
+        "closed_height": 0.9981756778433919,
+        "min_xyz": [
+          -0.5976220965385437,
+          -0.423569917678833,
+          -0.0030795903876423836
+        ],
+        "max_xyz": [
+          0.5944979786872864,
+          0.42232102155685425,
+          0.9950960874557495
+        ],
+        "hinge_blender_xyz": [
+          0,
+          0.3880000114440918,
+          0.5239999890327454
+        ]
+      },
+      "polycount_lod0": 2598
+    },
+    {
+      "id": "chest-wood-realistic-blue-intact",
+      "name": {
+        "en": "Realistic Blue Treasure Chest (intact)",
+        "zh": "写实 · 蓝宝箱 · 完好"
+      },
+      "category": "props",
+      "style_tier": "realistic",
+      "palette": "blue",
+      "tags": [
+        "3d",
+        "blue",
+        "chest",
+        "close",
+        "detailed-texture",
+        "dungeon",
+        "engine-agnostic",
+        "fantasy",
+        "fbx",
+        "game-prop",
+        "glb",
+        "godot"
+      ],
+      "placeholder": false,
+      "animations": [
+        "idle",
+        "open",
+        "close",
+        "locked_shake",
+        "open_burst"
+      ],
+      "glb": {
+        "lod0": "chest-wood/realistic/blue/intact/chest_LOD0.glb",
+        "lod1": "chest-wood/realistic/blue/intact/chest_LOD1.glb"
+      },
+      "fbx": [],
+      "sprites": {
+        "idle": "chest-wood/realistic/blue/intact/sprites/idle.png",
+        "open": "chest-wood/realistic/blue/intact/sprites/open.png",
+        "close": "chest-wood/realistic/blue/intact/sprites/close.png",
+        "locked_shake": "chest-wood/realistic/blue/intact/sprites/locked_shake.png",
+        "open_burst": "chest-wood/realistic/blue/intact/sprites/open_burst.png"
+      },
+      "thumb": "chest-wood/realistic/blue/intact/thumb.png",
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": "chest-wood/realistic/LICENSE.txt",
+        "commercial_use": true
+      },
+      "dimensions_m": {
+        "units": "metres",
+        "width": 1.19212007522583,
+        "depth": 0.8458909392356873,
+        "closed_height": 0.9981756778433919,
+        "min_xyz": [
+          -0.5976220965385437,
+          -0.423569917678833,
+          -0.0030795903876423836
+        ],
+        "max_xyz": [
+          0.5944979786872864,
+          0.42232102155685425,
+          0.9950960874557495
+        ],
+        "hinge_blender_xyz": [
+          0,
+          0.3880000114440918,
+          0.5239999890327454
+        ]
+      },
+      "polycount_lod0": 2598
+    },
+    {
+      "id": "chest-wood-realistic-red-damaged",
+      "name": {
+        "en": "Realistic Red Treasure Chest (damaged)",
+        "zh": "写实 · 红宝箱 · 破损"
+      },
+      "category": "props",
+      "style_tier": "realistic",
+      "palette": "red",
+      "tags": [
+        "3d",
+        "chest",
+        "close",
+        "damaged",
+        "detailed-texture",
+        "dungeon",
+        "engine-agnostic",
+        "fantasy",
+        "fbx",
+        "game-prop",
+        "glb",
+        "godot"
+      ],
+      "placeholder": false,
+      "animations": [
+        "idle",
+        "open",
+        "close",
+        "locked_shake",
+        "open_burst"
+      ],
+      "glb": {
+        "lod0": "chest-wood/realistic/red/damaged/chest_LOD0.glb",
+        "lod1": "chest-wood/realistic/red/damaged/chest_LOD1.glb"
+      },
+      "fbx": [],
+      "sprites": {
+        "idle": "chest-wood/realistic/red/damaged/sprites/idle.png",
+        "open": "chest-wood/realistic/red/damaged/sprites/open.png",
+        "close": "chest-wood/realistic/red/damaged/sprites/close.png",
+        "locked_shake": "chest-wood/realistic/red/damaged/sprites/locked_shake.png",
+        "open_burst": "chest-wood/realistic/red/damaged/sprites/open_burst.png"
+      },
+      "thumb": "chest-wood/realistic/red/damaged/thumb.png",
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": "chest-wood/realistic/LICENSE.txt",
+        "commercial_use": true
+      },
+      "dimensions_m": {
+        "units": "metres",
+        "width": 1.19212007522583,
+        "depth": 0.8458909392356873,
+        "closed_height": 0.9981756778433919,
+        "min_xyz": [
+          -0.5976220965385437,
+          -0.423569917678833,
+          -0.0030795903876423836
+        ],
+        "max_xyz": [
+          0.5944979786872864,
+          0.42232102155685425,
+          0.9950960874557495
+        ],
+        "hinge_blender_xyz": [
+          0,
+          0.3880000114440918,
+          0.5239999890327454
+        ]
+      },
+      "polycount_lod0": 2595
+    },
+    {
+      "id": "chest-wood-stylized-wood-intact",
+      "name": {
+        "en": "Stylized Wood Treasure Chest (intact)",
+        "zh": "手绘风格化 · 木宝箱 · 完好"
+      },
+      "category": "props",
+      "style_tier": "stylized",
+      "palette": "wood",
+      "tags": [
+        "3d",
+        "chest",
+        "close",
+        "dungeon",
+        "engine-agnostic",
+        "fantasy",
+        "fbx",
+        "game-prop",
+        "glb",
+        "godot",
+        "gold",
+        "hand-painted"
+      ],
+      "placeholder": false,
+      "animations": [
+        "idle",
+        "open",
+        "close",
+        "locked_shake",
+        "open_burst"
+      ],
+      "glb": {
+        "lod0": "chest-wood/stylized/wood/intact/chest_LOD0.glb",
+        "lod1": "chest-wood/stylized/wood/intact/chest_LOD1.glb"
+      },
+      "fbx": [],
+      "sprites": {
+        "idle": "chest-wood/stylized/wood/intact/sprites/idle.png",
+        "open": "chest-wood/stylized/wood/intact/sprites/open.png",
+        "close": "chest-wood/stylized/wood/intact/sprites/close.png",
+        "locked_shake": "chest-wood/stylized/wood/intact/sprites/locked_shake.png",
+        "open_burst": "chest-wood/stylized/wood/intact/sprites/open_burst.png"
+      },
+      "thumb": "chest-wood/stylized/wood/intact/thumb.png",
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": "chest-wood/stylized/LICENSE.txt",
+        "commercial_use": true
+      },
+      "dimensions_m": {
+        "units": "metres",
+        "width": 1.2000000476837158,
+        "depth": 0.8634999990463257,
+        "closed_height": 0.9159999638795853,
+        "min_xyz": [
+          -0.6000000238418579,
+          -0.44749999046325684,
+          0.04999999701976776
+        ],
+        "max_xyz": [
+          0.6000000238418579,
+          0.41600000858306885,
+          0.965999960899353
+        ],
+        "hinge_blender_xyz": [
+          0,
+          0.3880000114440918,
+          0.5239999890327454
+        ]
+      },
+      "polycount_lod0": 588
+    },
+    {
+      "id": "chest-wood-stylized-gold-intact",
+      "name": {
+        "en": "Stylized Gold Treasure Chest (intact)",
+        "zh": "手绘风格化 · 金宝箱 · 完好"
+      },
+      "category": "props",
+      "style_tier": "stylized",
+      "palette": "gold",
+      "tags": [
+        "3d",
+        "chest",
+        "close",
+        "dungeon",
+        "engine-agnostic",
+        "fantasy",
+        "fbx",
+        "game-prop",
+        "glb",
+        "godot",
+        "gold",
+        "hand-painted"
+      ],
+      "placeholder": false,
+      "animations": [
+        "idle",
+        "open",
+        "close",
+        "locked_shake",
+        "open_burst"
+      ],
+      "glb": {
+        "lod0": "chest-wood/stylized/gold/intact/chest_LOD0.glb",
+        "lod1": "chest-wood/stylized/gold/intact/chest_LOD1.glb"
+      },
+      "fbx": [],
+      "sprites": {
+        "idle": "chest-wood/stylized/gold/intact/sprites/idle.png",
+        "open": "chest-wood/stylized/gold/intact/sprites/open.png",
+        "close": "chest-wood/stylized/gold/intact/sprites/close.png",
+        "locked_shake": "chest-wood/stylized/gold/intact/sprites/locked_shake.png",
+        "open_burst": "chest-wood/stylized/gold/intact/sprites/open_burst.png"
+      },
+      "thumb": "chest-wood/stylized/gold/intact/thumb.png",
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": "chest-wood/stylized/LICENSE.txt",
+        "commercial_use": true
+      },
+      "dimensions_m": {
+        "units": "metres",
+        "width": 1.2000000476837158,
+        "depth": 0.8634999990463257,
+        "closed_height": 0.9159999638795853,
+        "min_xyz": [
+          -0.6000000238418579,
+          -0.44749999046325684,
+          0.04999999701976776
+        ],
+        "max_xyz": [
+          0.6000000238418579,
+          0.41600000858306885,
+          0.965999960899353
+        ],
+        "hinge_blender_xyz": [
+          0,
+          0.3880000114440918,
+          0.5239999890327454
+        ]
+      },
+      "polycount_lod0": 588
+    },
+    {
+      "id": "chest-wood-clean-low-poly-wood-intact",
+      "name": {
+        "en": "Clean Low Poly Wood Treasure Chest (intact)",
+        "zh": "简洁多边形 · 木宝箱 · 完好"
+      },
+      "category": "props",
+      "style_tier": "clean-low-poly",
+      "palette": "wood",
+      "tags": [
+        "3d",
+        "chest",
+        "clean-low-poly",
+        "close",
+        "dungeon",
+        "engine-agnostic",
+        "fantasy",
+        "fbx",
+        "flat-color",
+        "game-prop",
+        "glb",
+        "godot"
+      ],
+      "placeholder": false,
+      "animations": [
+        "idle",
+        "open",
+        "close",
+        "locked_shake",
+        "open_burst"
+      ],
+      "glb": {
+        "lod0": "chest-wood/clean-low-poly/wood/intact/chest_LOD0.glb",
+        "lod1": "chest-wood/clean-low-poly/wood/intact/chest_LOD1.glb"
+      },
+      "fbx": [],
+      "sprites": {
+        "idle": "chest-wood/clean-low-poly/wood/intact/sprites/idle.png",
+        "open": "chest-wood/clean-low-poly/wood/intact/sprites/open.png",
+        "close": "chest-wood/clean-low-poly/wood/intact/sprites/close.png",
+        "locked_shake": "chest-wood/clean-low-poly/wood/intact/sprites/locked_shake.png",
+        "open_burst": "chest-wood/clean-low-poly/wood/intact/sprites/open_burst.png"
+      },
+      "thumb": "chest-wood/clean-low-poly/wood/intact/thumb.png",
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": "chest-wood/clean-low-poly/LICENSE.txt",
+        "commercial_use": true
+      },
+      "dimensions_m": {
+        "units": "metres",
+        "width": 1.2000000476837158,
+        "depth": 0.8634999990463257,
+        "closed_height": 0.825999990105629,
+        "min_xyz": [
+          -0.6000000238418579,
+          -0.44749999046325684,
+          0.04999999701976776
+        ],
+        "max_xyz": [
+          0.6000000238418579,
+          0.41600000858306885,
+          0.8759999871253967
+        ],
+        "hinge_blender_xyz": [
+          0,
+          0.3880000114440918,
+          0.5239999890327454
+        ]
+      },
+      "polycount_lod0": 548
+    },
+    {
+      "id": "chest-wood-clean-low-poly-gold-intact",
+      "name": {
+        "en": "Clean Low Poly Gold Treasure Chest (intact)",
+        "zh": "简洁多边形 · 金宝箱 · 完好"
+      },
+      "category": "props",
+      "style_tier": "clean-low-poly",
+      "palette": "gold",
+      "tags": [
+        "3d",
+        "chest",
+        "clean-low-poly",
+        "close",
+        "dungeon",
+        "engine-agnostic",
+        "fantasy",
+        "fbx",
+        "flat-color",
+        "game-prop",
+        "glb",
+        "godot"
+      ],
+      "placeholder": false,
+      "animations": [
+        "idle",
+        "open",
+        "close",
+        "locked_shake",
+        "open_burst"
+      ],
+      "glb": {
+        "lod0": "chest-wood/clean-low-poly/gold/intact/chest_LOD0.glb",
+        "lod1": "chest-wood/clean-low-poly/gold/intact/chest_LOD1.glb"
+      },
+      "fbx": [],
+      "sprites": {
+        "idle": "chest-wood/clean-low-poly/gold/intact/sprites/idle.png",
+        "open": "chest-wood/clean-low-poly/gold/intact/sprites/open.png",
+        "close": "chest-wood/clean-low-poly/gold/intact/sprites/close.png",
+        "locked_shake": "chest-wood/clean-low-poly/gold/intact/sprites/locked_shake.png",
+        "open_burst": "chest-wood/clean-low-poly/gold/intact/sprites/open_burst.png"
+      },
+      "thumb": "chest-wood/clean-low-poly/gold/intact/thumb.png",
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": "chest-wood/clean-low-poly/LICENSE.txt",
+        "commercial_use": true
+      },
+      "dimensions_m": {
+        "units": "metres",
+        "width": 1.2000000476837158,
+        "depth": 0.8634999990463257,
+        "closed_height": 0.825999990105629,
+        "min_xyz": [
+          -0.6000000238418579,
+          -0.44749999046325684,
+          0.04999999701976776
+        ],
+        "max_xyz": [
+          0.6000000238418579,
+          0.41600000858306885,
+          0.8759999871253967
+        ],
+        "hinge_blender_xyz": [
+          0,
+          0.3880000114440918,
+          0.5239999890327454
+        ]
+      },
+      "polycount_lod0": 548
+    },
+    {
+      "id": "chest-wood-pixel-art-wood-intact",
+      "name": {
+        "en": "Pixel Art Wood Treasure Chest (intact)",
+        "zh": "像素艺术 · 木宝箱 · 完好"
+      },
+      "category": "props",
+      "style_tier": "pixel-art",
+      "palette": "wood",
+      "tags": [
+        "3d",
+        "chest",
+        "close",
+        "dungeon",
+        "engine-agnostic",
+        "fantasy",
+        "fbx",
+        "game-prop",
+        "glb",
+        "godot",
+        "gold",
+        "idle"
+      ],
+      "placeholder": false,
+      "animations": [
+        "idle",
+        "open",
+        "close",
+        "locked_shake",
+        "open_burst"
+      ],
+      "glb": {
+        "lod0": "chest-wood/pixel-art/wood/intact/chest_LOD0.glb",
+        "lod1": "chest-wood/pixel-art/wood/intact/chest_LOD1.glb"
+      },
+      "fbx": [],
+      "sprites": {
+        "idle": "chest-wood/pixel-art/wood/intact/sprites/idle.png",
+        "open": "chest-wood/pixel-art/wood/intact/sprites/open.png",
+        "close": "chest-wood/pixel-art/wood/intact/sprites/close.png",
+        "locked_shake": "chest-wood/pixel-art/wood/intact/sprites/locked_shake.png",
+        "open_burst": "chest-wood/pixel-art/wood/intact/sprites/open_burst.png"
+      },
+      "thumb": "chest-wood/pixel-art/wood/intact/thumb.png",
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": "chest-wood/pixel-art/LICENSE.txt",
+        "commercial_use": true
+      },
+      "dimensions_m": {
+        "units": "metres",
+        "width": 1.2000000476837158,
+        "depth": 0.8634999990463257,
+        "closed_height": 0.8660000115633011,
+        "min_xyz": [
+          -0.6000000238418579,
+          -0.44749999046325684,
+          0.04999999701976776
+        ],
+        "max_xyz": [
+          0.6000000238418579,
+          0.41600000858306885,
+          0.9160000085830688
+        ],
+        "hinge_blender_xyz": [
+          0,
+          0.3880000114440918,
+          0.5239999890327454
+        ]
+      },
+      "polycount_lod0": 596
+    },
+    {
+      "id": "chest-wood-pixel-art-gold-intact",
+      "name": {
+        "en": "Pixel Art Gold Treasure Chest (intact)",
+        "zh": "像素艺术 · 金宝箱 · 完好"
+      },
+      "category": "props",
+      "style_tier": "pixel-art",
+      "palette": "gold",
+      "tags": [
+        "3d",
+        "chest",
+        "close",
+        "dungeon",
+        "engine-agnostic",
+        "fantasy",
+        "fbx",
+        "game-prop",
+        "glb",
+        "godot",
+        "gold",
+        "idle"
+      ],
+      "placeholder": false,
+      "animations": [
+        "idle",
+        "open",
+        "close",
+        "locked_shake",
+        "open_burst"
+      ],
+      "glb": {
+        "lod0": "chest-wood/pixel-art/gold/intact/chest_LOD0.glb",
+        "lod1": "chest-wood/pixel-art/gold/intact/chest_LOD1.glb"
+      },
+      "fbx": [],
+      "sprites": {
+        "idle": "chest-wood/pixel-art/gold/intact/sprites/idle.png",
+        "open": "chest-wood/pixel-art/gold/intact/sprites/open.png",
+        "close": "chest-wood/pixel-art/gold/intact/sprites/close.png",
+        "locked_shake": "chest-wood/pixel-art/gold/intact/sprites/locked_shake.png",
+        "open_burst": "chest-wood/pixel-art/gold/intact/sprites/open_burst.png"
+      },
+      "thumb": "chest-wood/pixel-art/gold/intact/thumb.png",
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": "chest-wood/pixel-art/LICENSE.txt",
+        "commercial_use": true
+      },
+      "dimensions_m": {
+        "units": "metres",
+        "width": 1.2000000476837158,
+        "depth": 0.8634999990463257,
+        "closed_height": 0.8660000115633011,
+        "min_xyz": [
+          -0.6000000238418579,
+          -0.44749999046325684,
+          0.04999999701976776
+        ],
+        "max_xyz": [
+          0.6000000238418579,
+          0.41600000858306885,
+          0.9160000085830688
+        ],
+        "hinge_blender_xyz": [
+          0,
+          0.3880000114440918,
+          0.5239999890327454
+        ]
+      },
+      "polycount_lod0": 596
+    },
+    {
+      "id": "wall-stone",
+      "procedural": "wall",
+      "category": "structure",
+      "palette": "stone",
+      "name": {
+        "en": "Dungeon Stone Wall",
+        "zh": "地下城石墙"
+      },
+      "tags": [
+        "wall",
+        "dungeon",
+        "stone",
+        "structure"
+      ],
+      "style_tier": "procedural",
+      "placeholder": true,
+      "animations": [],
+      "glb": null,
+      "fbx": [],
+      "sprites": null,
+      "thumb": null,
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": null,
+        "commercial_use": true
+      },
+      "dimensions_m": null,
+      "polycount_lod0": null
+    },
+    {
+      "id": "floor-stone",
+      "procedural": "floor",
+      "category": "structure",
+      "palette": "stone",
+      "name": {
+        "en": "Dungeon Stone Floor",
+        "zh": "地下城石地板"
+      },
+      "tags": [
+        "floor",
+        "dungeon",
+        "stone",
+        "structure"
+      ],
+      "style_tier": "procedural",
+      "placeholder": true,
+      "animations": [],
+      "glb": null,
+      "fbx": [],
+      "sprites": null,
+      "thumb": null,
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": null,
+        "commercial_use": true
+      },
+      "dimensions_m": null,
+      "polycount_lod0": null
+    },
+    {
+      "id": "torch-wall",
+      "procedural": "torch",
+      "category": "lighting",
+      "palette": "iron",
+      "name": {
+        "en": "Wall Torch",
+        "zh": "墙上火把"
+      },
+      "tags": [
+        "torch",
+        "fire",
+        "lighting",
+        "dungeon"
+      ],
+      "style_tier": "procedural",
+      "placeholder": true,
+      "animations": [],
+      "glb": null,
+      "fbx": [],
+      "sprites": null,
+      "thumb": null,
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": null,
+        "commercial_use": true
+      },
+      "dimensions_m": null,
+      "polycount_lod0": null
+    },
+    {
+      "id": "barrel-wood",
+      "procedural": "barrel",
+      "category": "props",
+      "palette": "wood",
+      "name": {
+        "en": "Wooden Barrel",
+        "zh": "木桶"
+      },
+      "tags": [
+        "barrel",
+        "wood",
+        "props",
+        "dungeon"
+      ],
+      "style_tier": "procedural",
+      "placeholder": true,
+      "animations": [],
+      "glb": null,
+      "fbx": [],
+      "sprites": null,
+      "thumb": null,
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": null,
+        "commercial_use": true
+      },
+      "dimensions_m": null,
+      "polycount_lod0": null
+    },
+    {
+      "id": "gold-pile",
+      "procedural": "gold-pile",
+      "category": "props",
+      "palette": "gold",
+      "name": {
+        "en": "Gold Coin Pile",
+        "zh": "金币堆"
+      },
+      "tags": [
+        "gold",
+        "coins",
+        "loot",
+        "props"
+      ],
+      "style_tier": "procedural",
+      "placeholder": true,
+      "animations": [],
+      "glb": null,
+      "fbx": [],
+      "sprites": null,
+      "thumb": null,
+      "license": {
+        "id": "pixjuice-free-commercial",
+        "file": null,
+        "commercial_use": true
+      },
+      "dimensions_m": null,
+      "polycount_lod0": null
+    }
+  ]
+}

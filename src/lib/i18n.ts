@@ -37,6 +37,9 @@ const FX: Partial<Record<Locale, Record<string, FxEntry>>> = {
 const STORAGE_KEY = "pixjuice-lang";
 
 function detect(): Locale {
+  const prefix = location.pathname.split("/")[1];
+  if (["zh", "ja", "ko", "es"].includes(prefix)) return prefix as Locale;
+  if (/^\/(templates|free-assets)(\/|$)/.test(location.pathname)) return "en";
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved && saved in DICTS) return saved as Locale;
@@ -101,6 +104,11 @@ export function onLocaleChange(fn: Listener): void {
 /** Swap the session language in place — no reload, so ?fx= and scroll position survive. */
 export function setLocale(next: Locale): void {
   if (!(next in DICTS) || next === locale) return;
+  const path = location.pathname.replace(/^\/(zh|ja|ko|es)(?=\/)/, "");
+  if (/^\/(templates|free-assets)(\/|$)/.test(path)) {
+    location.assign((next === "en" ? "" : "/" + next) + path + location.search + location.hash);
+    return;
+  }
   locale = next;
   try {
     localStorage.setItem(STORAGE_KEY, next);
@@ -123,7 +131,9 @@ export function setLocale(next: Locale): void {
  */
 export function applyStaticText(root: ParentNode = document): void {
   root.querySelectorAll<HTMLElement>("[data-i18n]").forEach((e) => {
-    e.textContent = t(e.dataset.i18n!);
+    let vars: Record<string, string | number> | undefined;
+    try { vars = JSON.parse(e.dataset.i18nVars || "null") ?? undefined; } catch { /* static text */ }
+    e.textContent = t(e.dataset.i18n!, vars);
   });
   root.querySelectorAll<HTMLElement>("[data-i18n-html]").forEach((e) => {
     e.innerHTML = t(e.dataset.i18nHtml!);

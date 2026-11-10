@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Save / Load System — game UI template (CC0)</title>
+  <meta name="description" content="Standalone vanilla HTML/CSS/JS save menu: multiple slots with thumbnails, autosave, overwrite & delete confirmation, JSON import/export, playtime tracking. Double-click index.html to run.">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* page chrome only — the template itself is styled by styles.css */
+    body { margin: 0; background: #17141f; color: #f2eef8; font: 15px/1.5 system-ui, sans-serif; }
+    .standalone { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
+    header h1 { margin: 0 0 4px; font-size: 24px; }
+    header p { margin: 0 0 20px; color: #a49cbd; font-size: 14px; }
+    footer { margin-top: 26px; font-size: 13px; color: #a49cbd; }
+  </style>
+</head>
+<body>
+  <main class="standalone">
+    <header>
+      <h1>Save / Load System</h1>
+      <p>Game UI template from the PixJuice free template library &middot; zero dependencies &middot; CC0</p>
+    </header>
+    <div id="app"></div>
+    <footer>The demo game state persists in your browser's localStorage. Template code: <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</footer>
+  </main>
+  <script src="js/save-core.js"></script>
+  <script src="js/skins.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
