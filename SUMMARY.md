@@ -1,5 +1,22 @@
 # PixJuice — finish summary
 
+> **UI languages pass (Nov 8, 2026)** — added a 5-language UI: English (default), 简体中文, 日本語,
+> 한국어, Español, picked from a compact `<select>` in the header of every page. SEO is untouched:
+> canonical URLs stay `/`, `/editor/?fx=…`, `/credits/` (no `/zh/` trees, no hreflang); raw HTML,
+> titles, and first paint remain English (`<html lang>` starts `en`); after a pick, only that
+> session's `lang`, title, and visible text swap in place — no reload, so `?fx=` survives. Choice
+> persists in `localStorage`; first visit auto-matches `navigator.language` (zh/ja/ko/es, else en).
+> Translated: header/nav/footer, homepage subtitle/chips/category names+blurbs/search placeholder/
+> empty state/"loop" tags, editor Look/Sound/Export panels and every label, button, hint, fact and
+> export note (plus palette-preset, backdrop, and sound-family names), credits prose (Patch, Hugo
+> Duprez, pixelfx, MIT kept verbatim). Effect display names + descriptions still render in
+> English: the per-language fx dictionaries (`src/lib/locales/fx-{zh,ja,ko,es}.json`) are empty
+> stubs by design — `fxName`/`fxDesc` fall back to English until they're filled. Missing keys
+> always fall back
+> to English — raw key paths can't render. Checked headless at 390×844: no horizontal overflow on
+> `/`, `/editor/?fx=ice/frost-nova`, `/credits/`; tiles still on the first phone screen; 36/36
+> automated i18n checks green; `pnpm build` green.
+
 > **Mobile pass (Nov 8, 2026)** — made the site usable on phones (checked at 390×844; desktop
 > >940px unchanged). Home: the sticky filter bar collapsed from ~719px of wrapping category chips
 > to ~112px — search is now full-width at the top and the chip row hides behind a "categories ▾"

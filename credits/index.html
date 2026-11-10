@@ -30,27 +30,34 @@
         </svg>
         <div>
           <h1>Pix<em>Juice</em></h1>
-          <p class="sub">credits &amp; licenses</p>
+          <p class="sub" data-i18n="credits.sub">credits &amp; licenses</p>
         </div>
       </a>
       <nav class="nav">
-        <a href="/">← catalog</a>
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/" data-i18n="nav.backCatalog">← catalog</a>
       </nav>
     </div>
   </header>
 
   <main class="prose">
-    <h1>Credits &amp; licenses</h1>
-    <p class="lede">PixJuice is a thin studio around other people's excellent pixel art. Here is who made what, and the licenses that let us ship it.</p>
+    <h1 data-i18n="credits.h1">Credits &amp; licenses</h1>
+    <p class="lede" data-i18n="credits.lede">PixJuice is a thin studio around other people's excellent pixel art. Here is who made what, and the licenses that let us ship it.</p>
 
-    <h2>The effects: pixelfx</h2>
-    <p>
+    <h2 data-i18n="credits.h2fx">The effects: pixelfx</h2>
+    <p data-i18n-html="credits.p1">
       <strong>Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a>
       by Patch and Hugo Duprez, MIT License.</strong>
       All 244 effects in this catalog — fire, explosions, ice, melee, arcane, weather and the rest — are rendered live
       from the pixelfx library's own code. Nothing here would exist without it.
     </p>
-    <p>
+    <p data-i18n-html="credits.p2">
       pixelfx itself builds on more good work, described in its NOTICE file:
       <code>src/core/sim.js</code> and some effects adapt
       <a href="https://www.spritefusion.com/pixel-art-vfx" target="_blank" rel="noopener">Hugo Duprez's open-source pixel art VFX</a> (MIT),
@@ -58,12 +65,12 @@
       <a href="https://github.com/rehan-remade/hollow-crown" target="_blank" rel="noopener">Hollow Crown</a> (MIT).
     </p>
     <ul>
-      <li><a href="/licenses/pixelfx-LICENSE.txt" download>pixelfx LICENSE (MIT)</a> — full text, as required by the license</li>
-      <li><a href="/licenses/pixelfx-NOTICE.md" download>pixelfx NOTICE.md</a> — the third-party notices above</li>
-      <li><a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">github.com/patch-gg/pixelfx</a> — source and docs</li>
+      <li data-i18n-html="credits.li1"><a href="/licenses/pixelfx-LICENSE.txt" download>pixelfx LICENSE (MIT)</a> — full text, as required by the license</li>
+      <li data-i18n-html="credits.li2"><a href="/licenses/pixelfx-NOTICE.md" download>pixelfx NOTICE.md</a> — the third-party notices above</li>
+      <li data-i18n-html="credits.li3"><a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">github.com/patch-gg/pixelfx</a> — source and docs</li>
     </ul>
 
-    <h2>The MIT License (pixelfx)</h2>
+    <h2 data-i18n="credits.h2mit">The MIT License (pixelfx)</h2>
     <pre>MIT License
 
 Copyright (c) 2026 Patch
@@ -87,16 +94,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.</pre>
 
-    <h2>What's PixJuice's, and what isn't</h2>
+    <h2 data-i18n="credits.h2own">What's PixJuice's, and what isn't</h2>
     <ul>
-      <li><strong>PixJuice is not "pixelfx".</strong> pixelfx is the upstream library and its name belongs to its authors. PixJuice is an independent tool built on top of it, and is not affiliated with or endorsed by Patch or Hugo Duprez.</li>
-      <li><strong>Fonts:</strong> this site uses your system UI fonts. The pixel font used by the official pixelfx gallery ("Patch Pixel") is <em>not</em> MIT-licensed and is deliberately not used here.</li>
-      <li><strong>GIF encoding</strong> is done in the browser with <a href="https://github.com/mattdesl/gifenc" target="_blank" rel="noopener">gifenc</a> (MIT).</li>
-      <li><strong>The PixJuice app code</strong> (editor, exports, sound synthesis, styling) is MIT too; the exported effect art is covered by pixelfx's MIT license, so you can use it in your games, commercial included.</li>
+      <li data-i18n-html="credits.own1"><strong>PixJuice is not "pixelfx".</strong> pixelfx is the upstream library and its name belongs to its authors. PixJuice is an independent tool built on top of it, and is not affiliated with or endorsed by Patch or Hugo Duprez.</li>
+      <li data-i18n-html="credits.own2"><strong>Fonts:</strong> this site uses your system UI fonts. The pixel font used by the official pixelfx gallery ("Patch Pixel") is <em>not</em> MIT-licensed and is deliberately not used here.</li>
+      <li data-i18n-html="credits.own3"><strong>GIF encoding</strong> is done in the browser with <a href="https://github.com/mattdesl/gifenc" target="_blank" rel="noopener">gifenc</a> (MIT).</li>
+      <li data-i18n-html="credits.own4"><strong>The PixJuice app code</strong> (editor, exports, sound synthesis, styling) is MIT too; the exported effect art is covered by pixelfx's MIT license, so you can use it in your games, commercial included.</li>
     </ul>
 
-    <h2>Exported files &amp; attribution</h2>
-    <p>
+    <h2 data-i18n="credits.h2exp">Exported files &amp; attribution</h2>
+    <p data-i18n-html="credits.expP">
       Every exported sprite sheet and JSON sidecar records where the art came from: the JSON's <code>meta.app</code> points at
       the pixelfx repository and <code>meta.pixelfx.id</code> names the effect. You don't owe PixJuice anything for exports —
       but a nod to <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> in your credits screen
@@ -106,9 +113,11 @@ SOFTWARE.</pre>
 
   <footer>
     <div class="foot-in">
-      <span>Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
-      <span><a href="/">catalog</a></span>
+      <span data-i18n-html="foot.credit">Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
+      <span data-i18n-html="foot.catalog"><a href="/">catalog</a></span>
     </div>
   </footer>
+
+  <script type="module" src="/src/credits.ts"></script>
 </body>
 </html>

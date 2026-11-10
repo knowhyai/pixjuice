@@ -49,23 +49,28 @@ export function defaultPalette(entry: CatalogEntry): string[] | null {
   return Array.isArray(pal) && pal.length ? (pal as string[]) : null;
 }
 
-/** What the body does around the effect, in a line — for effects with an act. */
-export function actFacts(mod: FxModule, meta: FxMeta): string {
+/** What the body does around the effect, in a line — for effects with an act.
+ *  Takes a translator so the phrase pieces localize (ed.* keys). */
+export function actFacts(
+  mod: FxModule,
+  meta: FxMeta,
+  tr: (key: string, vars?: Record<string, string | number>) => string,
+): string {
   const k = mod.act?.poses ?? [];
   if (!k.length) return "";
   const lead = Math.max(0, -k[0][0]);
   const end = k[k.length - 1][0] - meta.duration;
   const hits = (mod.act?.hits ?? []).filter((h) => (h as { stop?: number }).stop);
   const parts: string[] = [];
-  if (lead > 0) parts.push(`${lead.toFixed(2)} s wind-up`);
+  if (lead > 0) parts.push(tr("ed.windup", { n: lead.toFixed(2) }));
   if (hits.length)
     parts.push(
       hits.length === 1
-        ? `${Math.round((hits[0] as { stop: number }).stop * 1000)} ms freeze`
-        : `${hits.length} freezes`,
+        ? tr("ed.freezeMs", { n: Math.round((hits[0] as { stop: number }).stop * 1000) })
+        : tr("ed.freezes", { n: hits.length }),
     );
-  if (!meta.loop && end > 0.02) parts.push(`${end.toFixed(2)} s recovery`);
-  return parts.join(", ") || "the body moves with it";
+  if (!meta.loop && end > 0.02) parts.push(tr("ed.recovery", { n: end.toFixed(2) }));
+  return parts.join(", ") || tr("ed.actMoves");
 }
 
 /** A file-friendly base name for exports: "ice/frost-nova" -> "pixjuice-ice-frost-nova". */

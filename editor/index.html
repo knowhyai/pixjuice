@@ -37,8 +37,15 @@
         </div>
       </a>
       <nav class="nav">
-        <a href="/">← catalog</a>
-        <a href="/credits/">credits</a>
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/" data-i18n="nav.backCatalog">← catalog</a>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
       </nav>
     </div>
   </header>
@@ -46,17 +53,17 @@
   <main class="editor-main wrap">
     <div id="ed-error" class="center-box" hidden>
       <h1>4<span>0</span>4</h1>
-      <p id="ed-error-msg">That effect doesn't exist.</p>
-      <p><a class="btn primary" href="/">Back to the catalog</a></p>
+      <p id="ed-error-msg" data-i18n="ed.err404">That effect doesn't exist.</p>
+      <p><a class="btn primary" href="/" data-i18n="ed.backBtn">Back to the catalog</a></p>
     </div>
 
     <div class="ed-grid" id="ed-grid">
       <div class="stagebox">
-        <div class="stagewrap"><canvas id="stage" aria-label="Live effect preview"></canvas></div>
+        <div class="stagewrap"><canvas id="stage" aria-label="Live effect preview" data-i18n-aria="ed.stageAria"></canvas></div>
         <div class="transport">
-          <button class="btn" id="play" type="button" aria-pressed="true">⏸ pause</button>
-          <button class="btn" id="replay-btn" type="button" title="Play from the start">↺ replay</button>
-          <input id="scrub" type="range" min="0" max="1000" value="0" step="1" aria-label="Scrub timeline">
+          <button class="btn" id="play" type="button" aria-pressed="true" data-i18n="ed.pause">⏸ pause</button>
+          <button class="btn" id="replay-btn" type="button" title="Play from the start" data-i18n="ed.replay" data-i18n-title="ed.replayTitle">↺ replay</button>
+          <input id="scrub" type="range" min="0" max="1000" value="0" step="1" aria-label="Scrub timeline" data-i18n-aria="ed.scrubAria">
           <span class="time" id="time">0.00s</span>
         </div>
         <div class="ed-meta">
@@ -69,101 +76,101 @@
 
       <aside>
         <section class="panel" id="look-panel">
-          <h3>Look</h3>
+          <h3 data-i18n="ed.look">Look</h3>
           <div class="row">
-            <label for="pal">palette</label>
+            <label for="pal" data-i18n="ed.palette">palette</label>
             <select id="pal" class="grow" aria-label="Palette preset"></select>
           </div>
-          <div class="swatches" id="swatches" role="group" aria-label="Palette stops — click one to edit that color"></div>
+          <div class="swatches" id="swatches" role="group" aria-label="Palette stops — click one to edit that color" data-i18n-aria="ed.swatchesAria"></div>
           <div class="row">
-            <label for="c0">custom</label>
+            <label for="c0" data-i18n="ed.custom">custom</label>
             <input type="color" id="c0" value="#1a0b16"> <input type="color" id="c1" value="#a8304a"> <input type="color" id="c2" value="#ffe2ea">
-            <button class="btn" id="pal-reset" type="button" title="Back to the effect's own palette">reset</button>
+            <button class="btn" id="pal-reset" type="button" title="Back to the effect's own palette" data-i18n="ed.reset" data-i18n-title="ed.resetTitle">reset</button>
           </div>
           <div class="row">
-            <label for="seed">seed</label>
-            <input type="number" id="seed" min="0" max="999999" step="1" style="width: 90px" placeholder="auto">
-            <button class="btn" id="dice" type="button" title="Random seed">🎲 random</button>
+            <label for="seed" data-i18n="ed.seed">seed</label>
+            <input type="number" id="seed" min="0" max="999999" step="1" style="width: 90px" placeholder="auto" data-i18n-ph="ed.auto">
+            <button class="btn" id="dice" type="button" title="Random seed" data-i18n="ed.random" data-i18n-title="ed.randomTitle">🎲 random</button>
           </div>
-          <p class="hint">seed blank = the effect's own; any number rerolls the variation.</p>
+          <p class="hint" data-i18n="ed.seedHint">seed blank = the effect's own; any number rerolls the variation.</p>
           <div class="row">
-            <label>mirror</label>
+            <label data-i18n="ed.mirror">mirror</label>
             <div class="btnrow">
-              <button class="btn" id="flip-h" type="button" aria-pressed="false">flip H</button>
-              <button class="btn" id="flip-v" type="button" aria-pressed="false">flip V</button>
+              <button class="btn" id="flip-h" type="button" aria-pressed="false" data-i18n="ed.flipH">flip H</button>
+              <button class="btn" id="flip-v" type="button" aria-pressed="false" data-i18n="ed.flipV">flip V</button>
             </div>
           </div>
           <div class="row">
-            <label for="angle">angle</label>
+            <label for="angle" data-i18n="ed.angle">angle</label>
             <input class="grow" type="range" id="angle" min="0" max="360" step="1" value="0">
             <span class="val" id="angle-val">0°</span>
           </div>
           <div class="row">
-            <label for="glow">glow</label>
+            <label for="glow" data-i18n="ed.glow">glow</label>
             <input class="grow" type="range" id="glow" min="0" max="2" step="0.05" value="1">
             <span class="val" id="glow-val">1.00</span>
           </div>
           <div class="row">
-            <label>backdrop</label>
+            <label data-i18n="ed.backdrop">backdrop</label>
             <div class="btnrow" id="bgs"></div>
           </div>
           <div class="row" id="actor-row">
-            <label>character</label>
+            <label data-i18n="ed.character">character</label>
             <button class="btn" id="actor" type="button" aria-pressed="true">✓ shown</button>
           </div>
           <div class="row" id="replay-row">
-            <label>replay</label>
+            <label data-i18n="ed.replayLabel">replay</label>
             <button class="btn" id="replay" type="button" aria-pressed="true">✓ auto</button>
           </div>
         </section>
 
         <section class="panel">
-          <h3>Export</h3>
+          <h3 data-i18n="ed.export">Export</h3>
           <div class="btnrow ex-grid" style="margin-bottom: 10px;">
-            <button class="btn primary" id="exp-zip" type="button">⬇ sheet + JSON (.zip)</button>
-            <button class="btn" id="exp-sheet" type="button">PNG sheet</button>
-            <button class="btn" id="exp-json" type="button">JSON</button>
+            <button class="btn primary" id="exp-zip" type="button" data-i18n="ed.expZip">⬇ sheet + JSON (.zip)</button>
+            <button class="btn" id="exp-sheet" type="button" data-i18n="ed.expSheet">PNG sheet</button>
+            <button class="btn" id="exp-json" type="button" data-i18n="ed.expJson">JSON</button>
           </div>
           <div class="btnrow ex-grid">
             <span class="gif-group">
               <button class="btn" id="exp-gif" type="button">GIF</button>
-              <label class="gif-scale" for="gif-scale">GIF scale</label>
+              <label class="gif-scale" for="gif-scale" data-i18n="ed.gifScale">GIF scale</label>
               <select id="gif-scale" style="width: 74px">
                 <option value="1">1×</option>
                 <option value="2" selected>2×</option>
                 <option value="3">3×</option>
               </select>
             </span>
-            <button class="btn" id="exp-frame" type="button">current frame PNG</button>
+            <button class="btn" id="exp-frame" type="button" data-i18n="ed.expFrame">current frame PNG</button>
             <button class="btn" id="exp-wav" type="button">WAV</button>
           </div>
           <div class="btnrow ex-grid" style="margin-top: 10px;">
-            <button class="btn" id="exp-src" type="button" title="This effect's pixelfx module, with your palette/seed/flip/angle noted in a header comment">⬇ JS source</button>
-            <button class="btn" id="copy-src" type="button">⧉ copy source</button>
-            <button class="btn" id="copy-prompt" type="button" title="Name, description, tags and your current dials — written so any model can recreate or vary this effect">⧉ copy prompt</button>
+            <button class="btn" id="exp-src" type="button" title="This effect's pixelfx module, with your palette/seed/flip/angle noted in a header comment" data-i18n="ed.expSrc" data-i18n-title="ed.expSrcTitle">⬇ JS source</button>
+            <button class="btn" id="copy-src" type="button" data-i18n="ed.copySrc">⧉ copy source</button>
+            <button class="btn" id="copy-prompt" type="button" title="Name, description, tags and your current dials — written so any model can recreate or vary this effect" data-i18n="ed.copyPrompt" data-i18n-title="ed.copyPromptTitle">⧉ copy prompt</button>
           </div>
-          <p class="export-note" id="exp-note">Sprite sheets are transparent PNGs with an Aseprite-style JSON sidecar (frame rects, durations, fps, loop, columns, pivot).</p>
+          <p class="export-note" id="exp-note" data-i18n="ed.expNote">Sprite sheets are transparent PNGs with an Aseprite-style JSON sidecar (frame rects, durations, fps, loop, columns, pivot).</p>
         </section>
 
         <section class="panel">
-          <h3>Sound</h3>
+          <h3 data-i18n="ed.sound">Sound</h3>
           <div class="row">
-            <label for="speed2">family</label>
+            <label for="speed2" data-i18n="ed.family">family</label>
             <span class="grow" id="sfx-family" style="font: 600 13px var(--mono); color: var(--acc2);">—</span>
           </div>
           <div class="row">
             <label></label>
             <div class="btnrow">
-              <button class="btn" id="sfx-play" type="button">▶ play SFX</button>
+              <button class="btn" id="sfx-play" type="button" data-i18n="ed.playSfx">▶ play SFX</button>
               <button class="btn" id="sfx-sync" type="button" aria-pressed="true">sync: on</button>
               <button class="btn" id="sfx-mute" type="button" aria-pressed="false">mute</button>
             </div>
           </div>
           <div class="row">
-            <label for="sfx-vol">volume</label>
+            <label for="sfx-vol" data-i18n="ed.volume">volume</label>
             <input class="grow" type="range" id="sfx-vol" min="0" max="1" step="0.05" value="0.5">
           </div>
-          <p class="export-note">Chip-style SFX synthesized with Web Audio, tuned to the effect's family. It fires when the effect restarts.</p>
+          <p class="export-note" data-i18n="ed.sfxNote">Chip-style SFX synthesized with Web Audio, tuned to the effect's family. It fires when the effect restarts.</p>
         </section>
       </aside>
     </div>
@@ -171,8 +178,8 @@
 
   <footer>
     <div class="foot-in">
-      <span>Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
-      <span><a href="/credits/">credits &amp; licenses</a></span>
+      <span data-i18n-html="foot.credit">Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
+      <span data-i18n-html="foot.credits2"><a href="/credits/">credits &amp; licenses</a></span>
     </div>
   </footer>
 

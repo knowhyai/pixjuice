@@ -4,14 +4,19 @@
 import "./style.css";
 import { CATALOG, CATEGORIES, isScreen, type CatalogEntry } from "./lib/catalog";
 import { Player, defaultStyle } from "./lib/player";
+import { applyStaticText, fxDesc, fxName, getLocale, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
 
-/** Display name for a category id: "spawn & death" → "Spawn & Death", "scifi" → "Sci-Fi". */
-const CAT_FIX: Record<string, string> = { "sci-fi": "Sci-Fi", ui: "UI" };
-function catLabel(name: string): string {
-  return CAT_FIX[name] ?? name.replace(/(^|[\s&-])([a-z])/g, (_, d: string, c: string) => d + c.toUpperCase());
+/** Localized display name for a category id; unknown ids fall back to the id itself. */
+function catLabel(id: string): string {
+  return t(`cat.${id}`);
 }
 
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/** Tile corner label: "loop" or the play length, in the active language. */
+function tileLen(fx: CatalogEntry): string {
+  return fx.meta.loop ? t("home.loop") : `${+fx.meta.duration.toFixed(2)}s`;
+}
 const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector(s) as T;
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -27,12 +32,14 @@ function el<K extends keyof HTMLElementTagNameMap>(
 interface Tile {
   fx: CatalogEntry;
   fig: HTMLElement;
+  nameEl: HTMLElement;
+  lenEl: HTMLElement;
   player: Player | null;
   visible: boolean;
 }
 
 const tiles: Tile[] = [];
-const sections: { id: string; sec: HTMLElement; list: CatalogEntry[] }[] = [];
+const sections: { id: string; sec: HTMLElement; head: HTMLElement; blurb: HTMLElement; list: CatalogEntry[] }[] = [];
 
 function build() {
   const main = $("#grid");
@@ -40,24 +47,22 @@ function build() {
     const list = CATALOG.filter((f) => f.cat === c.id);
     if (!list.length) continue;
     const grid = el("div", { className: "grid" });
+    const head = el("h2", { textContent: catLabel(c.id) });
+    const blurb = el("p", { className: "blurb", textContent: t(`blurb.${c.id}`) });
     const sec = el("section", { className: "cat", id: `cat-${c.id}` }, [
-      el("div", { className: "sec-head" }, [
-        el("h2", { textContent: catLabel(c.name) }),
-        el("p", { className: "blurb", textContent: c.blurb }),
-      ]),
+      el("div", { className: "sec-head" }, [head, blurb]),
       grid,
     ]);
-    sections.push({ id: c.id, sec, list });
+    sections.push({ id: c.id, sec, head, blurb, list });
     for (const fx of list) {
       const cv = el("canvas", { ariaLabel: fx.name });
+      const nameEl = el("b", { textContent: fxName(fx) });
+      const lenEl = el("small", { textContent: tileLen(fx) });
       const fig = el("figure", { className: "tile", tabIndex: 0 }, [
         el("div", { className: "stage" }, [cv]),
-        el("figcaption", {}, [
-          el("b", { textContent: fx.name }),
-          el("small", { textContent: fx.meta.loop ? "loop" : `${+fx.meta.duration.toFixed(2)}s` }),
-        ]),
+        el("figcaption", {}, [nameEl, lenEl]),
       ]);
-      const t: Tile = { fx, fig, player: null, visible: false };
+      const tile: Tile = { fx, fig, nameEl, lenEl, player: null, visible: false };
       const go = () => (location.href = `editor/?fx=${encodeURIComponent(fx.id)}`);
       fig.addEventListener("click", go);
       fig.addEventListener("keydown", (e) => {
@@ -67,7 +72,7 @@ function build() {
         }
       });
       grid.append(fig);
-      tiles.push(t);
+      tiles.push(tile);
     }
     main.append(sec);
   }
@@ -101,20 +106,21 @@ function build() {
 
 const state = { cat: "all", q: "" };
 
+// chip label text nodes, kept so a language switch can relabel them in place
+const chipLabels: { id: string; node: Text }[] = [];
+
 function chips() {
   const box = $("#chips");
   const mk = (id: string, label: string, n: number) => {
-    const b = el("button", { className: "chip", type: "button" }, [
-      label,
-      el("span", { textContent: String(n) }),
-    ]);
+    const node = document.createTextNode(label);
+    const b = el("button", { className: "chip", type: "button" }, [node, el("span", { textContent: String(n) })]);
     b.dataset.cat = id;
     b.addEventListener("click", () => setCat(id));
     box.append(b);
+    chipLabels.push({ id, node });
   };
-  mk("all", "All", CATALOG.length);
-  for (const s of sections)
-    mk(s.id, catLabel(CATEGORIES.find((c) => c.id === s.id)?.name ?? s.id), s.list.length);
+  mk("all", t("home.all"), CATALOG.length);
+  for (const s of sections) mk(s.id, catLabel(s.id), s.list.length);
 }
 
 // ---- mobile: categories hide behind a toggle so the first screen shows tiles
@@ -124,10 +130,7 @@ const chipsBox = $("#chips");
 
 /** The toggle names the active category (and shows ▾/▴ for the drawer state). */
 function syncCatToggle() {
-  const name =
-    state.cat === "all"
-      ? "categories"
-      : catLabel(CATEGORIES.find((c) => c.id === state.cat)?.name ?? state.cat);
+  const name = state.cat === "all" ? t("home.categories") : catLabel(state.cat);
   catToggle.textContent = `${name} ${chipsBox.classList.contains("open") ? "▴" : "▾"}`;
   catToggle.dataset.on = String(state.cat !== "all");
 }
@@ -171,7 +174,11 @@ function filter() {
       if (!t) continue;
       const hit =
         (state.cat === "all" || state.cat === s.id) &&
-        (!q || [fx.id, fx.name, fx.meta.desc ?? "", ...(fx.meta.tags ?? [])].join(" ").toLowerCase().includes(q));
+        (!q ||
+          [fx.id, fx.name, fx.meta.desc ?? "", ...(fx.meta.tags ?? []), fxName(fx), fxDesc(fx)]
+            .join(" ")
+            .toLowerCase()
+            .includes(q));
       t.fig.hidden = !hit;
       any ||= hit;
       shown += hit ? 1 : 0;
@@ -226,3 +233,24 @@ if (hash && sections.some((s) => s.id === hash)) setCat(hash, true);
 else setCat("all", true);
 filter();
 run();
+
+// ---- i18n: static chrome now, dynamic bits re-render on switch (no reload — ?fx survives)
+
+applyStaticText();
+mountLangSwitcher();
+if (getLocale() !== "en") document.title = t("title.home");
+onLocaleChange(() => {
+  document.title = t("title.home");
+  for (const s of sections) {
+    s.head.textContent = catLabel(s.id);
+    s.blurb.textContent = t(`blurb.${s.id}`);
+  }
+  for (const tile of tiles) {
+    tile.nameEl.textContent = fxName(tile.fx);
+    tile.lenEl.textContent = tileLen(tile.fx);
+    (tile.fig.querySelector("canvas") as HTMLCanvasElement).setAttribute("aria-label", fxName(tile.fx));
+  }
+  for (const c of chipLabels) c.node.textContent = c.id === "all" ? t("home.all") : catLabel(c.id);
+  syncCatToggle();
+  filter();
+});
