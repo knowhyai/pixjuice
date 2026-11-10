@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sprite Sheet Cutter &amp; Sprite Sheet to GIF – PixJuice</title>
+  <meta name="description" content="Free sprite sheet cutter: slice a PNG by grid or auto-detected transparent gaps, preview the animation, and export GIF, frames ZIP, a re-packed PNG sheet, Sparrow/Starling XML or TexturePacker JSON — all in your browser.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://pixjuice.pages.dev/sprite-sheet/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="Sprite Sheet Cutter &amp; Sprite Sheet to GIF – PixJuice">
+  <meta property="og:description" content="Slice a sprite sheet, preview the animation, export GIF, frames ZIP, PNG sheet, Sparrow XML and TexturePacker JSON. Free, no upload.">
+  <meta property="og:image" content="/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b0a10">
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="Back to the PixJuice catalog">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub" data-i18n="sheet.crumb">sprite sheet tool</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/" data-i18n="nav.backCatalog">← catalog</a>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="sheet-main wrap">
+    <section class="sheet-hero">
+      <h1 data-i18n="sheet.h1">Sprite Sheet Cutter &amp; GIF Maker</h1>
+      <p class="lede" data-i18n-html="sheet.lede">Slice a PNG sprite sheet by grid — or let auto-detect find the frames through the transparent gaps — preview the animation, then export an animated GIF, a frames ZIP, a re-packed sheet PNG, Sparrow/Starling XML or a TexturePacker-style JSON atlas. Free, no upload: everything runs in your browser.</p>
+    </section>
+
+    <div class="dropzone" id="sh-drop">
+      <div class="dz-in">
+        <svg class="dz-art" viewBox="0 0 48 48" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect x="4" y="4" width="40" height="40" fill="none" stroke="#2b2740" stroke-width="2" stroke-dasharray="4 4"/>
+          <rect x="8" y="8" width="14" height="14" fill="#ff4d6d"/>
+          <rect x="26" y="8" width="14" height="14" fill="#2a1524" stroke="#ff4d6d" stroke-width="2"/>
+          <rect x="8" y="26" width="14" height="14" fill="#2a1524" stroke="#4cd7ff" stroke-width="2"/>
+          <rect x="26" y="26" width="14" height="14" fill="#4cd7ff"/>
+        </svg>
+        <p class="dz-title" data-i18n="sheet.dropTitle">Drop a PNG sprite sheet here</p>
+        <p class="dz-or"><span data-i18n="sheet.dropOr">or</span>
+          <button class="btn primary" id="sh-browse" type="button" data-i18n="sheet.dropBrowse">browse files</button>
+          <input type="file" id="sh-file" accept="image/png,image/*" hidden>
+        </p>
+        <p class="dz-note" data-i18n="sheet.dropNote">100% client-side — your art never leaves this tab. PNG with transparency works best.</p>
+      </div>
+    </div>
+
+    <div class="sheet-grid" id="sh-tool" hidden>
+      <div class="sheet-left">
+        <div class="stagebox">
+          <div class="sheet-stage">
+            <div class="fitwrap" id="sh-fit">
+              <canvas id="sh-img" aria-label="Sprite sheet with slice grid" data-i18n-aria="sheet.stageAria"></canvas>
+              <canvas id="sh-over" aria-hidden="true"></canvas>
+            </div>
+          </div>
+          <div class="transport">
+            <span class="time" id="sh-cap">—</span>
+            <span class="grow"></span>
+            <button class="btn" id="sh-replace" type="button" data-i18n="sheet.replace">↺ new image</button>
+          </div>
+        </div>
+
+        <section class="panel">
+          <h3 data-i18n="sheet.frames">Frames</h3>
+          <div class="row">
+            <span class="hint" id="sh-frames-hint" data-i18n="sheet.framesHint">Click a frame to include/exclude it; ‹ › reorders the animation.</span>
+            <span class="grow"></span>
+            <button class="btn" id="sh-reset" type="button" data-i18n="sheet.resetSel">reset</button>
+          </div>
+          <div class="thumbs" id="sh-thumbs" role="group" aria-label="Frames in playback order — click to include or exclude" data-i18n-aria="sheet.thumbsAria"></div>
+          <p class="hint" id="sh-count">—</p>
+        </section>
+
+        <section class="panel">
+          <h3 data-i18n="sheet.preview">Preview</h3>
+          <div class="prevwrap" id="sh-prevwrap"><canvas id="sh-prev" aria-label="Animation preview" data-i18n-aria="sheet.prevAria"></canvas></div>
+          <div class="transport">
+            <button class="btn" id="sh-play" type="button" aria-pressed="true" data-i18n="ed.pause">⏸ pause</button>
+            <label class="mini-label" for="sh-fps" data-i18n="sheet.fps">fps</label>
+            <input type="range" id="sh-fps" min="1" max="60" step="1" value="12" class="grow" data-i18n-aria="sheet.fpsAria">
+            <span class="val" id="sh-fps-val">12</span>
+            <button class="btn" id="sh-loop" type="button" aria-pressed="true" data-i18n="sheet.loop">loop</button>
+            <button class="btn" id="sh-pp" type="button" aria-pressed="false" data-i18n="sheet.pingpong">ping-pong</button>
+            <label class="mini-label" for="sh-scale" data-i18n="sheet.scale">scale</label>
+            <select id="sh-scale" class="mini">
+              <option value="1">1×</option>
+              <option value="2">2×</option>
+              <option value="3">3×</option>
+              <option value="4">4×</option>
+              <option value="6">6×</option>
+              <option value="8">8×</option>
+            </select>
+          </div>
+        </section>
+      </div>
+
+      <aside>
+        <section class="panel">
+          <h3 data-i18n="sheet.slice">Slice</h3>
+          <div class="row">
+            <label for="sh-mode" data-i18n="sheet.mode">measure by</label>
+            <select id="sh-mode" class="grow">
+              <option value="cells" data-i18n="sheet.modeCells">cell size</option>
+              <option value="count" data-i18n="sheet.modeCount">columns × rows</option>
+            </select>
+          </div>
+          <div class="row pairs">
+            <span class="pair"><label for="sh-cw" data-i18n="sheet.cellW">cell w</label><input type="number" id="sh-cw" class="mini" min="1" step="1"></span>
+            <span class="pair"><label for="sh-ch" data-i18n="sheet.cellH">cell h</label><input type="number" id="sh-ch" class="mini" min="1" step="1"></span>
+          </div>
+          <div class="row pairs">
+            <span class="pair"><label for="sh-cols" data-i18n="sheet.cols">columns</label><input type="number" id="sh-cols" class="mini" min="1" step="1"></span>
+            <span class="pair"><label for="sh-rows" data-i18n="sheet.rows">rows</label><input type="number" id="sh-rows" class="mini" min="1" step="1"></span>
+          </div>
+          <div class="row pairs">
+            <span class="pair"><label for="sh-ox" data-i18n="sheet.offX">offset x</label><input type="number" id="sh-ox" class="mini" min="0" step="1"></span>
+            <span class="pair"><label for="sh-oy" data-i18n="sheet.offY">offset y</label><input type="number" id="sh-oy" class="mini" min="0" step="1"></span>
+          </div>
+          <div class="row pairs">
+            <span class="pair"><label for="sh-sx" data-i18n="sheet.spacingX">spacing x</label><input type="number" id="sh-sx" class="mini" min="0" step="1"></span>
+            <span class="pair"><label for="sh-sy" data-i18n="sheet.spacingY">spacing y</label><input type="number" id="sh-sy" class="mini" min="0" step="1"></span>
+          </div>
+          <div class="row">
+            <label></label>
+            <button class="btn" id="sh-auto" type="button" title="Find frames by looking for fully transparent rows and columns" data-i18n-title="sheet.autoTitle">✨ <span data-i18n="sheet.auto">auto-detect</span></button>
+          </div>
+          <p class="hint" id="sh-slice-note"></p>
+        </section>
+
+        <section class="panel">
+          <h3 data-i18n="ed.export">Export</h3>
+          <div class="row">
+            <label for="sh-packcols" data-i18n="sheet.sheetCols">sheet columns</label>
+            <input type="number" id="sh-packcols" class="mini" min="1" step="1" value="8">
+          </div>
+          <div class="row">
+            <label for="sh-gscale" data-i18n="ed.gifScale">GIF scale</label>
+            <select id="sh-gscale" class="mini">
+              <option value="1">1×</option>
+              <option value="2">2×</option>
+              <option value="3">3×</option>
+            </select>
+          </div>
+          <div class="btnrow ex-grid" style="margin-bottom: 10px;">
+            <button class="btn primary" id="exp-pack" type="button" data-i18n="sheet.expPack">⬇ sheet + XML + JSON (.zip)</button>
+          </div>
+          <div class="btnrow ex-grid">
+            <button class="btn" id="exp-gif" type="button" data-i18n="sheet.expGif">animated GIF</button>
+            <button class="btn" id="exp-zip" type="button" data-i18n="sheet.expZip">frames ZIP</button>
+            <button class="btn" id="exp-sheet" type="button" data-i18n="sheet.expSheet">re-packed PNG</button>
+          </div>
+          <div class="btnrow ex-grid" style="margin-top: 8px;">
+            <button class="btn" id="exp-xml" type="button" data-i18n="sheet.expXml">Sparrow XML</button>
+            <button class="btn" id="exp-json" type="button" data-i18n="sheet.expJson">JSON atlas</button>
+          </div>
+          <p class="export-note" id="sh-exp-note" data-i18n-html="sheet.expNote">The GIF keeps transparency; the ZIP stores each frame as a PNG; the re-packed sheet, XML and JSON describe the same layout (included frames, your order).</p>
+        </section>
+      </aside>
+    </div>
+
+    <section class="sheet-doc">
+      <h2 data-i18n="sheet.howtoH">How to cut a sprite sheet</h2>
+      <ol>
+        <li data-i18n-html="sheet.howto1"><b>Upload</b> a PNG sprite sheet — drag &amp; drop it onto the page or browse for the file. Nothing is uploaded to any server.</li>
+        <li data-i18n-html="sheet.howto2"><b>Slice</b> it: set columns × rows or the cell size (with offset and spacing), or press <b>auto-detect</b> and PixJuice finds the frames through the transparent gaps. Click cells to drop them from the animation and ‹ › to reorder.</li>
+        <li data-i18n-html="sheet.howto3"><b>Preview &amp; export</b>: set the FPS, loop or ping-pong, then download an animated GIF, a ZIP of PNG frames, a re-packed sheet, or the XML/JSON atlas for your engine.</li>
+      </ol>
+
+      <h2 data-i18n="sheet.faqH">Sprite sheet FAQ</h2>
+      <details class="faq">
+        <summary data-i18n="sheet.faq1q">What is a sprite sheet?</summary>
+        <p data-i18n-html="sheet.faq1a">A sprite sheet is a single image that packs every frame of an animation (or many different sprites) into a grid. Games load it once and draw sub-rectangles out of it, which is much faster than loading hundreds of small files.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="sheet.faq2q">How do I turn a sprite sheet into a GIF?</summary>
+        <p data-i18n-html="sheet.faq2a">Slice the sheet here, set the playback speed with the FPS slider, and press <b>animated GIF</b>. The GIF keeps transparent pixels, so the preview looks right on any background. No software to install — it all happens in your browser.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="sheet.faq3q">How does auto-detect work?</summary>
+        <p data-i18n-html="sheet.faq3a">It looks for columns and rows that are fully transparent — the gaps between frames — and turns those bands into a grid: cell size, count, offset and spacing. If your sprites touch each other with no gaps, set the grid by hand instead.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="sheet.faq4q">Which engines can use the XML and JSON exports?</summary>
+        <p data-i18n-html="sheet.faq4a">The XML is the Sparrow/Starling <code>&lt;TextureAtlas&gt;</code> format (also read by Cocos2d and many frameworks). The JSON follows the TexturePacker hash format used by Phaser, PixiJS and Godot imports.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="sheet.faq5q">Is my sprite sheet uploaded anywhere?</summary>
+        <p data-i18n-html="sheet.faq5a">No. The cutter runs entirely client-side: the image is decoded, sliced and re-encoded in your browser, and the downloads are generated locally too.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.credit">Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
+      <span data-i18n-html="foot.credits2"><a href="/credits/">credits &amp; licenses</a></span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/sheet.ts"></script>
+</body>
+</html>
