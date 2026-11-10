@@ -4,7 +4,7 @@
 
 详情页从 manifest.parts_meta（相对 /free-assets/）或 LOD0 同目录探测 meta.json；缺失或非法时不显示换装区，不修改旧素材。product_id 必须与清单一致。按 meta 的 slots 顺序展示；槽位 required 决定是否可隐藏。所有 presets 和默认搭配在解析时校验。无 meta 的旧宝箱继续原有预览/减面功能。
 
-隐藏夹具：`public/parts-demo/{character,prop}/`，独立清单 `public/parts-demo/manifest.json`，不会进入公开网格。生成源 `scripts/generate-outfit-demo.mjs`，构建时自动生成 CC0 几何 GLB、带 UV/法线/贴图/材质的部件与缩略图。角色五槽、五根共享骨、Idle、两套预设；道具四槽 socket、两种锁/盖和 Open 动画。演示不是正式人形 Avatar。
+隐藏夹具：`public/parts-demo/{outfit-character,outfit-prop}/`，独立清单 `public/parts-demo/manifest.json`，不会进入公开网格。生成源 `scripts/generate-outfit-demo.mjs`，构建时自动生成 CC0 几何 GLB、带 UV/法线/贴图/材质的部件与缩略图。角色五槽、五根共享骨、Idle、两套预设；道具四槽 socket、两种锁/盖和 Open 动画。演示不是正式人形 Avatar。
 
 使用已有详情页外壳打开：
 - `/free-assets/chest-wood/?parts-demo=1&demo-kind=character`

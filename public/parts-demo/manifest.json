@@ -4,7 +4,7 @@
       "id": "outfit-character",
       "product_id": "outfit-character",
       "hidden": true,
-      "parts_meta": "../parts-demo/character/meta.json",
+      "parts_meta": "../parts-demo/outfit-character/meta.json",
       "name": {
         "en": "Outfit character demo",
         "zh": "角色自动换装演示",
@@ -20,7 +20,7 @@
         "CC0"
       ],
       "glb": {
-        "lod0": "../parts-demo/character/rig/base.glb"
+        "lod0": "../parts-demo/outfit-character/rig/base.glb"
       },
       "license": {
         "id": "CC0 1.0",
@@ -31,7 +31,7 @@
       "id": "outfit-prop",
       "product_id": "outfit-prop",
       "hidden": true,
-      "parts_meta": "../parts-demo/prop/meta.json",
+      "parts_meta": "../parts-demo/outfit-prop/meta.json",
       "name": {
         "en": "Socket prop demo",
         "zh": "道具挂点演示",
@@ -47,7 +47,7 @@
         "CC0"
       ],
       "glb": {
-        "lod0": "../parts-demo/prop/rig/base.glb"
+        "lod0": "../parts-demo/outfit-prop/rig/base.glb"
       },
       "license": {
         "id": "CC0 1.0",

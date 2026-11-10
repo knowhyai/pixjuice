@@ -7,6 +7,7 @@ const array = v => Array.isArray(v) && v.every(id) && new Set(v).size===v.length
 const unique = items => new Set(items.map(x=>x.id)).size===items.length;
 export function parseParts(raw, metaURL) {
  if(!object(raw)||raw.schema_version!==1||!id(raw.product_id)||!['character','prop'].includes(raw.kind)||!name(raw.name)||'variant' in raw)fail('Invalid schema v1');
+ const directory=new URL('.',metaURL).pathname.split('/').filter(Boolean).pop();if(directory!==raw.product_id)fail('Product directory mismatch');
  const m=structuredClone(raw),r=m.rig;
  const path=(p,ext)=>{if(typeof p!=='string'||! /^[a-zA-Z0-9_/-]+\.[a-zA-Z0-9]+$/.test(p)||p.startsWith('/')||p.split('/').some(x=>!x||x==='..'||x==='.')||!ext.test(p))fail('Invalid relative path');return new URL(p,metaURL).href;};
  if(!object(r)||!['mixamo','unity-humanoid','custom'].includes(r.profile)|| (m.kind==='character' && (typeof r.armature!=='string'||!r.armature)) || (r.skeleton_root!==undefined && (typeof r.skeleton_root!=='string'||!r.skeleton_root)) || (r.animations!==undefined && (!Array.isArray(r.animations)||r.animations.some(x=>typeof x!=='string'||!x)||new Set(r.animations).size!==r.animations.length)))fail('Invalid rig');

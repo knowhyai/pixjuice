@@ -3,14 +3,14 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {WebIO} from '@gltf-transform/core';
 import {parseParts,initialParts,replacePart,exportParts,validateOutfit,randomOutfit,encodeOutfit,decodeOutfit,disabledSlots} from '../src/lib/assets/parts.js';
-const raw=async kind=>JSON.parse(await readFile(`public/parts-demo/${kind}/meta.json`));
-const load=async kind=>parseParts(await raw(kind),`http://fixture/parts-demo/${kind}/meta.json`);
+const raw=async kind=>JSON.parse(await readFile(`public/parts-demo/outfit-${kind}/meta.json`));
+const load=async kind=>parseParts(await raw(kind),`http://fixture/parts-demo/outfit-${kind}/meta.json`);
 const read=async url=>new Uint8Array(await readFile('public'+new URL(url).pathname));
 test('frozen schema v1 parses both kinds and rejects malformed metadata',async()=>{
  for(const k of ['character','prop'])assert.equal((await load(k)).schema_version,1);
- const valid=await raw('character');
+ const valid=await raw('character');assert.throws(()=>parseParts(valid,'http://fixture/wrong-product/meta.json'));assert.doesNotThrow(()=>parseParts(valid,'http://fixture/parts-demo/outfit-character/meta.json'));
  const mutations=[m=>m.schema_version=2,m=>m.kind='unknown',m=>m.variant={},m=>m.product_id='../bad',m=>m.rig.glb='../base.glb',m=>m.rig.glb='https://remote/base.glb',m=>delete m.rig.armature,m=>m.rig.profile='bad',m=>m.rig.animations=[1],m=>m.rig.sockets.push({...m.rig.sockets[0]}),m=>m.slots.push({...m.slots[0]}),m=>m.slots[0].required='yes',m=>m.slots[0].bind='bad',m=>m.slots[3].socket='missing',m=>m.slots[1].default_part='missing',m=>m.parts[0].id='Upper',m=>m.parts[0].glb='parts/other.glb',m=>m.parts[0].thumb='parts/helm-steel.svg',m=>m.parts[0].name={},m=>m.parts[0].tags=['UPPER'],m=>m.parts[0].conflicts.slots=['missing'],m=>m.parts[0].conflicts.parts=['missing'],m=>m.parts[0].requires.slots=['missing'],m=>m.parts[0].requires.tags=2,m=>m.parts[0].attach={mode:'socket',socket:'missing'},m=>m.parts[4].attach.offset.translation=[0,NaN,0],m=>m.parts[4].attach.offset.rotation_xyzw=[0,0,0,0],m=>m.default_preset='missing',m=>m.presets[0].parts.chest=null,m=>m.presets[0].parts.legs='robe-mage-blue'];
- for(const change of mutations){const m=structuredClone(valid);change(m);assert.throws(()=>parseParts(m,'http://fixture/meta.json'),undefined,String(change));}
+ for(const change of mutations){const m=structuredClone(valid);change(m);assert.throws(()=>parseParts(m,'http://fixture/parts-demo/outfit-character/meta.json'),undefined,String(change));}
  assert.throws(()=>parseParts({},'http://fixture/meta.json'));
 });
 test('symmetric conflicts, automatic clearing, blocked slots and dependencies',async()=>{
