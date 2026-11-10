@@ -14,6 +14,11 @@ const es: Partial<Dict> = {
     normal: "normal map",
     upscale: "escalador",
     editor: "editor de efectos",
+    catalog: "catálogo",
+    network: "red",
+    menu: "menú",
+    knowhy: "knowhy.net",
+    skip: "Saltar al contenido",
   },
   tools: {
     moreH: "Más herramientas de PixJuice",
@@ -28,6 +33,7 @@ const es: Partial<Dict> = {
     pa: "Convertidor de imagen a pixel art — Gratis, sin subidas – PixJuice",
     nm: "Generador de normal maps — Gratis, para sprites 2D – PixJuice",
     up: "Escalador de pixel art — Scale2x, xBR y nearest – PixJuice",
+    notfound: "404 — PixJuice",
   },
   home: {
     subtitle: "<b>Creador de VFX en pixel art</b> — recolorea, previsualiza y exporta hojas de sprites de 244 efectos para videojuegos. Gratis, en tu navegador.",
@@ -47,12 +53,15 @@ const es: Partial<Dict> = {
     toolUpD: "Nearest, Scale2x, Scale3x y xBR a 2×–8× — bordes nítidos, sin desenfoque.",
     toolSh: "Cortador de sprite sheet y GIF",
     toolShD: "Corta por cuadrícula o autodetección, previsualiza y exporta GIF, ZIP, XML y JSON.",
+    toolsAria: "Herramientas de pixel art gratis",
   },
   foot: {
     credit: `Efectos de <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> por Patch y Hugo Duprez, licencia MIT.`,
     home2: `<a href="/credits/">créditos y licencias</a> · hecho para devs de videojuegos indie`,
     credits2: `<a href="/credits/">créditos y licencias</a>`,
     catalog: `<a href="/">catálogo</a>`,
+    networkAria: "Red KNOWHY",
+    newsletter: "boletín",
   },
   cat: {
     moves: "Ataques",

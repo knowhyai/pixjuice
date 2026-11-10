@@ -5,6 +5,7 @@
 
 import { GIFEncoder, quantize, applyPalette } from "gifenc";
 import { makeZip, type ZipEntry } from "./zip";
+import { siteOrigin } from "./site";
 
 /** How a sheet is measured: explicit cell size, or a columns × rows count. */
 export type SliceMode = "cells" | "count";
@@ -237,7 +238,7 @@ export function sparrowXml(
     )
     .join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with PixJuice — https://pixjuice.pages.dev/sprite-sheet/ -->
+<!-- Created with PixJuice — ${siteOrigin()}/sprite-sheet/ -->
 <TextureAtlas imagePath="${xmlEscape(imageName)}" width="${w}" height="${h}">
 ${subs}
 </TextureAtlas>
@@ -266,7 +267,7 @@ export function texturePackerJson(
     {
       frames,
       meta: {
-        app: "https://pixjuice.pages.dev/sprite-sheet/",
+        app: `${siteOrigin()}/sprite-sheet/`,
         version: "1.0",
         image: imageName,
         format: "RGBA8888",

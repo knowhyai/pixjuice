@@ -14,6 +14,11 @@ const zh: Partial<Dict> = {
     normal: "法线贴图",
     upscale: "像素放大",
     editor: "特效编辑器",
+    catalog: "特效库",
+    network: "站群",
+    menu: "菜单",
+    knowhy: "knowhy.net",
+    skip: "跳到内容",
   },
   tools: {
     moreH: "更多 PixJuice 工具",
@@ -28,6 +33,7 @@ const zh: Partial<Dict> = {
     pa: "图片转像素画转换器 — 免费免上传 – PixJuice",
     nm: "法线贴图生成器 — 免费，面向 2D 精灵 – PixJuice",
     up: "像素画放大工具 — Scale2x、xBR 与最近邻 – PixJuice",
+    notfound: "404 — PixJuice",
   },
   home: {
     subtitle: "<b>像素艺术特效制作器</b> — 为 244 个游戏特效重新配色、预览并导出精灵图。免费，完全在浏览器中完成。",
@@ -47,12 +53,15 @@ const zh: Partial<Dict> = {
     toolUpD: "最近邻、Scale2x、Scale3x 与 xBR，2×–8× — 边缘锐利不糊。",
     toolSh: "精灵表切割器 & GIF",
     toolShD: "按网格或自动检测切表、预览、导出 GIF、ZIP、XML 和 JSON。",
+    toolsAria: "免费像素工具",
   },
   foot: {
     credit: `特效来自 <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a>（Patch 与 Hugo Duprez 出品，MIT 许可证）。`,
     home2: `<a href="/credits/">致谢与许可</a> · 为独立游戏开发者而作`,
     credits2: `<a href="/credits/">致谢与许可</a>`,
     catalog: `<a href="/">特效库</a>`,
+    networkAria: "KNOWHY 站群",
+    newsletter: "订阅",
   },
   cat: {
     moves: "招式",

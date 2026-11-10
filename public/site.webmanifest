@@ -1,0 +1,24 @@
+{
+  "name": "PixJuice — Pixel Art VFX Maker",
+  "short_name": "PixJuice",
+  "description": "Recolor, preview and export pixel skill effects for games. Free, in the browser.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0a10",
+  "theme_color": "#0b0a10",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

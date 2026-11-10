@@ -26,6 +26,25 @@ pnpm build
 npx wrangler pages deploy dist --project-name=pixjuice
 ```
 
+Set `PUBLIC_SITE_URL` in the Pages project (build-time) when a custom domain exists. Until then the canonical host stays `https://pixjuice.pages.dev`.
+
+## Integrations
+
+`pnpm check:integrations` prints which hooks are set. It always exits 0, and an empty value renders nothing. Copy [`.env.example`](.env.example) to `.env` for local builds. These names are public (they end up in HTML) — do not put secrets in them.
+
+| Key | When set |
+| --- | --- |
+| `PUBLIC_SITE_URL` | Canonical origin, `sitemap.xml`, `robots.txt`, Open Graph, JSON-LD, and URLs written into exports. Unset → `https://pixjuice.pages.dev`. |
+| `PUBLIC_GSC_VERIFICATION` | `<meta name="google-site-verification">` |
+| `PUBLIC_BING_VERIFICATION` | `<meta name="msvalidate.01">` |
+| `PUBLIC_YANDEX_VERIFICATION` | `<meta name="yandex-verification">` |
+| `PUBLIC_GA4_ID` | GA4 gtag (`G-…` only) |
+| `PUBLIC_CLARITY_ID` | Microsoft Clarity |
+| `PUBLIC_PLAUSIBLE_DOMAIN` | Plausible (`data-domain` hostname) |
+| `PUBLIC_NEWSLETTER_URL` | Footer newsletter link (`http` or `https`) |
+
+Language URLs are the same page plus `?lang=zh|ja|ko|es` (English and `x-default` omit the parameter). hreflang is `en`, `zh-Hans`, `ja`, `ko`, `es`.
+
 ## Layout
 
 ```

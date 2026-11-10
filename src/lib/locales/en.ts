@@ -14,6 +14,11 @@ const en = {
     normal: "normal map",
     upscale: "upscaler",
     editor: "effects editor",
+    catalog: "catalog",
+    network: "network",
+    menu: "menu",
+    knowhy: "knowhy.net",
+    skip: "Skip to content",
   },
   tools: {
     moreH: "More PixJuice tools",
@@ -28,6 +33,7 @@ const en = {
     pa: "Image to Pixel Art Converter — Free, No Upload – PixJuice",
     nm: "Normal Map Generator — Free, for 2D Sprites – PixJuice",
     up: "Pixel Art Upscaler — Scale2x, xBR & Nearest – PixJuice",
+    notfound: "404 — PixJuice",
   },
   home: {
     subtitle: "<b>Pixel Art VFX Maker</b> — recolor, preview &amp; export sprite sheets for 244 game effects. Free, in your browser.",
@@ -47,12 +53,15 @@ const en = {
     toolUpD: "Nearest, Scale2x, Scale3x and xBR at 2×–8× — crisp edges, no blur.",
     toolSh: "Sprite Sheet Cutter & GIF",
     toolShD: "Slice a sheet by grid or auto-detect, preview, export GIF, ZIP, XML and JSON.",
+    toolsAria: "Free pixel art tools",
   },
   foot: {
     credit: `Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.`,
     home2: `<a href="/credits/">credits &amp; licenses</a> · made for indie game devs`,
     credits2: `<a href="/credits/">credits &amp; licenses</a>`,
     catalog: `<a href="/">catalog</a>`,
+    networkAria: "KNOWHY network",
+    newsletter: "newsletter",
   },
   cat: {
     moves: "Moves",

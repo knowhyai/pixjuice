@@ -1,4 +1,7 @@
 import { defineConfig } from "vite";
+// Plain Node plugin. The DOM tsconfig has no types for it; Vite loads the file as-is.
+// @ts-expect-error site-plugin.mjs has no declaration file
+import { sitePlugin } from "./scripts/site-plugin.mjs";
 
 // Multi-page static build for Cloudflare Pages:
 //   /                     catalog (index.html)
@@ -10,6 +13,8 @@ import { defineConfig } from "vite";
 //   /credits/             attribution + licenses (credits/index.html)
 //   /404.html             served by Cloudflare Pages for unknown routes
 export default defineConfig({
+  envPrefix: ["VITE_", "PUBLIC_"],
+  plugins: [sitePlugin()],
   build: {
     target: "es2022",
     rollupOptions: {

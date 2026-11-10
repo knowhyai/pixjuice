@@ -7,6 +7,7 @@ import { GIFEncoder, quantize, applyPalette } from "gifenc";
 import { frameCount, isScreen, type CatalogEntry } from "./fxinfo";
 import type { PlayerStyle } from "./player";
 import { placement } from "./player";
+import { siteOrigin } from "./site";
 
 export interface RenderedFrames {
   w: number;
@@ -143,7 +144,7 @@ export function sheetJson(
     // what PixJuice had dialed in when the sheet was exported
     pixjuice: {
       app: "PixJuice",
-      url: "https://pixjuice.pages.dev",
+      url: siteOrigin(),
       category: entry.cat,
       palette: style.palette ?? entry.meta.options?.palette ?? null,
       seed: style.seed ?? entry.meta.options?.seed ?? null,

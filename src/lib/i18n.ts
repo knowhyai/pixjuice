@@ -1,6 +1,7 @@
 // Tiny homemade i18n: nested dictionaries, English as the source of truth and the fallback
-// for every missing key. No runtime dependency, no URL routing — the canonical URLs stay
-// English (SEO), and a language pick only swaps visible text for that session.
+// for every missing key. No runtime dependency. The clean URL is English / x-default;
+// ?lang=zh|ja|ko|es is the matching hreflang URL. A language pick swaps text in place
+// (no reload, so ?fx= survives) and writes that param.
 
 import EN, { type Dict } from "./locales/en";
 import ZH from "./locales/zh";
@@ -36,7 +37,44 @@ const FX: Partial<Record<Locale, Record<string, FxEntry>>> = {
 
 const STORAGE_KEY = "pixjuice-lang";
 
+/** BCP 47 for <html lang>. Simplified Chinese is zh-Hans, not the bare locale code. */
+const HTML_LANG: Record<Locale, string> = {
+  en: "en",
+  zh: "zh-Hans",
+  ja: "ja",
+  ko: "ko",
+  es: "es",
+};
+
+const OG_LOCALE: Record<Locale, string> = {
+  en: "en_US",
+  zh: "zh_CN",
+  ja: "ja_JP",
+  ko: "ko_KR",
+  es: "es_ES",
+};
+
+function queryLocale(): Locale | null {
+  try {
+    let q = new URLSearchParams(location.search).get("lang");
+    if (q === "zh-Hans") q = "zh";
+    if (q && q in DICTS) return q as Locale;
+  } catch {
+    /* */
+  }
+  return null;
+}
+
 function detect(): Locale {
+  const fromQuery = queryLocale();
+  if (fromQuery) {
+    try {
+      localStorage.setItem(STORAGE_KEY, fromQuery);
+    } catch {
+      /* private mode — this page still honors the query */
+    }
+    return fromQuery;
+  }
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved && saved in DICTS) return saved as Locale;
@@ -53,9 +91,7 @@ function detect(): Locale {
 
 let locale: Locale = detect();
 
-// Raw HTML ships lang="en" for crawlers; once JS runs with a non-English session language,
-// correct the attribute so screen readers match what's on screen.
-if (locale !== "en") document.documentElement.lang = locale;
+document.documentElement.lang = HTML_LANG[locale];
 
 export function getLocale(): Locale {
   return locale;
@@ -98,6 +134,35 @@ export function onLocaleChange(fn: Listener): void {
   listeners.add(fn);
 }
 
+/** Point canonical, hreflang, and og:url at this page's language URL (and ?fx= when present). */
+export function syncAlternates(lang: Locale = queryLocale() ?? "en"): void {
+  const canonicalEl = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!canonicalEl) return;
+  let origin: string;
+  try {
+    origin = new URL(canonicalEl.href).origin;
+  } catch {
+    return;
+  }
+  const fx = new URLSearchParams(location.search).get("fx");
+  const build = (code: string | null) => {
+    const u = new URL(location.pathname, origin);
+    if (fx) u.searchParams.set("fx", fx);
+    if (code) u.searchParams.set("lang", code);
+    return u.href;
+  };
+  const current = build(lang === "en" ? null : lang);
+  canonicalEl.href = current;
+  document.querySelector('meta[property="og:url"]')?.setAttribute("content", current);
+  document.querySelector('meta[property="og:locale"]')?.setAttribute("content", OG_LOCALE[lang]);
+  document.querySelectorAll<HTMLLinkElement>('link[rel="alternate"][hreflang]').forEach((a) => {
+    const h = a.hreflang.toLowerCase();
+    if (h === "x-default" || h === "en") a.href = build(null);
+    else if (h === "zh-hans" || h === "zh") a.href = build("zh");
+    else if (h === "ja" || h === "ko" || h === "es") a.href = build(h);
+  });
+}
+
 /** Swap the session language in place — no reload, so ?fx= and scroll position survive. */
 export function setLocale(next: Locale): void {
   if (!(next in DICTS) || next === locale) return;
@@ -107,8 +172,15 @@ export function setLocale(next: Locale): void {
   } catch {
     /* can't persist — this session only */
   }
-  document.documentElement.lang = next;
+  const url = new URL(location.href);
+  if (next === "en") url.searchParams.delete("lang");
+  else url.searchParams.set("lang", next);
+  const nextHref = `${url.pathname}${url.search}${url.hash}`;
+  const cur = `${location.pathname}${location.search}${location.hash}`;
+  if (nextHref !== cur) history.replaceState(null, "", nextHref);
+  document.documentElement.lang = HTML_LANG[next];
   applyStaticText(document);
+  syncAlternates(next);
   for (const fn of listeners) fn();
 }
 
@@ -151,3 +223,6 @@ export function mountLangSwitcher(): void {
     sel.setAttribute("aria-label", t("lang.aria"));
   });
 }
+
+// Keep canonical / hreflang aligned with ?lang= and ?fx= once the head tags exist.
+syncAlternates();
