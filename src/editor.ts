@@ -151,8 +151,27 @@ function runEditor(entry: CatalogEntry): void {
   const style = defaultStyle(entry);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduced) style.playing = false;
-  const player = new Player($("#stage") as HTMLCanvasElement, entry, ASPECT, PAD, style);
+  const stage = $<HTMLCanvasElement>("#stage");
+  const stagewrap = $(".stagewrap");
+  const player = new Player(stage, entry, ASPECT, PAD, style);
   if (reduced) player.seek(meta.duration * 0.4);
+
+  // The desktop shell pins the preview by giving the tool exactly one viewport; the stage
+  // then sizes itself to its box at a whole-pixel scale (editor.ts never stretches it to
+  // the column). Phone keeps the CSS letterbox (object-fit) instead of inline sizes.
+  document.documentElement.style.setProperty("--ed-head", `${$(".head").offsetHeight}px`);
+  const desktop = matchMedia("(min-width: 941px)");
+  function fitStage(): void {
+    // the pane owns all scrolling on desktop — the page (and its footer) can't intrude
+    document.body.classList.toggle("ed-fixed", desktop.matches);
+    if (!desktop.matches) {
+      stage.style.width = stage.style.height = stage.style.imageRendering = "";
+      return;
+    }
+    player.fitToBox(stagewrap.clientWidth, stagewrap.clientHeight);
+  }
+  fitStage();
+  addEventListener("resize", fitStage);
 
   const homeSeed = hashSeed(entry.id);
   const sfxSeed = () => style.seed ?? homeSeed;
@@ -363,6 +382,7 @@ function runEditor(entry: CatalogEntry): void {
     style.actor = !style.actor;
     syncActor();
     player.layout(ASPECT, PAD); // acting vs. lone fx changes the stage geometry
+    fitStage(); // …and the new bitmap needs to re-fit the box at a whole-pixel scale
   });
   syncActor();
 

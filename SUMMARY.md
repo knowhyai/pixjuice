@@ -1,5 +1,18 @@
 # PixJuice — finish summary
 
+> **Desktop editor shell (Nov 10, 2026)** — the editor tool now owns exactly one viewport on
+> desktop (≥941px): the left column is preview + transport only and never moves; description,
+> facts, and tags moved into a compact strip at the top of the right pane. The aside scrolls on
+> its own (`overflow-y`, thin scrollbar, overscroll contained) and the page itself is clipped
+> (`body.ed-fixed`), so no scroll — wheel over the dials, over the stage, anywhere — can drag
+> the preview toward the footer; the footer stays past the fold (credits stay reachable in the
+> header). The empty-widescreen-stage bug is gone: instead of stretching the padded bitmap to
+> the column width, `Player.fitToBox` sizes the canvas to its height-capped box (≤54dvh) at the
+> largest whole-pixel scale, letterboxed and centered — a 124×120 spark-arc shows at a crisp
+> 2× (360×300) at 1280×800 and 3× (540×450) at 1440×900, not a 756×530 void. Phone layout is
+> untouched (CSS letterbox, stacked, page scrolls); switching breakpoints live re-fits or clears
+> the inline sizing. `pnpm build` green.
+
 > **UI languages pass (Nov 8, 2026)** — added a 5-language UI: English (default), 简体中文, 日本語,
 > 한국어, Español, picked from a compact `<select>` in the header of every page. SEO is untouched:
 > canonical URLs stay `/`, `/editor/?fx=…`, `/credits/` (no `/zh/` trees, no hreflang); raw HTML,

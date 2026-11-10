@@ -113,6 +113,17 @@ export class Player {
     this.restart();
   }
 
+  /** Display the bitmap at the largest whole-pixel scale that fits the box, letterboxed
+   *  inside it — the padded stage is never stretched to the box's full width. Below 1×
+   *  (box smaller than the bitmap), fall back to an exact contain fit with smoothing. */
+  fitToBox(bw: number, bh: number) {
+    const s = Math.min(bw / this.W, bh / this.H);
+    const k = s >= 1 ? Math.floor(s) : s;
+    this.canvas.style.width = `${Math.round(this.W * k)}px`;
+    this.canvas.style.height = `${Math.round(this.H * k)}px`;
+    this.canvas.style.imageRendering = k < 1 ? "auto" : "pixelated";
+  }
+
   setBg(kind: string) {
     this.style.backdrop = kind;
     this.bgBuf = kind === "none" ? null : backdrop(kind, this.W, this.H, this.y);
