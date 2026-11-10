@@ -1,5 +1,16 @@
 # PixJuice — finish summary
 
+> **sheet-tool merged into main (Nov 10, 2026)** — merged the sprite-sheet branch (85f5452,
+> auto-resolved, both sides intact: fx translations + og.png + sfx + editor shell all kept) and
+> shipped **/sprite-sheet/** — a client-side sprite sheet cutter & GIF maker: drop a PNG, slice
+> by grid or auto-detect frames through transparent gaps, preview with fps/loop/ping-pong,
+> then export animated GIF (transparency kept), frames ZIP, re-packed sheet PNG, Sparrow/Starling
+> XML or TexturePacker JSON. Nav link on all pages, sitemap.xml + robots.txt updated, all 5
+> locales carry the new `sheet.*` strings. Headless-checked at 1280×800 and 390×844: the 4 routes
+> load with zero horizontal overflow, nav link works, and a real GIF download (4 auto-detected
+> frames, valid `GIF` magic) passed at both viewports; no console/page errors; `pnpm build`
+> green. Deployed to Cloudflare Pages (main → pixjuice.pages.dev).
+
 > **Effect i18n + og.png (Nov 10, 2026)** — filled the four empty `fx-{zh,ja,ko,es}.json`
 > stubs: all **244** catalog effects now carry localized `n`ame + `d`escription in 简体中文,
 > 日本語, 한국어 and Español (machine-translated via free bulk models, batch-scripted, gap- and
