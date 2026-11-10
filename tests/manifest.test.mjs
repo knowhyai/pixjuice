@@ -25,18 +25,31 @@ test('published manifest files exist; only real assets have downloads',()=>{
 test('one product card, no placeholders; variant tags and hidden flags govern visibility',async()=>{
  const {visibleProducts}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
  const assets=sanitizeManifest(JSON.parse(readFileSync('public/free-assets/manifest.json','utf8')));
- assert.equal(visibleProducts(assets).length,1);assert.equal(visibleProducts(assets)[0].length,4);
- assert.ok(visibleProducts(assets)[0].every(a=>a.style_tier==='realistic'));
- const gold=visibleProducts(assets,a=>a.palette==='gold');assert.equal(gold.length,1);assert.ok(gold[0].every(a=>a.palette==='gold'));
- assert.equal(visibleProducts(assets.map(a=>({...a,hidden:true}))).length,0);
- assert.equal(visibleProducts(assets.map((a,i)=>({...a,product_hidden:i===0}))).length,0);
+ const chests=assets.filter(a=>a.product_id==='chest-wood');
+ assert.ok(chests.length>=4);assert.ok(chests.every(a=>a.product_hidden));
+ assert.equal(visibleProducts(assets).length,0);
+ const published=assets.map(a=>a.product_id==='chest-wood'&&a.style_tier==='realistic'?{...a,product_hidden:false}:a);
+ assert.equal(visibleProducts(published).length,1);assert.equal(visibleProducts(published)[0].length,4);
+ assert.ok(visibleProducts(published)[0].every(a=>a.style_tier==='realistic'));
+ const gold=visibleProducts(published,a=>a.palette==='gold');assert.equal(gold.length,1);assert.ok(gold[0].every(a=>a.palette==='gold'));
+ assert.equal(visibleProducts(published.map(a=>({...a,hidden:true}))).length,0);
+ assert.equal(visibleProducts(published.map((a,i)=>({...a,product_hidden:a.product_id==='chest-wood'}))).length,0);
 });
 test('four broad categories expose vehicles only after a finished visible vehicle arrives',async()=>{
  const {availableCategories,ASSET_CATEGORIES}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
  assert.deepEqual(ASSET_CATEGORIES,['props','characters','vehicles','environment']);
  const assets=sanitizeManifest(JSON.parse(readFileSync('public/free-assets/manifest.json','utf8')));
- assert.deepEqual(availableCategories(assets),['props']);
- const car={...assets[0],id:'sedan',product_id:'sedan',category:'vehicles'};
- assert.deepEqual(availableCategories([...assets,car]),['props','vehicles']);
- assert.deepEqual(availableCategories([...assets,{...car,placeholder:true}]),['props']);
+ assert.deepEqual(availableCategories(assets),[]);
+ const published=assets.map(a=>a.product_id==='chest-wood'&&a.style_tier==='realistic'?{...a,product_hidden:false}:a);
+ assert.deepEqual(availableCategories(published),['props']);
+ const car={...published[0],id:'sedan',product_id:'sedan',category:'vehicles',product_hidden:false,hidden:false,placeholder:false,style_tier:'realistic'};
+ assert.deepEqual(availableCategories([...published,car]),['props','vehicles']);
+ assert.deepEqual(availableCategories([...published,{...car,placeholder:true}]),['props']);
+});
+
+test('sitemap lists the library index but omits unpublished chest and placeholder pages',()=>{
+ const xml=readFileSync('public/sitemap.xml','utf8');
+ assert.ok(xml.includes('https://pixjuice.pages.dev/free-assets/'));
+ assert.equal((xml.match(/free-assets\/chest-wood/g)||[]).length,0);
+ assert.equal((xml.match(/free-assets\/(wall-stone|gold-pile|barrel-wood)\//g)||[]).length,0);
 });

@@ -111,11 +111,13 @@ export async function loadManifest(url = "/free-assets/manifest.json"): Promise<
 
 /** A hidden product suppresses every variant in the grid; detail URLs stay available. */
 export function productId(a: FaAsset): string { return a.product_id || a.id; }
+export function isPublicListing(a: FaAsset): boolean {
+  return a.style_tier === "realistic" && !a.hidden && !a.product_hidden && !a.placeholder;
+}
 export function visibleProducts(assets: FaAsset[], matches: (a: FaAsset) => boolean = () => true): FaAsset[][] {
-  const hidden = new Set(assets.filter(a => a.product_hidden).map(productId));
   const groups = new Map<string, FaAsset[]>();
   for (const a of assets) {
-    if (a.style_tier !== "realistic" || a.hidden || a.placeholder || hidden.has(productId(a)) || !matches(a)) continue;
+    if (!isPublicListing(a) || !matches(a)) continue;
     const id = productId(a);
     groups.set(id, [...(groups.get(id) || []), a]);
   }

@@ -72,6 +72,11 @@ function extOf(path: string): string {
     return;
   }
 
+  const robots = document.querySelector<HTMLMetaElement>('meta[name="robots"]') || document.head.appendChild(Object.assign(document.createElement("meta"), { name: "robots" }));
+  const listed = a.style_tier === "realistic" && !a.hidden && !a.product_hidden && !a.placeholder && !demo;
+  if (listed) robots.remove();
+  else robots.content = "noindex, nofollow";
+
   const variants = assets.filter(x=>x.style_tier==="realistic" && (!x.hidden || a.hidden) && productId(x)===productId(a));
   let cleanupModel: (()=>void) | undefined;
   let spriteTimer: ReturnType<typeof setInterval> | undefined;

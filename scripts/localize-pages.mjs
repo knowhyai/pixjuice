@@ -15,8 +15,16 @@ const translate=(l,k)=>globalThis.PixStrings[l]?.[k]??lookup(dicts[l],k)??lookup
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const strip=s=>s.replace(/<[^>]*>/g,'');
 const manifest=JSON.parse(await readFile('public/free-assets/manifest.json','utf8'));
+const isPublicListing=a=>a&&a.style_tier==='realistic'&&!a.hidden&&!a.product_hidden&&!a.placeholder;
 const products=[...new Set(manifest.assets.map(a=>a.product_id).filter(Boolean))];
 const paths=['','credits/','editor/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
+const listedPaths=paths.filter(path=>{
+  if(!path.startsWith('free-assets/')||path==='free-assets/')return true;
+  const id=path.slice('free-assets/'.length).replace(/\/$/,'');
+  const asset=manifest.assets.find(a=>a.id===id);
+  if(asset)return isPublicListing(asset);
+  return manifest.assets.some(a=>a.product_id===id&&isPublicListing(a));
+});
 const url=(l,p)=>`${SITE}/${l==='en'?'':l+'/'}${p}`;
 for(const path of paths) {
  const original=await readFile(`dist/${path}index.html`,'utf8');
@@ -39,7 +47,8 @@ for(const path of paths) {
    .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'');
   const questions=asset?[[`${name} — ${translate(lang,'v3.license')}`,d.assetA]]:key==='fr'?[[translate(lang,'fr.q'),translate(lang,'fr.a')]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
   const json=[{'@context':'https://schema.org','@type':key==='fr'?'CollectionPage':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:key==='fr'?undefined:key==='fa'?(asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined):'https://creativecommons.org/publicdomain/zero/1.0/'},{'@context':'https://schema.org','@type':'FAQPage',inLanguage:lang,mainEntity:questions.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))}];
-  const head=`<link rel="canonical" href="${url(lang,path)}">\n${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url(l,path)}">`).join('\n')}\n<link rel="alternate" hreflang="x-default" href="${url('en',path)}">\n<script type="application/ld+json">${JSON.stringify(json).replaceAll('<','\\u003c')}</script>`;
+  const unpublished=asset? !isPublicListing(asset) && !(path===`free-assets/${asset.product_id}/` && manifest.assets.some(a=>a.product_id===asset.product_id&&isPublicListing(a))) : path.startsWith('free-assets/') && path!=='free-assets/' && !listedPaths.includes(path);
+  const head=`${unpublished?'<meta name="robots" content="noindex, nofollow">\n':''}<link rel="canonical" href="${url(lang,path)}">\n${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url(l,path)}">`).join('\n')}\n<link rel="alternate" hreflang="x-default" href="${url('en',path)}">\n<script type="application/ld+json">${JSON.stringify(json).replaceAll('<','\\u003c')}</script>`;
   html=html.replace('</head>',head+'\n</head>');
   const faq=`<section class="tpl-faq"><h2>${esc(d.faq)}</h2>${questions.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</section>`;
   html=html.replace(/\s*<footer>/,faq+'\n<footer>');
@@ -50,7 +59,7 @@ for(const path of paths) {
 }
 // Keep existing tool URLs and add all language alternatives for the library.
 let sitemap=await readFile('public/sitemap.xml','utf8');
-sitemap=sitemap.replace('</urlset>',paths.flatMap(p=>langs.filter(l=>l!=='en'||!sitemap.includes(url(l,p))).map(l=>`  <url><loc>${url(l,p)}</loc></url>`)).join('\n')+'\n</urlset>');
+sitemap=sitemap.replace('</urlset>',listedPaths.flatMap(p=>langs.filter(l=>l!=='en'||!sitemap.includes(url(l,p))).map(l=>`  <url><loc>${url(l,p)}</loc></url>`)).join('\n')+'\n</urlset>');
 await writeFile('dist/sitemap.xml',sitemap);
 console.log(`Localized ${paths.length} library pages × ${langs.length} languages, with canonical/hreflang, FAQ and sitemap.`);
 

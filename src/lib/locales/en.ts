@@ -698,6 +698,8 @@ const en = {
     "soonBody": "This asset is in production — the entry goes live here with previews, downloads and license once it ships.",
     "freeCommercial": "CC0 1.0",
     "licenseNotice": "CC0 1.0 Universal — commercial use, no attribution required.",
+    "emptyBatch": 'The first Semi-Realistic assets are in production.',
+    "emptySearch": 'No assets match that search.',
     "loadErr": "Couldn't load the asset list. Refresh to retry.",
     "notFound": "Asset not found.",
     "backAll": "← All assets",

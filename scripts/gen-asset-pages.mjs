@@ -157,6 +157,7 @@ for (const a of [...manifest.assets,...products]) {
   <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#0b0a10">
+  ${a.placeholder || a.hidden || a.product_hidden || a.style_tier !== "realistic" ? '<meta name="robots" content="noindex, nofollow">' : ""}
   <script type="application/ld+json">
   ${jsonld}
   </script>

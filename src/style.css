@@ -820,7 +820,11 @@ footer {
 .head .nav > a,.head summary { white-space:nowrap; display:flex; align-items:center; min-height:44px; }
 .head .nav .cur { color:var(--acc2); text-decoration:underline; text-underline-offset:8px; }
 .head .tools-menu { background:var(--panel); }
-.head .theme-toggle { white-space:nowrap; min-height:40px; }
+.head .theme-toggle { display:inline-flex; align-items:center; justify-content:center; width:40px; min-width:40px; min-height:40px; padding:0; }
+.head .theme-toggle svg { display:block; }
+.head .theme-toggle .icon-moon { display:none; }
+:root[data-theme="light"] .head .theme-toggle .icon-sun { display:none; }
+:root[data-theme="light"] .head .theme-toggle .icon-moon { display:block; }
 :root[data-theme="light"] .tools-menu a:hover {color:var(--text)}
 @media(max-width:900px){.head .head-in{height:130px;display:block;overflow-x:auto}.head .brand h1{font-size:22px}.head .brand .sub{font-size:12px}.head .nav{gap:16px;width:max-content}.head .nav a{font-size:13px}.head .lang{max-width:95px}}
 .home-entries {max-width:1180px;margin:30px auto; padding:0 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}

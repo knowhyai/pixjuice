@@ -69,15 +69,26 @@ function assetCard(a: FaAsset): HTMLElement {
 
 function render() {
   const grid = document.getElementById("fa-grid")!;
+  const empty = document.getElementById("fa-empty");
+  const filters = document.getElementById("fa-filters");
+  const search = document.querySelector<HTMLElement>(".fa-search");
   grid.innerHTML = "";
-  {
-    const groups = visibleProducts(assets, a => {
-      if (!matches(a.tags.join(" ") + " " + assetName(a) + " " + a.category + " " + a.style_tier)) return false;
-      return filter === "all" || a.category === filter;
-    });
-    for (const group of groups) grid.appendChild(assetCard(group.find(a=>a.palette===query.toLowerCase()||a.style_tier===query.toLowerCase())||group[0]));
+  const published = visibleProducts(assets);
+  const searching = published.length > 0;
+  if (filters) filters.hidden = !searching;
+  if (search) search.hidden = !searching;
+  const groups = visibleProducts(assets, a => {
+    if (!matches(a.tags.join(" ") + " " + assetName(a) + " " + a.category + " " + a.style_tier)) return false;
+    return filter === "all" || a.category === filter;
+  });
+  for (const group of groups) grid.appendChild(assetCard(group.find(a=>a.palette===query.toLowerCase()||a.style_tier===query.toLowerCase())||group[0]));
+  if (empty) {
+    empty.hidden = groups.length > 0;
+    empty.textContent = published.length === 0 ? t("fa.emptyBatch") : t("fa.emptySearch");
+    empty.setAttribute("data-i18n", published.length === 0 ? "fa.emptyBatch" : "fa.emptySearch");
   }
   applyStaticText(grid);
+  if (empty && !empty.hidden) applyStaticText(empty.parentElement || empty);
 }
 
 function renderFilters() {

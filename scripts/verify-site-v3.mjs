@@ -8,7 +8,7 @@ for(const [name,url] of [['home','/zh/'],['templates','/zh/templates/'],['assets
  assert.equal(await p.locator('.head .sub').innerText(),'免费游戏素材');
  assert.equal(await p.locator('.head .nav > a').count(),4);
  await p.locator('.head').screenshot({path:out+'site-v3-nav-'+name+'.png'});
- if(name==='assets') {await p.locator('#fa-grid .fa-card').waitFor();assert.equal(await p.locator('#fa-grid .fa-card').count(),1);assert.deepEqual(await p.locator('#fa-filters button').allTextContents(),['全部','道具']);assert.ok((await p.locator('#fa-grid').innerText()).includes('半写实'));await p.screenshot({path:out+'templates-v3-grid-after.png',fullPage:true});}
+ if(name==='assets') {await p.locator('#fa-empty').waitFor();assert.equal(await p.locator('#fa-grid .fa-card').count(),0);assert.ok((await p.locator('#fa-empty').innerText()).includes('第一批半写实素材制作中'));assert.ok(!(await p.locator('#fa-empty').evaluate(e=>e.querySelector('img'))));await p.screenshot({path:out+'site-v3-assets-empty.png',fullPage:true});}
  if(name==='home')await p.waitForTimeout(1200);
  if(name==='home')for(const theme of ['dark','light']){await p.evaluate(t=>{localStorage.setItem('pixjuice-theme',t);document.documentElement.dataset.theme=t},theme);await p.screenshot({path:out+'site-v3-home-'+theme+'.png',fullPage:true});}
  if(name==='case'){assert.equal(await p.locator('[data-skin-id]').count(),0);await p.locator('[data-i18n="cx.open"]').click();await p.locator('.cx-modal').waitFor();}
@@ -22,4 +22,4 @@ for(const [prefix,label] of [['','Semi-Realistic'],['/zh','半写实'],['/ja','�
  assert.equal(await p.locator('[data-variant=style]').count(),0);
 }
 await p.goto(base+'/zh/editor/');await p.waitForURL('**/zh/#effects');
-assert.deepEqual(errors,[]);console.log('Six pages, navigation, themes, one-card grid, populated categories, crate and editor redirect passed');await b.close();
+assert.deepEqual(errors,[]);console.log('Six pages, navigation, themes, empty asset library, crate and editor redirect passed');await b.close();

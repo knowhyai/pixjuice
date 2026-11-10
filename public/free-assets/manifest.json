@@ -2,7 +2,7 @@
   "version": 1,
   "generated": "2026-11-10",
   "base": "/free-assets/",
-  "note": "Curated sample of chest-wood outputs; placeholder entries render procedurally until real assets land. Regenerate with scripts/build-assets-manifest.mjs.",
+  "note": "The legacy chest-wood set is retained on disk but product_hidden until a replacement modular chest ships. Placeholder entries stay unpublished.",
   "assets": [
     {
       "id": "chest-wood-realistic-wood-intact",
@@ -81,7 +81,7 @@
       "product_id": "chest-wood",
       "state": "intact",
       "hidden": false,
-      "product_hidden": false
+      "product_hidden": true
     },
     {
       "id": "chest-wood-realistic-gold-intact",
@@ -157,7 +157,7 @@
       "product_id": "chest-wood",
       "state": "intact",
       "hidden": false,
-      "product_hidden": false
+      "product_hidden": true
     },
     {
       "id": "chest-wood-realistic-blue-intact",
@@ -233,7 +233,7 @@
       "product_id": "chest-wood",
       "state": "intact",
       "hidden": false,
-      "product_hidden": false
+      "product_hidden": true
     },
     {
       "id": "chest-wood-realistic-red-damaged",
@@ -309,7 +309,7 @@
       "product_id": "chest-wood",
       "state": "damaged",
       "hidden": false,
-      "product_hidden": false
+      "product_hidden": true
     },
     {
       "id": "chest-wood-stylized-wood-intact",
@@ -385,7 +385,7 @@
       "product_id": "chest-wood",
       "state": "intact",
       "hidden": true,
-      "product_hidden": false
+      "product_hidden": true
     },
     {
       "id": "chest-wood-stylized-gold-intact",
@@ -461,7 +461,7 @@
       "product_id": "chest-wood",
       "state": "intact",
       "hidden": true,
-      "product_hidden": false
+      "product_hidden": true
     },
     {
       "id": "chest-wood-clean-low-poly-wood-intact",
@@ -537,7 +537,7 @@
       "product_id": "chest-wood",
       "state": "intact",
       "hidden": true,
-      "product_hidden": false
+      "product_hidden": true
     },
     {
       "id": "chest-wood-clean-low-poly-gold-intact",
@@ -613,7 +613,7 @@
       "product_id": "chest-wood",
       "state": "intact",
       "hidden": true,
-      "product_hidden": false
+      "product_hidden": true
     },
     {
       "id": "chest-wood-pixel-art-wood-intact",
@@ -689,7 +689,7 @@
       "product_id": "chest-wood",
       "state": "intact",
       "hidden": true,
-      "product_hidden": false
+      "product_hidden": true
     },
     {
       "id": "chest-wood-pixel-art-gold-intact",
@@ -765,7 +765,7 @@
       "product_id": "chest-wood",
       "state": "intact",
       "hidden": true,
-      "product_hidden": false
+      "product_hidden": true
     },
     {
       "id": "wall-stone",

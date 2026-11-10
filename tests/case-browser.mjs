@@ -27,10 +27,10 @@ try{
   assert.equal(await p.locator('[data-variant=color]').inputValue(),a.palette);
   assert.equal(await p.locator('[data-variant=state]').inputValue(),a.state);
  }
- await p.goto(base+'/zh/free-assets/?tag=gold');await p.locator('.fa-card').first().waitFor();assert.equal(await p.locator('#fa-grid .fa-card').count(),1);assert.ok((await p.locator('#fa-grid').innerText()).includes('4 种风格 · 4 色'));assert.ok((await p.locator('#fa-grid a').first().getAttribute('href')).includes('gold'));
+ await p.goto(base+'/zh/free-assets/?tag=gold');await p.locator('#fa-empty').waitFor();assert.equal(await p.locator('#fa-grid .fa-card').count(),0);assert.ok((await p.locator('#fa-empty').innerText()).includes('第一批半写实素材制作中'));
  for(const lang of ['en','zh','ja','ko','es']){
   await p.goto(base+(lang==='en'?'':'/'+lang)+'/templates/gacha/');await p.locator('.cx-contents .cx-card').first().waitFor();
   const names=await p.locator('.cx-contents .cx-card b').allTextContents();assert.equal(names.length,7);if(lang!=='en')assert.ok(!names.includes('Wooden Sword'));
  }
- assert.deepEqual(errors,[]);console.log('PASS: full motion / quick / skip / sound / resized center alignment / 10 variant URLs / tag grouping / five-language item names.');
+ assert.deepEqual(errors,[]);console.log('PASS: full motion / quick / skip / sound / resized center alignment / 10 variant URLs / unpublished grid empty state / five-language item names.');
 }finally{await b.close();}

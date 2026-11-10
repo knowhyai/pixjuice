@@ -164,7 +164,7 @@ https://creativecommons.org/publicdomain/zero/1.0/
     parts_meta,
     product_id: "chest-wood",
     hidden: previous.assets.find(a=>a.id===meta.id)?.hidden ?? false,
-    product_hidden: previous.assets.find(a=>a.id===meta.id)?.product_hidden ?? false,
+    product_hidden: true, // unpublished until the replacement modular chest ships
     state: variant,
     name: { en: meta.name.en.replace(/Realistic/g, "Semi-Realistic"), zh: meta.name.zh?.replace(/写实/g, "半写实") },
     category: "props",
@@ -216,7 +216,7 @@ const manifest = {
   categories: ["props", "characters", "vehicles", "environment"],
   generated: new Date().toISOString().slice(0, 10),
   base: "/free-assets/",
-  note: "Curated sample of chest-wood outputs; placeholder entries render procedurally until real assets land. Regenerate with scripts/build-assets-manifest.mjs.",
+  note: "The legacy chest-wood set is retained on disk but product_hidden until a replacement modular chest ships. Placeholder entries stay unpublished.",
   assets: [...chestEntries, ...placeholderEntries],
 };
 
