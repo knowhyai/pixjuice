@@ -150,6 +150,41 @@ pnpm dev     # http://localhost:5173 — catalog at /, editor at /editor/?fx=<ca
 pnpm build   # tsc --noEmit && vite build  → dist/  (green)
 ```
 
+## SFX downloads, sharing & chunk split (2026-11-10)
+
+**Download formats** — the Sound panel gained a format picker: **WAV** (as before), **OGG**
+(WebCodecs `AudioEncoder` → Opus, muxed into Ogg by `src/lib/sfxenc.ts`'s small RFC 7845 page
+writer; option disabled with an explanatory tooltip where the browser can't), and **MP3**
+(`@breezystack/lamejs` — an ESM build of lamejs; the 1.2.1 npm `lamejs` throws
+`MPEGMode is not defined` under bundlers — dynamically imported, so it loads only on first
+MP3 export as its own ~169 KB chunk).
+
+**Batch ZIP** — a variants count (1–32, default 8) next to a **⬇ batch ZIP** button renders
+that many fresh random variations of the family (current dials applied, seeds rolled fresh),
+named `pixjuice-<category>-<01…N>.<ext>`, plus a `LICENSE.txt` (jsfxr / The Unlicense: free
+for commercial use, no attribution; lamejs LGPL note when MP3).
+
+**Shareable links** — seed + pitch/length/punch dials + volume are written to the query
+(`sfxseed`, `sfxpitch`, `sfxlen`, `sfxpunch`, `sfxvol`, defaults omitted) whenever they move;
+**⧉ share link** copies the URL, and opening it restores the exact sound. jsfxr's noise
+texture is rolled through `Math.random()`, so `SfxEngine` swaps in a seeded PRNG around the
+synchronous `sfxr.toWebAudio` call (`withSeededRandom` in `src/lib/sfx.ts`) — same seed +
+dials now render **byte-identical** audio (verified by SHA-256 of the downloaded WAV before
+and after replaying the shared URL), and a restart no longer re-rolls the noise.
+
+**Chunk split** — `src/lib/fxinfo.ts` now holds the pure catalog helpers/types;
+`src/lib/catalog.ts` (home page only) statically imports all 244 modules. The editor instead
+lazy-imports just the opened effect through `import.meta.glob`, and `vite.config.ts`
+`manualChunks` splits pixelfx core / `fx-catalog` / one `fx-<category>` chunk each. The old
+1.17 MB player chunk is gone (no build warning); the editor's initial JS is ~0.5 MB and it
+fetches one ~40–70 KB category chunk on open.
+
+Verified headless Chromium at 1280×800 and 390×844 (34 checks, 0 failures): playback fires
+real WebAudio sources, all three formats download and decode (in-browser `decodeAudioData`
+and ffprobe), batch ZIP lists `LICENSE.txt` + correctly numbered files, share link restores
+dials/seed and reproduces identical audio, home page still renders 244 live tiles, zero
+console errors.
+
 ## Verification (headless Chromium, dev server and production build)
 
 36/36 automated checks passed, including pixel-level recolor proof and byte-level export checks:
@@ -171,8 +206,9 @@ pnpm build   # tsc --noEmit && vite build  → dist/  (green)
 
 ## Known gaps
 
-- The shared player chunk is ~1.17 MB minified (~467 KB gzip): pixelfx bundles all 244 effects.
-  Code-splitting by category would trim first load if it ever matters.
+- ~~The shared player chunk is ~1.17 MB minified~~ (fixed 2026-11-10: pixelfx now splits per
+  category via `manualChunks` and the editor lazy-loads only the effect it opens — see the
+  sfx-downloads section below).
 - GIF is 1-bit alpha (format limit): very soft glows get slightly crisp edges; the 2×/3× scale
   mitigates. Sheets/PNGs keep full alpha.
 - Scrubbing an act effect can't go before t=0, so the wind-up region (-0.34 s on frost-nova)

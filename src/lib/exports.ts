@@ -4,7 +4,7 @@
 import { createFrame, clearFrame, createFx, composite, actTiming } from "pixelfx";
 import type { Frame, FxOptions } from "pixelfx";
 import { GIFEncoder, quantize, applyPalette } from "gifenc";
-import { frameCount, isScreen, type CatalogEntry } from "./catalog";
+import { frameCount, isScreen, type CatalogEntry } from "./fxinfo";
 import type { PlayerStyle } from "./player";
 import { placement } from "./player";
 

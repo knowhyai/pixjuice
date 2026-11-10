@@ -488,6 +488,19 @@ export function rollParams(family: SfxFamily, seed: number): SfxrParams {
   return preset(mulberry32(seed));
 }
 
+/** jsfxr rolls its noise texture through Math.random(); swap in a seeded PRNG for the
+ *  (synchronous) synthesis so a given seed + dials always renders the exact same samples —
+ *  that's what lets a shared URL reproduce the sound byte-for-byte. */
+function withSeededRandom<T>(seed: number, fn: () => T): T {
+  const rand = Math.random;
+  Math.random = mulberry32(seed ^ 0x5bf03635); // mixed so params and noise never share a stream
+  try {
+    return fn();
+  } finally {
+    Math.random = rand;
+  }
+}
+
 // ---- the user-facing dials (pitch / length / punch), applied on top of any rolled preset
 
 export interface SfxDials {
@@ -565,38 +578,50 @@ export class SfxEngine {
     this.variantSeed = seed;
   }
 
+  /** The seed a render actually rolls from: the sticky variant seed, else the one passed in. */
+  private effSeed(seed: number): number {
+    return this.variantSeed ?? seed;
+  }
+
   private def(family: SfxFamily, seed: number): SfxrParams {
-    return applyDials(rollParams(family, this.variantSeed ?? seed), this.dials);
+    return applyDials(rollParams(family, this.effSeed(seed)), this.dials);
   }
 
   /** Fire a family preset now. Returns its duration in seconds, or 0 if audio is unavailable. */
   play(family: SfxFamily, seed: number): number {
     const ctx = this.#ctx;
     if (!ctx || !this.#master || this.muted) return 0;
+    const eff = this.effSeed(seed);
     const p = this.def(family, seed);
-    const src = sfxr.toWebAudio(p, ctx);
+    const src = withSeededRandom(eff, () => sfxr.toWebAudio(p, ctx));
     if (!src) return 0;
     src.connect(this.#master);
     src.start();
     return sfxDuration(p);
   }
 
-  /** The same preset (same seed + dials), rendered offline and packed as a 16-bit PCM WAV. */
-  async renderWav(family: SfxFamily, seed: number): Promise<Blob> {
-    const p = this.def(family, seed);
+  /** The preset (rolled + dialed), rendered offline. `freshSeed` skips the sticky variant
+   *  seed — used by the batch export, which rolls each variant from its own random seed. */
+  async renderBuffer(family: SfxFamily, seed: number, freshSeed = false): Promise<AudioBuffer> {
+    const eff = freshSeed ? seed : this.effSeed(seed);
+    const p = freshSeed ? applyDials(rollParams(family, seed), this.dials) : this.def(family, seed);
     const sr = p.sample_rate;
     const dur = sfxDuration(p) + 0.2;
     const OfflineCtx: typeof OfflineAudioContext =
       window.OfflineAudioContext ??
       (window as unknown as { webkitOfflineAudioContext: typeof OfflineAudioContext }).webkitOfflineAudioContext;
     const ctx = new OfflineCtx(1, Math.ceil(sr * dur), sr);
-    const src = sfxr.toWebAudio(p, ctx);
+    const src = withSeededRandom(eff, () => sfxr.toWebAudio(p, ctx));
     if (src) {
       src.connect(ctx.destination);
       src.start();
     }
-    const buffer = await ctx.startRendering();
-    return encodeWav(buffer);
+    return ctx.startRendering();
+  }
+
+  /** The same preset (same seed + dials), rendered offline and packed as a 16-bit PCM WAV. */
+  async renderWav(family: SfxFamily, seed: number): Promise<Blob> {
+    return encodeWav(await this.renderBuffer(family, seed));
   }
 }
 

@@ -2,15 +2,16 @@
 
 import "./style.css";
 import { PAL, BACKDROPS } from "pixelfx";
+import type { FxModule } from "pixelfx";
 import {
   actFacts,
   defaultPalette,
   exportBase,
-  findFx,
   frameCount,
   isScreen,
+  normalizeEntry,
   type CatalogEntry,
-} from "./lib/catalog";
+} from "./lib/fxinfo";
 import { Player, defaultStyle } from "./lib/player";
 import {
   buildGif,
@@ -21,8 +22,9 @@ import {
   sheetCanvas,
   sheetJson,
 } from "./lib/exports";
-import { makeZip } from "./lib/zip";
+import { makeZip, type ZipEntry } from "./lib/zip";
 import { familyForCategory, sfx, type SfxDials, type SfxFamily } from "./lib/sfx";
+import { encodeSfx, oggSupported, SFX_LICENSE, type SfxFormat } from "./lib/sfxenc";
 import { applyStaticText, fxDesc, fxName, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
 
 const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector(s) as T;
@@ -44,6 +46,10 @@ const fxSources = import.meta.glob("/node_modules/pixelfx/src/fx/**/*.js", {
   import: "default",
   exhaustive: true,
 });
+
+// The effect modules themselves, lazy: the editor fetches only the one effect it opens
+// (the home page's catalog loads them all — see lib/catalog.ts).
+const fxMods = import.meta.glob("/node_modules/pixelfx/src/fx/**/*.js", { exhaustive: true });
 
 // Palette presets: upstream ramps, two renamed for the menu ("poison" → toxic, "stone" → mono).
 const PRESETS: { value: string; label: string }[] = (
@@ -313,11 +319,13 @@ function runEditor(entry: CatalogEntry): void {
     const n = Math.round(+seedIn.value);
     style.seed = seedIn.value !== "" && !Number.isNaN(n) ? Math.max(0, Math.min(999_999, n)) : null;
     quietRefresh();
+    writeSfxUrl(); // the visual seed feeds the sound seed until a variant is rolled
   });
   $("#dice").addEventListener("click", () => {
     seedIn.value = String(Math.floor(Math.random() * 1_000_000));
     style.seed = +seedIn.value;
     quietRefresh();
+    writeSfxUrl();
   });
 
   for (const [btn, key] of [
@@ -429,10 +437,11 @@ function runEditor(entry: CatalogEntry): void {
     sfx.ensure();
     sfx.play(family, sfxSeed());
   });
-  // mutate: reroll a fresh variation of the family preset; it sticks (sync + WAV included)
+  // mutate: reroll a fresh variation of the family preset; it sticks (sync + exports included)
   $<HTMLButtonElement>("#sfx-mutate").addEventListener("click", () => {
     sfx.ensure();
     sfx.setVariantSeed(Math.floor(Math.random() * 0x7fffffff));
+    writeSfxUrl();
     sfx.play(family, sfxSeed());
   });
   const sfxDials: [HTMLInputElement, HTMLElement, keyof SfxDials, (v: number) => string][] = [
@@ -440,10 +449,60 @@ function runEditor(entry: CatalogEntry): void {
     [$<HTMLInputElement>("#sfx-length"), $("#sfx-length-val"), "length", (v) => `${v.toFixed(2)}×`],
     [$<HTMLInputElement>("#sfx-punch"), $("#sfx-punch-val"), "punch", (v) => `${Math.round(v * 100)}%`],
   ];
+
+  // ---- shareable sound state: seed + dials + volume ride along in the query string,
+  //      so a shared link reproduces the exact sound (exports render from the same params)
+
+  const DIAL_URL: Record<keyof SfxDials, string> = { pitch: "sfxpitch", length: "sfxlen", punch: "sfxpunch" };
+  const DIAL_DEFAULT: Record<keyof SfxDials, number> = { pitch: 1, length: 1, punch: 0 };
+  const volIn = $<HTMLInputElement>("#sfx-vol");
+
+  /** The seed the sound actually uses right now (variant seed > visual seed > the effect's own). */
+  function effectiveSeed(): number | null {
+    const eff = sfx.variantSeed ?? (style.seed !== null ? style.seed : null);
+    return eff === null || eff === homeSeed ? null : eff;
+  }
+
+  function writeSfxUrl(): void {
+    const u = new URL(location.href);
+    const eff = effectiveSeed();
+    if (eff === null) u.searchParams.delete("sfxseed");
+    else u.searchParams.set("sfxseed", String(eff));
+    for (const k of Object.keys(DIAL_URL) as (keyof SfxDials)[]) {
+      if (sfx.dials[k] === DIAL_DEFAULT[k]) u.searchParams.delete(DIAL_URL[k]);
+      else u.searchParams.set(DIAL_URL[k], sfx.dials[k].toFixed(2));
+    }
+    if (sfx.volume === 0.5) u.searchParams.delete("sfxvol");
+    else u.searchParams.set("sfxvol", sfx.volume.toFixed(2));
+    history.replaceState(null, "", u);
+  }
+
+  // restore any sound state carried by the link that opened this page
+  {
+    const q = new URLSearchParams(location.search);
+    const qSeed = q.get("sfxseed");
+    if (qSeed && Number.isFinite(+qSeed)) sfx.setVariantSeed(Math.max(0, Math.round(+qSeed)));
+    for (const [inp, val, key, fmt] of sfxDials) {
+      const v = q.get(DIAL_URL[key]);
+      if (v !== null && v !== "" && Number.isFinite(+v)) {
+        const x = Math.min(Math.max(+v, +inp.min), +inp.max);
+        sfx.setDial(key, x);
+        inp.value = String(x);
+        val.textContent = fmt(x);
+      }
+    }
+    const qVol = q.get("sfxvol");
+    if (qVol !== null && qVol !== "" && Number.isFinite(+qVol)) {
+      sfx.setVolume(Math.min(1, Math.max(0, +qVol)));
+      volIn.value = String(sfx.volume);
+    }
+  }
+
   for (const [inp, val, key, fmt] of sfxDials)
     inp.addEventListener("input", () => {
       sfx.setDial(key, +inp.value);
       val.textContent = fmt(+inp.value);
+      writeSfxUrl();
     });
   syncBtn.addEventListener("click", () => {
     syncOnRestart = !syncOnRestart;
@@ -456,9 +515,10 @@ function runEditor(entry: CatalogEntry): void {
     muteBtn.setAttribute("aria-pressed", String(sfx.muted));
     muteBtn.textContent = sfx.muted ? t("ed.unmute") : t("ed.mute");
   });
-  $<HTMLInputElement>("#sfx-vol").addEventListener("input", (e) =>
-    sfx.setVolume(+(e.target as HTMLInputElement).value),
-  );
+  volIn.addEventListener("input", () => {
+    sfx.setVolume(+volIn.value);
+    writeSfxUrl();
+  });
 
   player.onRestart = () => {
     if (syncOnRestart && !sfx.muted) sfx.play(family, sfxSeed());
@@ -478,8 +538,8 @@ function runEditor(entry: CatalogEntry): void {
     "#copy-src",
     "#copy-prompt",
   ].map((s) => $<HTMLButtonElement>(s));
-  // the WAV download lives in the Sound panel, but is guarded (disabled) like an export too
-  const sfxWavBtn = $<HTMLButtonElement>("#sfx-wav");
+  // the sound downloads live in the Sound panel, but are guarded (disabled) like exports too
+  const sfxBtns = ["#sfx-wav", "#sfx-batch", "#sfx-share"].map((s) => $<HTMLButtonElement>(s));
   const gifScale = $<HTMLSelectElement>("#gif-scale");
   let busy = false;
 
@@ -494,7 +554,7 @@ function runEditor(entry: CatalogEntry): void {
   async function guarded(fn: () => Promise<void>) {
     if (busy) return;
     busy = true;
-    for (const b of [...expBtns, sfxWavBtn]) b.disabled = true;
+    for (const b of [...expBtns, ...sfxBtns]) b.disabled = true;
     try {
       await fn();
     } catch (err) {
@@ -502,7 +562,7 @@ function runEditor(entry: CatalogEntry): void {
       note(t("ed.noteFail", { msg: err instanceof Error ? err.message : String(err) }));
     } finally {
       busy = false;
-      for (const b of [...expBtns, sfxWavBtn]) b.disabled = false;
+      for (const b of [...expBtns, ...sfxBtns]) b.disabled = false;
     }
   }
 
@@ -549,11 +609,57 @@ function runEditor(entry: CatalogEntry): void {
     }),
   );
 
-  // the Sound panel's WAV download: the same generation path, with the current dials applied
-  sfxWavBtn.addEventListener("click", () =>
+  // ---- the Sound panel's downloads: WAV / OGG / MP3 picker, batch ZIP, share link
+
+  const sfxFmtSel = $<HTMLSelectElement>("#sfx-format");
+  const oggOpt = sfxFmtSel.querySelector<HTMLOptionElement>('option[value="ogg"]') as HTMLOptionElement;
+  if (!oggSupported()) oggOpt.disabled = true; // browsers without WebCodecs keep WAV + MP3
+  const sfxDlBtn = sfxBtns[0];
+  function syncSfxDl(): void {
+    const fmt = sfxFmtSel.value.toUpperCase();
+    sfxDlBtn.textContent = t("ed.dlFmt", { fmt });
+    sfxDlBtn.title = t("ed.dlTitle", { fmt });
+    oggOpt.title = oggOpt.disabled ? t("ed.oggNo") : "";
+  }
+  sfxFmtSel.addEventListener("change", syncSfxDl);
+  syncSfxDl();
+
+  // the current sound (seed + dials), rendered offline and encoded in the picked format
+  sfxDlBtn.addEventListener("click", () =>
     guarded(async () => {
-      note(t("ed.noteWav"));
-      done(`${base}.wav`, await sfx.renderWav(family, sfxSeed()));
+      const fmt = sfxFmtSel.value as SfxFormat;
+      note(t("ed.noteRend", { fmt: fmt.toUpperCase() }));
+      done(`${base}.${fmt}`, await encodeSfx(await sfx.renderBuffer(family, sfxSeed()), fmt));
+    }),
+  );
+
+  // share: the link carries the exact sound (seed + dials); opening it restores all of it
+  sfxBtns[2].addEventListener("click", () =>
+    guarded(async () => {
+      writeSfxUrl();
+      await copyText(location.href);
+      note(t("ed.noteShare"), true);
+    }),
+  );
+
+  // batch: N fresh random variations of the family (dials applied), zipped with a license file
+  const sfxCount = $<HTMLInputElement>("#sfx-count");
+  sfxBtns[1].addEventListener("click", () =>
+    guarded(async () => {
+      const n = Math.min(32, Math.max(1, Math.round(+sfxCount.value || 8)));
+      const fmt = sfxFmtSel.value as SfxFormat;
+      note(t("ed.noteBatch", { n }));
+      const files: ZipEntry[] = [];
+      for (let i = 0; i < n; i++) {
+        const seed = Math.floor(Math.random() * 0x7fffffff);
+        const blob = await encodeSfx(await sfx.renderBuffer(family, seed, true), fmt);
+        files.push({
+          name: `pixjuice-${entry.cat}-${String(i + 1).padStart(2, "0")}.${fmt}`,
+          data: new Uint8Array(await blob.arrayBuffer()),
+        });
+      }
+      files.push({ name: "LICENSE.txt", data: new TextEncoder().encode(SFX_LICENSE) });
+      done(`pixjuice-${entry.cat}-sfx.zip`, makeZip(files));
     }),
   );
 
@@ -672,6 +778,7 @@ function runEditor(entry: CatalogEntry): void {
     speedLabel.textContent = t("ed.speed");
     $("#sfx-family").textContent = famText();
     syncSfxBtns();
+    syncSfxDl();
     note(t("ed.expNote"));
   });
 
@@ -691,9 +798,12 @@ function runEditor(entry: CatalogEntry): void {
 applyStaticText();
 mountLangSwitcher();
 const fxId = new URLSearchParams(location.search).get("fx");
-const entry = findFx(fxId);
-if (entry) runEditor(entry);
-else {
+// fetch just this effect's module (out of the lazy per-file chunks), not the whole catalog
+const loadMod = fxId ? fxMods[`/node_modules/pixelfx/src/fx/${fxId}.js`] : undefined;
+if (loadMod) {
+  const entry = normalizeEntry(fxId!, (await loadMod()) as FxModule);
+  runEditor(entry);
+} else {
   fail(fxId);
   onLocaleChange(() => fail(fxId)); // keeps the 404 strings in the active language
 }

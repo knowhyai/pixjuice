@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@breezystack/lamejs':
+        specifier: ^1.2.7
+        version: 1.2.7
       gifenc:
         specifier: ^1.0.3
         version: 1.0.3
@@ -26,6 +29,9 @@ importers:
         version: 7.3.7
 
 packages:
+
+  '@breezystack/lamejs@1.2.7':
+    resolution: {integrity: sha512-6wc7ck65ctA75Hq7FYHTtTvGnYs6msgdxiSUICQ+A01nVOWg6rqouZB8IdyteRlfpYYiFovkf67dIeOgWIUzTA==}
 
   '@esbuild/aix-ppc64@0.28.2':
     resolution: {integrity: sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==}
@@ -435,6 +441,8 @@ packages:
         optional: true
 
 snapshots:
+
+  '@breezystack/lamejs@1.2.7': {}
 
   '@esbuild/aix-ppc64@0.28.2':
     optional: true

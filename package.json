@@ -13,6 +13,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@breezystack/lamejs": "^1.2.7",
     "gifenc": "^1.0.3",
     "jsfxr": "^1.4.1",
     "pixelfx": "github:patch-gg/pixelfx"
