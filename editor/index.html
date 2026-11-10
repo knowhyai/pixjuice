@@ -142,7 +142,6 @@
               </select>
             </span>
             <button class="btn" id="exp-frame" type="button" data-i18n="ed.expFrame">current frame PNG</button>
-            <button class="btn" id="exp-wav" type="button">WAV</button>
           </div>
           <div class="btnrow ex-grid" style="margin-top: 10px;">
             <button class="btn" id="exp-src" type="button" title="This effect's pixelfx module, with your palette/seed/flip/angle noted in a header comment" data-i18n="ed.expSrc" data-i18n-title="ed.expSrcTitle">⬇ JS source</button>
@@ -162,15 +161,35 @@
             <label></label>
             <div class="btnrow">
               <button class="btn" id="sfx-play" type="button" data-i18n="ed.playSfx">▶ play SFX</button>
+              <button class="btn" id="sfx-mutate" type="button" title="Reroll a fresh variation of this sound" data-i18n="ed.mutate" data-i18n-title="ed.mutateTitle">🎲 mutate</button>
               <button class="btn" id="sfx-sync" type="button" aria-pressed="true">sync: on</button>
               <button class="btn" id="sfx-mute" type="button" aria-pressed="false">mute</button>
             </div>
           </div>
           <div class="row">
+            <label for="sfx-pitch" data-i18n="ed.pitch">pitch</label>
+            <input class="grow" type="range" id="sfx-pitch" min="0.4" max="2.4" step="0.05" value="1" data-i18n-aria="ed.pitch">
+            <span class="val" id="sfx-pitch-val">1.00×</span>
+          </div>
+          <div class="row">
+            <label for="sfx-length" data-i18n="ed.length">length</label>
+            <input class="grow" type="range" id="sfx-length" min="0.3" max="2.5" step="0.05" value="1" data-i18n-aria="ed.length">
+            <span class="val" id="sfx-length-val">1.00×</span>
+          </div>
+          <div class="row">
+            <label for="sfx-punch" data-i18n="ed.punch">punch</label>
+            <input class="grow" type="range" id="sfx-punch" min="0" max="1" step="0.05" value="0" data-i18n-aria="ed.punch">
+            <span class="val" id="sfx-punch-val">0%</span>
+          </div>
+          <div class="row">
             <label for="sfx-vol" data-i18n="ed.volume">volume</label>
             <input class="grow" type="range" id="sfx-vol" min="0" max="1" step="0.05" value="0.5">
           </div>
-          <p class="export-note" data-i18n="ed.sfxNote">Chip-style SFX synthesized with Web Audio, tuned to the effect's family. It fires when the effect restarts.</p>
+          <div class="row">
+            <label></label>
+            <button class="btn primary" id="sfx-wav" type="button" title="Render this sound with your current dials to a WAV file" data-i18n="ed.dlWav" data-i18n-title="ed.dlWavTitle">⬇ download WAV</button>
+          </div>
+          <p class="export-note" data-i18n="ed.sfxNote">Retro SFX generated with jsfxr (sfxr), tuned per effect family. It fires when the effect restarts, and mutate rerolls a fresh variation.</p>
         </section>
       </aside>
     </div>

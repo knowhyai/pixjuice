@@ -1,5 +1,10 @@
-// PixJuice SFX: small chip-style sounds generated with Web Audio, one recipe per effect family.
-// Every preset is plain oscillators + noise + envelopes, so the same graph renders offline into a WAV.
+// PixJuice SFX: 8-bit sounds generated per effect family with jsfxr
+// (https://github.com/chr15m/jsfxr — a JavaScript port of sfxr by DrPetter, by
+// Eric Fredricksen, maintained by Chris McCormick — The Unlicense).
+// Every family maps to a hand-tuned sfxr preset; a seeded roll keeps each effect
+// sounding like itself, and the same parameters render offline into a WAV.
+
+import { sfxr } from "jsfxr";
 
 export type SfxFamily =
   | "boom"
@@ -21,8 +26,10 @@ export type SfxFamily =
   | "coin"
   | "sweep"
   | "chirp"
-  | "status";
+  | "status"
+  | "fallback";
 
+/** Category id (from pixelfx) -> sound family. Every real category is listed; unknown ones get the fallback. */
 const FAMILY_BY_CATEGORY: Record<string, SfxFamily> = {
   moves: "melee",
   fire: "fire",
@@ -47,37 +54,17 @@ const FAMILY_BY_CATEGORY: Record<string, SfxFamily> = {
   critters: "chirp",
 };
 
+/** Used for categories that aren't in the map above (a future pixelfx category, say). */
+export const FALLBACK_FAMILY: SfxFamily = "fallback";
+
 export function familyForCategory(cat: string): SfxFamily {
-  return FAMILY_BY_CATEGORY[cat] ?? "sparkle";
+  return FAMILY_BY_CATEGORY[cat] ?? FALLBACK_FAMILY;
 }
 
-export function familyLabel(f: SfxFamily): string {
-  const names: Record<SfxFamily, string> = {
-    boom: "explosion",
-    fire: "fire",
-    water: "splash",
-    ice: "ice",
-    zap: "zap",
-    laser: "laser",
-    melee: "whoosh + hit",
-    impact: "thud",
-    zip: "zip",
-    portal: "portal",
-    sparkle: "magic sparkle",
-    chime: "chime",
-    drone: "dark drone",
-    nature: "rumble",
-    rain: "rain",
-    blip: "blip",
-    coin: "coin",
-    sweep: "sweep",
-    chirp: "chirp",
-    status: "aura",
-  };
-  return names[f];
-}
+/** The explicit category -> family map (exposed for the preset coverage check). */
+export const CATEGORY_FAMILIES: Record<string, SfxFamily> = FAMILY_BY_CATEGORY;
 
-// ---- small seeded RNG so a given effect + seed always sounds the same
+// ---- seeded RNG so a given effect + seed always rolls the same sound
 
 function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
@@ -90,278 +77,524 @@ function mulberry32(seed: number): () => number {
   };
 }
 
-type Ctx = BaseAudioContext;
+// ---- jsfxr parameter presets, one per family
 
-function noiseBuffer(ctx: Ctx, seconds = 1): AudioBuffer {
-  const buf = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * seconds), ctx.sampleRate);
-  const d = buf.getChannelData(0);
-  const r = mulberry32(0x9e3779b9);
-  for (let i = 0; i < d.length; i++) d[i] = r() * 2 - 1;
-  return buf;
+export interface SfxrParams {
+  wave_type: number;
+  p_env_attack: number;
+  p_env_sustain: number;
+  p_env_punch: number;
+  p_env_decay: number;
+  p_base_freq: number;
+  p_freq_limit: number;
+  p_freq_ramp: number;
+  p_freq_dramp: number;
+  p_vib_strength: number;
+  p_vib_speed: number;
+  p_arp_mod: number;
+  p_arp_speed: number;
+  p_duty: number;
+  p_duty_ramp: number;
+  p_repeat_speed: number;
+  p_pha_offset: number;
+  p_pha_ramp: number;
+  p_lpf_freq: number;
+  p_lpf_ramp: number;
+  p_lpf_resonance: number;
+  p_hpf_freq: number;
+  p_hpf_ramp: number;
+  sound_vol: number;
+  sample_rate: number;
+  sample_size: number;
 }
 
-interface NoiseOpts {
-  type?: BiquadFilterType;
-  f0?: number;
-  f1?: number;
-  q?: number;
-  dur: number;
-  vol: number;
-  attack?: number;
-  /** exponential gain decay constant (bigger = faster fade) */
-  decay?: number;
-}
+// jsfxr wave types (sfxr.js: SQUARE=0, SAWTOOTH=1, SINE=2, NOISE=3)
+const SQUARE = 0;
+const SAWTOOTH = 1;
+const SINE = 2;
+const NOISE = 3;
 
-/** A filtered noise burst with an exponential-ish envelope. */
-function noise(ctx: Ctx, dest: AudioNode, buf: AudioBuffer, t0: number, o: NoiseOpts) {
-  const src = ctx.createBufferSource();
-  src.buffer = buf;
-  src.loop = true;
-  const flt = ctx.createBiquadFilter();
-  flt.type = o.type ?? "bandpass";
-  flt.frequency.setValueAtTime(o.f0 ?? 800, t0);
-  if (o.f1 !== undefined) flt.frequency.exponentialRampToValueAtTime(Math.max(20, o.f1), t0 + o.dur);
-  flt.Q.value = o.q ?? 1;
-  const g = ctx.createGain();
-  g.gain.setValueAtTime(0.0001, t0);
-  g.gain.linearRampToValueAtTime(o.vol, t0 + (o.attack ?? 0.005));
-  g.gain.exponentialRampToValueAtTime(0.0001, t0 + o.dur);
-  src.connect(flt).connect(g).connect(dest);
-  src.start(t0, mulberry32(t0 * 1000 | 0)() * 0.9);
-  src.stop(t0 + o.dur + 0.05);
-}
+type Rng = () => number;
 
-interface ToneOpts {
-  type?: OscillatorType;
-  f0: number;
-  f1?: number;
-  dur: number;
-  vol: number;
-  attack?: number;
-}
-
-/** One oscillator with a pitch glide and an envelope. */
-function tone(ctx: Ctx, dest: AudioNode, t0: number, o: ToneOpts) {
-  const osc = ctx.createOscillator();
-  osc.type = o.type ?? "sine";
-  osc.frequency.setValueAtTime(o.f0, t0);
-  if (o.f1 !== undefined) osc.frequency.exponentialRampToValueAtTime(Math.max(20, o.f1), t0 + o.dur);
-  const g = ctx.createGain();
-  g.gain.setValueAtTime(0.0001, t0);
-  g.gain.linearRampToValueAtTime(o.vol, t0 + (o.attack ?? 0.008));
-  g.gain.exponentialRampToValueAtTime(0.0001, t0 + o.dur);
-  osc.connect(g).connect(dest);
-  osc.start(t0);
-  osc.stop(t0 + o.dur + 0.05);
-}
-
-type Preset = (ctx: Ctx, dest: AudioNode, t0: number, rng: () => number) => void;
-
-/** How long each family sounds, so the offline WAV render is sized right. */
-const PRESET_DUR: Record<SfxFamily, number> = {
-  boom: 1.6, fire: 1.2, water: 0.9, ice: 0.9, zap: 0.7, laser: 0.45, melee: 0.8, impact: 0.5,
-  zip: 0.4, portal: 1.1, sparkle: 1.0, chime: 1.5, drone: 1.8, nature: 1.1, rain: 2.2, blip: 0.3,
-  coin: 0.5, sweep: 0.9, chirp: 0.5, status: 1.0,
+const BASE: SfxrParams = {
+  wave_type: SQUARE,
+  p_env_attack: 0,
+  p_env_sustain: 0.2,
+  p_env_punch: 0.2,
+  p_env_decay: 0.3,
+  p_base_freq: 0.5,
+  p_freq_limit: 0,
+  p_freq_ramp: 0,
+  p_freq_dramp: 0,
+  p_vib_strength: 0,
+  p_vib_speed: 0,
+  p_arp_mod: 0,
+  p_arp_speed: 0,
+  p_duty: 0,
+  p_duty_ramp: 0,
+  p_repeat_speed: 0,
+  p_pha_offset: 0,
+  p_pha_ramp: 0,
+  p_lpf_freq: 1,
+  p_lpf_ramp: 0,
+  p_lpf_resonance: 0,
+  p_hpf_freq: 0,
+  p_hpf_ramp: 0,
+  sound_vol: 0.5,
+  sample_rate: 44100,
+  sample_size: 8,
 };
 
+function roll(base: SfxrParams, over: Partial<SfxrParams>): SfxrParams {
+  return { ...base, ...over };
+}
+
+type Preset = (r: Rng) => SfxrParams;
+
+/** jsfxr presets, tuned per PixJuice family. Ranges follow the upstream sfxr generators. */
 const PRESETS: Record<SfxFamily, Preset> = {
-  boom(ctx, dest, t0) {
-    const n = noiseBuffer(ctx);
-    tone(ctx, dest, t0, { f0: 150, f1: 32, dur: 0.55, vol: 0.85 });
-    noise(ctx, dest, n, t0, { type: "highpass", f0: 1500, dur: 0.07, vol: 0.5 });
-    noise(ctx, dest, n, t0, { f0: 1100, f1: 90, dur: 1.0, vol: 0.7, q: 0.6 });
-    noise(ctx, dest, n, t0 + 0.15, { type: "lowpass", f0: 130, dur: 1.3, vol: 0.5, attack: 0.05 });
+  // explosions: noise blast, pitch tumbling down, long boom, optional flanger (sfxr "explosion")
+  boom(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: NOISE,
+      p_base_freq: Math.pow(0.1 + f(0.4), 2),
+      p_freq_ramp: -0.2 - f(0.3),
+      p_env_sustain: 0.1 + f(0.3),
+      p_env_decay: 0.3 + f(0.5),
+      p_env_punch: 0.3 + f(0.5),
+      p_repeat_speed: r() < 0.5 ? 0.3 + f(0.4) : 0,
+      p_pha_offset: r() < 0.5 ? -0.3 + f(0.9) : 0,
+      p_pha_ramp: r() < 0.5 ? -f(0.3) : 0,
+    });
   },
-  fire(ctx, dest, t0, rng) {
-    const n = noiseBuffer(ctx);
-    noise(ctx, dest, n, t0, { f0: 350, f1: 800, dur: 0.6, vol: 0.3 });
-    noise(ctx, dest, n, t0, { type: "lowpass", f0: 500, dur: 1.1, vol: 0.28, attack: 0.1 });
-    for (let i = 0; i < 14; i++)
-      noise(ctx, dest, n, t0 + rng() * 0.95, { type: "highpass", f0: 1800 + rng() * 2500, dur: 0.02 + rng() * 0.02, vol: 0.1 + rng() * 0.16 });
+  // fire: low muffled noise bed + fast crackle retriggers
+  fire(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: NOISE,
+      p_base_freq: Math.pow(0.1 + f(0.3), 2),
+      p_env_attack: 0.04 + f(0.08),
+      p_env_sustain: 0.2 + f(0.2),
+      p_env_decay: 0.5 + f(0.4),
+      p_env_punch: 0.2 + f(0.3),
+      p_repeat_speed: 0.5 + f(0.25),
+      p_lpf_freq: 0.1 + f(0.25),
+      p_lpf_ramp: -f(0.2),
+      p_hpf_freq: f(0.1),
+    });
   },
-  water(ctx, dest, t0, rng) {
-    const n = noiseBuffer(ctx);
-    noise(ctx, dest, n, t0, { f0: 500, f1: 1600, dur: 0.45, vol: 0.45, q: 0.8 });
-    noise(ctx, dest, n, t0 + 0.12, { f0: 1200, f1: 350, dur: 0.4, vol: 0.3, q: 1.2 });
-    for (let i = 0; i < 5; i++)
-      tone(ctx, dest, t0 + 0.05 + rng() * 0.5, { f0: 260 + rng() * 380, f1: 900 + rng() * 500, dur: 0.07, vol: 0.12, type: "sine" });
+  // water: splash — noise sweeping up, closing low-pass
+  water(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: NOISE,
+      p_base_freq: 0.35 + f(0.3),
+      p_freq_ramp: 0.4 + f(0.4),
+      p_env_attack: 0.01 + f(0.03),
+      p_env_sustain: 0.1 + f(0.15),
+      p_env_decay: 0.3 + f(0.3),
+      p_env_punch: 0.3 + f(0.4),
+      p_lpf_freq: 0.4 + f(0.4),
+      p_lpf_ramp: -0.2 - f(0.3),
+      p_hpf_freq: f(0.15),
+    });
   },
-  ice(ctx, dest, t0, rng) {
-    const n = noiseBuffer(ctx);
-    const base = 1800 + rng() * 300;
-    [1, 1.5, 2].forEach((m, i) =>
-      tone(ctx, dest, t0 + i * 0.07, { f0: base * m, dur: 0.3 - i * 0.06, vol: 0.22 - i * 0.05 }),
-    );
-    noise(ctx, dest, n, t0, { type: "highpass", f0: 3800, dur: 0.3, vol: 0.18 });
-    noise(ctx, dest, n, t0 + 0.05, { f0: 2400, dur: 0.05, vol: 0.3, q: 3 });
+  // ice: crystalline hit — high narrow square, arpeggio tumbling down
+  ice(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: r() < 0.5 ? SQUARE : SINE,
+      p_base_freq: 0.7 + f(0.25),
+      p_freq_ramp: -0.1 - f(0.2),
+      p_env_sustain: f(0.06),
+      p_env_decay: 0.15 + f(0.25),
+      p_env_punch: 0.4 + f(0.4),
+      p_duty: 0.2 + f(0.3),
+      p_arp_mod: -(0.3 + f(0.4)),
+      p_arp_speed: 0.25 + f(0.25),
+      p_vib_strength: f(0.1),
+      p_vib_speed: f(0.3),
+      p_hpf_freq: f(0.1),
+    });
   },
-  zap(ctx, dest, t0) {
-    const n = noiseBuffer(ctx);
-    noise(ctx, dest, n, t0, { type: "highpass", f0: 900, dur: 0.16, vol: 0.7 });
-    tone(ctx, dest, t0, { type: "sawtooth", f0: 1900, f1: 90, dur: 0.22, vol: 0.35 });
-    tone(ctx, dest, t0 + 0.06, { type: "square", f0: 210, f1: 55, dur: 0.3, vol: 0.25 });
-    tone(ctx, dest, t0 + 0.1, { f0: 85, f1: 38, dur: 0.5, vol: 0.5 });
+  // lightning: hard crack — harsh square dropping fast, or bright noise snap
+  zap(r) {
+    const f = (n: number) => r() * n;
+    return r() < 0.5
+      ? roll(BASE, {
+          wave_type: SQUARE,
+          p_base_freq: 0.55 + f(0.3),
+          p_freq_ramp: -0.5 - f(0.3),
+          p_env_sustain: f(0.08),
+          p_env_decay: 0.15 + f(0.25),
+          p_env_punch: 0.5 + f(0.4),
+          p_duty: 0.3 + f(0.3),
+          p_pha_offset: -0.2 + f(0.7),
+          p_pha_ramp: -f(0.3),
+        })
+      : roll(BASE, {
+          wave_type: NOISE,
+          p_base_freq: 0.7 + f(0.3),
+          p_freq_ramp: -0.4 - f(0.3),
+          p_env_sustain: f(0.08),
+          p_env_decay: 0.15 + f(0.2),
+          p_env_punch: 0.6 + f(0.4),
+          p_hpf_freq: 0.2 + f(0.2),
+        });
   },
-  laser(ctx, dest, t0) {
-    const n = noiseBuffer(ctx);
-    tone(ctx, dest, t0, { type: "square", f0: 1750, f1: 160, dur: 0.28, vol: 0.32 });
-    tone(ctx, dest, t0, { type: "square", f0: 1770, f1: 164, dur: 0.28, vol: 0.2 });
-    noise(ctx, dest, n, t0, { type: "highpass", f0: 3000, dur: 0.04, vol: 0.25 });
+  // laser: the classic sfxr zap — square falling in pitch, swept duty
+  laser(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SQUARE,
+      p_base_freq: 0.55 + f(0.35),
+      p_freq_limit: 0.2,
+      p_freq_ramp: -0.3 - f(0.35),
+      p_env_sustain: 0.1 + f(0.2),
+      p_env_decay: 0.1 + f(0.25),
+      p_env_punch: f(0.3),
+      p_duty: 0.3 + f(0.4),
+      p_duty_ramp: -f(0.5),
+      p_hpf_freq: f(0.2),
+    });
   },
-  melee(ctx, dest, t0) {
-    const n = noiseBuffer(ctx);
-    noise(ctx, dest, n, t0, { f0: 260, f1: 2400, dur: 0.22, vol: 0.4, q: 1.4 });
-    noise(ctx, dest, n, t0 + 0.22, { type: "highpass", f0: 2800, dur: 0.09, vol: 0.45 });
-    tone(ctx, dest, t0 + 0.24, { f0: 130, f1: 55, dur: 0.25, vol: 0.4 });
-    noise(ctx, dest, n, t0 + 0.26, { type: "lowpass", f0: 700, dur: 0.3, vol: 0.3 });
+  // melee: a swing then a thud — filtered noise whoosh into a punchy body
+  melee(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: NOISE,
+      p_base_freq: 0.2 + f(0.2),
+      p_freq_ramp: 0.5 + f(0.4),
+      p_env_attack: 0.02 + f(0.04),
+      p_env_sustain: 0.08 + f(0.1),
+      p_env_decay: 0.3 + f(0.3),
+      p_env_punch: 0.4 + f(0.4),
+      p_lpf_freq: 0.5 + f(0.3),
+      p_lpf_ramp: -0.3 - f(0.3),
+      p_lpf_resonance: f(0.3),
+    });
   },
-  impact(ctx, dest, t0) {
-    const n = noiseBuffer(ctx);
-    tone(ctx, dest, t0, { f0: 110, f1: 36, dur: 0.35, vol: 0.8 });
-    noise(ctx, dest, n, t0, { type: "lowpass", f0: 900, dur: 0.09, vol: 0.5 });
+  // impact: meaty thud — low square plunging, short and heavy (sfxr "hitHurt")
+  impact(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SQUARE,
+      p_base_freq: 0.2 + f(0.3),
+      p_freq_ramp: -0.3 - f(0.3),
+      p_env_sustain: f(0.08),
+      p_env_decay: 0.15 + f(0.25),
+      p_env_punch: 0.4 + f(0.4),
+      p_duty: 0.15 + f(0.35),
+      p_hpf_freq: f(0.2),
+    });
   },
-  zip(ctx, dest, t0) {
-    const n = noiseBuffer(ctx);
-    noise(ctx, dest, n, t0, { f0: 1100, f1: 6200, dur: 0.22, vol: 0.4, q: 2 });
-    tone(ctx, dest, t0, { f0: 700, f1: 1700, dur: 0.12, vol: 0.18 });
+  // projectiles: rising saw zip
+  zip(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SAWTOOTH,
+      p_base_freq: 0.35 + f(0.25),
+      p_freq_ramp: 0.4 + f(0.4),
+      p_env_sustain: 0.05 + f(0.1),
+      p_env_decay: 0.15 + f(0.2),
+      p_env_punch: 0.2 + f(0.3),
+      p_duty: 1,
+      p_hpf_freq: f(0.15),
+    });
   },
-  portal(ctx, dest, t0) {
-    const n = noiseBuffer(ctx);
-    tone(ctx, dest, t0, { type: "triangle", f0: 170, f1: 680, dur: 0.75, vol: 0.3, attack: 0.05 });
-    tone(ctx, dest, t0, { type: "triangle", f0: 174, f1: 700, dur: 0.75, vol: 0.3, attack: 0.05 });
-    noise(ctx, dest, n, t0 + 0.3, { type: "highpass", f0: 3500, dur: 0.5, vol: 0.12 });
-    tone(ctx, dest, t0 + 0.7, { f0: 1046, dur: 0.35, vol: 0.16 });
+  // spawn: portal/power-up — stair-stepped pitch climb (sfxr "powerUp")
+  portal(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: r() < 0.5 ? SAWTOOTH : SQUARE,
+      p_base_freq: 0.2 + f(0.2),
+      p_freq_ramp: 0.15 + f(0.35),
+      p_repeat_speed: 0.35 + f(0.35),
+      p_env_attack: f(0.05),
+      p_env_sustain: 0.2 + f(0.25),
+      p_env_decay: 0.25 + f(0.3),
+      p_duty: f(0.6),
+      p_vib_strength: r() < 0.5 ? f(0.5) : 0,
+      p_vib_speed: r() < 0.5 ? f(0.5) : 0,
+    });
   },
-  sparkle(ctx, dest, t0, rng) {
-    const notes = [523, 622, 784, 1046, 1244];
-    notes.forEach((f, i) =>
-      tone(ctx, dest, t0 + i * 0.07, { type: "triangle", f0: f * (1 + (rng() - 0.5) * 0.01), dur: 0.16, vol: 0.22 }),
-    );
-    tone(ctx, dest, t0 + 0.38, { f0: 1568, dur: 0.5, vol: 0.18 });
+  // arcane: magic sparkle — bright square arpeggiating upward
+  sparkle(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SQUARE,
+      p_base_freq: 0.7 + f(0.25),
+      p_freq_ramp: f(0.2),
+      p_env_sustain: f(0.08),
+      p_env_decay: 0.25 + f(0.3),
+      p_env_punch: 0.3 + f(0.3),
+      p_duty: 0.3 + f(0.3),
+      p_arp_mod: 0.2 + f(0.4),
+      p_arp_speed: 0.25 + f(0.3),
+      p_vib_strength: f(0.1),
+      p_vib_speed: f(0.4),
+    });
   },
-  chime(ctx, dest, t0) {
-    [660, 990, 1320, 1980].forEach((f, i) =>
-      tone(ctx, dest, t0 + i * 0.02, { f0: f, dur: 1.3 - i * 0.2, vol: 0.22 - i * 0.04, attack: 0.01 }),
-    );
-    const n = noiseBuffer(ctx);
-    noise(ctx, dest, n, t0, { type: "highpass", f0: 6000, dur: 0.35, vol: 0.05 });
+  // holy: bell-like chime — clean sine with a long ring
+  chime(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SINE,
+      p_base_freq: 0.8 + f(0.15),
+      p_env_attack: 0.01 + f(0.02),
+      p_env_sustain: 0.08 + f(0.12),
+      p_env_decay: 0.6 + f(0.3),
+      p_vib_strength: f(0.1),
+      p_vib_speed: 0.2 + f(0.3),
+    });
   },
-  drone(ctx, dest, t0) {
-    const flt = ctx.createBiquadFilter();
-    flt.type = "lowpass";
-    flt.frequency.value = 240;
-    const bus = ctx.createGain();
-    bus.gain.setValueAtTime(0.0001, t0);
-    bus.gain.linearRampToValueAtTime(0.5, t0 + 0.5);
-    bus.gain.exponentialRampToValueAtTime(0.0001, t0 + 1.7);
-    bus.connect(dest);
-    flt.connect(bus);
-    for (const f of [55, 55.7]) {
-      const osc = ctx.createOscillator();
-      osc.type = "sawtooth";
-      osc.frequency.value = f;
-      osc.connect(flt);
-      osc.start(t0);
-      osc.stop(t0 + 1.8);
-    }
-    tone(ctx, dest, t0, { f0: 27.5, dur: 1.6, vol: 0.35, attack: 0.3 });
+  // shadow: dark drone — low saw through a heavy low-pass
+  drone(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SAWTOOTH,
+      p_base_freq: 0.12 + f(0.12),
+      p_freq_ramp: -0.05 - f(0.1),
+      p_env_attack: 0.15 + f(0.25),
+      p_env_sustain: 0.15 + f(0.2),
+      p_env_decay: 0.6 + f(0.3),
+      p_lpf_freq: 0.08 + f(0.14),
+      p_lpf_ramp: f(0.15),
+      p_lpf_resonance: 0.2 + f(0.3),
+      p_vib_strength: f(0.2),
+      p_vib_speed: 0.2 + f(0.3),
+    });
   },
-  nature(ctx, dest, t0, rng) {
-    const n = noiseBuffer(ctx);
-    noise(ctx, dest, n, t0, { type: "lowpass", f0: 150, dur: 0.9, vol: 0.55, attack: 0.03 });
-    for (let i = 0; i < 4; i++)
-      noise(ctx, dest, n, t0 + 0.1 + rng() * 0.4, { f0: 700 + rng() * 500, dur: 0.06, vol: 0.16 });
+  // nature: earthy rumble — deep filtered noise
+  nature(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: NOISE,
+      p_base_freq: Math.pow(0.05 + f(0.12), 2),
+      p_freq_ramp: -0.05 - f(0.15),
+      p_env_attack: 0.03 + f(0.06),
+      p_env_sustain: 0.2 + f(0.2),
+      p_env_decay: 0.5 + f(0.4),
+      p_env_punch: 0.2 + f(0.3),
+      p_lpf_freq: 0.06 + f(0.12),
+      p_lpf_resonance: f(0.3),
+    });
   },
-  rain(ctx, dest, t0) {
-    const n = noiseBuffer(ctx);
-    noise(ctx, dest, n, t0, { type: "highpass", f0: 500, dur: 2.0, vol: 0.22, attack: 0.4 });
-    noise(ctx, dest, n, t0, { type: "lowpass", f0: 1600, dur: 2.0, vol: 0.18, attack: 0.5 });
+  // weather: rain — soft high noise with fast patter retriggers
+  rain(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: NOISE,
+      p_base_freq: 0.5 + f(0.3),
+      p_env_attack: 0.1 + f(0.2),
+      p_env_sustain: 0.3 + f(0.2),
+      p_env_decay: 0.7 + f(0.3),
+      p_repeat_speed: 0.7 + f(0.2),
+      p_lpf_freq: 0.5 + f(0.4),
+      p_hpf_freq: 0.1 + f(0.2),
+    });
   },
-  blip(ctx, dest, t0) {
-    tone(ctx, dest, t0, { type: "square", f0: 880, dur: 0.07, vol: 0.25 });
-    tone(ctx, dest, t0 + 0.09, { type: "square", f0: 1318, dur: 0.12, vol: 0.25 });
+  // ui: menu blip — tiny square tick (sfxr "blipSelect")
+  blip(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SQUARE,
+      p_base_freq: 0.5 + f(0.25),
+      p_env_sustain: 0.08 + f(0.08),
+      p_env_decay: 0.12 + f(0.12),
+      p_env_punch: 0.1 + f(0.2),
+      p_duty: 0.25 + f(0.35),
+      p_hpf_freq: 0.1,
+    });
   },
-  coin(ctx, dest, t0) {
-    tone(ctx, dest, t0, { type: "square", f0: 987.77, dur: 0.08, vol: 0.25 });
-    tone(ctx, dest, t0 + 0.08, { type: "square", f0: 1318.5, dur: 0.38, vol: 0.25 });
+  // pickups: coin — two-tone up-jump (sfxr "pickupCoin")
+  coin(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SAWTOOTH,
+      p_base_freq: 0.5 + f(0.3),
+      p_env_sustain: f(0.1),
+      p_env_decay: 0.2 + f(0.3),
+      p_env_punch: 0.3 + f(0.3),
+      p_arp_mod: 0.2 + f(0.3),
+      p_arp_speed: 0.5 + f(0.2),
+    });
   },
-  sweep(ctx, dest, t0) {
-    const n = noiseBuffer(ctx);
-    noise(ctx, dest, n, t0, { f0: 220, f1: 3800, dur: 0.45, vol: 0.35, q: 1.5 });
-    noise(ctx, dest, n, t0 + 0.4, { f0: 3800, f1: 220, dur: 0.4, vol: 0.3, q: 1.5 });
+  // transitions: level wipe — a saw sweep up (or down) with a trailing filter
+  sweep(r) {
+    const f = (n: number) => r() * n;
+    const up = r() < 0.5;
+    return roll(BASE, {
+      wave_type: SAWTOOTH,
+      p_base_freq: 0.3 + f(0.25),
+      p_freq_ramp: up ? 0.4 + f(0.4) : -0.4 - f(0.4),
+      p_env_attack: f(0.05),
+      p_env_sustain: 0.15 + f(0.2),
+      p_env_decay: 0.35 + f(0.3),
+      p_lpf_freq: 0.6 + f(0.3),
+      p_lpf_ramp: -0.2 - f(0.3),
+      p_pha_offset: f(0.2),
+      p_pha_ramp: -f(0.2),
+    });
   },
-  chirp(ctx, dest, t0) {
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t0);
-    g.gain.linearRampToValueAtTime(0.2, t0 + 0.02);
-    g.gain.setValueAtTime(0.2, t0 + 0.26);
-    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.4);
-    osc.connect(g).connect(dest);
-    for (let i = 0; i < 9; i++)
-      osc.frequency.setValueAtTime(i % 2 ? 1650 : 1350, t0 + 0.02 + i * 0.03);
-    osc.start(t0);
-    osc.stop(t0 + 0.45);
+  // critters: friendly chirp — sine retriggered into chip-chip-chip
+  chirp(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SINE,
+      p_base_freq: 0.55 + f(0.25),
+      p_freq_ramp: 0.1 + f(0.2),
+      p_env_sustain: 0.03 + f(0.05),
+      p_env_decay: 0.2 + f(0.15),
+      p_repeat_speed: 0.75 + f(0.15),
+      p_vib_strength: f(0.1),
+      p_vib_speed: f(0.3),
+    });
   },
-  status(ctx, dest, t0) {
-    tone(ctx, dest, t0, { f0: 396, dur: 0.9, vol: 0.16, attack: 0.15, type: "triangle" });
-    tone(ctx, dest, t0, { f0: 402.5, dur: 0.9, vol: 0.16, attack: 0.15, type: "triangle" });
-    const n = noiseBuffer(ctx);
-    noise(ctx, dest, n, t0, { type: "highpass", f0: 5000, dur: 0.7, vol: 0.05, attack: 0.2 });
+  // status: aura loop — soft detuned sines with a slow shimmer
+  status(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SINE,
+      p_base_freq: 0.4 + f(0.2),
+      p_env_attack: 0.15 + f(0.2),
+      p_env_sustain: 0.2 + f(0.2),
+      p_env_decay: 0.5 + f(0.3),
+      p_vib_strength: 0.1 + f(0.2),
+      p_vib_speed: 0.2 + f(0.3),
+    });
+  },
+  // fallback: neutral blip for categories without a preset of their own
+  fallback(r) {
+    const f = (n: number) => r() * n;
+    return roll(BASE, {
+      wave_type: SQUARE,
+      p_base_freq: 0.4 + f(0.3),
+      p_env_sustain: 0.05 + f(0.08),
+      p_env_decay: 0.15 + f(0.2),
+      p_env_punch: 0.2 + f(0.2),
+      p_duty: 0.4 + f(0.2),
+    });
   },
 };
+
+/** Every family must have a preset — checked by scripts/check-sfx-presets.mjs. */
+export const SFX_FAMILIES: SfxFamily[] = Object.keys(PRESETS) as SfxFamily[];
+
+/** Roll a family's preset with a seed: same family + seed -> same sound parameters. */
+export function rollParams(family: SfxFamily, seed: number): SfxrParams {
+  const preset = PRESETS[family] ?? PRESETS[FALLBACK_FAMILY];
+  return preset(mulberry32(seed));
+}
+
+// ---- the user-facing dials (pitch / length / punch), applied on top of any rolled preset
+
+export interface SfxDials {
+  /** Frequency multiplier; 1 = as rolled. */
+  pitch: number;
+  /** Duration multiplier; 1 = as rolled. */
+  length: number;
+  /** Extra attack snap + sustain punch; 0 = as rolled. */
+  punch: number;
+}
+
+const NEUTRAL_DIALS: SfxDials = { pitch: 1, length: 1, punch: 0 };
+
+function applyDials(p: SfxrParams, d: SfxDials): SfxrParams {
+  const cl = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+  const tScale = Math.sqrt(Math.max(0, d.length)); // envelope lengths grow with the square of these params
+  const fScale = Math.sqrt(Math.max(0, d.pitch)); // frequency grows with the square of p_base_freq
+  const punch = cl(d.punch, 0, 1);
+  return {
+    ...p,
+    p_base_freq: cl(p.p_base_freq * fScale, 0.02, 1),
+    p_freq_limit: cl(p.p_freq_limit * fScale, 0, 1),
+    p_env_attack: cl(p.p_env_attack * tScale * (1 - 0.7 * punch), 0, 1),
+    p_env_sustain: cl(p.p_env_sustain * tScale, 0, 1),
+    p_env_decay: cl(p.p_env_decay * tScale, 0, 1),
+    p_env_punch: cl(p.p_env_punch + punch * 0.5, 0, 1),
+  };
+}
+
+/** How long a rendered sound lasts, in seconds (envelope total; repeats don't extend it). */
+export function sfxDuration(p: SfxrParams): number {
+  const sq = (v: number) => v * v;
+  return (sq(p.p_env_attack) + sq(p.p_env_sustain) + sq(p.p_env_decay)) * 100000 / p.sample_rate;
+}
 
 // ---- the engine
 
 export class SfxEngine {
-  private ctx: AudioContext | null = null;
-  private master: GainNode | null = null;
+  #ctx: AudioContext | null = null;
+  #master: GainNode | null = null;
   volume = 0.5;
   muted = false;
+  dials: SfxDials = { ...NEUTRAL_DIALS };
+  /** When set (by "mutate"), overrides the effect seed so the variant sticks until reloaded. */
+  variantSeed: number | null = null;
 
   /** Lazily create/resume the context; must be called from a user gesture at least once. */
   ensure(): AudioContext | null {
     if (typeof AudioContext === "undefined") return null;
-    if (!this.ctx) {
-      this.ctx = new AudioContext();
-      this.master = this.ctx.createGain();
-      this.master.gain.value = this.muted ? 0 : this.volume;
-      this.master.connect(this.ctx.destination);
+    if (!this.#ctx) {
+      this.#ctx = new AudioContext();
+      this.#master = this.#ctx.createGain();
+      this.#master.gain.value = this.muted ? 0 : this.volume;
+      this.#master.connect(this.#ctx.destination);
     }
-    if (this.ctx.state === "suspended") void this.ctx.resume();
-    return this.ctx;
+    if (this.#ctx.state === "suspended") void this.#ctx.resume();
+    return this.#ctx;
   }
 
   setVolume(v: number) {
     this.volume = v;
-    if (this.master) this.master.gain.value = this.muted ? 0 : v;
+    if (this.#master) this.#master.gain.value = this.muted ? 0 : v;
   }
 
   setMuted(m: boolean) {
     this.muted = m;
-    if (this.master) this.master.gain.value = m ? 0 : this.volume;
+    if (this.#master) this.#master.gain.value = m ? 0 : this.volume;
+  }
+
+  setDial(k: keyof SfxDials, v: number) {
+    this.dials[k] = v;
+  }
+
+  setVariantSeed(seed: number | null) {
+    this.variantSeed = seed;
+  }
+
+  private def(family: SfxFamily, seed: number): SfxrParams {
+    return applyDials(rollParams(family, this.variantSeed ?? seed), this.dials);
   }
 
   /** Fire a family preset now. Returns its duration in seconds, or 0 if audio is unavailable. */
   play(family: SfxFamily, seed: number): number {
-    const ctx = this.ctx;
-    if (!ctx || !this.master || this.muted) return 0;
-    PRESETS[family](ctx, this.master, ctx.currentTime + 0.02, mulberry32(seed));
-    return PRESET_DUR[family];
+    const ctx = this.#ctx;
+    if (!ctx || !this.#master || this.muted) return 0;
+    const p = this.def(family, seed);
+    const src = sfxr.toWebAudio(p, ctx);
+    if (!src) return 0;
+    src.connect(this.#master);
+    src.start();
+    return sfxDuration(p);
   }
 
-  /** The same preset, rendered offline and packed as a 16-bit PCM WAV. */
+  /** The same preset (same seed + dials), rendered offline and packed as a 16-bit PCM WAV. */
   async renderWav(family: SfxFamily, seed: number): Promise<Blob> {
-    const dur = PRESET_DUR[family] + 0.25;
-    const sr = 44100;
+    const p = this.def(family, seed);
+    const sr = p.sample_rate;
+    const dur = sfxDuration(p) + 0.2;
     const OfflineCtx: typeof OfflineAudioContext =
-      window.OfflineAudioContext ?? (window as unknown as { webkitOfflineAudioContext: typeof OfflineAudioContext }).webkitOfflineAudioContext;
-    const ctx = new OfflineCtx(2, Math.ceil(sr * dur), sr);
-    const dest = ctx.createGain();
-    dest.gain.value = this.muted ? 0 : Math.max(0.2, this.volume); // keep the file audible at low preview volume
-    dest.connect(ctx.destination);
-    PRESETS[family](ctx, dest, 0.02, mulberry32(seed));
+      window.OfflineAudioContext ??
+      (window as unknown as { webkitOfflineAudioContext: typeof OfflineAudioContext }).webkitOfflineAudioContext;
+    const ctx = new OfflineCtx(1, Math.ceil(sr * dur), sr);
+    const src = sfxr.toWebAudio(p, ctx);
+    if (src) {
+      src.connect(ctx.destination);
+      src.start();
+    }
     const buffer = await ctx.startRendering();
     return encodeWav(buffer);
   }
