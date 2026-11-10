@@ -1,0 +1,399 @@
+{
+  "schema_version": 1,
+  "product_id": "outfit-character",
+  "kind": "character",
+  "name": {
+    "en": "Outfit character demo",
+    "zh": "角色自动换装演示",
+    "ja": "着せ替えデモ",
+    "ko": "캐릭터 데모",
+    "es": "Demo de personaje"
+  },
+  "rig": {
+    "glb": "rig/base.glb",
+    "profile": "mixamo",
+    "armature": "Armature",
+    "skeleton_root": "mixamorig:Hips",
+    "animations": [
+      "Idle"
+    ],
+    "sockets": [
+      {
+        "id": "main_hand",
+        "node": "mixamorig:RightHand"
+      },
+      {
+        "id": "off_hand",
+        "node": "mixamorig:LeftHand"
+      }
+    ]
+  },
+  "slots": [
+    {
+      "id": "head",
+      "name": {
+        "en": "Head",
+        "zh": "头部",
+        "ja": "頭部",
+        "ko": "머리",
+        "es": "Cabeza"
+      },
+      "required": false,
+      "bind": "skinned"
+    },
+    {
+      "id": "chest",
+      "name": {
+        "en": "Chest",
+        "zh": "胸部",
+        "ja": "胴",
+        "ko": "가슴",
+        "es": "Pecho"
+      },
+      "required": true,
+      "bind": "skinned",
+      "default_part": "cuirass-steel"
+    },
+    {
+      "id": "legs",
+      "name": {
+        "en": "Legs",
+        "zh": "腿甲",
+        "ja": "脚",
+        "ko": "다리",
+        "es": "Piernas"
+      },
+      "required": false,
+      "bind": "skinned"
+    },
+    {
+      "id": "main_hand",
+      "name": {
+        "en": "Main hand",
+        "zh": "主手",
+        "ja": "メインハンド",
+        "ko": "주손",
+        "es": "Mano principal"
+      },
+      "required": false,
+      "bind": "socket",
+      "socket": "main_hand"
+    },
+    {
+      "id": "off_hand",
+      "name": {
+        "en": "Off hand",
+        "zh": "副手",
+        "ja": "オフハンド",
+        "ko": "보조손",
+        "es": "Mano secundaria"
+      },
+      "required": false,
+      "bind": "socket",
+      "socket": "off_hand"
+    }
+  ],
+  "parts": [
+    {
+      "id": "helm-steel",
+      "slot": "head",
+      "name": {
+        "en": "Steel helm",
+        "zh": "钢盔",
+        "ja": "鋼の兜",
+        "ko": "강철 투구",
+        "es": "Yelmo"
+      },
+      "glb": "parts/helm-steel.glb",
+      "thumb": "parts/helm-steel.png",
+      "tags": [
+        "plate"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "skinned"
+      }
+    },
+    {
+      "id": "cuirass-steel",
+      "slot": "chest",
+      "name": {
+        "en": "Steel cuirass",
+        "zh": "钢胸甲",
+        "ja": "鋼の胴",
+        "ko": "강철 흉갑",
+        "es": "Coraza"
+      },
+      "glb": "parts/cuirass-steel.glb",
+      "thumb": "parts/cuirass-steel.png",
+      "tags": [
+        "plate"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "skinned"
+      }
+    },
+    {
+      "id": "robe-mage-blue",
+      "slot": "chest",
+      "name": {
+        "en": "Blue mage robe",
+        "zh": "蓝色法师长袍",
+        "ja": "青いローブ",
+        "ko": "푸른 로브",
+        "es": "Túnica azul"
+      },
+      "glb": "parts/robe-mage-blue.glb",
+      "thumb": "parts/robe-mage-blue.png",
+      "tags": [
+        "cloth",
+        "mage"
+      ],
+      "conflicts": {
+        "slots": [
+          "legs"
+        ],
+        "tags": [
+          "fitted-legs"
+        ],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "skinned"
+      }
+    },
+    {
+      "id": "greaves-steel",
+      "slot": "legs",
+      "name": {
+        "en": "Steel greaves",
+        "zh": "钢腿甲",
+        "ja": "鋼の脚甲",
+        "ko": "강철 다리갑옷",
+        "es": "Grebas"
+      },
+      "glb": "parts/greaves-steel.glb",
+      "thumb": "parts/greaves-steel.png",
+      "tags": [
+        "fitted-legs"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "skinned"
+      }
+    },
+    {
+      "id": "sword-steel",
+      "slot": "main_hand",
+      "name": {
+        "en": "Steel sword",
+        "zh": "钢剑",
+        "ja": "鋼の剣",
+        "ko": "강철 검",
+        "es": "Espada"
+      },
+      "glb": "parts/sword-steel.glb",
+      "thumb": "parts/sword-steel.png",
+      "tags": [
+        "one-hand"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "socket",
+        "socket": "main_hand",
+        "origin": "root",
+        "offset": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "id": "greatsword-steel",
+      "slot": "main_hand",
+      "name": {
+        "en": "Greatsword",
+        "zh": "双手巨剑",
+        "ja": "大剣",
+        "ko": "대검",
+        "es": "Mandoble"
+      },
+      "glb": "parts/greatsword-steel.glb",
+      "thumb": "parts/greatsword-steel.png",
+      "tags": [
+        "two-hand"
+      ],
+      "conflicts": {
+        "slots": [
+          "off_hand"
+        ],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "socket",
+        "socket": "main_hand",
+        "origin": "root",
+        "offset": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "id": "shield-steel",
+      "slot": "off_hand",
+      "name": {
+        "en": "Shield",
+        "zh": "盾牌",
+        "ja": "盾",
+        "ko": "방패",
+        "es": "Escudo"
+      },
+      "glb": "parts/shield-steel.glb",
+      "thumb": "parts/shield-steel.png",
+      "tags": [
+        "shield"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [
+          "main_hand"
+        ],
+        "tags": [
+          "one-hand"
+        ]
+      },
+      "attach": {
+        "mode": "socket",
+        "socket": "off_hand",
+        "origin": "root",
+        "offset": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    }
+  ],
+  "presets": [
+    {
+      "id": "full-plate",
+      "name": {
+        "en": "Full plate",
+        "zh": "全身板甲",
+        "ja": "フルプレート",
+        "ko": "전신 갑옷",
+        "es": "Armadura completa"
+      },
+      "parts": {
+        "head": "helm-steel",
+        "chest": "cuirass-steel",
+        "legs": "greaves-steel",
+        "main_hand": "sword-steel",
+        "off_hand": "shield-steel"
+      }
+    },
+    {
+      "id": "mage",
+      "name": {
+        "en": "Mage",
+        "zh": "法师",
+        "ja": "魔術師",
+        "ko": "마법사",
+        "es": "Mago"
+      },
+      "parts": {
+        "chest": "robe-mage-blue",
+        "main_hand": "greatsword-steel"
+      }
+    }
+  ],
+  "default_preset": "full-plate"
+}

@@ -1,23 +1,26 @@
 {
   "assets": [
     {
-      "id": "parts-chest-wood",
-      "product_id": "parts-chest",
+      "id": "outfit-character",
+      "product_id": "outfit-character",
       "hidden": true,
-      "parts_meta": "../parts-demo/wood/meta.json",
+      "parts_meta": "../parts-demo/character/meta.json",
       "name": {
-        "en": "Parts test chest",
-        "zh": "部件测试宝箱"
+        "en": "Outfit character demo",
+        "zh": "角色自动换装演示",
+        "ja": "着せ替えデモ",
+        "ko": "캐릭터 데모",
+        "es": "Demo de personaje"
       },
-      "category": "props",
+      "category": "characters",
       "style_tier": "realistic",
-      "palette": "wood",
+      "palette": "demo",
       "state": "intact",
       "tags": [
         "CC0"
       ],
       "glb": {
-        "lod0": "../parts-demo/wood/parts/body.glb"
+        "lod0": "../parts-demo/character/rig/base.glb"
       },
       "license": {
         "id": "CC0 1.0",
@@ -25,23 +28,26 @@
       }
     },
     {
-      "id": "parts-chest-blue",
-      "product_id": "parts-chest",
+      "id": "outfit-prop",
+      "product_id": "outfit-prop",
       "hidden": true,
-      "parts_meta": "../parts-demo/blue/meta.json",
+      "parts_meta": "../parts-demo/prop/meta.json",
       "name": {
-        "en": "Parts test chest",
-        "zh": "部件测试宝箱"
+        "en": "Socket prop demo",
+        "zh": "道具挂点演示",
+        "ja": "ソケットデモ",
+        "ko": "소켓 데모",
+        "es": "Demo de objeto"
       },
       "category": "props",
       "style_tier": "realistic",
-      "palette": "blue",
+      "palette": "demo",
       "state": "intact",
       "tags": [
         "CC0"
       ],
       "glb": {
-        "lod0": "../parts-demo/blue/parts/body.glb"
+        "lod0": "../parts-demo/prop/rig/base.glb"
       },
       "license": {
         "id": "CC0 1.0",

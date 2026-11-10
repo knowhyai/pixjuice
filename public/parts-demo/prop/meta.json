@@ -1,0 +1,417 @@
+{
+  "schema_version": 1,
+  "product_id": "outfit-prop",
+  "kind": "prop",
+  "name": {
+    "en": "Socket prop demo",
+    "zh": "道具挂点演示",
+    "ja": "ソケットデモ",
+    "ko": "소켓 데모",
+    "es": "Demo de objeto"
+  },
+  "rig": {
+    "glb": "rig/base.glb",
+    "profile": "custom",
+    "animations": [
+      "Open"
+    ],
+    "sockets": [
+      {
+        "id": "body",
+        "node": "socket_body"
+      },
+      {
+        "id": "lid",
+        "node": "socket_lid"
+      },
+      {
+        "id": "lock",
+        "node": "socket_lock"
+      },
+      {
+        "id": "strap",
+        "node": "socket_strap"
+      }
+    ]
+  },
+  "slots": [
+    {
+      "id": "body",
+      "name": {
+        "en": "Body",
+        "zh": "箱体",
+        "ja": "本体",
+        "ko": "본체",
+        "es": "Cuerpo"
+      },
+      "required": true,
+      "bind": "socket",
+      "socket": "body",
+      "default_part": "body-wood"
+    },
+    {
+      "id": "lid",
+      "name": {
+        "en": "Lid",
+        "zh": "箱盖",
+        "ja": "蓋",
+        "ko": "뚜껑",
+        "es": "Tapa"
+      },
+      "required": true,
+      "bind": "socket",
+      "socket": "lid",
+      "default_part": "lid-wood"
+    },
+    {
+      "id": "lock",
+      "name": {
+        "en": "Lock",
+        "zh": "锁",
+        "ja": "錠",
+        "ko": "자물쇠",
+        "es": "Candado"
+      },
+      "required": false,
+      "bind": "socket",
+      "socket": "lock"
+    },
+    {
+      "id": "strap",
+      "name": {
+        "en": "Strap",
+        "zh": "束带",
+        "ja": "ベルト",
+        "ko": "띠",
+        "es": "Correa"
+      },
+      "required": false,
+      "bind": "socket",
+      "socket": "strap"
+    }
+  ],
+  "parts": [
+    {
+      "id": "body-wood",
+      "slot": "body",
+      "name": {
+        "en": "Wood body",
+        "zh": "木箱体",
+        "ja": "木の本体",
+        "ko": "나무 본체",
+        "es": "Cuerpo de madera"
+      },
+      "glb": "parts/body-wood.glb",
+      "thumb": "parts/body-wood.png",
+      "tags": [
+        "wood"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "socket",
+        "socket": "body",
+        "origin": "root",
+        "offset": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "id": "lid-wood",
+      "slot": "lid",
+      "name": {
+        "en": "Wood lid",
+        "zh": "木箱盖",
+        "ja": "木の蓋",
+        "ko": "나무 뚜껑",
+        "es": "Tapa de madera"
+      },
+      "glb": "parts/lid-wood.glb",
+      "thumb": "parts/lid-wood.png",
+      "tags": [
+        "wood"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "socket",
+        "socket": "lid",
+        "origin": "root",
+        "offset": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "id": "lid-steel",
+      "slot": "lid",
+      "name": {
+        "en": "Steel lid",
+        "zh": "钢箱盖",
+        "ja": "鋼の蓋",
+        "ko": "강철 뚜껑",
+        "es": "Tapa de acero"
+      },
+      "glb": "parts/lid-steel.glb",
+      "thumb": "parts/lid-steel.png",
+      "tags": [
+        "steel"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "socket",
+        "socket": "lid",
+        "origin": "root",
+        "offset": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "id": "lock-gold",
+      "slot": "lock",
+      "name": {
+        "en": "Gold lock",
+        "zh": "金锁",
+        "ja": "金の錠",
+        "ko": "금 자물쇠",
+        "es": "Candado dorado"
+      },
+      "glb": "parts/lock-gold.glb",
+      "thumb": "parts/lock-gold.png",
+      "tags": [
+        "gold"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "socket",
+        "socket": "lock",
+        "origin": "root",
+        "offset": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "id": "lock-iron",
+      "slot": "lock",
+      "name": {
+        "en": "Iron lock",
+        "zh": "铁锁",
+        "ja": "鉄の錠",
+        "ko": "철 자물쇠",
+        "es": "Candado de hierro"
+      },
+      "glb": "parts/lock-iron.glb",
+      "thumb": "parts/lock-iron.png",
+      "tags": [
+        "iron"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "socket",
+        "socket": "lock",
+        "origin": "root",
+        "offset": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "id": "strap-leather",
+      "slot": "strap",
+      "name": {
+        "en": "Leather strap",
+        "zh": "皮革束带",
+        "ja": "革ベルト",
+        "ko": "가죽 띠",
+        "es": "Correa"
+      },
+      "glb": "parts/strap-leather.glb",
+      "thumb": "parts/strap-leather.png",
+      "tags": [
+        "leather"
+      ],
+      "conflicts": {
+        "slots": [],
+        "tags": [],
+        "parts": []
+      },
+      "requires": {
+        "slots": [],
+        "tags": []
+      },
+      "attach": {
+        "mode": "socket",
+        "socket": "strap",
+        "origin": "root",
+        "offset": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    }
+  ],
+  "presets": [
+    {
+      "id": "wood-gold",
+      "name": {
+        "en": "Wood and gold",
+        "zh": "木箱金锁",
+        "ja": "木と金",
+        "ko": "나무와 금",
+        "es": "Madera y oro"
+      },
+      "parts": {
+        "body": "body-wood",
+        "lid": "lid-wood",
+        "lock": "lock-gold",
+        "strap": "strap-leather"
+      }
+    },
+    {
+      "id": "iron",
+      "name": {
+        "en": "Iron fittings",
+        "zh": "铁制配件",
+        "ja": "鉄の装具",
+        "ko": "철 장식",
+        "es": "Herrajes"
+      },
+      "parts": {
+        "body": "body-wood",
+        "lid": "lid-steel",
+        "lock": "lock-iron"
+      }
+    }
+  ],
+  "default_preset": "wood-gold"
+}

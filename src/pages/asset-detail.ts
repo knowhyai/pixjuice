@@ -58,7 +58,8 @@ function extOf(path: string): string {
     return;
   }
   const demo = new URLSearchParams(location.search).has('parts-demo');
-  let selected = assets.find((x) => x.id === id) || assets.find(x=>x.product_id===id) || (demo ? assets[0] : undefined);
+  const demoKind = new URLSearchParams(location.search).get("demo-kind");
+  let selected = (demo && demoKind ? assets.find(x=>x.product_id===`outfit-${demoKind}`) : undefined) || assets.find((x) => x.id === id) || assets.find(x=>x.product_id===id) || (demo ? assets[0] : undefined);
   const a = selected;
   if (!a) {
     root.appendChild(

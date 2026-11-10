@@ -1,43 +1,30 @@
-import {parseParts,initialParts,replacePart,exportParts} from './parts.js';
-import {mountModel} from './model-preview';
+import {parseParts,initialParts,replacePart,exportParts,randomOutfit,disabledSlots,encodeOutfit,decodeOutfit} from './parts.js';
+import {createOutfitViewer} from './outfit-viewer.js';
 import {getLocale} from '../i18n';
 const strings={
- en:['Parts','Download part GLB','Replace','Hide','Download combination GLB','Loading…','Unable to load parts. Try again.'],
- zh:['部件','下载部件 GLB','替换','隐藏','下载组合 GLB','加载中…','部件加载失败，请重试。'],
- ja:['パーツ','パーツ GLB をダウンロード','交換','非表示','組み合わせ GLB をダウンロード','読み込み中…','読み込めません。再試行してください。'],
- ko:['부품','부품 GLB 다운로드','교체','숨기기','조합 GLB 다운로드','로딩 중…','불러오지 못했습니다. 다시 시도하세요.'],
- es:['Piezas','Descargar pieza GLB','Reemplazar','Ocultar','Descargar combinación GLB','Cargando…','No se pudo cargar. Inténtalo de nuevo.']};
-export async function mountParts(info, viewer, asset, assets, alive, beforePreview) {
- const base='/free-assets/';
- const url=a=>new URL(a.parts_meta || a.glb?.lod0?.replace(/[^/]+$/,'meta.json'),location.origin+base).href;
- const load=async a=>{if(!a.parts_meta&&!a.glb?.lod0)return null;try{const r=await fetch(url(a));if(!r.ok)return null;const m=parseParts(await r.json(),url(a));return m.product_id===(a.product_id||a.id)?m:null;}catch{return null;}};
- const meta=await load(asset);if(!meta||!alive())return;
- const peers=(await Promise.all(assets.filter(a=>(a.product_id||a.id)===meta.product_id && a.style_tier===asset.style_tier).map(load))).filter(Boolean);
- if(!alive())return;
- const text=strings[getLocale()]||strings.en;
- let selection=initialParts(meta),revision=0,cleanup,blobURL;
- const section=document.createElement('section');section.className='fa-parts';section.setAttribute('aria-label',text[0]);
- const title=document.createElement('h2');title.textContent=text[0];section.append(title);
- const status=document.createElement('p');status.setAttribute('role','status');
- const download=document.createElement('button');download.className='tpl-btn tpl-btn-accent';download.textContent=text[4];download.disabled=true;
- let bytes, started=false;
- async function update(){const id=++revision;download.disabled=true;status.textContent=text[5];try{const next=await exportParts(meta,selection);if(!alive()||id!==revision)return;
- bytes=next;if(!started){beforePreview();started=true;}cleanup?.();if(blobURL)URL.revokeObjectURL(blobURL);viewer.replaceChildren();blobURL=URL.createObjectURL(new Blob([bytes],{type:'model/gltf-binary'}));cleanup=mountModel(viewer,blobURL,asset.id,true);download.disabled=false;status.textContent='';
- }catch{if(alive()&&id===revision)status.textContent=text[6];}}
- for(const part of meta.parts){
- const row=document.createElement('div');row.className='fa-part';row.dataset.slot=part.slot;
- const img=document.createElement('img');img.src=part.thumb;img.alt='';row.append(img);
- const content=document.createElement('div');const name=document.createElement('strong');name.textContent=part.name[getLocale()]||part.name.en;content.append(name);
- const select=document.createElement('select');select.setAttribute('aria-label',text[2]+' '+name.textContent);
- const options=[];
- for(const source of peers)for(const p of source.parts.filter(p=>p.slot===part.slot)){
- const index=options.push({source,part:p})-1;const option=document.createElement('option');option.value=String(index);option.textContent=[source.variant.palette,source.variant.condition||source.variant.state].filter(Boolean).join(' · ')+' — '+(p.name[getLocale()]||p.name.en);option.selected=p.glb===part.glb;select.append(option);}
- if(part.optional){const option=document.createElement('option');option.value='hide';option.textContent=text[3];select.append(option);}
- const link=document.createElement('a');link.className='tpl-btn';link.href=part.glb;link.download='';link.textContent=text[1];
- select.onchange=()=>{const choice=options[Number(select.value)];selection=select.value==='hide'?replacePart(meta,selection,part.slot,meta,null):replacePart(meta,selection,part.slot,choice.source,choice.part.id);const current=selection[part.slot];img.hidden=!current;link.hidden=!current;if(current){img.src=current.part.thumb;link.href=current.part.glb;}void update();};
- content.append(select,link);row.append(content);section.append(row);
- }
- download.onclick=()=>{if(!bytes)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([bytes],{type:'model/gltf-binary'}));a.download=meta.product_id+'-combination.glb';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);};
- section.append(status,download);info.append(section);void update();
- return ()=>{revision++;cleanup?.();if(blobURL)URL.revokeObjectURL(blobURL);};
+ en:['Automatic outfits','Download part GLB','Hide','Download outfit GLB','Loading…','Unable to load outfit. Try again.','Random outfit','Presets','Blocked by another equipped part','Unity guide','Godot guide','Choose a compatible outfit','CC0 · Semi-Realistic · Placeholder demo'],
+ zh:['自动换装','下载部件 GLB','隐藏','下载当前搭配 GLB','加载中…','换装加载失败，请重试。','随机搭配','预设搭配','被已装备部件互斥禁用','Unity 换装说明','Godot 换装说明','请选择兼容搭配','CC0 · 半写实 · 占位演示'],
+ ja:['自動着せ替え','パーツ GLB をダウンロード','非表示','衣装 GLB をダウンロード','読み込み中…','読み込めません。再試行してください。','ランダム衣装','プリセット','装備中のパーツと競合','Unity ガイド','Godot ガイド','互換性のある衣装を選択','CC0 · セミリアル · 仮モデル'],
+ ko:['자동 의상','부품 GLB 다운로드','숨기기','의상 GLB 다운로드','로딩 중…','불러오지 못했습니다. 다시 시도하세요.','무작위 의상','프리셋','장착 부품과 충돌','Unity 가이드','Godot 가이드','호환 의상을 선택하세요','CC0 · 세미 리얼리스틱 · 임시 모델'],
+ es:['Atuendos automáticos','Descargar pieza GLB','Ocultar','Descargar atuendo GLB','Cargando…','No se pudo cargar. Inténtalo de nuevo.','Atuendo aleatorio','Preajustes','Conflicto con una pieza equipada','Guía de Unity','Guía de Godot','Elige un atuendo compatible','CC0 · Semirrealista · Modelo provisional']};
+export async function mountParts(info,viewer,asset,_assets,alive,beforePreview){
+ const url=new URL(asset.parts_meta||asset.glb?.lod0?.replace(/[^/]+$/,'meta.json'),location.origin+'/free-assets/').href;let meta;
+ try{const r=await fetch(url);if(!r.ok)return;meta=parseParts(await r.json(),url);if(meta.product_id!==(asset.product_id||asset.id))return;}catch{return;}if(!alive())return;
+ const locale=getLocale(),text=strings[locale]||strings.en,name=p=>p.name[locale]||p.name.en;
+ const section=document.createElement('section');section.className='fa-parts';section.setAttribute('aria-label',text[0]);const title=document.createElement('h2');title.textContent=text[0];section.append(title);
+ const status=document.createElement('p');status.setAttribute('role','status');status.textContent=text[4];section.append(status);info.append(section);
+ let runtime;try{runtime=await createOutfitViewer(viewer,meta,alive,beforePreview);}catch(error){console.error('Outfit preview failed',error);status.textContent=text[5];return ()=>section.remove();}if(!runtime){section.remove();return;}
+ let {selection,valid}=decodeOutfit(meta,new URLSearchParams(location.search)),disposed=false,revision=0;
+ if(!valid){const u=new URL(location.href);u.searchParams.delete('outfit');u.searchParams.delete('preset');history.replaceState(null,'',u);}
+ const toolbar=document.createElement('div');toolbar.className='fa-outfit-toolbar';const random=document.createElement('button');random.className='tpl-btn';random.textContent=text[6];random.dataset.action='random';
+ const presets=document.createElement('select');presets.setAttribute('aria-label',text[7]);const blank=new Option(text[7],'');presets.add(blank);for(const p of meta.presets)presets.add(new Option(name(p),p.id));presets.value=new URL(location.href).searchParams.get('preset')||'';toolbar.append(random,presets);section.append(toolbar);
+ const rows=[];for(const slot of meta.slots){const row=document.createElement('div');row.className='fa-part';row.dataset.slot=slot.id;const img=document.createElement('img');img.alt='';const content=document.createElement('div'),label=document.createElement('strong');label.textContent=name(slot);const select=document.createElement('select');select.setAttribute('aria-label',name(slot));if(!slot.required)select.add(new Option(text[2],''));for(const p of meta.parts.filter(p=>p.slot===slot.id))select.add(new Option(name(p),p.id));const link=document.createElement('a');link.className='tpl-btn';link.download='';link.textContent=text[1];content.append(label,select,link);row.append(img,content);section.append(row);rows.push({slot,row,img,select,link});select.onchange=()=>{try{selection=replacePart(meta,selection,slot.id,meta,select.value||null);presets.value='';updateURL();render();}catch{status.textContent=text[11];render();}};}
+ const download=document.createElement('button');download.className='tpl-btn tpl-btn-accent';download.textContent=text[3];download.dataset.action='export';section.append(download);
+ for(const [engine,i] of [['unity',9],['godot',10]]){const a=document.createElement('a');a.className='tpl-btn';a.href=`/guides/outfits-${engine}.html?lang=${locale}`;a.textContent=text[i];section.append(a);}
+ if(asset.hidden){const note=document.createElement('p');note.className='cap';note.textContent=text[12];section.append(note);}
+ function updateURL(preset){const u=new URL(location.href);if(preset){u.searchParams.set('preset',preset);u.searchParams.delete('outfit');}else{u.searchParams.delete('preset');u.searchParams.set('outfit',encodeOutfit(meta,selection));}history.replaceState(null,'',u);}
+ function render(){revision++;download.disabled=false;runtime.update(selection);const blocked=disabledSlots(meta,selection);for(const {slot,row,img,select,link} of rows){const p=meta.parts.find(p=>p.id===selection[slot.id]);select.value=p?.id||'';select.disabled=blocked.has(slot.id);row.classList.toggle('is-blocked',select.disabled);row.title=select.disabled?text[8]:'';img.hidden=!p;link.hidden=!p;if(p){img.src=p.thumb;link.href=p.glb;}for(const option of select.options){try{replacePart(meta,selection,slot.id,meta,option.value||null);option.disabled=false;}catch{option.disabled=true;}}}status.textContent='';}
+ random.onclick=()=>{selection=randomOutfit(meta);presets.value='';updateURL();render();};presets.onchange=()=>{if(!presets.value)return;const p=meta.presets.find(p=>p.id===presets.value);selection=Object.fromEntries(meta.slots.map(s=>[s.id,p.parts[s.id]??null]));updateURL(p.id);render();};
+ download.onclick=async()=>{const token=revision;download.disabled=true;status.textContent=text[4];try{const bytes=await exportParts(meta,selection);if(disposed||token!==revision)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([bytes],{type:'model/gltf-binary'}));a.download=meta.product_id+'-outfit.glb';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);status.textContent='';}catch{if(!disposed&&token===revision)status.textContent=text[5];}finally{if(!disposed&&token===revision)download.disabled=false;}};
+ render();return ()=>{disposed=true;revision++;runtime.dispose();section.remove();};
 }

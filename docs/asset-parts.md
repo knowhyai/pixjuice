@@ -1,46 +1,21 @@
-# 素材部件与在线换装
+# 自动换装（schema v1）
 
-详情页自动探测 LOD0 所在目录的 `meta.json`，也可在素材 manifest 条目中指定 `parts_meta`（相对 `/free-assets/`）。无有效 metadata 时不显示区块，原模型、减面和下载照常运行。同产品、同 style_tier 的变体参加换装；隐藏变体仍可参与部件选择。
+唯一结构约定见 [冻结 schema](outfit-schema.md)，源文件 `/workspace/pixjuice-briefs/outfit-schema.md`。不再支持旧 variant / 每部件 optional 格式。
 
-每个变体目录结构：
+详情页从 manifest.parts_meta（相对 /free-assets/）或 LOD0 同目录探测 meta.json；缺失或非法时不显示换装区，不修改旧素材。product_id 必须与清单一致。按 meta 的 slots 顺序展示；槽位 required 决定是否可隐藏。所有 presets 和默认搭配在解析时校验。无 meta 的旧宝箱继续原有预览/减面功能。
 
-```
-meta.json
-parts/body.glb
-parts/body.png
-parts/lock.glb
-parts/lock.png
-```
+隐藏夹具：`public/parts-demo/{character,prop}/`，独立清单 `public/parts-demo/manifest.json`，不会进入公开网格。生成源 `scripts/generate-outfit-demo.mjs`，构建时自动生成 CC0 几何 GLB、带 UV/法线/贴图/材质的部件与缩略图。角色五槽、五根共享骨、Idle、两套预设；道具四槽 socket、两种锁/盖和 Open 动画。演示不是正式人形 Avatar。
 
-```json
-{
-  "product_id": "chest-wood",
-  "variant": { "palette": "wood", "condition": "intact" },
-  "parts": [
-    {
-      "id": "body", "slot": "body",
-      "name": { "en": "Body", "zh": "箱体", "ja": "本体", "ko": "본체", "es": "Cuerpo" },
-      "glb": "parts/body.glb", "thumb": "parts/body.png", "optional": false
-    },
-    {
-      "id": "lock", "slot": "lock",
-      "name": { "en": "Lock", "zh": "锁", "ja": "錠", "ko": "자물쇠", "es": "Candado" },
-      "glb": "parts/lock.glb", "thumb": "parts/lock.png", "optional": true
-    }
-  ]
-}
-```
+使用已有详情页外壳打开：
+- `/free-assets/chest-wood/?parts-demo=1&demo-kind=character`
+- `/zh/free-assets/chest-wood/?parts-demo=1&demo-kind=prop`
 
-`product_id` 必须与素材清单一致；每个 metadata 中 slot 唯一，跨款式按 slot 互换，只有当前素材中 optional 为 true 的槽位可隐藏。部件必须使用一致的单位、原点、朝向和装配姿态；不要逐件居中。所有贴图嵌入 GLB，保留 UV。路径限变体目录内 `parts/`，不允许绝对路径、远程地址或 `..`。缩略图支持 PNG/JPG/WebP。发布每个款式到素材 manifest（含 product_id、style_tier、palette、state、glb.lod0）；metadata 的 variant.condition 对应清单 state。
+`demo-kind` 选择独立清单中的产品，也可以通过已有路径 `/free-assets/chest-wood/?parts-demo=1` 默认进入角色。支持五语路径。`preset` / `outfit` 严格按 schema 第 9 节编码；切换时 replaceState，坏参数清除并回默认。
 
-页面将可见部件的默认场景合并成单个 GLB，每个 slot 保持独立节点，保留各自变换、材质、纹理与 UV；不做减面或破坏性焊接。切换部件和隐藏会更新同一个 3D viewer；组合状态下不显示针对原始整模的减面控件。单件下载始终指向当前选中部件。加载失败保留错误提示，组合下载禁用，避免下载过期组合。
+预览仅创建一次主 AnimationMixer；部件按骨名绑定至主骨架，保留 inverse bind/权重。手持物和道具部件挂到声明 socket 并应用 offset。切换只更改可见性，时间轴不重启。随机用部分约束剪枝和回溯，在叶节点检查全部依赖。互斥槽清空后禁用；依赖不满足的选择不可用。
 
-现有宝箱打包脚本仅在源 meta 明确含 product_id 和 parts 时复制 parts 与 meta；其他产品可以直接按上述目录及 manifest 约定交付。构建不修改任何旧宝箱 GLB。
+整套导出在浏览器内使用 gltf-transform，读取 base 与已选部件。保留主动画、socket 层级、UV/法线/材质/贴图，蒙皮 joint 引用按名字转到主骨骼，删除副本骨架；不焊接、不减面。单件链接直接下载原 GLB。组合导出不保存当前动画瞬时姿态，而保留原动画剪辑和绑定姿态。
 
-## 隐藏验收夹具（CC0 简化几何）
+站点可访问说明：`/guides/outfits-unity.html`、`/guides/outfits-godot.html`，`?lang=zh` 等切换五语，换装区直接链接。
 
-- 数据：`public/parts-demo/{wood,blue}/`，独立清单 `public/parts-demo/manifest.json`，不加入公开素材清单。
-- 生成源：`tests/fixtures/parts-chest/generate.mjs`，执行 `node tests/fixtures/parts-chest/generate.mjs`。
-- 演示：`/free-assets/chest-wood/?parts-demo`。此参数使用独立夹具清单，不会显示旧宝箱的假部件。刷新会恢复默认组合。
-- 两款式、三个槽位（body 必选，lock/lid 可隐藏）。测试使用贴图和 UV 的独立盒体，代表数据结构，不代表正式素材质量。
-- 单测：`tests/parts.test.mjs`，含错误 metadata、跨产品拒绝、替换、隐藏与导出回读。
+验证：`pnpm test && pnpm build`；浏览器验收源 `scripts/verify-outfits.mjs`。正式宝箱/骑士按同一 schema 交付后放置文件并接入 manifest，无需第二种结构。旧宝箱 LOD0 不改，也不给旧文件补部件。

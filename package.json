@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/gen-asset-pages.mjs && tsc --noEmit && node scripts/check-sfx-presets.mjs && vite build && node scripts/localize-pages.mjs",
+    "build": "node scripts/generate-outfit-demo.mjs && node scripts/gen-asset-pages.mjs && tsc --noEmit && node scripts/check-sfx-presets.mjs && vite build && node scripts/localize-pages.mjs",
     "preview": "vite preview",
     "test": "node --test tests/index.mjs",
     "check": "tsc --noEmit",
