@@ -100,6 +100,10 @@ const ko: Partial<Dict> = {
     toolUpD: "최근접 이웃, Scale2x, Scale3x, xBR을 2×–8×로 — 가장자리가 선명, 흐림 없음.",
     toolSh: "스프라이트 시트 커터 & GIF",
     toolShD: "그리드 또는 자동 감지로 자르고, 미리보고, GIF·ZIP·XML·JSON 내보내기.",
+    entryEffects: '이펙트 라이브러리',
+    entryEffectsD: '244가지 픽셀 스킬 이펙트를 재채색하고 미리 본 뒤 스프라이트 시트, GIF, 효과음으로 내보낼 수 있습니다. 무료, 브라우저에서 완료.',
+    entryTplD: '가챠, 상자 열기, 세이브/로드를 바로 써 볼 수 있는 UI. 세미 리얼 다크 골드 스타일이며 CC0로 다운로드할 수 있습니다.',
+    entryAssetsD: '상업적으로 쓸 수 있는 CC0 2D 스프라이트와 3D 모델. 브라우저에서 미리 보고, 파츠를 바꾸며 다운로드하세요.',
   },
   foot: {
     credit: `이펙트는 Patch와 Hugo Duprez의 <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a>(MIT 라이선스)에서 제공됩니다.`,

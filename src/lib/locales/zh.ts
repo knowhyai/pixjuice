@@ -100,6 +100,10 @@ const zh: Partial<Dict> = {
     toolUpD: "最近邻、Scale2x、Scale3x 与 xBR，2×–8× — 边缘锐利不糊。",
     toolSh: "精灵表切割器 & GIF",
     toolShD: "按网格或自动检测切表、预览、导出 GIF、ZIP、XML 和 JSON。",
+    entryEffects: '特效库',
+    entryEffectsD: '为 244 个像素技能特效重新配色、预览，并导出精灵表、GIF 与音效。免费，完全在浏览器中完成。',
+    entryTplD: '可试玩的扭蛋、开箱和存档界面，半写实暗金风格，并提供 CC0 下载。',
+    entryAssetsD: '可商用的 CC0 二维精灵与三维模型。可在浏览器中预览、换装并下载。',
   },
   foot: {
     credit: `特效来自 <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a>（Patch 与 Hugo Duprez 出品，MIT 许可证）。`,

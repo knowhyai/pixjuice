@@ -100,6 +100,10 @@ const en = {
     toolUpD: "Nearest, Scale2x, Scale3x and xBR at 2×–8× — crisp edges, no blur.",
     toolSh: "Sprite Sheet Cutter & GIF",
     toolShD: "Slice a sheet by grid or auto-detect, preview, export GIF, ZIP, XML and JSON.",
+    entryEffects: 'Effects library',
+    entryEffectsD: 'Recolor, preview and export 244 pixel skill effects as sprite sheets, GIF and sound — free, in your browser.',
+    entryTplD: 'Playable gacha, crate opening and save/load UI in a dark-gold Semi-Realistic look, plus a CC0 download.',
+    entryAssetsD: 'CC0 2D sprites and 3D models for commercial use. Preview, swap parts and download in the browser.',
   },
   foot: {
     credit: `Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.`,

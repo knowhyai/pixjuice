@@ -100,6 +100,10 @@ const es: Partial<Dict> = {
     toolUpD: "Nearest, Scale2x, Scale3x y xBR a 2×–8× — bordes nítidos, sin desenfoque.",
     toolSh: "Cortador de sprite sheet y GIF",
     toolShD: "Corta por cuadrícula o autodetección, previsualiza y exporta GIF, ZIP, XML y JSON.",
+    entryEffects: 'Biblioteca de efectos',
+    entryEffectsD: 'Recolorea, previsualiza y exporta 244 efectos de habilidades en pixel art como hojas de sprites, GIF y sonido. Gratis, en el navegador.',
+    entryTplD: 'UI jugable de gacha, apertura de cofres y guardado/carga, con un aspecto semirrealista oro oscuro y descarga CC0.',
+    entryAssetsD: 'Sprites 2D y modelos 3D en CC0 de uso comercial. Previsualiza, intercambia piezas y descarga en el navegador.',
   },
   foot: {
     credit: `Efectos de <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> por Patch y Hugo Duprez, licencia MIT.`,

@@ -100,6 +100,10 @@ const ja: Partial<Dict> = {
     toolUpD: "最近傍・Scale2x・Scale3x・xBR を 2×–8× で — エッジはシャープ、ぼやけなし。",
     toolSh: "スプライトシート切断 & GIF",
     toolShD: "グリッドまたは自動検出で切断、プレビュー、GIF・ZIP・XML・JSON を書き出し。",
+    entryEffects: 'エフェクトライブラリ',
+    entryEffectsD: '244 種類のピクセルスキル演出を再配色・プレビューし、スプライトシート、GIF、効果音として書き出せます。無料、ブラウザ完結。',
+    entryTplD: 'ガチャ、開封、セーブ／ロードのプレイ可能な UI。セミリアルなダークゴールド調で、CC0 ダウンロード付き。',
+    entryAssetsD: '商用可能な CC0 の 2D スプライトと 3D モデル。ブラウザでプレビュー、着替え、ダウンロードできます。',
   },
   foot: {
     credit: `エフェクトは Patch と Hugo Duprez による <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a>（MIT ライセンス）のものです。`,
