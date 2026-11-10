@@ -45,7 +45,16 @@
           <option value="ko">한국어</option>
           <option value="es">Español</option>
         </select>
-        <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+          </div>
+        </details>
         <a href="/credits/" data-i18n="nav.credits">credits</a>
       </nav>
     </div>
@@ -57,6 +66,28 @@
       <input id="q" type="search" placeholder="search 244 effects…  ( / )" aria-label="Search effects" data-i18n-ph="home.searchPh" data-i18n-aria="home.searchAria" autocomplete="off">
       <button id="cat-toggle" class="cat-toggle" type="button" aria-expanded="false" aria-controls="chips">categories ▾</button>
     </div>
+  </div>
+
+  <div class="tools-band" aria-label="Free pixel art tools">
+    <a class="tool-card" href="/image-to-pixel-art/">
+      <span class="tag" data-i18n="home.toolNew">new</span>
+      <b data-i18n="home.toolPa">Image to Pixel Art Converter</b>
+      <span data-i18n="home.toolPaD">Pixel size, color reduction, dithering, Lospec palettes, background removal — free, in your browser.</span>
+    </a>
+    <a class="tool-card" href="/normal-map/">
+      <span class="tag" data-i18n="home.toolNew">new</span>
+      <b data-i18n="home.toolNm">Normal Map Generator</b>
+      <span data-i18n="home.toolNmD">Sobel normals from any sprite with a live light preview — Unity, Godot, DirectX ready.</span>
+    </a>
+    <a class="tool-card" href="/pixel-art-upscaler/">
+      <span class="tag" data-i18n="home.toolNew">new</span>
+      <b data-i18n="home.toolUp">Pixel Art Upscaler</b>
+      <span data-i18n="home.toolUpD">Nearest, Scale2x, Scale3x and xBR at 2×–8× — crisp edges, no blur.</span>
+    </a>
+    <a class="tool-card" href="/sprite-sheet/">
+      <b data-i18n="home.toolSh">Sprite Sheet Cutter &amp; GIF</b>
+      <span data-i18n="home.toolShD">Slice a sheet by grid or auto-detect, preview, export GIF, ZIP, XML and JSON.</span>
+    </a>
   </div>
 
   <main class="grid-main" id="grid"></main>

@@ -26,6 +26,7 @@ import { makeZip, type ZipEntry } from "./lib/zip";
 import { familyForCategory, sfx, type SfxDials, type SfxFamily } from "./lib/sfx";
 import { encodeSfx, oggSupported, SFX_LICENSE, type SfxFormat } from "./lib/sfxenc";
 import { applyStaticText, fxDesc, fxName, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
+import { mountToolsMenu } from "./lib/navmenu";
 
 const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector(s) as T;
 function el<K extends keyof HTMLElementTagNameMap>(
@@ -797,6 +798,7 @@ function runEditor(entry: CatalogEntry): void {
 
 applyStaticText();
 mountLangSwitcher();
+mountToolsMenu();
 const fxId = new URLSearchParams(location.search).get("fx");
 // fetch just this effect's module (out of the lazy per-file chunks), not the whole catalog
 const loadMod = fxId ? fxMods[`/node_modules/pixelfx/src/fx/${fxId}.js`] : undefined;

@@ -21,6 +21,7 @@ import {
   type SliceMode,
 } from "./lib/sheetlib";
 import { applyStaticText, getLocale, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
+import { mountToolsMenu } from "./lib/navmenu";
 
 const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector(s) as T;
 function el<K extends keyof HTMLElementTagNameMap>(
@@ -712,5 +713,6 @@ $("#exp-pack").addEventListener("click", () =>
 
 applyStaticText();
 mountLangSwitcher();
+mountToolsMenu();
 if (getLocale() !== "en") document.title = t("title.sheet");
 onLocaleChange(refreshTexts);

@@ -1,5 +1,40 @@
 # PixJuice — finish summary
 
+> **Three new free tools: /image-to-pixel-art/, /normal-map/, /pixel-art-upscaler/ (Nov 10, 2026)** —
+> shipped the next three keyword tools from the next-tools research, all pure client-side, all
+> following the /sprite-sheet/ page pattern (hero + dropzone + tool grid + how-to + FAQ + footer):
+>
+> - **/image-to-pixel-art/** (main kw *image to pixel art*): block size, automatic median-cut
+>   color reduction (2–64) or built-in palettes (PICO-8, Game Boy, CGA, 1-bit) or **Lospec
+>   palettes fetched by name / pasted hex lists**, ordered Bayer 4×4 + Floyd–Steinberg dithering,
+>   background removal (corner-color or key color + tolerance), 1-block outline, side-by-side
+>   original/result preview, PNG export at 1×–8× (nearest).
+> - **/normal-map/** (main kw *normal map generator*): Sobel over a box-blurred height field
+>   (sprite brightness, or alpha for silhouette bevels), strength 1–12, invert height, OpenGL
+>   (Y+) / DirectX (Y−) green-channel switch, **live lighting preview** (pointer moves the light,
+>   auto-orbits when idle; diffuse + specular), normal-map PNG export aligned 1:1 with the
+>   source. Batch sprite-sheet entry is a disabled "VIP" placeholder (vip branch not merged yet).
+> - **/pixel-art-upscaler/** (main kw *pixel art upscaler*): nearest ×1–8, AdvMAME Scale2x,
+>   Scale3x (full 9-rule table), and a clean-room xBR-style corner-blending 2× (xBR-then-nearest
+>   for 4×/6×/8×), scale options constrained to the algorithm's multiples, 33.5M-px output cap,
+>   side-by-side compare + PNG export.
+>
+> SEO per brief: main keyword in title + H1, FAQ JSON-LD (SoftwareApplication + FAQPage) and
+> self-referencing hreflang (en + x-default) on each new page — the first pages on the site to
+> carry them; canonical URLs; all three pages + cross-links (each tool links the other two,
+> /sprite-sheet/ and /editor/) in sitemap.xml. Every page (old and new) got a "tools ▾" nav
+> dropdown (native `<details>`, closes on outside click/Escape via `src/lib/navmenu.ts`), and the
+> homepage got a 4-card tools band above the catalog. All new strings (`pa.*`, `nm.*`, `up.*`,
+> nav + home cards, ~160 keys) translated in all 5 locales (en/zh/ja/ko/es). Shared algorithms in
+> `src/lib/pixels.ts` (self-contained — no gifenc in these bundles).
+> Headless-checked (headless Chrome via playwright-core) at 1280×800 and 390×844: **69/69
+> checks** — real uploads (photo + alpha sprite), pixel grid math (96→12 blocks), PICO-8 mapping,
+> dither pixel-diff, bg removal transparency, normal map 1:1 + Y-directional green (94/128/161)
+> + Y-flip, live light animates + follows pointer, upscaler dims per algorithm, Lospec UI,
+> **every export button produces a real PNG blob** (magic bytes + dimensions verified), zh
+> locale swaps title/H1, no horizontal overflow anywhere, no console/page errors. `pnpm build`
+> green. Deployed to Cloudflare Pages (main → pixjuice.pages.dev).
+
 > **sheet-tool merged into main (Nov 10, 2026)** — merged the sprite-sheet branch (85f5452,
 > auto-resolved, both sides intact: fx translations + og.png + sfx + editor shell all kept) and
 > shipped **/sprite-sheet/** — a client-side sprite sheet cutter & GIF maker: drop a PNG, slice

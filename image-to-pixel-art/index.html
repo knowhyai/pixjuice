@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Image to Pixel Art Converter — Free, No Upload – PixJuice</title>
+  <meta name="description" content="Free image to pixel art converter: turn any photo or PNG into pixel art in your browser — pick the pixel size, reduce the colors, add dithering or a Lospec palette, remove the background, add an outline, then export a crisp PNG. No upload.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://pixjuice.pages.dev/image-to-pixel-art/">
+  <link rel="alternate" hreflang="en" href="https://pixjuice.pages.dev/image-to-pixel-art/">
+  <link rel="alternate" hreflang="x-default" href="https://pixjuice.pages.dev/image-to-pixel-art/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="Image to Pixel Art Converter — Free, No Upload – PixJuice">
+  <meta property="og:description" content="Convert photos and PNGs to pixel art: pixel size, color reduction, dithering, Lospec palettes, background removal and outlines. Free, all in your browser.">
+  <meta property="og:image" content="/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b0a10">
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PixJuice Image to Pixel Art Converter",
+      "url": "https://pixjuice.pages.dev/image-to-pixel-art/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any (web browser)",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "description": "Convert any photo or PNG into pixel art in the browser: pixel size, color reduction, dithering, Lospec palettes, background removal and outlines. Exports PNG at 1x or scaled up."
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I convert an image to pixel art?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Drop a photo or PNG onto the page, choose a pixel size (how many source pixels become one block), pick a palette or let PixJuice reduce the colors automatically, then download the PNG. Everything runs in your browser, so the image is never uploaded." }
+        },
+        {
+          "@type": "Question",
+          "name": "What does dithering do in a pixel art converter?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Dithering trades colors for texture: with fewer colors than the original, ordered (Bayer) or Floyd–Steinberg dithering mixes palette colors in a dot pattern, which preserves shading gradients instead of producing flat bands." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use a Lospec palette?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Type a Lospec palette name (for example endesga-32) and press load, or paste a list of hex colors like #ff0044 #ffd9e0. PixJuice maps every pixel to the closest color of that palette." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I remove the background when converting a photo to pixel art?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Set background to corner color for a solid matte or sky, or pick a custom key color, then raise the tolerance until the background turns transparent. The exported PNG keeps the transparency." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this pixel art generator free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes — single-image conversion with every option (palettes, dithering, background removal, outline, PNG export at 1x or scaled up) is completely free, with no account and no upload." }
+        }
+      ]
+    }
+  ]
+  </script>
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="Back to the PixJuice catalog">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub" data-i18n="pa.crumb">image to pixel art</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" class="cur" aria-current="page" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+          </div>
+        </details>
+        <a href="/" data-i18n="nav.backCatalog">← catalog</a>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="sheet-main wrap">
+    <section class="sheet-hero">
+      <h1 data-i18n="pa.h1">Image to Pixel Art Converter</h1>
+      <p class="lede" data-i18n-html="pa.lede">Turn any photo or PNG into pixel art right in your browser: choose the pixel size, reduce the colors or map to a Lospec palette, add dithering, remove the background and trace an outline — then export a crisp PNG at 1× or scaled up. Free, no upload.</p>
+    </section>
+
+    <div class="dropzone" id="pa-drop">
+      <div class="dz-in">
+        <svg class="dz-art" viewBox="0 0 48 48" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect x="4" y="4" width="40" height="40" fill="none" stroke="#2b2740" stroke-width="2" stroke-dasharray="4 4"/>
+          <rect x="8" y="8" width="4" height="4" fill="#ff4d6d"/>
+          <rect x="12" y="8" width="4" height="4" fill="#d63a58"/>
+          <rect x="8" y="12" width="4" height="4" fill="#ff7590"/>
+          <rect x="12" y="12" width="4" height="4" fill="#ff4d6d"/>
+          <rect x="20" y="16" width="8" height="8" fill="#4cd7ff"/>
+          <rect x="28" y="24" width="8" height="8" fill="#2a6d88"/>
+          <rect x="16" y="28" width="6" height="6" fill="#ffd9e0"/>
+          <rect x="30" y="10" width="6" height="6" fill="#8d87a6"/>
+        </svg>
+        <p class="dz-title" data-i18n="pa.dropTitle">Drop an image here to pixelate it</p>
+        <p class="dz-or"><span data-i18n="sheet.dropOr">or</span>
+          <button class="btn primary" id="pa-browse" type="button" data-i18n="sheet.dropBrowse">browse files</button>
+          <input type="file" id="pa-file" accept="image/png,image/*" hidden>
+        </p>
+        <p class="dz-note" data-i18n="pa.dropNote">100% client-side — your image never leaves this tab. Photos, PNGs, JPEG and WebP all work.</p>
+      </div>
+    </div>
+
+    <div class="sheet-grid" id="pa-tool" hidden>
+      <div class="sheet-left">
+        <div class="stagebox">
+          <div class="compare">
+            <figure class="cmp">
+              <canvas id="pa-src" aria-label="Original image" data-i18n-aria="pa.srcAria"></canvas>
+              <figcaption class="cap" data-i18n="pa.capSrc">original</figcaption>
+            </figure>
+            <figure class="cmp">
+              <canvas id="pa-out" aria-label="Pixel art result" data-i18n-aria="pa.outAria"></canvas>
+              <figcaption class="cap" data-i18n="pa.capOut">pixel art</figcaption>
+            </figure>
+          </div>
+          <div class="transport">
+            <span class="time" id="pa-cap">—</span>
+            <span class="grow"></span>
+            <button class="btn" id="pa-replace" type="button" data-i18n="sheet.replace">↺ new image</button>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <section class="panel">
+          <h3 data-i18n="pa.convert">Convert</h3>
+          <div class="row">
+            <label for="pa-size" data-i18n="pa.size">pixel size</label>
+            <input type="range" id="pa-size" min="1" max="48" step="1" value="8" class="grow" data-i18n-aria="pa.sizeAria">
+            <span class="val" id="pa-size-val">8</span>
+          </div>
+          <div class="row">
+            <label for="pa-pal" data-i18n="pa.palette">palette</label>
+            <select id="pa-pal" class="grow">
+              <option value="auto" selected data-i18n="pa.palAuto">auto (reduced colors)</option>
+              <option value="lospec" data-i18n="pa.palLospec">Lospec / hex list</option>
+              <option value="pico-8">PICO-8 (16)</option>
+              <option value="gameboy">Game Boy (4)</option>
+              <option value="cga">CGA (16)</option>
+              <option value="gray4" data-i18n="pa.pal1bit">1-bit (black &amp; white)</option>
+            </select>
+          </div>
+          <div class="row" id="pa-row-colors">
+            <label for="pa-colors" data-i18n="pa.colors">colors</label>
+            <input type="number" id="pa-colors" class="mini" min="2" max="64" step="1" value="16">
+            <span class="hint grow" data-i18n="pa.colorsHint">for the automatic palette</span>
+          </div>
+          <div class="row" id="pa-row-lospec" hidden>
+            <label for="pa-lospec" data-i18n="pa.lospec">Lospec</label>
+            <input type="text" id="pa-lospec" class="grow" placeholder="endesga-32  or  #ff0044 #ffd9e0 …" data-i18n-ph="pa.lospecPh">
+            <button class="btn" id="pa-lospec-load" type="button" data-i18n="pa.lospecLoad">load</button>
+          </div>
+          <div class="swatches" id="pa-swatches" role="img" data-i18n-aria="pa.swatchesAria" aria-label="Active palette"></div>
+          <p class="hint" id="pa-lospec-note"></p>
+          <div class="row">
+            <label for="pa-dither" data-i18n="pa.dither">dithering</label>
+            <select id="pa-dither" class="grow">
+              <option value="none" selected data-i18n="pa.dNone">none</option>
+              <option value="bayer" data-i18n="pa.dBayer">ordered (Bayer 4×4)</option>
+              <option value="floyd" data-i18n="pa.dFloyd">Floyd–Steinberg</option>
+            </select>
+          </div>
+          <div class="row">
+            <label for="pa-bg" data-i18n="pa.bg">background</label>
+            <select id="pa-bg" class="grow">
+              <option value="none" selected data-i18n="pa.bgNone">keep</option>
+              <option value="corner" data-i18n="pa.bgCorner">remove (corner color)</option>
+              <option value="color" data-i18n="pa.bgColor">remove (picked color)</option>
+            </select>
+          </div>
+          <div class="row" id="pa-row-bgcolor" hidden>
+            <label for="pa-bgcolor" data-i18n="pa.bgPick">key color</label>
+            <input type="color" id="pa-bgcolor" value="#00ff00">
+            <label for="pa-tol" class="mini-label" data-i18n="pa.tol">tolerance</label>
+            <input type="range" id="pa-tol" min="0" max="100" step="1" value="18" class="grow" data-i18n-aria="pa.tolAria">
+            <span class="val" id="pa-tol-val">18</span>
+          </div>
+          <div class="row">
+            <label for="pa-outline" data-i18n="pa.outline">outline</label>
+            <select id="pa-outline" class="grow">
+              <option value="none" selected data-i18n="pa.oNone">none</option>
+              <option value="000000" data-i18n="pa.oBlack">black</option>
+              <option value="ffffff" data-i18n="pa.oWhite">white</option>
+              <option value="custom" data-i18n="pa.oCustom">custom…</option>
+            </select>
+          </div>
+          <div class="row" id="pa-row-outcolor" hidden>
+            <label for="pa-outcolor" data-i18n="pa.oPick">color</label>
+            <input type="color" id="pa-outcolor" value="#101014">
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3 data-i18n="ed.export">Export</h3>
+          <div class="row">
+            <label for="pa-zoom" data-i18n="pa.zoom">zoom</label>
+            <select id="pa-zoom" class="mini">
+              <option value="1">1×</option>
+              <option value="2">2×</option>
+              <option value="4" selected>4×</option>
+              <option value="6">6×</option>
+              <option value="8">8×</option>
+            </select>
+          </div>
+          <div class="btnrow ex-grid">
+            <button class="btn primary" id="pa-exp" type="button" data-i18n="pa.expPng">⬇ PNG</button>
+          </div>
+          <p class="export-note" id="pa-note" data-i18n-html="pa.expNote">1× is one pixel per block — import that into Aseprite or your engine; zoomed exports are nearest-neighbour scaled for posting and store pages.</p>
+        </section>
+      </aside>
+    </div>
+
+    <section class="sheet-doc">
+      <h2 data-i18n="pa.howtoH">How to convert an image to pixel art</h2>
+      <ol>
+        <li data-i18n-html="pa.howto1"><b>Drop</b> any photo or PNG onto the page (Ctrl/⌘+V pastes from the clipboard too). Nothing is uploaded to any server.</li>
+        <li data-i18n-html="pa.howto2"><b>Dial it in</b>: pixel size sets how blocky the result is; pick an automatic reduced palette, a built-in classic, or load a <b>Lospec</b> palette / paste hex codes; add dithering for gradients, remove a solid background, and trace a 1-block outline.</li>
+        <li data-i18n-html="pa.howto3"><b>Export</b> a transparent PNG at 1× for engines and editors, or at 2×–8× for social posts and store pages — then <a href="/pixel-art-upscaler/">upscale it further</a>, slice it into a <a href="/sprite-sheet/">sprite sheet</a>, or light it with a <a href="/normal-map/">normal map</a>.</li>
+      </ol>
+
+      <h2 data-i18n="pa.faqH">Image to pixel art FAQ</h2>
+      <details class="faq">
+        <summary data-i18n="pa.faq1q">How do I convert an image to pixel art?</summary>
+        <p data-i18n-html="pa.faq1a">Drop a photo or PNG onto the page, choose a pixel size (how many source pixels become one block), pick a palette or let PixJuice reduce the colors automatically, then download the PNG. Everything runs in your browser, so the image is never uploaded.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="pa.faq2q">What does dithering do in a pixel art converter?</summary>
+        <p data-i18n-html="pa.faq2a">Dithering trades colors for texture: with fewer colors than the original, ordered (Bayer) or Floyd–Steinberg dithering mixes palette colors in a dot pattern, which preserves shading gradients instead of producing flat bands.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="pa.faq3q">Can I use a Lospec palette?</summary>
+        <p data-i18n-html="pa.faq3a">Yes. Type a Lospec palette name (for example <code>endesga-32</code>) and press <b>load</b>, or paste a list of hex colors like <code>#ff0044 #ffd9e0</code>. PixJuice maps every pixel to the closest color of that palette.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="pa.faq4q">How do I remove the background when converting a photo to pixel art?</summary>
+        <p data-i18n-html="pa.faq4a">Set background to <b>corner color</b> for a solid matte or sky, or pick a custom key color, then raise the tolerance until the background turns transparent. The exported PNG keeps the transparency.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="pa.faq5q">Is this pixel art generator free?</summary>
+        <p data-i18n-html="pa.faq5a">Yes — single-image conversion with every option (palettes, dithering, background removal, outline, PNG export at 1× or scaled up) is completely free, with no account and no upload.</p>
+      </details>
+
+      <h2 data-i18n="tools.moreH">More PixJuice tools</h2>
+      <p class="more-tools" data-i18n-html="pa.more">Generate <a href="/normal-map/">normal maps for 2D lights</a>, <a href="/pixel-art-upscaler/">upscale pixel art without blur</a>, <a href="/sprite-sheet/">slice a sprite sheet</a>, or browse the <a href="/editor/">pixel VFX editor</a> with 244 free game effects.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.credit">Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
+      <span data-i18n-html="foot.credits2"><a href="/credits/">credits &amp; licenses</a></span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/pixelart.ts"></script>
+</body>
+</html>

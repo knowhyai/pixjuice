@@ -547,6 +547,129 @@ input.mini, select.mini { width: 74px; padding: 7px 8px; }
 .pair input.mini { flex: 1; width: auto; min-width: 0; }
 .panel .hint { color: var(--faint); font-size: 12.5px; margin: 8px 0 0; }
 
+/* ---- header tools dropdown (all pages) ---- */
+
+details.tools { position: relative; }
+details.tools > summary {
+  list-style: none;
+  cursor: pointer;
+  color: var(--dim);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 2px;
+  user-select: none;
+}
+details.tools > summary::-webkit-details-marker { display: none; }
+details.tools > summary:hover { color: var(--text); }
+details.tools > summary::after { content: ""; display: inline-block; }
+details.tools[open] > summary { color: var(--text); }
+.tools-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 #000;
+  z-index: 60;
+}
+.tools-menu a {
+  padding: 9px 10px;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tools-menu a:hover { background: var(--panel2); color: #fff; text-decoration: none; }
+.tools-menu a.cur { color: var(--acc2); }
+
+/* ---- side-by-side compare panes (pixel art / normal map / upscaler) ---- */
+
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cmp {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: repeating-conic-gradient(#14121e 0% 25%, #0e0c16 0% 50%) 0 0 / 16px 16px;
+  min-width: 0;
+}
+.cmp canvas {
+  display: block;
+  width: 100%;
+  max-height: 44dvh;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.cmp canvas.pixelated { image-rendering: pixelated; }
+.cmp .cap {
+  padding: 7px 10px;
+  font: 600 11px/1.2 var(--mono);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: var(--panel);
+  border-top: 2px solid var(--line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cmp.lit canvas { cursor: crosshair; }
+
+/* the palette strip on /image-to-pixel-art/ reuses .swatches; show many small stops */
+.swatches.dense .swatch { flex: 1 1 0; height: 12px; }
+
+/* VIP placeholder chip inside a disabled button */
+.vip-tag {
+  display: inline-block;
+  font: 700 10px/1 var(--mono);
+  letter-spacing: 0.6px;
+  color: #141014;
+  background: #e8c66a;
+  border-radius: 3px;
+  padding: 2px 5px;
+  margin-left: 4px;
+  vertical-align: 1px;
+}
+.btn.vip[disabled] { opacity: 0.75; cursor: not-allowed; }
+
+/* cross-links paragraph at the bottom of the tool pages */
+.more-tools { color: var(--dim); font-size: 15px; line-height: 1.7; margin: 0; }
+
+/* ---- home: tools band above the catalog ---- */
+
+.tools-band {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 20px 20px 0;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+.tool-card {
+  display: block;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 12px 14px;
+  color: inherit;
+}
+.tool-card:hover { border-color: var(--acc); text-decoration: none; }
+.tool-card b { display: block; font-size: 14.5px; color: var(--text); margin-bottom: 3px; }
+.tool-card span { color: var(--dim); font-size: 12.5px; line-height: 1.45; }
+.tool-card .tag { color: var(--acc2); font: 700 10px/1 var(--mono); letter-spacing: 0.8px; text-transform: uppercase; }
+
+
 /* SEO prose: how-to + FAQ */
 .sheet-doc { max-width: 780px; margin: 48px auto 0; }
 .sheet-doc h2 { font-size: 21px; margin: 32px 0 12px; }
@@ -639,6 +762,10 @@ footer {
   .stagebox { position: static; }
   .ed-meta .desc.open { max-height: none; overflow: visible; } /* nothing is pinned here, expand freely */
 
+  /* compare panes stack so each preview keeps a usable size on phones */
+  .compare { grid-template-columns: 1fr; }
+  .cmp canvas { max-height: 38dvh; }
+
   /* catalog bar: search first and full-width; the chip row collapses behind the toggle */
   .bar-in { flex-wrap: wrap; gap: 8px; }
   .bar input[type="search"] { order: 1; width: 100%; flex: 1 1 auto; padding: 12px 10px; }
@@ -657,6 +784,7 @@ footer {
   /* touch: comfortable heights for every control */
   .btn { min-height: 44px; }
   .nav a { padding: 9px 0; }
+  details.tools > summary { padding: 9px 2px; min-height: 44px; display: inline-flex; align-items: center; }
   .lang { min-height: 44px; }
 
   /* export rows become a tidy 2-per-row grid; the zip button and the GIF+scale group keep whole rows */

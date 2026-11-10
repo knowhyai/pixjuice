@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Normal Map Generator — Free, for 2D Sprites – PixJuice</title>
+  <meta name="description" content="Free online normal map generator for pixel art and 2D sprites: drop a PNG, tune strength and blur, flip the green channel for Unity or Godot, preview the lighting live by moving your mouse, then export the normal map PNG. No upload.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://pixjuice.pages.dev/normal-map/">
+  <link rel="alternate" hreflang="en" href="https://pixjuice.pages.dev/normal-map/">
+  <link rel="alternate" hreflang="x-default" href="https://pixjuice.pages.dev/normal-map/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="Normal Map Generator — Free, for 2D Sprites – PixJuice">
+  <meta property="og:description" content="Generate normal maps from sprites in your browser: Sobel strength, blur, alpha edges, OpenGL/DirectX Y flip and a live light preview. Free, no upload.">
+  <meta property="og:image" content="/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b0a10">
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PixJuice Normal Map Generator",
+      "url": "https://pixjuice.pages.dev/normal-map/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any (web browser)",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "description": "Generate normal maps from sprites and textures in the browser, with a live light preview, Sobel strength, blur, alpha-edge heights and OpenGL/DirectX green-channel flip."
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a normal map?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A normal map stores a surface direction per pixel in the RGB channels. A 2D engine or shader can then light a flat sprite as if it had bumps and bevels — the classic trick for lit pixel art characters, props and tiles." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I generate a normal map from a sprite?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Drop the PNG here, tune the strength and blur, then export. The height field comes from the sprite's brightness (or its alpha, which bevels the silhouette edges) and a Sobel filter turns it into per-pixel normals." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need the green channel flipped for Unity or Godot?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It depends on the engine convention: OpenGL-style expects green pointing up, DirectX-style expects green pointing down. Use the Y-direction switch here to match your target — Unity's default 2D renderer works with the OpenGL (Y+) convention, and Godot's canvas-item normals use Y+ as well; if a light looks inverted, just flip it." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the normal map work for pixel art sprites?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Keep blur at 0–1 for crisp pixels and use the alpha height source so transparent edges get a bevel instead of a halo. The exported PNG keeps the original transparency, so the normal map layers 1:1 over the sprite." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this normal map generator free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes — single-sprite generation with the live lighting preview and PNG export is free and runs entirely in your browser. Batch normal maps for whole sprite sheets are coming with PixJuice VIP." }
+        }
+      ]
+    }
+  ]
+  </script>
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="Back to the PixJuice catalog">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub" data-i18n="nm.crumb">normal map tool</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" class="cur" aria-current="page" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+          </div>
+        </details>
+        <a href="/" data-i18n="nav.backCatalog">← catalog</a>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="sheet-main wrap">
+    <section class="sheet-hero">
+      <h1 data-i18n="nm.h1">Normal Map Generator</h1>
+      <p class="lede" data-i18n-html="nm.lede">Drop a sprite or texture and turn it into a normal map with Sobel strength, smoothing and alpha-edge bevels — flip the green channel for Unity, Godot or DirectX — then watch the lighting react live as you move your mouse over the preview. Free, single sprite, no upload.</p>
+    </section>
+
+    <div class="dropzone" id="nm-drop">
+      <div class="dz-in">
+        <svg class="dz-art" viewBox="0 0 48 48" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect x="4" y="4" width="40" height="40" fill="none" stroke="#2b2740" stroke-width="2" stroke-dasharray="4 4"/>
+          <circle cx="24" cy="20" r="7" fill="#4cd7ff"/>
+          <rect x="22" y="10" width="4" height="4" fill="#ffec27"/>
+          <rect x="32" y="18" width="4" height="4" fill="#ffec27"/>
+          <rect x="14" y="24" width="4" height="4" fill="#ffec27"/>
+          <rect x="22" y="28" width="4" height="4" fill="#2a6d88"/>
+          <rect x="8" y="36" width="32" height="2" fill="#2b2740"/>
+        </svg>
+        <p class="dz-title" data-i18n="nm.dropTitle">Drop a sprite or texture here</p>
+        <p class="dz-or"><span data-i18n="sheet.dropOr">or</span>
+          <button class="btn primary" id="nm-browse" type="button" data-i18n="sheet.dropBrowse">browse files</button>
+          <input type="file" id="nm-file" accept="image/png,image/*" hidden>
+        </p>
+        <p class="dz-note" data-i18n="nm.dropNote">100% client-side — your art never leaves this tab. PNG sprites with transparency light up best.</p>
+      </div>
+    </div>
+
+    <div class="sheet-grid" id="nm-tool" hidden>
+      <div class="sheet-left">
+        <div class="stagebox">
+          <div class="compare">
+            <figure class="cmp">
+              <canvas id="nm-out" aria-label="Generated normal map" data-i18n-aria="nm.outAria"></canvas>
+              <figcaption class="cap" data-i18n="nm.capOut">normal map</figcaption>
+            </figure>
+            <figure class="cmp lit">
+              <canvas id="nm-lit" aria-label="Live lighting preview" data-i18n-aria="nm.litAria"></canvas>
+              <figcaption class="cap" data-i18n="nm.capLit">light preview — move your mouse</figcaption>
+            </figure>
+          </div>
+          <div class="transport">
+            <span class="time" id="nm-cap">—</span>
+            <span class="grow"></span>
+            <button class="btn" id="nm-replace" type="button" data-i18n="sheet.replace">↺ new image</button>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <section class="panel">
+          <h3 data-i18n="nm.normals">Normals</h3>
+          <div class="row">
+            <label for="nm-strength" data-i18n="nm.strength">strength</label>
+            <input type="range" id="nm-strength" min="1" max="12" step="0.5" value="6" class="grow" data-i18n-aria="nm.strengthAria">
+            <span class="val" id="nm-strength-val">6</span>
+          </div>
+          <div class="row">
+            <label for="nm-blur" data-i18n="nm.blur">smooth</label>
+            <input type="range" id="nm-blur" min="0" max="5" step="1" value="1" class="grow" data-i18n-aria="nm.blurAria">
+            <span class="val" id="nm-blur-val">1</span>
+          </div>
+          <div class="row">
+            <label for="nm-source" data-i18n="nm.source">height from</label>
+            <select id="nm-source" class="grow">
+              <option value="luma" selected data-i18n="nm.srcLuma">brightness</option>
+              <option value="alpha" data-i18n="nm.srcAlpha">alpha (edge bevel)</option>
+            </select>
+          </div>
+          <div class="row">
+            <label for="nm-ydir" data-i18n="nm.ydir">green (Y)</label>
+            <select id="nm-ydir" class="grow">
+              <option value="gl" selected>OpenGL / Unity · Godot (Y+)</option>
+              <option value="dx">DirectX (Y−)</option>
+            </select>
+          </div>
+          <div class="btnrow" style="margin-top: 10px;">
+            <button class="btn" id="nm-invert" type="button" aria-pressed="false" data-i18n="nm.invert">invert height</button>
+          </div>
+          <p class="hint" data-i18n-html="nm.normalsHint">Brightness reads lighter areas as raised; alpha instead bevels the sprite's silhouette — best for flat-color pixel art.</p>
+        </section>
+
+        <section class="panel">
+          <h3 data-i18n="ed.export">Export</h3>
+          <div class="btnrow ex-grid">
+            <button class="btn primary" id="nm-exp" type="button" data-i18n="nm.expPng">⬇ normal map PNG</button>
+          </div>
+          <div class="btnrow ex-grid" style="margin-top: 8px;">
+            <button class="btn vip" id="nm-batch" type="button" disabled data-i18n-html="nm.batch">⚡ batch sprite sheets <span class="vip-tag">VIP</span></button>
+          </div>
+          <p class="export-note" id="nm-note" data-i18n-html="nm.expNote">The PNG keeps your sprite's transparency and aligns 1:1 — drop it next to the sprite as a normal-map texture. Batch normal maps for whole sheets &amp; animations is coming with PixJuice VIP.</p>
+        </section>
+      </aside>
+    </div>
+
+    <section class="sheet-doc">
+      <h2 data-i18n="nm.howtoH">How to generate a normal map</h2>
+      <ol>
+        <li data-i18n-html="nm.howto1"><b>Upload</b> a sprite or texture — drag &amp; drop or browse. Nothing is uploaded to any server.</li>
+        <li data-i18n-html="nm.howto2"><b>Tune</b>: strength sets how tall the bumps look, smooth softens the height field, and the height source picks brightness (relief) or alpha (a bevel along the sprite's edges). Match the green channel to your engine — Y+ for Unity/Godot, Y− for DirectX.</li>
+        <li data-i18n-html="nm.howto3"><b>Preview &amp; export</b>: move your mouse over the lit preview to push the light around, then download the normal map PNG and assign it in your engine's 2D lighting.</li>
+      </ol>
+
+      <h2 data-i18n="nm.faqH">Normal map FAQ</h2>
+      <details class="faq">
+        <summary data-i18n="nm.faq1q">What is a normal map?</summary>
+        <p data-i18n-html="nm.faq1a">A normal map stores a surface direction per pixel in the RGB channels. A 2D engine or shader can then light a flat sprite as if it had bumps and bevels — the classic trick for lit pixel art characters, props and tiles.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="nm.faq2q">How do I generate a normal map from a sprite?</summary>
+        <p data-i18n-html="nm.faq2a">Drop the PNG here, tune the strength and blur, then export. The height field comes from the sprite's brightness (or its alpha, which bevels the silhouette edges) and a Sobel filter turns it into per-pixel normals.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="nm.faq3q">Do I need the green channel flipped for Unity or Godot?</summary>
+        <p data-i18n-html="nm.faq3a">It depends on the engine convention: OpenGL-style expects green pointing up, DirectX-style expects green pointing down. Use the <b>green (Y)</b> switch here to match your target — if a light looks inverted in your engine, just flip it.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="nm.faq4q">Does the normal map work for pixel art sprites?</summary>
+        <p data-i18n-html="nm.faq4a">Yes. Keep <b>smooth</b> at 0–1 for crisp pixels and use the <b>alpha</b> height source so transparent edges get a bevel instead of a halo. The exported PNG keeps the original transparency, so the normal map layers 1:1 over the sprite.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="nm.faq5q">Is this normal map generator free?</summary>
+        <p data-i18n-html="nm.faq5a">Yes — single-sprite generation with the live lighting preview and PNG export is free and runs entirely in your browser. Batch normal maps for whole sprite sheets are coming with PixJuice VIP.</p>
+      </details>
+
+      <h2 data-i18n="tools.moreH">More PixJuice tools</h2>
+      <p class="more-tools" data-i18n-html="nm.more">Convert photos with the <a href="/image-to-pixel-art/">image to pixel art converter</a>, <a href="/pixel-art-upscaler/">upscale sprites without blur</a>, <a href="/sprite-sheet/">slice a sprite sheet</a>, or browse the <a href="/editor/">pixel VFX editor</a> with 244 free game effects.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.credit">Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
+      <span data-i18n-html="foot.credits2"><a href="/credits/">credits &amp; licenses</a></span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/normalmap.ts"></script>
+</body>
+</html>

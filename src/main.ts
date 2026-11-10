@@ -5,6 +5,7 @@ import "./style.css";
 import { CATALOG, CATEGORIES, isScreen, type CatalogEntry } from "./lib/catalog";
 import { Player, defaultStyle } from "./lib/player";
 import { applyStaticText, fxDesc, fxName, getLocale, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
+import { mountToolsMenu } from "./lib/navmenu";
 
 /** Localized display name for a category id; unknown ids fall back to the id itself. */
 function catLabel(id: string): string {
@@ -238,6 +239,7 @@ run();
 
 applyStaticText();
 mountLangSwitcher();
+mountToolsMenu();
 if (getLocale() !== "en") document.title = t("title.home");
 onLocaleChange(() => {
   document.title = t("title.home");

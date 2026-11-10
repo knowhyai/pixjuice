@@ -1,11 +1,14 @@
 import { defineConfig } from "vite";
 
 // Multi-page static build for Cloudflare Pages:
-//   /               catalog (index.html)
-//   /editor/        effect editor (editor/index.html)
-//   /sprite-sheet/  sprite sheet cutter & GIF maker (sprite-sheet/index.html)
-//   /credits/       attribution + licenses (credits/index.html)
-//   /404.html       served by Cloudflare Pages for unknown routes
+//   /                     catalog (index.html)
+//   /editor/              effect editor (editor/index.html)
+//   /sprite-sheet/        sprite sheet cutter & GIF maker (sprite-sheet/index.html)
+//   /image-to-pixel-art/  image → pixel art converter (image-to-pixel-art/index.html)
+//   /normal-map/          normal map generator (normal-map/index.html)
+//   /pixel-art-upscaler/  pixel art upscaler (pixel-art-upscaler/index.html)
+//   /credits/             attribution + licenses (credits/index.html)
+//   /404.html             served by Cloudflare Pages for unknown routes
 export default defineConfig({
   build: {
     target: "es2022",
@@ -14,6 +17,9 @@ export default defineConfig({
         main: "index.html",
         editor: "editor/index.html",
         sheet: "sprite-sheet/index.html",
+        pixelart: "image-to-pixel-art/index.html",
+        normalmap: "normal-map/index.html",
+        upscaler: "pixel-art-upscaler/index.html",
         credits: "credits/index.html",
         notfound: "404.html",
       },
