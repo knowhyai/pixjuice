@@ -148,7 +148,15 @@ export function applyStaticText(root: ParentNode = document): void {
   root.querySelectorAll<HTMLElement>("[data-i18n-aria]").forEach((e) => {
     e.setAttribute("aria-label", t(e.dataset.i18nAria!));
   });
+  root.querySelectorAll<HTMLImageElement>("img[data-preview]").forEach((img) => {
+    const name = img.dataset.preview;
+    if (!name) return;
+    const lang = locale === "zh" ? "zh" : "en";
+    const next = `/previews/${lang}/${name}.jpg`;
+    if (img.getAttribute("src") !== next) img.src = next;
+  });
 }
+
 
 /** Wire the header's <select id="lang"> (present on every page's raw HTML, English-default). */
 export function mountLangSwitcher(): void {

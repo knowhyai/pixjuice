@@ -105,7 +105,23 @@
   <section class="tpl-sec">
     <div class="fa-toolbar" id="fa-filters" role="toolbar" aria-label="Filter assets"></div>
     <div class="fa-grid" id="fa-grid"></div>
-    <p class="fa-empty" id="fa-empty" hidden data-i18n="fa.emptyBatch">The first Semi-Realistic assets are in production.</p>
+    <div class="fa-empty" id="fa-empty" hidden>
+      <svg class="fa-empty-art" viewBox="0 0 520 200" role="img" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+          <rect x="24" y="28" width="140" height="144" rx="14" stroke-dasharray="5 6" opacity=".7"/>
+          <path d="M54 128h80v20H54zM62 86l32-28 32 28v42H62z" opacity=".95"/>
+          <rect x="190" y="28" width="140" height="144" rx="14" stroke-dasharray="5 6" opacity=".7"/>
+          <circle cx="260" cy="78" r="18"/>
+          <path d="M230 148c4-28 18-42 30-42s26 14 30 42"/>
+          <rect x="356" y="28" width="140" height="144" rx="14" stroke-dasharray="5 6" opacity=".7"/>
+          <path d="M384 128h84l-10-28H398z"/>
+          <circle cx="404" cy="128" r="8"/><circle cx="448" cy="128" r="8"/>
+          <path d="M392 100h40"/>
+        </g>
+      </svg>
+      <p class="fa-empty-title" data-i18n="fa.emptyBatch">The first Semi-Realistic assets are in production.</p>
+      <p class="fa-empty-lede" data-i18n="fa.emptyBatchLede">Dungeon props, a knight and vehicles are in the works, and will appear here when they are ready.</p>
+    </div>
     <p class="body" id="fa-error" hidden data-i18n="fa.loadErr">Couldn't load the asset list. Refresh to retry.</p>
   </section>
 

@@ -698,6 +698,7 @@ const ko: Partial<Dict> = {
     "soonBody": "제작 중입니다——공개되면 이 페이지에서 미리보기, 다운로드, 라이선스를 제공합니다.",
     "freeCommercial": "CC0 1.0",
     "licenseNotice": "CC0 1.0 Universal — 상업적 사용 가능, 출처 표시 불필요.",
+    "emptyBatchLede": '던전 소품, 기사, 탈것을 제작 중이며, 완료되는 대로 여기에 올라갑니다.',
     "emptyBatch": '첫 번째 세미 리얼리스틱 에셋을 제작하고 있습니다.',
     "emptySearch": '조건에 맞는 에셋이 없습니다.',
     "loadErr": "에셋 목록을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.",

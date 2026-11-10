@@ -38,6 +38,8 @@ for(const path of paths) {
   if (lang === "en" && key === "sv") title = "Save Load System UI — Game Save Menu Template";
   const desc=asset?`${name} — ${d.assetDesc}`:strip(translate(lang,key==='gx'||key==='sv'?key+'.hero.lede':key+'.lede'));
   let html=original.replace('<html lang="en">',`<html lang="${lang}">`);
+  if(lang==='zh') html=html.replaceAll('/previews/en/','/previews/zh/');
+  else html=html.replaceAll('/previews/zh/','/previews/en/');
   // Translate static text and rich text (the same data keys the browser uses).
   html=html.replace(/<([a-z][\w-]*)\b([^>]*\bdata-i18n(?:-html)?="([^"]+)"[^>]*)>[\s\S]*?<\/\1>/gi,(all,tag,attrs,k)=>`<${tag}${attrs}>${attrs.includes('data-i18n-html=')?translate(lang,k):esc(translate(lang,k))}</${tag}>`);
   html=html.replace(/<title>[\s\S]*?<\/title>/,`<title>${esc(title)} – PixJuice</title>`)

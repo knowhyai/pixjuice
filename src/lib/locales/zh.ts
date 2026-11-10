@@ -698,6 +698,7 @@ const zh: Partial<Dict> = {
     "soonBody": "素材制作中——完成后会在此提供预览、下载与许可。",
     "freeCommercial": "CC0 1.0",
     "licenseNotice": "CC0 1.0 Universal — 可商用、无需署名。",
+    "emptyBatchLede": '地牢道具、骑士和载具正在制作，完成后会在这里上架。',
     "emptyBatch": '第一批半写实素材制作中',
     "emptySearch": '没有符合条件的素材。',
     "loadErr": "素材列表加载失败，刷新重试。",

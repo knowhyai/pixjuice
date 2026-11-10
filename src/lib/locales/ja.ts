@@ -698,6 +698,7 @@ const ja: Partial<Dict> = {
     "soonBody": "制作中——公開時にこのページでプレビュー・ダウンロード・ライセンスを提供します。",
     "freeCommercial": "CC0 1.0",
     "licenseNotice": "CC0 1.0 Universal — 商用利用可能・表記不要。",
+    "emptyBatchLede": 'ダンジョンの小物、騎士、乗り物を制作中です。でき次第ここに公開します。',
     "emptyBatch": '最初のセミリアル素材を制作中です。',
     "emptySearch": '条件に一致する素材はありません。',
     "loadErr": "アセット一覧を読み込めませんでした。更新して再試行してください。",

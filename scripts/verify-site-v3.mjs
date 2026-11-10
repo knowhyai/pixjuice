@@ -7,6 +7,12 @@ for(const [name,url] of [['home','/zh/'],['templates','/zh/templates/'],['assets
  await p.goto(base+url);await p.locator('.theme-toggle').waitFor();await p.evaluate(()=>document.fonts.ready);
  assert.equal(await p.locator('.head .sub').innerText(),'免费游戏素材');
  assert.equal(await p.locator('.head .nav > a').count(),4);
+ const current=await p.locator('.head .nav > a.cur, .head .nav > a[aria-current], .head summary.cur').allTextContents();
+ if(name==='home') assert.deepEqual(current,[]);
+ if(name==='templates'||name==='case') assert.ok(current.some(t=>/游戏模板/.test(t)));
+ if(name==='assets') assert.ok(current.some(t=>/免费素材/.test(t)));
+ if(name==='credits') assert.ok(current.some(t=>/致谢/.test(t)));
+ if(name==='normal') assert.ok(await p.locator('.head summary.cur').count());
  await p.locator('.head').screenshot({path:out+'site-v3-nav-'+name+'.png'});
  if(name==='assets') {await p.locator('#fa-empty').waitFor();assert.equal(await p.locator('#fa-grid .fa-card').count(),0);assert.ok((await p.locator('#fa-empty').innerText()).includes('第一批半写实素材制作中'));assert.ok(!(await p.locator('#fa-empty').evaluate(e=>e.querySelector('img'))));await p.screenshot({path:out+'site-v3-assets-empty.png',fullPage:true});}
  if(name==='home')await p.waitForTimeout(1200);

@@ -698,6 +698,7 @@ const es: Partial<Dict> = {
     "soonBody": "Este recurso está en producción — cuando salga, aquí estarán su previsualización, descargas y licencia.",
     "freeCommercial": "CC0 1.0",
     "licenseNotice": "CC0 1.0 Universal — uso comercial sin atribución.",
+    "emptyBatchLede": 'Los accesorios de mazmorra, un caballero y los vehículos están en preparación y aparecerán aquí cuando estén listos.',
     "emptyBatch": 'El primer lote de recursos semirrealistas está en producción.',
     "emptySearch": 'Ningún recurso coincide con esa búsqueda.',
     "loadErr": "No se pudo cargar la lista de recursos. Recarga para reintentar.",

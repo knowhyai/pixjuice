@@ -84,11 +84,21 @@ function render() {
   for (const group of groups) grid.appendChild(assetCard(group.find(a=>a.palette===query.toLowerCase()||a.style_tier===query.toLowerCase())||group[0]));
   if (empty) {
     empty.hidden = groups.length > 0;
-    empty.textContent = published.length === 0 ? t("fa.emptyBatch") : t("fa.emptySearch");
-    empty.setAttribute("data-i18n", published.length === 0 ? "fa.emptyBatch" : "fa.emptySearch");
+    const title = empty.querySelector<HTMLElement>(".fa-empty-title");
+    const lede = empty.querySelector<HTMLElement>(".fa-empty-lede");
+    const art = empty.querySelector<HTMLElement>(".fa-empty-art");
+    const batch = published.length === 0;
+    if (title) {
+      title.textContent = t(batch ? "fa.emptyBatch" : "fa.emptySearch");
+      title.setAttribute("data-i18n", batch ? "fa.emptyBatch" : "fa.emptySearch");
+    }
+    if (lede) {
+      lede.hidden = !batch;
+      if (batch) lede.textContent = t("fa.emptyBatchLede");
+    }
+    if (art) art.hidden = !batch;
   }
   applyStaticText(grid);
-  if (empty && !empty.hidden) applyStaticText(empty.parentElement || empty);
 }
 
 function renderFilters() {
