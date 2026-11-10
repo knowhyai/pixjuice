@@ -1,0 +1,51 @@
+{
+  "product_id": "parts-chest",
+  "variant": {
+    "palette": "blue",
+    "condition": "intact"
+  },
+  "parts": [
+    {
+      "id": "body",
+      "slot": "body",
+      "name": {
+        "en": "body",
+        "zh": "箱体",
+        "ja": "body",
+        "ko": "body",
+        "es": "body"
+      },
+      "glb": "parts/body.glb",
+      "thumb": "parts/body.png",
+      "optional": false
+    },
+    {
+      "id": "lock",
+      "slot": "lock",
+      "name": {
+        "en": "lock",
+        "zh": "锁",
+        "ja": "lock",
+        "ko": "lock",
+        "es": "lock"
+      },
+      "glb": "parts/lock.glb",
+      "thumb": "parts/lock.png",
+      "optional": true
+    },
+    {
+      "id": "lid",
+      "slot": "lid",
+      "name": {
+        "en": "lid",
+        "zh": "箱盖",
+        "ja": "lid",
+        "ko": "lid",
+        "es": "lid"
+      },
+      "glb": "parts/lid.glb",
+      "thumb": "parts/lid.png",
+      "optional": true
+    }
+  ]
+}

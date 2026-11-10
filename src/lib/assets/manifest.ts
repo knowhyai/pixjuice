@@ -19,6 +19,7 @@ export function availableCategories(assets: FaAsset[]): AssetCategory[] {
 export interface FaAsset {
   id: string;
   product_id?: string;
+  parts_meta?: string;
   hidden?: boolean;
   product_hidden?: boolean;
   state?: string;
@@ -71,6 +72,7 @@ function parseAsset(raw: unknown): FaAsset | null {
   const licenseRaw = (r.license ?? {}) as Record<string, unknown>;
   return {
     id,
+    parts_meta: str(r.parts_meta) ?? undefined,
     product_id: str(r.product_id) ?? undefined,
     hidden: r.hidden === true,
     product_hidden: r.product_hidden === true,

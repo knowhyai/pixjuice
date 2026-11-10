@@ -52,12 +52,13 @@ function extOf(path: string): string {
 
   let assets: FaAsset[];
   try {
-    assets = await loadManifest();
+    assets = await loadManifest(new URLSearchParams(location.search).has('parts-demo') ? '/parts-demo/manifest.json' : undefined);
   } catch {
     root.appendChild(el("p", { className: "body", text: t("fa.loadErr"), "data-i18n": "fa.loadErr" }));
     return;
   }
-  let selected = assets.find((x) => x.id === id) || assets.find(x=>x.product_id===id);
+  const demo = new URLSearchParams(location.search).has('parts-demo');
+  let selected = assets.find((x) => x.id === id) || assets.find(x=>x.product_id===id) || (demo ? assets[0] : undefined);
   const a = selected;
   if (!a) {
     root.appendChild(
@@ -70,7 +71,7 @@ function extOf(path: string): string {
     return;
   }
 
-  const variants = assets.filter(x=>x.style_tier==="realistic" && !x.hidden && productId(x)===productId(a));
+  const variants = assets.filter(x=>x.style_tier==="realistic" && (!x.hidden || a.hidden) && productId(x)===productId(a));
   let cleanupModel: (()=>void) | undefined;
   let spriteTimer: ReturnType<typeof setInterval> | undefined;
   let generation=0;
@@ -149,7 +150,7 @@ function extOf(path: string): string {
       select.onchange=()=>{
         const candidates=variants.filter(x=>x[field]===select.value);
         selected=candidates.sort((x,y)=>['style_tier','palette','state'].reduce((n,k)=>n+Number(y[k as keyof FaAsset]===a[k as keyof FaAsset])-Number(x[k as keyof FaAsset]===a[k as keyof FaAsset]),0))[0];
-        const prefix=getLocale()==='en'?'':'/'+getLocale();history.replaceState({},'',`${prefix}/free-assets/${selected!.id}/`);
+        const prefix=getLocale()==='en'?'':'/'+getLocale();if(!demo)history.replaceState({},'',`${prefix}/free-assets/${selected!.id}/`);
         render();
       };
       label.appendChild(select);options.appendChild(label);
@@ -209,6 +210,12 @@ function extOf(path: string): string {
 
   grid.appendChild(info);
   root!.appendChild(grid);
+  const modelHost=preview.querySelector<HTMLElement>('.fa-model-wrap');
+  if(modelHost)void import('../lib/assets/parts-panel.js').then(async ({mountParts})=>{
+    const originalPreview=cleanupModel;
+    const stop=await mountParts(info,modelHost,a,assets,()=>token===generation,()=>{originalPreview?.();});
+    if(stop){if(token!==generation)stop();else{const original=cleanupModel;cleanupModel=()=>{original?.();stop();};}}
+  });
   applyStaticText(root!);
   const crumb=document.getElementById('fa-crumb');if(crumb)crumb.textContent=assetName(a);
   const faq=document.querySelector('.tpl-faq');

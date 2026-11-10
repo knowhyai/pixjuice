@@ -4,3 +4,5 @@ import './manifest.test.mjs';
 import './test-templates.mjs';
 import './case.test.mjs';
 import './remesh.test.mjs';
+
+import './parts.test.mjs';

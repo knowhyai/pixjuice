@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { t } from '../i18n';
 
-export function mountModel(host: HTMLElement, url: string, filename: string) {
+export function mountModel(host: HTMLElement, url: string, filename: string, assembled = false) {
   let disposed=false, revision=0, source: ArrayBuffer | null=null, current: Uint8Array<ArrayBuffer> | null=null;
   const cache=new Map<number,{bytes:Uint8Array<ArrayBuffer>;triangles:number}>();
   const canvas=document.createElement('canvas');canvas.className='fa-model';host.append(canvas);
@@ -20,7 +20,7 @@ export function mountModel(host: HTMLElement, url: string, filename: string) {
   const levels=document.createElement('div');levels.className='fa-levels';panel.append(levels);
   const stats=document.createElement('p');stats.setAttribute('role','status');panel.append(stats);
   const hint=document.createElement('p');hint.className='cap';hint.textContent=t('v3.help');panel.append(hint);
-  const download=document.createElement('button');download.className='tpl-btn tpl-btn-accent';download.textContent=t('v3.download');download.disabled=true;panel.append(download);host.append(panel);
+  const download=document.createElement('button');download.className='tpl-btn tpl-btn-accent';download.textContent=t('v3.download');download.disabled=true;panel.append(download);if(!assembled)host.append(panel);
   const worker=new Worker(new URL('./remesh.worker.ts',import.meta.url),{type:'module'});
   let ratio=1;
   const buttons=[1,.5,.25,.1].map(n=>{const b=document.createElement('button');b.type='button';b.className='tpl-btn';b.dataset.ratio=String(n);b.textContent=n===1?'100%':n*100+'%';b.title=n===1?t('v3.full'):t('v3.level',{n:n*100});b.onclick=()=>{ratio=n;void update();};levels.append(b);return b;});
@@ -44,5 +44,5 @@ export function mountModel(host: HTMLElement, url: string, filename: string) {
   worker.onerror=()=>{stats.textContent=t('v3.error');};
   download.onclick=()=>{if(!current)return;const a=document.createElement('a'),blob=new Blob([current],{type:'model/gltf-binary'});a.href=URL.createObjectURL(blob);a.download=`${filename}-${ratio*100}.glb`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);};
   void update();
-  return ()=>{disposed=true;revision++;worker.terminate();resize.disconnect();renderer.setAnimationLoop(null);controls.dispose();if(model)release(model);renderer.dispose();};
+  return ()=>{if(disposed)return;disposed=true;revision++;worker.terminate();resize.disconnect();renderer.setAnimationLoop(null);controls.dispose();if(model)release(model);renderer.dispose();};
 }

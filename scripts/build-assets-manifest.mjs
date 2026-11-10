@@ -116,6 +116,16 @@ async function buildChestEntry([style, palette, variant, withFbx]) {
   const meta = JSON.parse(await readFile(join(srcDir, "meta.json"), "utf8"));
   const base = `chest-wood/${style}/${palette}/${variant}`;
 
+  let parts_meta;
+  if (Array.isArray(meta.parts) && meta.parts.length && meta.product_id === 'chest-wood') {
+    // Publish only an explicit delivered parts manifest; old metadata remains untouched.
+    for (const part of meta.parts) for (const key of ['glb', 'thumb']) {
+      const path = part[key];
+      if (typeof path !== 'string' || !/^parts\/[a-zA-Z0-9_./-]+$/.test(path) || path.split('/').includes('..')) throw Error('Invalid part path');
+      if (!await copy(join(srcDir, path), `${base}/${path}`)) throw Error('Part exceeds file limit');
+    }
+    parts_meta = await copy(join(srcDir, 'meta.json'), `${base}/meta.json`);
+  }
   const glb = {
     lod0: await copy(join(srcDir, "chest_LOD0.glb"), `${base}/chest_LOD0.glb`),
     lod1: null,
@@ -151,6 +161,7 @@ https://creativecommons.org/publicdomain/zero/1.0/
 
   return {
     id: meta.id,
+    parts_meta,
     product_id: "chest-wood",
     hidden: previous.assets.find(a=>a.id===meta.id)?.hidden ?? false,
     product_hidden: previous.assets.find(a=>a.id===meta.id)?.product_hidden ?? false,

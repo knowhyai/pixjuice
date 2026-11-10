@@ -1,0 +1,52 @@
+{
+  "assets": [
+    {
+      "id": "parts-chest-wood",
+      "product_id": "parts-chest",
+      "hidden": true,
+      "parts_meta": "../parts-demo/wood/meta.json",
+      "name": {
+        "en": "Parts test chest",
+        "zh": "部件测试宝箱"
+      },
+      "category": "props",
+      "style_tier": "realistic",
+      "palette": "wood",
+      "state": "intact",
+      "tags": [
+        "CC0"
+      ],
+      "glb": {
+        "lod0": "../parts-demo/wood/parts/body.glb"
+      },
+      "license": {
+        "id": "CC0 1.0",
+        "commercial_use": true
+      }
+    },
+    {
+      "id": "parts-chest-blue",
+      "product_id": "parts-chest",
+      "hidden": true,
+      "parts_meta": "../parts-demo/blue/meta.json",
+      "name": {
+        "en": "Parts test chest",
+        "zh": "部件测试宝箱"
+      },
+      "category": "props",
+      "style_tier": "realistic",
+      "palette": "blue",
+      "state": "intact",
+      "tags": [
+        "CC0"
+      ],
+      "glb": {
+        "lod0": "../parts-demo/blue/parts/body.glb"
+      },
+      "license": {
+        "id": "CC0 1.0",
+        "commercial_use": true
+      }
+    }
+  ]
+}
