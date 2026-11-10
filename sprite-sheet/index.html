@@ -6,7 +6,7 @@
   <title>Sprite Sheet Cutter &amp; Sprite Sheet to GIF – PixJuice</title>
   <meta name="description" content="Free sprite sheet cutter: slice a PNG by grid or auto-detected transparent gaps, preview the animation, and export GIF, frames ZIP, a re-packed PNG sheet, Sparrow/Starling XML or TexturePacker JSON — all in your browser.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="canonical" href="https://pixjuice.pages.dev/sprite-sheet/">
+  <link rel="canonical" href="__SITE_ORIGIN__/sprite-sheet/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PixJuice">
   <meta property="og:title" content="Sprite Sheet Cutter &amp; Sprite Sheet to GIF – PixJuice">
@@ -14,55 +14,59 @@
   <meta property="og:image" content="/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#0b0a10">
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PixJuice Sprite Sheet Cutter",
+      "url": "__SITE_ORIGIN__/sprite-sheet/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "image": "__SITE_ORIGIN__/og.png",
+      "inLanguage": ["en", "zh-Hans", "ja", "ko", "es"],
+      "description": "Free sprite sheet cutter: slice a PNG by grid or auto-detected transparent gaps, preview the animation, and export GIF, frames ZIP, a re-packed PNG sheet, Sparrow/Starling XML or TexturePacker JSON — all in your browser.",
+      "publisher": { "@type": "Organization", "name": "KNOWHY", "url": "https://knowhy.net/" }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a sprite sheet?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A sprite sheet is a single image that packs every frame of an animation (or many different sprites) into a grid. Games load it once and draw sub-rectangles out of it, which is much faster than loading hundreds of small files." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I turn a sprite sheet into a GIF?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Slice the sheet here, set the playback speed with the FPS slider, and press animated GIF. The GIF keeps transparent pixels, so the preview looks right on any background. No software to install — it all happens in your browser." }
+        },
+        {
+          "@type": "Question",
+          "name": "How does auto-detect work?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It looks for columns and rows that are fully transparent — the gaps between frames — and turns those bands into a grid: cell size, count, offset and spacing. If your sprites touch each other with no gaps, set the grid by hand instead." }
+        },
+        {
+          "@type": "Question",
+          "name": "Which engines can use the XML and JSON exports?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The XML is the Sparrow/Starling TextureAtlas format (also read by Cocos2d and many frameworks). The JSON follows the TexturePacker hash format used by Phaser, PixiJS and Godot imports." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my sprite sheet uploaded anywhere?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. The cutter runs entirely client-side: the image is decoded, sliced and re-encoded in your browser, and the downloads are generated locally too." }
+        }
+      ]
+    }
+  ]
+  </script>
 </head>
 <body>
-  <header class="head">
-    <div class="head-in">
-      <a class="brand" href="/" aria-label="Back to the PixJuice catalog">
-        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
-          <rect width="16" height="16" fill="#0b0a10"/>
-          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
-          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
-          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
-          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
-          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
-          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
-          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
-          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
-          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
-          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
-          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
-        </svg>
-        <div>
-          <h1>Pix<em>Juice</em></h1>
-          <p class="sub" data-i18n="sheet.crumb">sprite sheet tool</p>
-        </div>
-      </a>
-      <nav class="nav">
-        <select id="lang" class="lang">
-          <option value="en">English</option>
-          <option value="zh">简体中文</option>
-          <option value="ja">日本語</option>
-          <option value="ko">한국어</option>
-          <option value="es">Español</option>
-        </select>
-        <a href="/" data-i18n="nav.backCatalog">← catalog</a>
-        <details class="tools">
-          <summary data-i18n="nav.tools">tools ▾</summary>
-          <div class="tools-menu">
-            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
-            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
-            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
-            <a href="/sprite-sheet/" class="cur" aria-current="page" data-i18n="nav.sheet">sprite sheet</a>
-            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
-          </div>
-        </details>
-        <a href="/credits/" data-i18n="nav.credits">credits</a>
-      </nav>
-    </div>
-  </header>
+  <!-- kh:header -->
 
-  <main class="sheet-main wrap">
+  <main id="content" class="sheet-main wrap">
     <section class="sheet-hero">
       <h1 data-i18n="sheet.h1">Sprite Sheet Cutter &amp; GIF Maker</h1>
       <p class="lede" data-i18n-html="sheet.lede">Slice a PNG sprite sheet by grid — or let auto-detect find the frames through the transparent gaps — preview the animation, then export an animated GIF, a frames ZIP, a re-packed sheet PNG, Sparrow/Starling XML or a TexturePacker-style JSON atlas. Free, no upload: everything runs in your browser.</p>
@@ -232,12 +236,7 @@
     </section>
   </main>
 
-  <footer>
-    <div class="foot-in">
-      <span data-i18n-html="foot.credit">Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
-      <span data-i18n-html="foot.credits2"><a href="/credits/">credits &amp; licenses</a></span>
-    </div>
-  </footer>
+  <!-- kh:footer -->
 
   <script type="module" src="/src/sheet.ts"></script>
 </body>

@@ -14,6 +14,11 @@ const ko: Partial<Dict> = {
     normal: "노멀 맵",
     upscale: "업스케일러",
     editor: "이펙트 에디터",
+    catalog: "카탈로그",
+    network: "네트워크",
+    menu: "메뉴",
+    knowhy: "knowhy.net",
+    skip: "본문으로 건너뛰기",
   },
   tools: {
     moreH: "PixJuice의 다른 도구",
@@ -28,6 +33,7 @@ const ko: Partial<Dict> = {
     pa: "이미지 → 픽셀 아트 변환기 — 무료, 업로드 없음 – PixJuice",
     nm: "노멀 맵 생성기 — 무료, 2D 스프라이트용 – PixJuice",
     up: "픽셀 아트 업스케일러 — Scale2x·xBR·최근접 이웃 – PixJuice",
+    notfound: "404 — PixJuice",
   },
   home: {
     subtitle: "<b>픽셀 아트 VFX 메이커</b> — 244종 게임 이펙트에 색을 입히고, 미리보고, 스프라이트 시트로 내보내세요. 무료, 브라우저에서 전부.",
@@ -47,12 +53,15 @@ const ko: Partial<Dict> = {
     toolUpD: "최근접 이웃, Scale2x, Scale3x, xBR을 2×–8×로 — 가장자리가 선명, 흐림 없음.",
     toolSh: "스프라이트 시트 커터 & GIF",
     toolShD: "그리드 또는 자동 감지로 자르고, 미리보고, GIF·ZIP·XML·JSON 내보내기.",
+    toolsAria: "무료 픽셀 도구",
   },
   foot: {
     credit: `이펙트는 Patch와 Hugo Duprez의 <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a>(MIT 라이선스)에서 제공됩니다.`,
     home2: `<a href="/credits/">크레딧 및 라이선스</a> · 인디 게임 개발자를 위해`,
     credits2: `<a href="/credits/">크레딧 및 라이선스</a>`,
     catalog: `<a href="/">카탈로그</a>`,
+    networkAria: "KNOWHY 네트워크",
+    newsletter: "뉴스레터",
   },
   cat: {
     moves: "기술",

@@ -3,6 +3,7 @@
 // never lands in the entry bundle).
 
 import { encodeWav } from "./sfx";
+import { siteOrigin } from "./site";
 
 export type SfxFormat = "wav" | "ogg" | "mp3";
 
@@ -166,6 +167,6 @@ export const SFX_LICENSE = [
   "MP3 files in this archive (if any) were encoded with lamejs",
   "(https://github.com/breezystack/lamejs, LGPL-3.0), used as an unmodified library.",
   "",
-  "Generated with PixJuice — https://pixjuice.pages.dev",
+  `Generated with PixJuice — ${siteOrigin()}`,
   "",
 ].join("\n");

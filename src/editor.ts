@@ -99,11 +99,16 @@ function hashSeed(s: string): number {
   return h >>> 0;
 }
 
+function setEdTitle(text: string): void {
+  const n = document.querySelector("#ed-title");
+  if (n) n.textContent = text;
+}
+
 function fail(id: string | null): void {
   $("#ed-error").hidden = false;
   $("#ed-grid").hidden = true;
   $("#ed-error-msg").textContent = id ? t("ed.errNamed", { id }) : t("ed.errNone");
-  $("#ed-crumb").textContent = t("ed.crumb404");
+  setEdTitle(t("ed.crumb404"));
   document.title = t("title.editor404");
 }
 
@@ -116,7 +121,7 @@ function runEditor(entry: CatalogEntry): void {
   const PAD = wide ? 1 : 1.25;
 
   document.title = t("title.fx", { name: fxName(entry) });
-  $("#ed-crumb").textContent = t("ed.crumbFx", { name: fxName(entry) });
+  setEdTitle(t("ed.crumbFx", { name: fxName(entry) }));
 
   // ---- meta strip (kept compact so the pinned stage never outgrows the viewport)
 
@@ -167,7 +172,7 @@ function runEditor(entry: CatalogEntry): void {
   // then sizes itself to its box at a whole-pixel scale (editor.ts never stretches it to
   // the column). Phone keeps the CSS letterbox (object-fit) instead of inline sizes.
   document.documentElement.style.setProperty("--ed-head", `${$(".head").offsetHeight}px`);
-  const desktop = matchMedia("(min-width: 941px)");
+  const desktop = matchMedia("(min-width: 921px)");
   function fitStage(): void {
     // the pane owns all scrolling on desktop — the page (and its footer) can't intrude
     document.body.classList.toggle("ed-fixed", desktop.matches);
@@ -766,7 +771,7 @@ function runEditor(entry: CatalogEntry): void {
 
   onLocaleChange(() => {
     document.title = t("title.fx", { name: fxName(entry) });
-    $("#ed-crumb").textContent = t("ed.crumbFx", { name: fxName(entry) });
+    setEdTitle(t("ed.crumbFx", { name: fxName(entry) }));
     desc.textContent = fxDesc(entry);
     renderFacts();
     more.textContent = desc.classList.contains("open") ? t("ed.less") : t("ed.more");

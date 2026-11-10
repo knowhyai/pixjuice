@@ -14,6 +14,11 @@ const ja: Partial<Dict> = {
     normal: "法線マップ",
     upscale: "アップスケーラー",
     editor: "エフェクトエディター",
+    catalog: "カタログ",
+    network: "ネットワーク",
+    menu: "メニュー",
+    knowhy: "knowhy.net",
+    skip: "本文へスキップ",
   },
   tools: {
     moreH: "PixJuice の他のツール",
@@ -28,6 +33,7 @@ const ja: Partial<Dict> = {
     pa: "画像 → ピクセルアート コンバーター — 無料・アップロード不要 – PixJuice",
     nm: "法線マップ ジェネレーター — 無料・2D スプライト対応 – PixJuice",
     up: "ピクセルアート アップスケーラー — Scale2x・xBR・最近傍 – PixJuice",
+    notfound: "404 — PixJuice",
   },
   home: {
     subtitle: "<b>ピクセルアートVFXメーカー</b> — 244種類のゲームエフェクトに配色し、プレビューしてスプライトシートを書き出し。無料、ブラウザだけで完結。",
@@ -47,12 +53,15 @@ const ja: Partial<Dict> = {
     toolUpD: "最近傍・Scale2x・Scale3x・xBR を 2×–8× で — エッジはシャープ、ぼやけなし。",
     toolSh: "スプライトシート切断 & GIF",
     toolShD: "グリッドまたは自動検出で切断、プレビュー、GIF・ZIP・XML・JSON を書き出し。",
+    toolsAria: "無料のピクセルツール",
   },
   foot: {
     credit: `エフェクトは Patch と Hugo Duprez による <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a>（MIT ライセンス）のものです。`,
     home2: `<a href="/credits/">クレジットとライセンス</a> · インディーゲーム開発者のために`,
     credits2: `<a href="/credits/">クレジットとライセンス</a>`,
     catalog: `<a href="/">カタログ</a>`,
+    networkAria: "KNOWHY ネットワーク",
+    newsletter: "ニュースレター",
   },
   cat: {
     moves: "アクション",

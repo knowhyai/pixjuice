@@ -1,27 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://pixjuice.pages.dev/</loc>
     <lastmod>2026-11-10</lastmod>
-  </url>
-  <url>
-    <loc>https://pixjuice.pages.dev/sprite-sheet/</loc>
-    <lastmod>2026-11-10</lastmod>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixjuice.pages.dev/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://pixjuice.pages.dev/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pixjuice.pages.dev/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://pixjuice.pages.dev/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pixjuice.pages.dev/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixjuice.pages.dev/"/>
   </url>
   <url>
     <loc>https://pixjuice.pages.dev/editor/</loc>
     <lastmod>2026-11-10</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixjuice.pages.dev/editor/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://pixjuice.pages.dev/editor/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pixjuice.pages.dev/editor/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://pixjuice.pages.dev/editor/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pixjuice.pages.dev/editor/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixjuice.pages.dev/editor/"/>
   </url>
   <url>
     <loc>https://pixjuice.pages.dev/image-to-pixel-art/</loc>
     <lastmod>2026-11-10</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixjuice.pages.dev/image-to-pixel-art/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://pixjuice.pages.dev/image-to-pixel-art/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pixjuice.pages.dev/image-to-pixel-art/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://pixjuice.pages.dev/image-to-pixel-art/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pixjuice.pages.dev/image-to-pixel-art/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixjuice.pages.dev/image-to-pixel-art/"/>
   </url>
   <url>
     <loc>https://pixjuice.pages.dev/normal-map/</loc>
     <lastmod>2026-11-10</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixjuice.pages.dev/normal-map/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://pixjuice.pages.dev/normal-map/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pixjuice.pages.dev/normal-map/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://pixjuice.pages.dev/normal-map/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pixjuice.pages.dev/normal-map/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixjuice.pages.dev/normal-map/"/>
   </url>
   <url>
     <loc>https://pixjuice.pages.dev/pixel-art-upscaler/</loc>
     <lastmod>2026-11-10</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixjuice.pages.dev/pixel-art-upscaler/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://pixjuice.pages.dev/pixel-art-upscaler/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pixjuice.pages.dev/pixel-art-upscaler/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://pixjuice.pages.dev/pixel-art-upscaler/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pixjuice.pages.dev/pixel-art-upscaler/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixjuice.pages.dev/pixel-art-upscaler/"/>
+  </url>
+  <url>
+    <loc>https://pixjuice.pages.dev/sprite-sheet/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixjuice.pages.dev/sprite-sheet/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://pixjuice.pages.dev/sprite-sheet/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pixjuice.pages.dev/sprite-sheet/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://pixjuice.pages.dev/sprite-sheet/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pixjuice.pages.dev/sprite-sheet/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixjuice.pages.dev/sprite-sheet/"/>
+  </url>
+  <url>
+    <loc>https://pixjuice.pages.dev/credits/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixjuice.pages.dev/credits/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://pixjuice.pages.dev/credits/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pixjuice.pages.dev/credits/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://pixjuice.pages.dev/credits/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pixjuice.pages.dev/credits/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixjuice.pages.dev/credits/"/>
   </url>
 </urlset>

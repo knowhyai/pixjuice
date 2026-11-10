@@ -7,56 +7,27 @@
   <meta name="description" content="PixJuice credits: the pixelfx effect library by Patch and Hugo Duprez (MIT), and the licenses that cover this site.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/src/style.css">
-  <meta name="robots" content="noindex">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="Credits &amp; licenses — PixJuice">
+  <meta property="og:description" content="PixJuice credits: the pixelfx effect library by Patch and Hugo Duprez (MIT), and the licenses that cover this site.">
   <meta name="theme-color" content="#0b0a10">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Credits & licenses — PixJuice",
+    "url": "__SITE_ORIGIN__/credits/",
+    "description": "PixJuice credits: the pixelfx effect library by Patch and Hugo Duprez (MIT), and the licenses that cover this site.",
+    "isPartOf": { "@type": "WebSite", "name": "PixJuice", "url": "__SITE_ORIGIN__/" },
+    "publisher": { "@type": "Organization", "name": "KNOWHY", "url": "https://knowhy.net/" }
+  }
+  </script>
 </head>
 <body>
-  <header class="head">
-    <div class="head-in">
-      <a class="brand" href="/" aria-label="PixJuice home">
-        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
-          <rect width="16" height="16" fill="#0b0a10"/>
-          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
-          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
-          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
-          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
-          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
-          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
-          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
-          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
-          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
-          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
-          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
-        </svg>
-        <div>
-          <h1>Pix<em>Juice</em></h1>
-          <p class="sub" data-i18n="credits.sub">credits &amp; licenses</p>
-        </div>
-      </a>
-      <nav class="nav">
-        <select id="lang" class="lang">
-          <option value="en">English</option>
-          <option value="zh">简体中文</option>
-          <option value="ja">日本語</option>
-          <option value="ko">한국어</option>
-          <option value="es">Español</option>
-        </select>
-        <a href="/" data-i18n="nav.backCatalog">← catalog</a>
-        <details class="tools">
-          <summary data-i18n="nav.tools">tools ▾</summary>
-          <div class="tools-menu">
-            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
-            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
-            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
-            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
-            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
-          </div>
-        </details>
-      </nav>
-    </div>
-  </header>
+  <!-- kh:header -->
 
-  <main class="prose">
+  <main id="content" class="prose">
     <h1 data-i18n="credits.h1">Credits &amp; licenses</h1>
     <p class="lede" data-i18n="credits.lede">PixJuice is a thin studio around other people's excellent pixel art. Here is who made what, and the licenses that let us ship it.</p>
 
@@ -159,12 +130,7 @@ For more information, please refer to &lt;https://unlicense.org&gt;</pre>
     </p>
   </main>
 
-  <footer>
-    <div class="foot-in">
-      <span data-i18n-html="foot.credit">Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
-      <span data-i18n-html="foot.catalog"><a href="/">catalog</a></span>
-    </div>
-  </footer>
+  <!-- kh:footer -->
 
   <script type="module" src="/src/credits.ts"></script>
 </body>

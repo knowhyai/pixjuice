@@ -11,43 +11,15 @@
   <meta name="theme-color" content="#0b0a10">
 </head>
 <body>
-  <header class="head">
-    <div class="head-in">
-      <a class="brand" href="/" aria-label="PixJuice home">
-        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
-          <rect width="16" height="16" fill="#0b0a10"/>
-          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
-          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
-          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
-          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
-          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
-          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
-          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
-          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
-          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
-          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
-          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
-        </svg>
-        <div>
-          <h1>Pix<em>Juice</em></h1>
-          <p class="sub">nothing juiced here</p>
-        </div>
-      </a>
-      <nav class="nav"><a href="/sprite-sheet/">sprite sheet</a> <a href="/credits/">credits</a></nav>
-    </div>
-  </header>
+  <!-- kh:header -->
 
-  <main class="center-box">
+  <main id="content" class="center-box">
     <h1>4<span>0</span>4</h1>
     <p>That page got hit by a <b>disintegrate</b> effect.</p>
-    <p><a class="btn primary" href="/">Back to the catalog</a></p>
+    <p><a class="btn primary" href="/" data-i18n="ed.backBtn">Back to the catalog</a></p>
   </main>
 
-  <footer>
-    <div class="foot-in">
-      <span>Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
-      <span><a href="/credits/">credits &amp; licenses</a></span>
-    </div>
-  </footer>
+  <!-- kh:footer -->
+  <script type="module" src="/src/notfound.ts"></script>
 </body>
 </html>

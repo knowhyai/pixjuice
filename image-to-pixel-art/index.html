@@ -6,9 +6,9 @@
   <title>Image to Pixel Art Converter — Free, No Upload – PixJuice</title>
   <meta name="description" content="Free image to pixel art converter: turn any photo or PNG into pixel art in your browser — pick the pixel size, reduce the colors, add dithering or a Lospec palette, remove the background, add an outline, then export a crisp PNG. No upload.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="canonical" href="https://pixjuice.pages.dev/image-to-pixel-art/">
-  <link rel="alternate" hreflang="en" href="https://pixjuice.pages.dev/image-to-pixel-art/">
-  <link rel="alternate" hreflang="x-default" href="https://pixjuice.pages.dev/image-to-pixel-art/">
+  <link rel="canonical" href="__SITE_ORIGIN__/image-to-pixel-art/">
+  <link rel="alternate" hreflang="en" href="__SITE_ORIGIN__/image-to-pixel-art/">
+  <link rel="alternate" hreflang="x-default" href="__SITE_ORIGIN__/image-to-pixel-art/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PixJuice">
   <meta property="og:title" content="Image to Pixel Art Converter — Free, No Upload – PixJuice">
@@ -22,7 +22,7 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "PixJuice Image to Pixel Art Converter",
-      "url": "https://pixjuice.pages.dev/image-to-pixel-art/",
+      "url": "__SITE_ORIGIN__/image-to-pixel-art/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -63,53 +63,9 @@
   </script>
 </head>
 <body>
-  <header class="head">
-    <div class="head-in">
-      <a class="brand" href="/" aria-label="Back to the PixJuice catalog">
-        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
-          <rect width="16" height="16" fill="#0b0a10"/>
-          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
-          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
-          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
-          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
-          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
-          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
-          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
-          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
-          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
-          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
-          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
-        </svg>
-        <div>
-          <h1>Pix<em>Juice</em></h1>
-          <p class="sub" data-i18n="pa.crumb">image to pixel art</p>
-        </div>
-      </a>
-      <nav class="nav">
-        <select id="lang" class="lang">
-          <option value="en">English</option>
-          <option value="zh">简体中文</option>
-          <option value="ja">日本語</option>
-          <option value="ko">한국어</option>
-          <option value="es">Español</option>
-        </select>
-        <details class="tools">
-          <summary data-i18n="nav.tools">tools ▾</summary>
-          <div class="tools-menu">
-            <a href="/image-to-pixel-art/" class="cur" aria-current="page" data-i18n="nav.pixel">image → pixel art</a>
-            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
-            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
-            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
-            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
-          </div>
-        </details>
-        <a href="/" data-i18n="nav.backCatalog">← catalog</a>
-        <a href="/credits/" data-i18n="nav.credits">credits</a>
-      </nav>
-    </div>
-  </header>
+  <!-- kh:header -->
 
-  <main class="sheet-main wrap">
+  <main id="content" class="sheet-main wrap">
     <section class="sheet-hero">
       <h1 data-i18n="pa.h1">Image to Pixel Art Converter</h1>
       <p class="lede" data-i18n-html="pa.lede">Turn any photo or PNG into pixel art right in your browser: choose the pixel size, reduce the colors or map to a Lospec palette, add dithering, remove the background and trace an outline — then export a crisp PNG at 1× or scaled up. Free, no upload.</p>
@@ -282,12 +238,7 @@
     </section>
   </main>
 
-  <footer>
-    <div class="foot-in">
-      <span data-i18n-html="foot.credit">Effects from <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> by Patch and Hugo Duprez, MIT License.</span>
-      <span data-i18n-html="foot.credits2"><a href="/credits/">credits &amp; licenses</a></span>
-    </div>
-  </footer>
+  <!-- kh:footer -->
 
   <script type="module" src="/src/pixelart.ts"></script>
 </body>
