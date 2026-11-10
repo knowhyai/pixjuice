@@ -530,7 +530,7 @@ const es: Partial<Dict> = {
     expP: `Cada hoja de sprites y JSON exportados registran de dónde viene el arte: el <code>meta.app</code> del JSON apunta al repositorio de pixelfx y <code>meta.pixelfx.id</code> nombra el efecto. No le debes nada a PixJuice por las exportaciones — pero un guiño a <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> en tu pantalla de créditos alegraría el día de los artistas.`,
   },
   tpl: {
-    "badgeSkins": "4 pieles",
+    "badgeSkins": "Semirrealista en oro oscuro",
     "badgeVanilla": "JS vanilla",
     "badgeI18n": "5 idiomas",
     "badgeGodot": "Godot: más adelante",
@@ -542,7 +542,7 @@ const es: Partial<Dict> = {
     "assetsNote": "El arte de la demo (la animación del cofre) se carga desde la <a href=\"/free-assets/chest-wood-realistic-wood-intact/\">biblioteca de recursos gratis de PixJuice</a> — no viene incluido en el ZIP.",
     "filesNote": "HTML/CSS/JS vanilla standalone · CC0 · sin arte incluido",
     "skin": {
-      "realistic": "Realista",
+      "realistic": "Semirrealista",
       "stylized": "Estilizado",
       "lowpoly": "Low Poly limpio",
       "pixel": "Pixel Art"
@@ -582,7 +582,7 @@ const es: Partial<Dict> = {
     },
     "feat": {
       "h": "Qué incluye",
-      "p": "<b>El motor de reglas</b> (tasas → rareza → objeto, pity de SSR, garantía de ×10, pesos de la ruleta) es un único archivo sin dependencias, testeable y ejecutable sin navegador; la <b>capa de UI</b> (ruleta, volteo de cartas, animación de cofre, historial, ajustes) es DOM puro que puedes restilizar. Las cuatro pieles oficiales —Realista, Estilizado, Low Poly limpio y Pixel Art— son un solo conjunto de variables CSS compartido por todas las plantillas de PixJuice."
+      "p": "<b>El motor de reglas</b> (tasas → rareza → objeto, pity de SSR, garantía de ×10, pesos de la ruleta) es un único archivo sin dependencias, testeable y ejecutable sin navegador; la <b>capa de UI</b> (ruleta, volteo de cartas, animación de cofre, historial, ajustes) es DOM puro que puedes restilizar. La interfaz compartida de oro oscuro usa variables CSS."
     },
     "tabPool": "Pozo de cartas",
     "tabWheel": "Ruleta",
@@ -681,7 +681,7 @@ const es: Partial<Dict> = {
   },
   fa: {
     types2d: "Sprites · Iconos · UI · Tiles · Fondos",
-    types3d: "Modelos · GLB · LOD0 / LOD1",
+    types3d: "Modelos · GLB de alta calidad",
     search: "Buscar nombres o etiquetas",
     "sub": "recursos gratis para juegos",
     "h1": "Recursos de juego gratis",
@@ -702,13 +702,9 @@ const es: Partial<Dict> = {
     "moreTemplates": "más en camino →",
     "templatesCat": "Plantillas de UI para juegos",
     "templatesCatD": "Gacha y ruleta, guardar/cargar — demos jugables con descargas de código CC0.",
-    "cat": {
-      "props": "props",
-      "structure": "estructura",
-      "lighting": "iluminación"
-    },
+    "cat": {"props": "Objetos", "characters": "Personajes", "vehicles": "Vehículos", "environment": "Entorno"},
     "style": {
-      "realistic": "Realista",
+      "realistic": "Semirrealista",
       "stylized": "Estilizado",
       "lowpoly": "Low Poly limpio",
       "pixel": "Pixel Art"

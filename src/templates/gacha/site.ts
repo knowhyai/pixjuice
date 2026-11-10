@@ -9,6 +9,8 @@ import "../templates.css";
 import "./standalone/styles.css";
 import "../skins.js";
 import "./gacha-core.js";
+import "./strings.js";
+import "./case-core.js";
 import "./standalone/main.js";
 import { applyStaticText, mountLangSwitcher, onLocaleChange, t } from "../../lib/i18n";
 import { mountToolsMenu } from "../../lib/navmenu";
@@ -16,6 +18,8 @@ import { mountCodeBox } from "../codebox";
 
 import indexHtml from "./standalone/index.html?raw";
 import demoStyles from "./standalone/styles.css?raw";
+import caseJs from "./case-core.js?raw";
+import stringsJs from "./strings.js?raw";
 import coreJs from "./gacha-core.js?raw";
 import skinsJs from "../skins.js?raw";
 import mainJs from "./standalone/main.js?raw";
@@ -40,11 +44,20 @@ mountCodeBox(document.getElementById("codebox")!, [
   { name: "js/gacha-core.js", code: coreJs },
   { name: "js/skins.js", code: skinsJs },
   { name: "js/main.js", code: mainJs },
+  { name: "js/case-core.js", code: caseJs },
+  { name: "js/strings.js", code: stringsJs },
   { name: "config.example.json", code: configExample },
   { name: "README.md", code: readme },
   { name: "LICENSE", code: license },
   ...fontFiles,
-], "pixjuice-gacha-template.zip");
+ ], "pixjuice-gacha-template.zip", async () => {
+  return Promise.all(['realistic'].flatMap(style => ['idle','open','close','locked_shake','open_burst'].map(async clip => {
+    const path=`chest-wood/${style}/wood/intact/sprites/${clip}.png`;
+    const response=await fetch(`/free-assets/${path}`);
+    if(!response.ok)throw Error('Offline sprite unavailable');
+    return {name:`assets/${path}`,data:new Uint8Array(await response.arrayBuffer())};
+  })));
+});
 
 // page-level dynamic text (counts, download hint)
 const note = document.querySelector<HTMLElement>("[data-tpl-files]");

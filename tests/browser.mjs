@@ -13,49 +13,55 @@ const p=await ctx.newPage(), errors=[];
 p.setDefaultTimeout(15000);
 p.on('pageerror',e=>errors.push(e.message));
 const click=key=>p.locator(`button[data-i18n="${key}"]`).click();
-const skins=['realistic','stylized','clean-low-poly','pixel-art'];
+
 async function noOverflow(){assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),p.url()+' overflows');}
 async function downloadCode(slug){
  const pending=p.waitForEvent('download');await click('tpl.download');const dl=await pending;
  const files=unzipSync(new Uint8Array(await readFile(await dl.path())));
  assert.ok(files['styles.css']&&files['README.md']&&files.LICENSE);
- for(const font of ['cinzel-latin-500','cormorant-latin-500','silkscreen-latin-400']) {
+ for(const font of ['cinzel-latin-500','cormorant-latin-500']) {
   const data=files['fonts/'+font+'.woff2']; assert.ok(data);assert.equal(new TextDecoder().decode(data.slice(0,4)),'wOF2');
  }
- for(const font of ['Cinzel','Cormorant','Silkscreen']) assert.ok(new TextDecoder().decode(files['fonts/'+font+'-OFL.txt']).includes('SIL OPEN FONT LICENSE'));
+ for(const font of ['Cinzel','Cormorant']) assert.ok(new TextDecoder().decode(files['fonts/'+font+'-OFL.txt']).includes('SIL OPEN FONT LICENSE'));
  assert.ok(!new TextDecoder().decode(files['styles.css']).includes("url('/fonts/"));
  assert.ok(new TextDecoder().decode(files['README.md']).includes(base),'ZIP art links use the active deployment');
- assert.ok(!Object.keys(files).some(n=>/\.(png|glb|fbx|jpg)$/i.test(n)),'no art in code ZIP');
+ if(slug==='gacha')assert.equal(Object.keys(files).filter(n=>n.endsWith('.png')).length,5);else assert.ok(!Object.keys(files).some(n=>/\.(png|glb|fbx|jpg)$/i.test(n)));
  const root='/tmp/pixjuice-standalone-'+slug;
  for(const [name,bytes] of Object.entries(files)){await mkdir(dirname(join(root,name)),{recursive:true});await writeFile(join(root,name),bytes);}
  const q=await b.newPage({viewport:{width:1280,height:900},reducedMotion:'reduce'});
  q.on('pageerror',e=>errors.push('ZIP: '+e.message));
+ if(slug==='gacha')await q.route(/^https?:/,r=>r.abort());
  await q.goto('file://'+root+'/index.html');
  await q.locator('.tpl-demo').waitFor();
- assert.equal(await q.locator('.gx-skin-btn').count(),4);
+ assert.equal(await q.locator('.gx-skin-btn').count(),0);
  assert.equal(await q.locator('.tpl-demo').evaluate(e=>getComputedStyle(e).display),'grid');
  assert.ok(!(await q.locator('.tpl-demo').innerText()).includes('tabPool'));
- if(slug==='gacha'){await q.locator('[data-i18n="gx.pull10"]').click();assert.equal(await q.locator('.gx-card').count(),10);}
+ if(slug==='gacha'){await q.locator('select[aria-label=Language]').selectOption('zh');assert.ok((await q.locator('.cx-contents').innerText()).includes('木剑'));await q.locator('[data-i18n="cx.open"]').click();await q.locator('.cx-modal').waitFor();await q.locator('.cx-modal button').click();await q.locator('[data-i18n="gx.tabPool"]').click();await q.locator('[data-i18n="gx.pull10"]').click();assert.equal(await q.locator('.gx-card').count(),10);}
  else {await q.locator('[data-i18n="sv.saveHere"]').first().click();assert.equal(await q.locator('.sv-slot-filled').count(),1);}
  await q.close();
 }
 try {
- await p.goto(base+'/templates/gacha/');await p.locator('.gx-skin-btn').first().waitFor();
+ await p.goto(base+'/templates/gacha/');await p.locator('.cx-pane').waitFor();
  assert.equal(await p.locator('.codebox').count(),1);
  assert.equal(await p.locator('.tpl-demo').getAttribute('data-skin'),'realistic');
+ await p.locator('.cx-pane').waitFor();
+ await p.locator('#cx-quick').check();await p.locator('#cx-sound').check();await p.locator('#cx-sound').uncheck();
+ await p.locator('.cx-select').selectOption('moonveil');await click('cx.open');await p.locator('.cx-modal').waitFor();
+ assert.equal(await p.locator('.cx-modal .cx-card').getAttribute('data-item'),await p.locator('.cx-reel').getAttribute('data-winner'));
+ await click('cx.close');await p.locator('.cx-select').selectOption('ember');assert.equal(await p.locator('.cx-contents .cx-card').count(),7);
+ await click('gx.tabPool');
  await click('gx.pull1');assert.equal(await p.locator('.gx-card').count(),1);
  await click('gx.pull10');assert.equal(await p.locator('.gx-card').count(),10);
  assert.ok(await p.locator('.gx-card.r-SR,.gx-card.r-SSR').count()>0);
- assert.equal(await p.locator('.gx-hist li').count(),11);
+ assert.equal(await p.locator('.gx-hist li').count(),12);
  assert.ok(!/[{}]/.test(await p.locator('.gx-pitybar').innerText()));
- for(const skin of skins){await p.locator(`[data-skin-id="${skin}"]`).click();await noOverflow();await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(250);await p.locator('#app').screenshot({path:join(out,'templates-v2-gacha-'+skin+'.png')});}
- await p.locator('[data-skin-id="stylized"]').click();
+
  await p.screenshot({path:join(out,'templates-gacha.png'),fullPage:true});
  await click('gx.tabWheel');await click('gx.spin');await p.waitForFunction(()=>document.querySelector('.gx-wheel-out').textContent.length>0);
  assert.ok(!/[{}]/.test(await p.locator('.gx-wheel-out').innerText()));
  await p.locator('#app').screenshot({path:join(out,'templates-wheel.png')});
  await click('gx.tabPool');await downloadCode('gacha');
- await p.reload();assert.equal(await p.locator('.gx-hist li').count(),12);
+ await p.reload();assert.equal(await p.locator('.gx-hist li').count(),13);
  await p.clock.install();
  await p.goto(base+'/templates/save-load/');
  await p.locator('.sv-slot').first().waitFor();
@@ -79,8 +85,7 @@ try {
  await p.reload();await p.locator('.sv-slot-filled').waitFor();
  await p.clock.runFor(31000);
  assert.ok(await p.evaluate(()=>localStorage.getItem('pix-tpl-save:auto')));
- for(const skin of skins){await p.locator(`[data-skin-id="${skin}"]`).click();await noOverflow();await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(250);await p.locator('#app').screenshot({path:join(out,'templates-v2-save-'+skin+'.png')});}
- await p.locator('[data-skin-id="stylized"]').click();await p.screenshot({path:join(out,'templates-save.png'),fullPage:true});
+await p.screenshot({path:join(out,'templates-save.png'),fullPage:true});
  await downloadCode('save-load');await p.clock.resume();
  for(const lang of ['en','zh','ja','ko','es']){
   const prefix=lang==='en'?'':'/'+lang;
@@ -103,11 +108,19 @@ try {
  await p.locator('#lang').selectOption('zh');await p.waitForURL('**/zh/free-resources/');
  assert.equal(await p.locator('html').getAttribute('lang'),'zh');
  await p.goto(base+'/free-assets/');await p.locator('.fa-card').first().waitFor();
- assert.equal(await p.locator('.fa-categories .fa-category').count(),3);
- await p.locator('.fa-category').nth(0).click();assert.ok(await p.locator('.fa-card').count()>=10);
- await p.locator('.fa-category').nth(1).click();assert.equal(await p.locator('.fa-card:not(.fa-soon-card)').count(),10);
- await p.goto(base+'/free-assets/chest-wood-stylized-wood-intact/');await p.locator('.fa-file').first().waitFor();
- assert.ok(await p.locator('.fa-file').count()>=8);
+ assert.equal(await p.locator('#fa-filters button').count(),2);
+ assert.equal(await p.locator('.fa-card').count(),1);
+ assert.equal(await p.locator('.fa-soon-card').count(),0);
+ await p.goto(base+'/free-assets/chest-wood-realistic-wood-intact/');await p.locator('.fa-file').first().waitFor();
+ assert.ok(await p.locator('.fa-file').count()>=7);
+ assert.equal(await p.locator('[data-variant=style]').count(),0);
+ await p.waitForFunction(()=>document.querySelector('[data-triangles]'));
+ const full=Number(await p.locator('[data-triangles]').getAttribute('data-triangles'));
+ await p.locator('button[data-ratio="0.1"]').click();await p.waitForFunction(()=>document.querySelector('[data-triangles]')?.getAttribute('data-ratio')==='0.1');
+ assert.ok(Number(await p.locator('[data-triangles]').getAttribute('data-triangles'))<full);
+ assert.ok(!(await p.locator('.fa-files').innerText()).includes('LOD1'));
+ await p.locator('[data-variant=color]').selectOption('gold');assert.ok(p.url().includes('realistic-gold-intact'));
+
  const assetDownload=p.waitForEvent('download');await click('fa.downloadAll');
  const assetZip=unzipSync(new Uint8Array(await readFile(await (await assetDownload).path())));
  for(const [name,data] of Object.entries(assetZip).filter(([name])=>/LICENSE.txt|README.txt/.test(name))){
@@ -120,5 +133,5 @@ try {
   await p.screenshot({path:join(out,'mobile-'+route.split('/').filter(Boolean).join('-')+'.png'),fullPage:true});
  }
  assert.deepEqual(errors,[]);
- console.log('PASS: gacha, wheel, persistence, save confirmations/import/export/autosave, 8 skin screenshots, 5-language static SEO, asset links, 2 standalone ZIPs, mobile overflow; no page errors.');
+ console.log('PASS: gacha, wheel, persistence, save confirmations/import/export/autosave, single dark gold interface, 5-language static SEO, asset links, 2 standalone ZIPs, mobile overflow; no page errors.');
 } finally {await b.close();}

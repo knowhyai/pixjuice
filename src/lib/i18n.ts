@@ -1,3 +1,4 @@
+import "../templates/gacha/strings.js";
 // Tiny homemade i18n: nested dictionaries, English as the source of truth and the fallback
 // for every missing key. No runtime dependency, no URL routing — the canonical URLs stay
 // English (SEO), and a language pick only swaps visible text for that session.
@@ -78,7 +79,7 @@ function lookup(dict: unknown, path: string[]): unknown {
  *  to the key's last segment — a raw dotted path can never leak into the UI. */
 export function t(key: string, vars?: Record<string, string | number>): string {
   const path = key.split(".");
-  let str = lookup(DICTS[locale], path) ?? lookup(EN, path);
+  let str = window.PixStrings[locale]?.[key] ?? lookup(DICTS[locale], path) ?? lookup(EN, path);
   if (typeof str !== "string") str = path[path.length - 1];
   if (vars)
     for (const [k, v] of Object.entries(vars)) str = (str as string).replaceAll(`{${k}}`, String(v));
@@ -152,7 +153,7 @@ export function applyStaticText(root: ParentNode = document): void {
 /** Wire the header's <select id="lang"> (present on every page's raw HTML, English-default). */
 export function mountLangSwitcher(): void {
   const sel = document.querySelector<HTMLSelectElement>("#lang");
-  if (!sel) return;
+  if (!sel || sel.dataset.sharedLang) return;
   sel.value = locale;
   sel.setAttribute("aria-label", t("lang.aria"));
   sel.addEventListener("change", () => setLocale(sel.value as Locale));

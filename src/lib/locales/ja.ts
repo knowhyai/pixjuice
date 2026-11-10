@@ -530,7 +530,7 @@ const ja: Partial<Dict> = {
     expP: `書き出されたスプライトシートと JSON にはアートの出所が記録されます：JSON の <code>meta.app</code> は pixelfx リポジトリを指し、<code>meta.pixelfx.id</code> がエフェクト名を示します。書き出しに対して PixJuice への支払いは不要です — ただ、あなたのゲームのクレジット画面で <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> に一言触れれば、アーティストたちは喜ぶでしょう。`,
   },
   tpl: {
-    "badgeSkins": "4スキン",
+    "badgeSkins": "セミリアル",
     "badgeVanilla": "バニラJS",
     "badgeI18n": "5言語",
     "badgeGodot": "Godot：後日提供",
@@ -542,7 +542,7 @@ const ja: Partial<Dict> = {
     "assetsNote": "デモのアート（宝箱アニメ）は <a href=\"/free-assets/chest-wood-realistic-wood-intact/\">PixJuice無料アセットライブラリ</a>から読み込み——ZIPには同梱していません。",
     "filesNote": "スタンドアローン・バニラHTML/CSS/JS · CC0 · アートは同梱なし",
     "skin": {
-      "realistic": "リアル",
+      "realistic": "セミリアル",
       "stylized": "スタイライズ",
       "lowpoly": "クリーンローポリ",
       "pixel": "ピクセルアート"
@@ -551,10 +551,10 @@ const ja: Partial<Dict> = {
   tplIndex: {
     "sub": "ゲームUIテンプレート",
     "h1": "無料ゲームUIテンプレート",
-    "lede": "<b>テンプレート級のゲームモジュール</b>——完成度が高く、そのまま使える部品。パラメータを調整できるプレイアブルデモ、4つの統一アートスキン、スタンドアローンのバニラHTML/CSS/JSダウンロード（CC0）。テンプレートは<a href=\"/free-assets/\">PixJuice無料アセットライブラリ</a>のカテゴリの一つです。",
+    "lede": "<b>テンプレート級のゲームモジュール</b>——完成度が高く、そのまま使える部品。パラメータを調整できるプレイアブルデモ、セミリアルデザイン、スタンドアローンのバニラHTML/CSS/JSダウンロード（CC0）。テンプレートは<a href=\"/free-assets/\">PixJuice無料アセットライブラリ</a>のカテゴリの一つです。",
     "live": "公開中",
     "soon": "近日公開",
-    "soonLede": "最初の2つと同じ仕様：プレイアブルデモ、4スキン、CC0のスタンドアローンDL。準備中：",
+    "soonLede": "最初の2つと同じ仕様：プレイアブルデモ、ダークゴールドUI、CC0のスタンドアローンDL。準備中：",
     "open": "デモを開く →",
     "soonBadge": "近日公開"
   },
@@ -582,7 +582,7 @@ const ja: Partial<Dict> = {
     },
     "feat": {
       "h": "中身",
-      "p": "<b>ルールエンジン</b>（率→レアリティ→景品、SSR天井、10連保証、ルーレット重み）は依存ゼロの1ファイルで単体テスト・ヘッドレス動作可能。<b>UI層</b>（ルーレット、カードめくり、宝箱アニメ、履歴、設定）は自由に再スタイルできる純DOMです。公式4スキン（リアル／スタイライズ／クリーンローポリ／ピクセルアート）は全テンプレート共通のCSS変数1セット。"
+      "p": "<b>ルールエンジン</b>（率→レアリティ→景品、SSR天井、10連保証、ルーレット重み）は依存ゼロの1ファイルで単体テスト・ヘッドレス動作可能。<b>UI層</b>（ルーレット、カードめくり、宝箱アニメ、履歴、設定）は自由に再スタイルできる純DOMです。ダークゴールドの共通UIはCSS変数で調整できます。"
     },
     "tabPool": "ガチャ（カード）",
     "tabWheel": "ルーレット",
@@ -681,7 +681,7 @@ const ja: Partial<Dict> = {
   },
   fa: {
     types2d: "スプライト · アイコン · UI · タイル · 背景",
-    types3d: "モデル · GLB · LOD0 / LOD1",
+    types3d: "モデル · 高精細 GLB",
     search: "名前やタグを検索",
     "sub": "無料ゲームアセット",
     "h1": "無料ゲームアセット",
@@ -702,13 +702,9 @@ const ja: Partial<Dict> = {
     "moreTemplates": "続々公開中 →",
     "templatesCat": "ゲームUIテンプレート",
     "templatesCatD": "ガチャ＆ルーレット、セーブ/ロード——プレイアブルデモとCC0コードのダウンロード付き。",
-    "cat": {
-      "props": "小物",
-      "structure": "構造物",
-      "lighting": "光源"
-    },
+    "cat": {"props": "小道具", "characters": "キャラクター", "vehicles": "乗り物", "environment": "環境"},
     "style": {
-      "realistic": "リアル",
+      "realistic": "セミリアル",
       "stylized": "スタイライズ",
       "lowpoly": "クリーンローポリ",
       "pixel": "ピクセルアート"

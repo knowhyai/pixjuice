@@ -22,3 +22,21 @@ test('published manifest files exist; only real assets have downloads',()=>{
   for(const p of [x.thumb,x.license.file,...Object.values(x.glb||{}),...Object.values(x.sprites||{})].filter(Boolean)) assert.ok(existsSync('public/free-assets/'+p),p);
  }
 });
+test('one product card, no placeholders; variant tags and hidden flags govern visibility',async()=>{
+ const {visibleProducts}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+ const assets=sanitizeManifest(JSON.parse(readFileSync('public/free-assets/manifest.json','utf8')));
+ assert.equal(visibleProducts(assets).length,1);assert.equal(visibleProducts(assets)[0].length,4);
+ assert.ok(visibleProducts(assets)[0].every(a=>a.style_tier==='realistic'));
+ const gold=visibleProducts(assets,a=>a.palette==='gold');assert.equal(gold.length,1);assert.ok(gold[0].every(a=>a.palette==='gold'));
+ assert.equal(visibleProducts(assets.map(a=>({...a,hidden:true}))).length,0);
+ assert.equal(visibleProducts(assets.map((a,i)=>({...a,product_hidden:i===0}))).length,0);
+});
+test('four broad categories expose vehicles only after a finished visible vehicle arrives',async()=>{
+ const {availableCategories,ASSET_CATEGORIES}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+ assert.deepEqual(ASSET_CATEGORIES,['props','characters','vehicles','environment']);
+ const assets=sanitizeManifest(JSON.parse(readFileSync('public/free-assets/manifest.json','utf8')));
+ assert.deepEqual(availableCategories(assets),['props']);
+ const car={...assets[0],id:'sedan',product_id:'sedan',category:'vehicles'};
+ assert.deepEqual(availableCategories([...assets,car]),['props','vehicles']);
+ assert.deepEqual(availableCategories([...assets,{...car,placeholder:true}]),['props']);
+});

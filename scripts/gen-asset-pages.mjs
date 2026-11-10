@@ -34,8 +34,8 @@ function faqFor(name, kind) {
           kind === "2d"
             ? "It ships as PNG sprite sheets (128px frames). Every file has a direct download link on this page."
             : kind === "3d"
-              ? "It ships as GLB models in two detail levels (LOD0/LOD1), ready for Godot, Unity, Unreal and three.js."
-              : "It ships as GLB models (LOD0/LOD1) plus matching PNG sprite sheets — every file has a direct download link.",
+              ? "It ships as GLB models in high detail with browser mesh optimization, ready for Godot, Unity, Unreal and three.js."
+              : "It ships as high-detail GLB models plus matching PNG sprite sheets — every file has a direct download link.",
       },
     },
     {
@@ -111,13 +111,14 @@ const footer = `  <footer>
 
 const manifest = JSON.parse(await readFile(MANIFEST, "utf8"));
 let n = 0;
-for (const a of manifest.assets) {
+const products = [...new Set(manifest.assets.map(a=>a.product_id).filter(Boolean))].map(id=>({...manifest.assets.find(a=>a.product_id===id), id}));
+for (const a of [...manifest.assets,...products]) {
   const name = a.name?.en ?? a.id;
   const kind = a.glb && a.sprites ? "2d3d" : a.glb ? "3d" : "2d";
   const desc = a.placeholder
     ? `${name} — a free PixJuice game asset, coming soon. Preview and details on this page; part of the free-for-commercial-use asset library.`
     : `${name} — free PixJuice game asset: ${
-        kind === "2d" ? "PNG sprite sheets" : kind === "3d" ? "GLB models (LOD0/LOD1)" : "GLB models (LOD0/LOD1) + PNG sprite sheets"
+        kind === "2d" ? "PNG sprite sheets" : kind === "3d" ? "high-detail GLB models" : "high-detail GLB models + PNG sprite sheets"
       }, free for commercial use. Preview, per-file downloads and license on this page.`;
   const jsonld = JSON.stringify(
     [

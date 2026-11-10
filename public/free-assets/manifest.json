@@ -7,8 +7,8 @@
     {
       "id": "chest-wood-realistic-wood-intact",
       "name": {
-        "en": "Realistic Wood Treasure Chest (intact)",
-        "zh": "写实 · 木宝箱 · 完好"
+        "en": "Semi-Realistic Wood Treasure Chest (intact)",
+        "zh": "半写实 · 木宝箱 · 完好"
       },
       "category": "props",
       "style_tier": "realistic",
@@ -37,7 +37,7 @@
       ],
       "glb": {
         "lod0": "chest-wood/realistic/wood/intact/chest_LOD0.glb",
-        "lod1": "chest-wood/realistic/wood/intact/chest_LOD1.glb"
+        "lod1": null
       },
       "fbx": [
         "chest-wood/realistic/wood/intact/fbx/chest_LOD0.fbx",
@@ -77,13 +77,17 @@
           0.5239999890327454
         ]
       },
-      "polycount_lod0": 2598
+      "polycount_lod0": 2598,
+      "product_id": "chest-wood",
+      "state": "intact",
+      "hidden": false,
+      "product_hidden": false
     },
     {
       "id": "chest-wood-realistic-gold-intact",
       "name": {
-        "en": "Realistic Gold Treasure Chest (intact)",
-        "zh": "写实 · 金宝箱 · 完好"
+        "en": "Semi-Realistic Gold Treasure Chest (intact)",
+        "zh": "半写实 · 金宝箱 · 完好"
       },
       "category": "props",
       "style_tier": "realistic",
@@ -112,7 +116,7 @@
       ],
       "glb": {
         "lod0": "chest-wood/realistic/gold/intact/chest_LOD0.glb",
-        "lod1": "chest-wood/realistic/gold/intact/chest_LOD1.glb"
+        "lod1": null
       },
       "fbx": [],
       "sprites": {
@@ -149,13 +153,17 @@
           0.5239999890327454
         ]
       },
-      "polycount_lod0": 2598
+      "polycount_lod0": 2598,
+      "product_id": "chest-wood",
+      "state": "intact",
+      "hidden": false,
+      "product_hidden": false
     },
     {
       "id": "chest-wood-realistic-blue-intact",
       "name": {
-        "en": "Realistic Blue Treasure Chest (intact)",
-        "zh": "写实 · 蓝宝箱 · 完好"
+        "en": "Semi-Realistic Blue Treasure Chest (intact)",
+        "zh": "半写实 · 蓝宝箱 · 完好"
       },
       "category": "props",
       "style_tier": "realistic",
@@ -184,7 +192,7 @@
       ],
       "glb": {
         "lod0": "chest-wood/realistic/blue/intact/chest_LOD0.glb",
-        "lod1": "chest-wood/realistic/blue/intact/chest_LOD1.glb"
+        "lod1": null
       },
       "fbx": [],
       "sprites": {
@@ -221,13 +229,17 @@
           0.5239999890327454
         ]
       },
-      "polycount_lod0": 2598
+      "polycount_lod0": 2598,
+      "product_id": "chest-wood",
+      "state": "intact",
+      "hidden": false,
+      "product_hidden": false
     },
     {
       "id": "chest-wood-realistic-red-damaged",
       "name": {
-        "en": "Realistic Red Treasure Chest (damaged)",
-        "zh": "写实 · 红宝箱 · 破损"
+        "en": "Semi-Realistic Red Treasure Chest (damaged)",
+        "zh": "半写实 · 红宝箱 · 破损"
       },
       "category": "props",
       "style_tier": "realistic",
@@ -256,7 +268,7 @@
       ],
       "glb": {
         "lod0": "chest-wood/realistic/red/damaged/chest_LOD0.glb",
-        "lod1": "chest-wood/realistic/red/damaged/chest_LOD1.glb"
+        "lod1": null
       },
       "fbx": [],
       "sprites": {
@@ -293,7 +305,11 @@
           0.5239999890327454
         ]
       },
-      "polycount_lod0": 2595
+      "polycount_lod0": 2595,
+      "product_id": "chest-wood",
+      "state": "damaged",
+      "hidden": false,
+      "product_hidden": false
     },
     {
       "id": "chest-wood-stylized-wood-intact",
@@ -328,7 +344,7 @@
       ],
       "glb": {
         "lod0": "chest-wood/stylized/wood/intact/chest_LOD0.glb",
-        "lod1": "chest-wood/stylized/wood/intact/chest_LOD1.glb"
+        "lod1": null
       },
       "fbx": [],
       "sprites": {
@@ -365,7 +381,11 @@
           0.5239999890327454
         ]
       },
-      "polycount_lod0": 588
+      "polycount_lod0": 588,
+      "product_id": "chest-wood",
+      "state": "intact",
+      "hidden": true,
+      "product_hidden": false
     },
     {
       "id": "chest-wood-stylized-gold-intact",
@@ -400,7 +420,7 @@
       ],
       "glb": {
         "lod0": "chest-wood/stylized/gold/intact/chest_LOD0.glb",
-        "lod1": "chest-wood/stylized/gold/intact/chest_LOD1.glb"
+        "lod1": null
       },
       "fbx": [],
       "sprites": {
@@ -437,7 +457,11 @@
           0.5239999890327454
         ]
       },
-      "polycount_lod0": 588
+      "polycount_lod0": 588,
+      "product_id": "chest-wood",
+      "state": "intact",
+      "hidden": true,
+      "product_hidden": false
     },
     {
       "id": "chest-wood-clean-low-poly-wood-intact",
@@ -472,7 +496,7 @@
       ],
       "glb": {
         "lod0": "chest-wood/clean-low-poly/wood/intact/chest_LOD0.glb",
-        "lod1": "chest-wood/clean-low-poly/wood/intact/chest_LOD1.glb"
+        "lod1": null
       },
       "fbx": [],
       "sprites": {
@@ -509,7 +533,11 @@
           0.5239999890327454
         ]
       },
-      "polycount_lod0": 548
+      "polycount_lod0": 548,
+      "product_id": "chest-wood",
+      "state": "intact",
+      "hidden": true,
+      "product_hidden": false
     },
     {
       "id": "chest-wood-clean-low-poly-gold-intact",
@@ -544,7 +572,7 @@
       ],
       "glb": {
         "lod0": "chest-wood/clean-low-poly/gold/intact/chest_LOD0.glb",
-        "lod1": "chest-wood/clean-low-poly/gold/intact/chest_LOD1.glb"
+        "lod1": null
       },
       "fbx": [],
       "sprites": {
@@ -581,7 +609,11 @@
           0.5239999890327454
         ]
       },
-      "polycount_lod0": 548
+      "polycount_lod0": 548,
+      "product_id": "chest-wood",
+      "state": "intact",
+      "hidden": true,
+      "product_hidden": false
     },
     {
       "id": "chest-wood-pixel-art-wood-intact",
@@ -616,7 +648,7 @@
       ],
       "glb": {
         "lod0": "chest-wood/pixel-art/wood/intact/chest_LOD0.glb",
-        "lod1": "chest-wood/pixel-art/wood/intact/chest_LOD1.glb"
+        "lod1": null
       },
       "fbx": [],
       "sprites": {
@@ -653,7 +685,11 @@
           0.5239999890327454
         ]
       },
-      "polycount_lod0": 596
+      "polycount_lod0": 596,
+      "product_id": "chest-wood",
+      "state": "intact",
+      "hidden": true,
+      "product_hidden": false
     },
     {
       "id": "chest-wood-pixel-art-gold-intact",
@@ -688,7 +724,7 @@
       ],
       "glb": {
         "lod0": "chest-wood/pixel-art/gold/intact/chest_LOD0.glb",
-        "lod1": "chest-wood/pixel-art/gold/intact/chest_LOD1.glb"
+        "lod1": null
       },
       "fbx": [],
       "sprites": {
@@ -725,12 +761,16 @@
           0.5239999890327454
         ]
       },
-      "polycount_lod0": 596
+      "polycount_lod0": 596,
+      "product_id": "chest-wood",
+      "state": "intact",
+      "hidden": true,
+      "product_hidden": false
     },
     {
       "id": "wall-stone",
       "procedural": "wall",
-      "category": "structure",
+      "category": "environment",
       "palette": "stone",
       "name": {
         "en": "Dungeon Stone Wall",
@@ -760,7 +800,7 @@
     {
       "id": "floor-stone",
       "procedural": "floor",
-      "category": "structure",
+      "category": "environment",
       "palette": "stone",
       "name": {
         "en": "Dungeon Stone Floor",
@@ -790,7 +830,7 @@
     {
       "id": "torch-wall",
       "procedural": "torch",
-      "category": "lighting",
+      "category": "props",
       "palette": "iron",
       "name": {
         "en": "Wall Torch",
@@ -877,5 +917,11 @@
       "dimensions_m": null,
       "polycount_lod0": null
     }
+  ],
+  "categories": [
+    "props",
+    "characters",
+    "vehicles",
+    "environment"
   ]
 }

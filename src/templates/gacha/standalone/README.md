@@ -9,7 +9,7 @@ Zero dependencies — plain HTML/CSS/JS. Double-click `index.html` and it runs.
 
 ```
 index.html            page shell (loads the three scripts below)
-styles.css            all demo styles + the four official skins ([data-skin] blocks)
+styles.css            all demo styles + the Semi-Realistic dark gold skin
 js/gacha-core.js      rules engine: rates, pity, pulls, wheel odds (no DOM)
 js/skins.js           shared skin registry (PixSkins global)
 js/main.js            demo UI (builds into #app)
@@ -44,7 +44,7 @@ LICENSE               CC0 — do anything, no attribution required
   "pity":     { "ssr": 90, "sr": 10 },   // hard SSR guarantee; multi-batch length for the SR+ guarantee
   "items": [
     { "id": "wooden-sword", "name": "Wooden Sword", "rarity": "N", "weight": 1 },
-    { "id": "excalibur",    "name": "Excalibur",    "rarity": "SSR" }
+    { "id": "excalibur",    "name": "Dawn Relic",    "rarity": "SSR" }
   ]
 }
 ```
@@ -62,26 +62,21 @@ LICENSE               CC0 — do anything, no attribution required
 In the demo: **Load config.json** applies a file, **Download config.json**
 exports the current state of the panel.
 
-## Art assets (not bundled)
+## Crate opening and offline play
 
-This ZIP contains no art. The demo's chest-opening animation loads the wooden
-chest sprite sets from the PixJuice free asset library at runtime:
+The default mode is a horizontal crate reel with three original treasure pools.
+`js/case-core.js` selects the result first; the reel's `winnerIndex` and
+`stopOffset()` keep it aligned. Quick opening, skipping and reduced motion leave
+the result unchanged. Sound is synthesized locally and starts muted.
 
-- Library entry: <https://pixjuice.pages.dev/free-assets/chest-wood-realistic-wood-intact/>
-- Sprite URLs used by the demo:
-  `https://pixjuice.pages.dev/free-assets/chest-wood/<style>/wood/intact/sprites/{idle,open,close,locked_shake,open_burst}.png`
-  with `<style>` one of `realistic`, `stylized`, `clean-low-poly`, `pixel-art`
-  (one set per skin, switched automatically).
-- CC0 1.0 Universal — commercial use without attribution.
+The seven original rarity odds are 50%, 25%, 14%, 7%, 2.5%, 1.2% and 0.3%.
+Each opening costs 100 free demo gems. These independent draws have no pity.
+The card pool and wheel keep their separate configuration and rules.
 
-To run fully offline: download the five sprites for one style, put them next to
-`index.html` (e.g. `assets/sprites/`), and in `js/main.js` set
-
-```js
-var ASSETS_BASE = "assets/chest-wood"; // folder containing <style>/wood/intact/sprites
-```
-
-If the sprites can't load, the demo skips the chest animation and still works.
+All crate icons are original inline SVG. The ZIP bundles the matching chest
+sprites under `assets/chest-wood/` for the Semi-Realistic dark gold interface. Unzip and open index.html:
+no network connection is needed. Use the language selector for five languages.
+The source library remains at https://pixjuice.pages.dev/free-assets/ .
 
 ## License
 
@@ -91,4 +86,3 @@ is also CC0 1.0 Universal: commercial use, redistribution and resale without att
 
 Typography: Cinzel and Cormorant (Latin, weight 500), bundled in fonts/ for offline use. Font software remains SIL OFL 1.1; see fonts/Cinzel-OFL.txt and fonts/Cormorant-OFL.txt. Sources: https://github.com/google/fonts/tree/main/ofl/cinzel and https://github.com/google/fonts/tree/main/ofl/cormorant .
 PixJuice wooden chest art is CC0 1.0 Universal, commercial use without attribution.
-Pixel Art uses bundled Silkscreen Latin 400, SIL OFL 1.1: fonts/Silkscreen-OFL.txt. Source: https://github.com/google/fonts/tree/main/ofl/silkscreen .

@@ -14,7 +14,7 @@ const zh: Partial<Dict> = {
       "types": "3D 角色 · 环境 · 套件 · 动画"
     },
     "c2": {
-      "desc": "为灯光和精细世界提供写实素材。",
+      "desc": "为灯光和精细世界提供半写实素材。",
       "license": "CC0，可商用、无需署名。",
       "types": "HDRI · PBR 纹理 · 3D 模型"
     },
@@ -530,7 +530,7 @@ const zh: Partial<Dict> = {
     expP: `每张导出的精灵图和 JSON 文件都记录了美术来源：JSON 的 <code>meta.app</code> 指向 pixelfx 仓库，<code>meta.pixelfx.id</code> 标明特效名称。导出内容无需向 PixJuice 支付任何费用 — 但若在你的致谢画面中提一句 <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a>，艺术家们会非常开心。`,
   },
   tpl: {
-    "badgeSkins": "4 套皮肤",
+    "badgeSkins": "半写实暗金",
     "badgeVanilla": "原生 JS",
     "badgeI18n": "5 种语言",
     "badgeGodot": "Godot：稍后推出",
@@ -542,7 +542,7 @@ const zh: Partial<Dict> = {
     "assetsNote": "演示美术（开宝箱动画）来自 <a href=\"/free-assets/chest-wood-realistic-wood-intact/\">PixJuice 免费素材库</a>——不打包在下载的 ZIP 里。",
     "filesNote": "独立原生 HTML/CSS/JS · CC0 · 不含美术文件",
     "skin": {
-      "realistic": "写实",
+      "realistic": "半写实",
       "stylized": "风格化",
       "lowpoly": "简洁低多边形",
       "pixel": "像素风"
@@ -551,10 +551,10 @@ const zh: Partial<Dict> = {
   tplIndex: {
     "sub": "游戏 UI 模板",
     "h1": "免费游戏 UI 模板",
-    "lede": "<b>模板级游戏模块</b>——成熟完整，拿来即用。每个模板都有可在线试玩的演示、可调参数、四套统一美术皮肤，以及独立运行的原生 HTML/CSS/JS 下载（CC0）。模板是 <a href=\"/free-assets/\">PixJuice 免费素材库</a>的一个分类。",
+    "lede": "<b>模板级游戏模块</b>——成熟完整，拿来即用。每个模板都有可在线试玩的演示、可调参数、半写实暗金界面，以及独立运行的原生 HTML/CSS/JS 下载（CC0）。模板是 <a href=\"/free-assets/\">PixJuice 免费素材库</a>的一个分类。",
     "live": "现已上线",
     "soon": "即将上线",
-    "soonLede": "和前两个一样：可玩演示、四套皮肤、独立 CC0 下载。筹备中：",
+    "soonLede": "和前两个一样：可玩演示、半写实暗金界面、独立 CC0 下载。筹备中：",
     "open": "打开演示 →",
     "soonBadge": "即将上线"
   },
@@ -582,7 +582,7 @@ const zh: Partial<Dict> = {
     },
     "feat": {
       "h": "包含什么",
-      "p": "<b>规则引擎</b>（概率→稀有度→物品、SSR 保底、十连保底、转盘权重）是零依赖的单文件，可单测、可无头调用；<b>UI 层</b>（转盘、翻卡、开箱动画、记录、设置）是纯 DOM，可自由改样式。四套官方皮肤——写实/风格化/简洁低多边形/像素风——是所有 PixJuice 模板共用的一组 CSS 变量。"
+      "p": "<b>规则引擎</b>（概率→稀有度→物品、SSR 保底、十连保底、转盘权重）是零依赖的单文件，可单测、可无头调用；<b>UI 层</b>（转盘、翻卡、开箱动画、记录、设置）是纯 DOM，可自由改样式。半写实暗金界面是所有 PixJuice 模板共用的一组 CSS 变量。"
     },
     "tabPool": "卡池抽取",
     "tabWheel": "幸运转盘",
@@ -681,7 +681,7 @@ const zh: Partial<Dict> = {
   },
   fa: {
     types2d: "精灵 · 图标 · UI · 瓦片 · 背景",
-    types3d: "模型 · GLB · LOD0 / LOD1",
+    types3d: "模型 · 高细节 GLB",
     search: "搜索名称或标签",
     "sub": "免费游戏素材",
     "h1": "免费游戏素材",
@@ -702,13 +702,9 @@ const zh: Partial<Dict> = {
     "moreTemplates": "更多即将上线 →",
     "templatesCat": "游戏 UI 模板",
     "templatesCatD": "扭蛋/转盘、存档/读档——可玩演示，附 CC0 代码下载。",
-    "cat": {
-      "props": "道具",
-      "structure": "结构",
-      "lighting": "光源"
-    },
+    "cat": {"props": "道具", "characters": "角色", "vehicles": "载具", "environment": "场景件"},
     "style": {
-      "realistic": "写实",
+      "realistic": "半写实",
       "stylized": "风格化",
       "lowpoly": "简洁低多边形",
       "pixel": "像素风"

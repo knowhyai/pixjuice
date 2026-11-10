@@ -6,7 +6,7 @@
 
    Dynamic labels carry data-i18n keys with English text as the default. A host
    page may define window.PixI18nRefresh() — it is called after dynamic inserts
-   so the host can re-translate (the ZIP itself never does). */
+   so the host can re-translate; the offline build includes a language selector. */
 
 (function () {
   "use strict";
@@ -18,7 +18,7 @@
 
   var reduced = root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var STORE_KEY = "pix-tpl-gacha-v2";
-  var ASSETS_BASE = location.protocol === "file:" ? "https://pixjuice.pages.dev/free-assets/chest-wood" : "/free-assets/chest-wood"; // library URL — the ZIP does not bundle art
+  var ASSETS_BASE = location.protocol === "file:" ? "assets/chest-wood" : "/free-assets/chest-wood";
 
   // ---- state -----------------------------------------------------------------
 
@@ -87,12 +87,14 @@
     "gx.noGems": "Out of gems — the demo currency is free, press Reset.",
     "gx.resetDone": "Demo reset.", "gx.rar.N": "Normal", "gx.rar.R": "Rare",
     "gx.rar.SR": "Epic", "gx.rar.SSR": "Legendary",
-    "tpl.skin": "Skin", "tpl.skin.realistic": "Realistic", "tpl.skin.stylized": "Stylized",
+    "tpl.skin": "Skin", "tpl.skin.realistic": "Semi-Realistic", "tpl.skin.stylized": "Stylized",
     "tpl.skin.lowpoly": "Clean Low Poly", "tpl.skin.pixel": "Pixel Art",
     "gx.wheelNote": "Wheel odds = each prize's weight. Card-pool odds & pity live in the config JSON.",
   };
   function defaultText(key) {
     if (typeof root.PixTranslate === "function") return root.PixTranslate(key);
+    var lang=document.documentElement.lang||"en";
+    if(root.PixStrings && root.PixStrings.en[key]) return (root.PixStrings[lang]||root.PixStrings.en)[key];
     return typeof EN[key] === "string" ? EN[key] : key.split(".").pop();
   }
   function refreshI18n() {
@@ -123,16 +125,9 @@
   // ---- side panel: skins + params ---------------------------------------------
 
   side.appendChild(h("h3", { text: "Settings", "data-i18n": "gx.settings" }));
-  side.appendChild(h("h4", { text: "Skin", "data-i18n": "gx.skin" }));
   var skinRow = h("div", { class: "gx-skins", role: "group" });
-  S.SKINS.forEach(function (s) {
-    skinRow.appendChild(h("button", {
-      class: "gx-skin-btn", type: "button", "data-skin-id": s, "data-i18n": S.SKIN_KEYS[s],
-      text: defaultText(S.SKIN_KEYS[s]),
-      onclick: function () { setSkin(s); },
-    }));
-  });
-  side.appendChild(skinRow);
+
+
 
   side.appendChild(h("h4", { text: "Rates (N / R / SR / SSR)", "data-i18n": "gx.ratesCfg" }));
   var sliders = {};
@@ -221,23 +216,24 @@
   var tabs = h("div", { class: "gx-tabs", role: "tablist" });
   var tabPool = h("button", { class: "gx-tab on", role: "tab", "aria-selected": "true", "data-i18n": "gx.tabPool", text: "Card pool", onclick: function () { mode("pool"); } });
   var tabWheel = h("button", { class: "gx-tab", role: "tab", "aria-selected": "false", "data-i18n": "gx.tabWheel", text: "Lucky wheel", onclick: function () { mode("wheel"); } });
+  var tabCase=h("button",{class:"gx-tab",role:"tab","data-i18n":"cx.tab",text:defaultText("cx.tab"),onclick:function(){mode("case");}});
+  tabs.appendChild(tabCase);
   tabs.appendChild(tabPool);
   tabs.appendChild(tabWheel);
   stage.appendChild(tabs);
 
   var poolPane = h("div", { class: "gx-pane", role: "tabpanel" });
   var wheelPane = h("div", { class: "gx-pane", role: "tabpanel", hidden: "" });
+  var casePane=h("div",{class:"gx-pane cx-pane",role:"tabpanel"});
+  stage.appendChild(casePane);
   stage.appendChild(poolPane);
   stage.appendChild(wheelPane);
 
   function mode(m) {
-    var pool = m === "pool";
-    tabPool.classList.toggle("on", pool);
-    tabWheel.classList.toggle("on", !pool);
-    tabPool.setAttribute("aria-selected", pool ? "true" : "false");
-    tabWheel.setAttribute("aria-selected", pool ? "false" : "true");
-    poolPane.hidden = !pool;
-    wheelPane.hidden = pool;
+    if(busy||spinning)return;
+    [[tabCase,casePane,'case'],[tabPool,poolPane,'pool'],[tabWheel,wheelPane,'wheel']].forEach(function(row){var active=row[2]===m;row[0].classList.toggle('on',active);row[0].setAttribute('aria-selected',String(active));row[1].hidden=!active;});
+    demo.classList.toggle('cx-active',m==='case');
+    refreshI18n();
   }
 
   // ---- pool pane ---------------------------------------------------------------
@@ -274,7 +270,7 @@
   var results = h("div", { class: "gx-results", "aria-live": "polite" });
   poolPane.appendChild(results);
 
-  function syncWallet() { gemsEl.textContent = String(gems); }
+  function syncWallet() { gemsEl.textContent = String(gems); if(caseWallet)caseWallet.textContent=gems+" "+defaultText("cx.wallet"); }
   function syncPity() {
     var max = cfg.pity.ssr;
     var n = Math.min(pity.sinceSsr, max);
@@ -302,7 +298,7 @@
       history = G.record(history, show, Date.now(), G.HISTORY_LIMIT);
       syncPity(); syncHistory(); persist();
       var best = show.reduce(function (a, b) { return rank(b) > rank(a) ? b : a; }, show[0]);
-      say("gx.won", { item: best.name });
+      say("gx.won", { item: itemName(best) });
       busy = false;
       renderCards(show);
     };
@@ -345,7 +341,7 @@
       back.appendChild(h("span", { class: "gx-mark", "aria-hidden": "true", text: "◇" }));
       var front = h("div", { class: "gx-face gx-front" });
       front.appendChild(h("i", {class:"gx-sigil", "aria-hidden":"true",text:it.rarity === "SSR" ? "✦" : "◇"}));
-      front.appendChild(h("b", { text: it.name }));
+      front.appendChild(h("b", { text: itemName(it) }));
       front.appendChild(h("span", { text: it.rarity + " · " + defaultText("gx.rar." + it.rarity), "data-i18n": "gx.rar." + it.rarity }));
       inner.appendChild(back);
       inner.appendChild(front);
@@ -376,7 +372,7 @@
       if (!queue.length) return done();
       var clip = queue.shift();
       loadSheet(base + "/" + clip + ".png", function (img) {
-        if (!img) return done(); // offline ZIP without the library art — skip gracefully
+        if (!img) return done(); // Keep the rules usable if an image fails to load.
         var f = 0;
         var pixel = skin === "pixel-art";
         (function tick() {
@@ -440,7 +436,7 @@
       ctx.textAlign = "right";
       ctx.fillStyle = "rgba(255,255,255,0.96)";
       ctx.font = "600 13px " + skinFont();
-      ctx.fillText(truncate(segs[i].item.name, 14), R - 14, 5);
+      ctx.fillText(truncate(itemName(segs[i].item), 14), R - 14, 5);
       ctx.restore();
     }
     ctx.beginPath();
@@ -509,16 +505,94 @@
         drawWheel(target);
         var won = cfg.items[target];
         while (wheelOut.firstChild) wheelOut.removeChild(wheelOut.firstChild);
-        wheelOut.appendChild(h("span", { "data-i18n": "gx.won", "data-i18n-vars": JSON.stringify({item:won.name}), text: defaultText("gx.won").replace("{item}", won.name) }));
+        wheelOut.appendChild(h("span", { "data-i18n": "gx.won", "data-i18n-vars": JSON.stringify({item:itemName(won)}), text: defaultText("gx.won").replace("{item}", itemName(won)) }));
         history = G.record(history, [won], Date.now(), G.HISTORY_LIMIT);
         syncHistory(); persist();
-        say("gx.won", { item: won.name });
+        say("gx.won", { item: itemName(won) });
         spinning = false;
         wheelBtn.disabled = false;
         refreshI18n();
       }
     })(t0);
   }
+
+  // The winner is fixed before any visual movement or skip action.
+  var C = root.PixCase, crate = C.cases[0], pendingCase = null, caseAnimation = null;
+  var caseHeader = h('div',{class:'cx-heading'},[h('span',{class:'cx-kicker',text:'PIXJUICE / TREASURY'}),lbl('cx.choose')]);
+  casePane.appendChild(caseHeader);
+  var crateSelect=h('select',{'aria-label':defaultText('cx.choose'),class:'cx-select'});
+  C.cases.forEach(function(c){crateSelect.appendChild(h('option',{value:c.id,text:defaultText('cx.'+c.id),'data-i18n':'cx.'+c.id}));});
+  casePane.appendChild(crateSelect);
+  var viewport=h('div',{class:'cx-viewport'}),reel=h('div',{class:'cx-reel'});
+  viewport.appendChild(reel);viewport.appendChild(h('i',{class:'cx-line','aria-hidden':'true'}));
+  casePane.appendChild(viewport);
+  var controls=h('div',{class:'cx-controls'}),quick=h('input',{type:'checkbox',id:'cx-quick'}),sound=h('input',{type:'checkbox',id:'cx-sound'});
+  controls.appendChild(h('label',{},[quick,lbl('cx.quick')]));controls.appendChild(h('label',{},[sound,lbl('cx.sound')]));
+  casePane.appendChild(controls);
+  var caseWallet=h('p',{class:'cx-wallet'});casePane.appendChild(caseWallet);
+  var openButton=h('button',{class:'tpl-btn tpl-btn-accent tpl-btn-big','data-i18n':'cx.open',text:defaultText('cx.open'),onclick:openCrate});
+  var skipButton=h('button',{class:'tpl-btn',hidden:'','data-i18n':'cx.skip',text:defaultText('cx.skip'),onclick:function(){if(caseAnimation)caseAnimation.finish();}});
+  casePane.appendChild(h('div',{class:'gx-btnrow'},[openButton,skipButton]));
+  casePane.appendChild(h('p',{class:'cx-note','data-i18n':'cx.note',text:defaultText('cx.note')}));
+  casePane.appendChild(h('h3',{'data-i18n':'cx.contents',text:defaultText('cx.contents')}));
+  var contentList=h('div',{class:'cx-contents'});casePane.appendChild(contentList);
+  crateSelect.addEventListener('change',function(){crate=C.cases.find(function(c){return c.id===crateSelect.value;});drawContents();idleReel();});
+  var audio=null;
+  function tone(reveal,rarity){
+    if(!sound.checked)return;
+    try{
+      audio=audio||new (root.AudioContext||root.webkitAudioContext)();audio.resume();
+      var level=C.rarities.indexOf(rarity),notes=reveal?(level>=5?[0,4,7,12]:[0,7]):[0];
+      notes.forEach(function(note,i){var osc=audio.createOscillator(),gain=audio.createGain(),at=audio.currentTime+i*.065;
+        osc.type=reveal?'sine':'triangle';osc.frequency.value=reveal?330*Math.pow(2,(note+level)/12):1300;
+        gain.gain.setValueAtTime(0,at);gain.gain.linearRampToValueAtTime(reveal?.07:.025,at+.004);gain.gain.exponentialRampToValueAtTime(.0001,at+(reveal?.45:.025));
+        osc.connect(gain);gain.connect(audio.destination);osc.start(at);osc.stop(at+(reveal?.5:.03));});
+    }catch(e){sound.checked=false;}
+  }
+  sound.addEventListener('change',function(){if(sound.checked)tone(false);});
+  function itemName(it){var key='item.'+it.id;return (root.PixStrings.en[key]?defaultText(key):it.name)||it.id;}
+  function icon(it){
+    var shapes={
+      'wooden-sword':'M24 58L55 17 64 15 64 24 33 65M23 47L42 62M25 61L18 71',
+      'health-potion':'M34 15H48M37 15V31L25 48Q16 69 41 70Q66 69 57 48L45 31V15M28 49H55',
+      'steel-blade':'M24 58L55 17 64 15 64 24 33 65M23 47L42 62M25 61L18 71',
+      cloak:'M32 24Q41 8 50 24L66 65Q43 76 17 65ZM32 25L41 39 50 25M41 39V66',
+      lantern:'M29 30H55L60 65H24ZM35 30V21Q42 9 49 21V30M42 40V57M34 49H50',
+      crown:'M20 31L31 40 42 22 53 40 65 31 59 63H26ZM27 55H59',
+      excalibur:'M42 15L62 32 57 57 42 71 24 57 21 32ZM21 32H62M42 15V71M24 57L62 32M21 32L57 57'
+    };
+    var path=shapes[it.id]||['M42 15L62 32 57 57 42 71 24 57 21 32ZM21 32H62M42 15V71','M26 22H59V65H26ZM33 22V65M39 34H52M39 43H52M39 52H49','M42 16C9 29 18 66 42 69C68 63 69 30 42 16ZM42 29V57M29 43H55'][C.rarities.indexOf(it.rarity)%3];
+    return '<svg viewBox="0 0 84 84" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+path+'"/></svg>';
+  }
+  function caseCard(it){return h('div',{class:'cx-card','data-item':it.id,style:'--rarity:var(--case-'+it.rarity.toLowerCase()+')'},[h('div',{class:'cx-art',html:icon(it)}),h('b',{text:itemName(it)}),h('small',{text:defaultText('cx.'+it.rarity)})]);}
+  function drawContents(){contentList.innerHTML='';crate.items.forEach(function(it){var card=caseCard(it);card.appendChild(h('em',{text:(it.probability*100).toFixed(1)+'%'}));contentList.appendChild(card);});refreshI18n();}
+  function idleReel(){reel.innerHTML='';crate.items.concat(crate.items).forEach(function(it){reel.appendChild(caseCard(it));});reel.style.transform='translateX(-110px)';}
+  function openCrate(){
+    if(busy||spinning)return;if(gems<crate.price){say('gx.noGems');return;}
+    busy=true;gems-=crate.price;syncWallet();persist();
+    openButton.disabled=true;crateSelect.disabled=true;quick.disabled=true;skipButton.hidden=false;
+    pendingCase=C.openCase(crate);reel.innerHTML='';pendingCase.reel.cards.forEach(function(it){reel.appendChild(caseCard(it));});
+    var width=144,gap=12,end=C.stopOffset(pendingCase.reel,viewport.clientWidth,width,gap);
+    reel.style.transform='translateX('+end+'px)';
+    var duration=reduced?0:quick.checked?1000:5200;
+    caseAnimation=reel.animate([{transform:'translateX(0px)'},{transform:'translateX('+end+'px)'}],{duration:duration,easing:'cubic-bezier(.12,.72,.13,1)',fill:'forwards'});
+    var last=-1;
+    function ticks(){if(!busy||!pendingCase)return;var x=new DOMMatrix(getComputedStyle(reel).transform).m41,idx=Math.floor((viewport.clientWidth/2-x)/156);if(idx!==last){tone(false);last=idx;}if(caseAnimation.playState==='running')requestAnimationFrame(ticks);}
+    requestAnimationFrame(ticks);
+    caseAnimation.onfinish=function(){
+      var won=pendingCase.item;
+      var centered=C.stopOffset(pendingCase.reel,viewport.clientWidth,144,12);
+      caseAnimation.cancel();reel.style.transform='translateX('+centered+'px)';reel.dataset.winner=won.id;
+      history=G.record(history,[{id:won.id,name:itemName(won),rarity:won.rarity}],Date.now(),G.HISTORY_LIMIT);syncHistory();persist();tone(true,won.rarity);
+      var overlay=h('div',{class:'cx-modal',role:'dialog','aria-modal':'true','aria-label':defaultText('cx.reveal'),style:'--rarity:var(--case-'+won.rarity.toLowerCase()+');--glow:'+(C.rarities.indexOf(won.rarity)+1)},[
+        h('div',{class:'cx-prize'},[lbl('cx.reveal'),caseCard(won),h('button',{class:'tpl-btn tpl-btn-accent',text:defaultText('cx.close'),'data-i18n':'cx.close',onclick:closePrize})])]);
+      function closePrize(){overlay.remove();openButton.focus();}
+      overlay.addEventListener('keydown',function(e){if(e.key==='Escape')closePrize();if(e.key==='Tab'){e.preventDefault();overlay.querySelector('button').focus();}});
+      demo.appendChild(overlay);overlay.querySelector('button').focus();
+      busy=false;openButton.disabled=false;crateSelect.disabled=false;quick.disabled=false;skipButton.hidden=true;pendingCase=null;
+    };
+  }
+  drawContents();idleReel();
 
   // ---- record pane: disclosure + history ------------------------------------------
 
@@ -549,13 +623,13 @@
     cfg.items.forEach(function (it) {
       var tr = h("tr", { class: "r-" + it.rarity });
       tr.appendChild(h("td", { text: it.rarity }));
-      tr.appendChild(h("td", { text: it.name }));
+      tr.appendChild(h("td", { text: itemName(it) }));
       tr.appendChild(h("td", { text: (G.itemOdds(cfg, it) * 100).toFixed(2) + "%" }));
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
     oddsBox.appendChild(table);
-    var wheelOdds = h("p", {class:"gx-note", text: "Wheel: " + G.wheelSegments(cfg).map(function (s) {return s.item.name + " " + (s.odds * 100).toFixed(1) + "%";}).join(" · ")});
+    var wheelOdds = h("p", {class:"gx-note", text: "Wheel: " + G.wheelSegments(cfg).map(function (s) {return itemName(s.item) + " " + (s.odds * 100).toFixed(1) + "%";}).join(" · ")});
     oddsBox.appendChild(wheelOdds);
   }
 
@@ -569,7 +643,7 @@
       var e = history[i];
       var li = h("li", { class: "r-" + e.item.rarity });
       li.appendChild(h("time", { text: clock(e.at) }));
-      li.appendChild(h("b", { text: e.item.name }));
+      li.appendChild(h("b", { text: itemName(e.item) }));
       li.appendChild(h("span", { text: e.item.rarity }));
       histList.appendChild(li);
     }
@@ -603,6 +677,15 @@
     persist();
   }
 
+  mode("case");
+  root.addEventListener("pixjuice-locale",function(){syncOdds();syncHistory();syncWallet();drawContents();idleReel();drawWheel(null);});
+  if(location.protocol==='file:'){
+    var language=h('select',{'aria-label':'Language',class:'cx-select'});
+    ['en','zh','ja','ko','es'].forEach(function(code){language.appendChild(h('option',{value:code,text:{en:'English',zh:'简体中文',ja:'日本語',ko:'한국어',es:'Español'}[code]}));});
+    side.prepend(language);
+    root.PixI18nRefresh=function(){demo.querySelectorAll('[data-i18n]').forEach(function(node){var key=node.getAttribute('data-i18n');node.textContent=defaultText(key);var vars=JSON.parse(node.getAttribute('data-i18n-vars')||'{}');for(var k in vars)node.textContent=node.textContent.replace('{'+k+'}',vars[k]);});};
+    language.onchange=function(){document.documentElement.lang=language.value;refreshI18n();root.dispatchEvent(new Event('pixjuice-locale'));};
+  }
   restore();
   syncPanel();
   syncOdds();

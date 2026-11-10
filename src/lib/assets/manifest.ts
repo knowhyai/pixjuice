@@ -4,10 +4,26 @@
 // degrades to "coming soon" cards instead of throwing. The pure part runs in
 // node --test.
 
+export const ASSET_CATEGORIES = ["props", "characters", "vehicles", "environment"] as const;
+export type AssetCategory = typeof ASSET_CATEGORIES[number];
+export function categoryOf(value: unknown): AssetCategory {
+  if (value === "structure") return "environment";
+  if (value === "lighting") return "props";
+  return ASSET_CATEGORIES.includes(value as AssetCategory) ? value as AssetCategory : "props";
+}
+export function availableCategories(assets: FaAsset[]): AssetCategory[] {
+  const present = new Set(visibleProducts(assets).flat().map(a => a.category));
+  return ASSET_CATEGORIES.filter(c => present.has(c));
+}
+
 export interface FaAsset {
   id: string;
+  product_id?: string;
+  hidden?: boolean;
+  product_hidden?: boolean;
+  state?: string;
   name: { en: string; zh: string | null };
-  category: string;
+  category: AssetCategory;
   style_tier: string;
   palette: string;
   tags: string[];
@@ -55,8 +71,12 @@ function parseAsset(raw: unknown): FaAsset | null {
   const licenseRaw = (r.license ?? {}) as Record<string, unknown>;
   return {
     id,
+    product_id: str(r.product_id) ?? undefined,
+    hidden: r.hidden === true,
+    product_hidden: r.product_hidden === true,
+    state: str(r.state) ?? id.split("-").pop(),
     name: { en, zh: str(name.zh) },
-    category: str(r.category) ?? "props",
+    category: categoryOf(r.category),
     style_tier: str(r.style_tier) ?? "procedural",
     palette: str(r.palette) ?? "default",
     tags: Array.isArray(r.tags) ? r.tags.filter((t): t is string => typeof t === "string").slice(0, 12) : [],
@@ -85,4 +105,17 @@ export async function loadManifest(url = "/free-assets/manifest.json"): Promise<
   const res = await fetch(url);
   if (!res.ok) throw new Error(`manifest ${res.status}`);
   return sanitizeManifest(await res.json());
+}
+
+/** A hidden product suppresses every variant in the grid; detail URLs stay available. */
+export function productId(a: FaAsset): string { return a.product_id || a.id; }
+export function visibleProducts(assets: FaAsset[], matches: (a: FaAsset) => boolean = () => true): FaAsset[][] {
+  const hidden = new Set(assets.filter(a => a.product_hidden).map(productId));
+  const groups = new Map<string, FaAsset[]>();
+  for (const a of assets) {
+    if (a.style_tier !== "realistic" || a.hidden || a.placeholder || hidden.has(productId(a)) || !matches(a)) continue;
+    const id = productId(a);
+    groups.set(id, [...(groups.get(id) || []), a]);
+  }
+  return [...groups.values()];
 }

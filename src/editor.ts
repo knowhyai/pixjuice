@@ -99,14 +99,6 @@ function hashSeed(s: string): number {
   return h >>> 0;
 }
 
-function fail(id: string | null): void {
-  $("#ed-error").hidden = false;
-  $("#ed-grid").hidden = true;
-  $("#ed-error-msg").textContent = id ? t("ed.errNamed", { id }) : t("ed.errNone");
-  $("#ed-crumb").textContent = t("ed.crumb404");
-  document.title = t("title.editor404");
-}
-
 function runEditor(entry: CatalogEntry): void {
   const meta = entry.meta;
   const base = exportBase(entry);
@@ -806,6 +798,5 @@ if (loadMod) {
   const entry = normalizeEntry(fxId!, (await loadMod()) as FxModule);
   runEditor(entry);
 } else {
-  fail(fxId);
-  onLocaleChange(() => fail(fxId)); // keeps the 404 strings in the active language
+  location.replace("/" + (["zh","ja","ko","es"].includes(document.documentElement.lang) ? document.documentElement.lang + "/" : "") + "#effects");
 }

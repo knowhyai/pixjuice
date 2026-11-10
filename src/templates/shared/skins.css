@@ -1,11 +1,6 @@
-@font-face{font-family:Silkscreen;src:url('/fonts/silkscreen-latin-400.woff2') format('woff2');font-weight:400;font-display:swap}
 @font-face{font-family:Cinzel;src:url('/fonts/cinzel-latin-500.woff2') format('woff2');font-weight:500;font-display:swap}
 @font-face{font-family:Cormorant;src:url('/fonts/cormorant-latin-500.woff2') format('woff2');font-weight:500;font-display:swap}
-/* PixJuice game templates — shared skin system.
-   One set of CSS variables, four official skins. Every template demo scopes its
-   look through the same tokens, so all templates stay visually consistent and a
-   new template gets all four skins for free. The demo root carries
-   data-skin="realistic|stylized|clean-low-poly|pixel-art". */
+/* Shared realistic template tokens. */
 
 .tpl-demo {
   /* semantic tokens every skin must define */
@@ -40,29 +35,10 @@
  --skin-btn-2:#2b3029;--skin-sheen:#c0b58b0b;
  --skin-shadow:0 22px 60px #0008,inset 0 1px #d4c69d26,inset 0 -2px #0009;
 }
-.tpl-demo[data-skin="stylized"] {
- --skin-bg:radial-gradient(ellipse at 50% 0%,#27334a,#0e1423 78%);
- --skin-panel:#141d30;--skin-panel-2:#1e2b42;--skin-ink:#e7e5e0;--skin-muted:#a7b0c3;
- --skin-accent:#b5a17e;--skin-accent-ink:#161c29;--skin-border:#515970;--skin-radius:5px;
- --skin-btn-2:#28364d;--skin-sheen:#c4d3ff0c;
- --skin-shadow:0 20px 50px #0007,inset 0 1px #d2dcff20;
-}
-.tpl-demo[data-skin="clean-low-poly"] {
- --skin-bg:linear-gradient(135deg,#2b3739 0%,#131c20 55%,#233236);
- --skin-panel:#1b282c;--skin-panel-2:#29383c;--skin-ink:#e0e6e3;--skin-muted:#a1b4b6;
- --skin-accent:#9eaf9f;--skin-accent-ink:#172322;--skin-border:#53696b;--skin-radius:2px;
- --skin-btn-2:#34474b;--skin-sheen:#c1e8db0b;
- --skin-shadow:8px 12px 0 #090f1233,inset 0 1px #d2eee820;
-}
-.tpl-demo[data-skin="pixel-art"] {
- --skin-bg:#11151c;--skin-panel:#19202a;--skin-panel-2:#252d38;--skin-ink:#d6d5c6;--skin-muted:#a3aaa9;
- --skin-accent:#ad9e79;--skin-accent-ink:#131a20;--skin-border:#5c6265;--skin-radius:0px;
- --skin-btn-2:#333d46;--skin-sheen:#d7d3ae09;--skin-font:"Silkscreen",monospace;
- --skin-shadow:4px 4px 0 #0009,inset 0 0 0 2px #0b1017;
-}
-.tpl-demo[data-skin="pixel-art"] .pix-crisp {
-  image-rendering: pixelated;
-}
+
+
+
+
 
 /* --- shared controls (used by every template demo and the template pages) --- */
 
@@ -252,8 +228,8 @@
 .tpl-demo .tpl-stage { background: radial-gradient(ellipse at 50% 24%,var(--skin-sheen),transparent 70%),var(--skin-panel); }
 .tpl-demo .gx-skin-btn { min-height: 38px; transition: background .2s, transform .2s; }
 .tpl-demo .gx-skin-btn:hover { transform: translateY(-2px); }
-.tpl-demo[data-skin="pixel-art"] :is(.tpl-btn,.gx-skin-btn,.sv-slot) { border-width: 2px; box-shadow: 3px 3px 0 #0008; }
-.tpl-demo[data-skin="pixel-art"] :is(.tpl-badge,.sv-hud span,.gx-tabs) { border-radius: 0; }
+
+
 .tpl-modal { backdrop-filter: blur(8px); }
 .tpl-modal-box { animation: modal-enter .18s ease-out; }
 @keyframes modal-enter { from { opacity: 0; transform: translateY(12px) scale(.97); } to {opacity:1;transform:none;} }
@@ -271,12 +247,18 @@
 .tpl-demo .tpl-btn-accent,.tpl-demo .gx-skin-btn.on,.tpl-demo .gx-tab.on{background:linear-gradient(165deg,color-mix(in srgb,var(--skin-accent) 80%,#e5decb),var(--skin-accent) 65%,color-mix(in srgb,var(--skin-accent) 65%,#252c28));border:1px solid var(--skin-accent);color:var(--skin-accent-ink)}
 .tpl-demo .gx-skin-btn.on{box-shadow:inset 0 0 0 2px #0003}
 .tpl-demo[data-skin="realistic"] :is(.tpl-side,.tpl-stage,.tpl-record){border-image:linear-gradient(135deg,#8a8666,#30382e 28%,#777457 45%,#333c32 70%,#8b8060) 1}
-.tpl-demo[data-skin="stylized"] .tpl-stage{background:radial-gradient(ellipse at 50% 15%,#52618422,transparent 70%),var(--skin-panel)}
-.tpl-demo[data-skin="clean-low-poly"] :is(.tpl-stage,.sv-game){background:linear-gradient(150deg,#b8d3c407 25%,transparent 25% 68%,#a7c6b90b 68%),var(--skin-panel)}
-.tpl-demo[data-skin="clean-low-poly"] :is(.tpl-btn,.gx-skin-btn){clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
-.tpl-demo[data-skin="pixel-art"] :is(button,.gx-tabs,.tpl-badge,.tpl-chip){border-radius:0;box-shadow:inset 1px 1px #b1b9a433,2px 2px #0008}
-.tpl-demo[data-skin="pixel-art"] .tpl-stage{background:repeating-linear-gradient(0deg,#0002 0 1px,transparent 1px 4px),var(--skin-panel)}
-.tpl-demo[data-skin="pixel-art"] :is(h3,h4){letter-spacing:.12em}
 
 
-.tpl-demo[data-skin="pixel-art"]{font-size:11px}.tpl-demo[data-skin="pixel-art"] :is(h3,h4,.gx-tab,.sv-slot-head,.tpl-btn-big){font-family:Silkscreen,monospace;font-size:11px;letter-spacing:0}.tpl-demo[data-skin="pixel-art"] .gx-skin-btn{font-size:9px}
+
+
+
+
+
+
+
+/* The same realistic material palette follows the site light theme. */
+:root[data-theme="light"] .tpl-demo[data-skin="realistic"] {
+ color-scheme:light;--skin-bg:#e9e3d5;--skin-panel:#f7f1e4;--skin-panel-2:#e4dcca;
+ --skin-ink:#302b20;--skin-muted:#625a47;--skin-accent:#746031;--skin-accent-ink:#fffdf5;
+ --skin-border:#a29577;--skin-btn-2:#e0d6bf;--skin-shadow:0 10px 28px #55411b22;--skin-sheen:#ffffff55;
+}

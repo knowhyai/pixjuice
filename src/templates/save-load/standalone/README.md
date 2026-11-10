@@ -9,7 +9,7 @@ Zero dependencies — plain HTML/CSS/JS. Double-click `index.html` and it runs.
 
 ```
 index.html          page shell (loads the three scripts below)
-styles.css          all demo styles + the four official skins ([data-skin] blocks)
+styles.css          all demo styles + the Semi-Realistic dark gold skin
 js/save-core.js     save engine: slots, read/write, sanitize, export/import (no DOM)
 js/skins.js         shared skin registry (PixSkins global)
 js/main.js          demo UI (builds into #app)
@@ -76,4 +76,3 @@ public domain, use in commercial games, no attribution required.
 
 Typography: Cinzel and Cormorant (Latin, weight 500), bundled in fonts/ for offline use. Font software remains SIL OFL 1.1; see fonts/Cinzel-OFL.txt and fonts/Cormorant-OFL.txt. Sources: https://github.com/google/fonts/tree/main/ofl/cinzel and https://github.com/google/fonts/tree/main/ofl/cormorant .
 PixJuice wooden chest art is CC0 1.0 Universal, commercial use without attribution.
-Pixel Art uses bundled Silkscreen Latin 400, SIL OFL 1.1: fonts/Silkscreen-OFL.txt. Source: https://github.com/google/fonts/tree/main/ofl/silkscreen .

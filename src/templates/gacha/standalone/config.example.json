@@ -10,6 +10,6 @@
     { "id": "steel-blade", "name": "Steel Blade", "rarity": "R", "weight": 1 },
     { "id": "travelers-charm", "name": "Traveler's Charm", "rarity": "R", "weight": 1 },
     { "id": "enchanted-grimoire", "name": "Enchanted Grimoire", "rarity": "SR", "weight": 1 },
-    { "id": "excalibur", "name": "Excalibur", "rarity": "SSR", "weight": 1 }
+    { "id": "excalibur", "name": "Dawn Relic", "rarity": "SSR", "weight": 1 }
   ]
 }

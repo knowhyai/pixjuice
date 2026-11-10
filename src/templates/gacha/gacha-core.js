@@ -34,7 +34,7 @@
       { id: "steel-blade", name: "Steel Blade", rarity: "R" },
       { id: "travelers-charm", name: "Traveler's Charm", rarity: "R" },
       { id: "enchanted-grimoire", name: "Enchanted Grimoire", rarity: "SR" },
-      { id: "excalibur", name: "Excalibur", rarity: "SSR" },
+      { id: "excalibur", name: "Dawn Relic", rarity: "SSR" },
     ],
   };
 

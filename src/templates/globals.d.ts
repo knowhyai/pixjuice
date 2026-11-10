@@ -93,6 +93,7 @@ interface PixSave {
 }
 
 interface Window {
+  PixStrings: Record<string, Record<string,string>>;
   PixSkins: PixSkins;
   PixGacha: PixGacha;
   PixSave: PixSave;

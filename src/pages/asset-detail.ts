@@ -7,7 +7,7 @@ import "../templates/shared/skins.css";
 import "../templates/templates.css";
 import { applyStaticText, getLocale, mountLangSwitcher, onLocaleChange, t } from "../lib/i18n";
 import { mountToolsMenu } from "../lib/navmenu";
-import { loadManifest, kindOf, type FaAsset } from "../lib/assets/manifest";
+import { loadManifest, kindOf, productId, type FaAsset } from "../lib/assets/manifest";
 import { makeZip, type ZipEntry } from "../lib/zip";
 import { el } from "../lib/el";
 
@@ -16,6 +16,7 @@ mountLangSwitcher();
 
 
 function assetName(a: FaAsset): string {
+  if(a.product_id === "chest-wood") return t("v3.product");
   return getLocale() === "zh" && a.name.zh ? a.name.zh : a.name.en;
 }
 
@@ -28,15 +29,14 @@ interface FaFile {
 function filesOf(a: FaAsset): FaFile[] {
   const out: FaFile[] = [];
   if (a.glb) {
-    if (a.glb.lod0) out.push({ path: a.glb.lod0, label: "Model — LOD0 (full detail)", ext: "glb" });
-    if (a.glb.lod1) out.push({ path: a.glb.lod1, label: "Model — LOD1 (lite)", ext: "glb" });
+    if (a.glb.lod0) out.push({ path: a.glb.lod0, label: t("v3.full"), ext: "glb" });
   }
   if (a.sprites) {
     for (const [clip, path] of Object.entries(a.sprites)) {
-      out.push({ path, label: `Sprite — ${clip} (128px, 8 frames)`, ext: "png" });
+      out.push({ path, label: `${t("v3.sprite")} — ${clip} (128px, 8)`, ext: "png" });
     }
   }
-  if (a.license.file) out.push({ path: a.license.file, label: "License", ext: "txt" });
+  if (a.license.file) out.push({ path: a.license.file, label: t("v3.license"), ext: "txt" });
   return out;
 }
 
@@ -57,7 +57,8 @@ function extOf(path: string): string {
     root.appendChild(el("p", { className: "body", text: t("fa.loadErr"), "data-i18n": "fa.loadErr" }));
     return;
   }
-  const a = assets.find((x) => x.id === id);
+  let selected = assets.find((x) => x.id === id) || assets.find(x=>x.product_id===id);
+  const a = selected;
   if (!a) {
     root.appendChild(
       el("div", { className: "fa-soon-panel" }, [
@@ -65,17 +66,34 @@ function extOf(path: string): string {
         el("span", { text: t("fa.backAll") }),
       ]),
     );
-    applyStaticText(root);
+    applyStaticText(root!);
     return;
   }
 
+  const variants = assets.filter(x=>x.style_tier==="realistic" && !x.hidden && productId(x)===productId(a));
+  let cleanupModel: (()=>void) | undefined;
+  let spriteTimer: ReturnType<typeof setInterval> | undefined;
+  let generation=0;
+  function render() {
+  const a=selected!;
+  const token=++generation;
+  cleanupModel?.();cleanupModel=undefined;
+  if(spriteTimer)clearInterval(spriteTimer);
+  root!.innerHTML='';
   document.title = `${assetName(a)} — Free Game Asset – PixJuice`;
 
   const grid = el("div", { className: "fa-detail-grid" });
 
   // --- preview column ---
   const preview = el("div", { className: "fa-preview" });
-  if (a.thumb) preview.appendChild(el("img", { src: `/free-assets/${a.thumb}`, alt: assetName(a) }));
+  if (!a.glb?.lod0 && a.thumb) preview.appendChild(el("img", { src: `/free-assets/${a.thumb}`, alt: assetName(a) }));
+  if (a.glb?.lod0) {
+    const mount=el('div',{className:'fa-model-wrap'});preview.appendChild(mount);
+    void import('../lib/assets/model-preview').then(({mountModel})=>{
+      if(token!==generation)return;
+      try{cleanupModel=mountModel(mount,`/free-assets/${a.glb!.lod0}`,a.id);}catch{mount.textContent=t('v3.error');}
+    });
+  }
   if (a.sprites?.idle) {
     const strip = el("div", { className: "fa-sprite-strip" });
     const cv = el("canvas", { width: "128", height: "128", "aria-hidden": "true" });
@@ -84,6 +102,7 @@ function extOf(path: string): string {
     preview.appendChild(strip);
     const img = new Image();
     img.onload = () => {
+      if(token!==generation)return;
       const ctx = cv.getContext("2d")!;
       let f = 0;
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -94,7 +113,7 @@ function extOf(path: string): string {
         f++;
       };
       if (reduced) draw();
-      else setInterval(draw, 140);
+      else spriteTimer=setInterval(draw, 140);
     };
     img.src = `/free-assets/${a.sprites.idle}`;
   }
@@ -105,11 +124,11 @@ function extOf(path: string): string {
   info.appendChild(
     el("p", { className: "tpl-crumbs" }, [
       el("a", { href: "/free-assets/", text: t("nav.assets"), "data-i18n": "nav.assets" }),
-      ` / ${a.style_tier} / ${a.category}`,
+      ` / ${t(({realistic:"tpl.skin.realistic",stylized:"tpl.skin.stylized","clean-low-poly":"tpl.skin.lowpoly","pixel-art":"tpl.skin.pixel"} as Record<string,string>)[a.style_tier] || a.style_tier)}`,
     ]),
   );
   info.appendChild(el("h1", { text: assetName(a) }));
-  if (a.name.zh && getLocale() !== "zh") info.appendChild(el("p", { className: "zh", text: a.name.zh }));
+  if (!a.product_id && a.name.zh && getLocale() !== "zh") info.appendChild(el("p", { className: "zh", text: a.name.zh }));
 
   const badges = el("div", { className: "tpl-badges" });
   const kind = kindOf(a);
@@ -118,6 +137,25 @@ function extOf(path: string): string {
   if (a.placeholder) badges.appendChild(el("span", { text: t("fa.soon"), "data-i18n": "fa.soon" }));
   info.appendChild(badges);
 
+  if(a.product_id){
+
+    const options=el('div',{className:'fa-variant-options'});
+    for(const [field,key] of [['palette','color'],['state','state']] as const){
+      const label=el('label',{},[el('span',{text:t('v3.'+key)})]);
+      const select=el('select',{'data-variant':key,'aria-label':t('v3.'+key)});
+      for(const value of [...new Set(variants.map(x=>x[field]).filter(Boolean))] as string[]){
+        const option=el('option',{value,text:t('v3.'+value)});option.selected=a[field]===value;select.appendChild(option);
+      }
+      select.onchange=()=>{
+        const candidates=variants.filter(x=>x[field]===select.value);
+        selected=candidates.sort((x,y)=>['style_tier','palette','state'].reduce((n,k)=>n+Number(y[k as keyof FaAsset]===a[k as keyof FaAsset])-Number(x[k as keyof FaAsset]===a[k as keyof FaAsset]),0))[0];
+        const prefix=getLocale()==='en'?'':'/'+getLocale();history.replaceState({},'',`${prefix}/free-assets/${selected!.id}/`);
+        render();
+      };
+      label.appendChild(select);options.appendChild(label);
+    }
+    info.appendChild(options);
+  }
   const tags = el("div", { className: "fa-tags" });
   for (const tag of a.tags) tags.appendChild(el("a", { text: tag, href: `/free-assets/?tag=${encodeURIComponent(tag)}` }));
   info.appendChild(tags);
@@ -170,12 +208,19 @@ function extOf(path: string): string {
   }
 
   grid.appendChild(info);
-  root.appendChild(grid);
-  applyStaticText(root);
-  onLocaleChange(() => {
-    document.title = `${assetName(a)} — Free Game Asset – PixJuice`;
-    applyStaticText(root);
-  });
+  root!.appendChild(grid);
+  applyStaticText(root!);
+  const crumb=document.getElementById('fa-crumb');if(crumb)crumb.textContent=assetName(a);
+  const faq=document.querySelector('.tpl-faq');
+  const variantText=[assetName(a),t(({realistic:'tpl.skin.realistic',stylized:'tpl.skin.stylized','clean-low-poly':'tpl.skin.lowpoly','pixel-art':'tpl.skin.pixel'} as Record<string,string>)[a.style_tier]||a.style_tier),t('v3.'+a.palette),t('v3.'+a.state)].join(' · ');
+  document.title=variantText+' – PixJuice';
+  const canonical=document.querySelector<HTMLLinkElement>('link[rel=canonical]');if(canonical)canonical.href=location.href;
+  if(faq){const summary=faq.querySelector('summary');if(summary)summary.textContent=variantText+' — '+t('v3.license');}
+  const json=document.querySelector('script[type="application/ld+json"]');
+  if(json){try{const data=JSON.parse(json.textContent||'[]');data[0].name=variantText;data[0].url=location.href;json.textContent=JSON.stringify(data);}catch{/* Keep the static metadata if unavailable. */}}
+  }
+  render();
+  onLocaleChange(render);
 })();
 
 function readmeFor(a: FaAsset): string {
@@ -185,6 +230,6 @@ function readmeFor(a: FaAsset): string {
     `License: ${a.license.id} — commercial use, no attribution required (${a.license.file ?? "see the asset page"}).`,
     "",
     "Files in this ZIP are the asset's published files; the detail page above documents",
-    "the sprite sheet layout (128px frames, 8 per sheet) and the GLB LODs.",
+    "the sprite sheet layout (128px frames, 8 per sheet) and the high-detail GLB.",
   ].join("\n");
 }

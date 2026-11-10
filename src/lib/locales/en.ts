@@ -530,7 +530,7 @@ const en = {
     expP: `Every exported sprite sheet and JSON sidecar records where the art came from: the JSON's <code>meta.app</code> points at the pixelfx repository and <code>meta.pixelfx.id</code> names the effect. You don't owe PixJuice anything for exports — but a nod to <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a> in your credits screen would make the artists' day.`,
   },
   tpl: {
-    "badgeSkins": "4 skins",
+    "badgeSkins": "Semi-Realistic dark gold",
     "badgeVanilla": "vanilla JS",
     "badgeI18n": "5 languages",
     "badgeGodot": "Godot: coming later",
@@ -542,7 +542,7 @@ const en = {
     "assetsNote": "Demo art (the chest-opening animation) loads from the <a href=\"/free-assets/chest-wood-realistic-wood-intact/\">PixJuice free asset library</a> — it is not bundled with the downloadable ZIP.",
     "filesNote": "standalone vanilla HTML/CSS/JS · CC0 · no art bundled",
     "skin": {
-      "realistic": "Realistic",
+      "realistic": "Semi-Realistic",
       "stylized": "Stylized",
       "lowpoly": "Clean Low Poly",
       "pixel": "Pixel Art"
@@ -551,10 +551,10 @@ const en = {
   tplIndex: {
     "sub": "game UI templates",
     "h1": "Free game UI templates",
-    "lede": "<b>Template-grade game modules</b> — mature, complete, ready to drop into your game. Playable demos with adjustable parameters, four unified art skins, and a standalone vanilla HTML/CSS/JS download (CC0) for every template. Templates are one category of the <a href=\"/free-assets/\">PixJuice free asset library</a>.",
+    "lede": "<b>Template-grade game modules</b> — mature, complete, ready to drop into your game. Playable demos with adjustable parameters, a Semi-Realistic design, and a standalone vanilla HTML/CSS/JS download (CC0) for every template. Templates are one category of the <a href=\"/free-assets/\">PixJuice free asset library</a>.",
     "live": "Ready now",
     "soon": "Coming soon",
-    "soonLede": "Same deal as the first two: playable demo, four skins, standalone CC0 download. In the pipeline:",
+    "soonLede": "Same deal as the first two: playable demo, a Semi-Realistic design, standalone CC0 download. In the pipeline:",
     "open": "Open demo →",
     "soonBadge": "coming soon"
   },
@@ -582,7 +582,7 @@ const en = {
     },
     "feat": {
       "h": "What's inside",
-      "p": "<b>Rules engine</b> (rates → rarity → item, SSR pity, ten-pull guarantee, wheel odds) is one dependency-free file you can unit-test and drive headlessly; the <b>UI layer</b> (wheel, card flips, chest animation, history, settings) is plain DOM you can restyle. The four official skins — Realistic, Stylized, Clean Low Poly, Pixel Art — are one set of CSS variables shared across all PixJuice templates."
+      "p": "<b>Rules engine</b> (rates → rarity → item, SSR pity, ten-pull guarantee, wheel odds) is one dependency-free file you can unit-test and drive headlessly; the <b>UI layer</b> (wheel, card flips, chest animation, history, settings) is plain DOM you can restyle. A shared dark gold interface uses one set of CSS variables."
     },
     "tabPool": "Card pool",
     "tabWheel": "Lucky wheel",
@@ -681,7 +681,7 @@ const en = {
   },
   fa: {
     types2d: "Sprites · Icons · UI · Tiles · Backgrounds",
-    types3d: "Models · GLB · LOD0 / LOD1",
+    types3d: "Models · high-detail GLB",
     search: "Search names or tags",
     "sub": "free game assets",
     "h1": "Free game assets",
@@ -702,13 +702,9 @@ const en = {
     "moreTemplates": "more coming →",
     "templatesCat": "Game UI templates",
     "templatesCatD": "Gacha & lucky wheel, save/load system — playable demos with CC0 code downloads.",
-    "cat": {
-      "props": "props",
-      "structure": "structure",
-      "lighting": "lighting"
-    },
+    "cat": {"props": "Props", "characters": "Characters", "vehicles": "Vehicles", "environment": "Scene / Environment"},
     "style": {
-      "realistic": "Realistic",
+      "realistic": "Semi-Realistic",
       "stylized": "Stylized",
       "lowpoly": "Clean Low Poly",
       "pixel": "Pixel Art"

@@ -810,3 +810,22 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .tile, .btn { transition: none; }
 }
+
+/* Site-wide theme and fixed navigation geometry. */
+:root { --dim:#aaa4bc; --faint:#aaa4bc; }
+:root[data-theme="light"] { color-scheme:light; --bg:#f4f0e8; --bg2:#ebe6dc; --panel:#fffcf6; --panel2:#e7e0d4; --line:#b4ab9d; --text:#28251f; --dim:#5e574d; --faint:#62594f; --acc:#ad2844; --acc2:#096178; --good:#26713a; }
+.head { position:sticky; top:0; z-index:1000; background:var(--bg2); border-bottom:1px solid var(--line); }
+.head .head-in { height:88px; padding:12px 20px; flex-wrap:nowrap; }
+.head .nav { flex-wrap:nowrap; align-items:center; gap:18px; }
+.head .nav > a,.head summary { white-space:nowrap; display:flex; align-items:center; min-height:44px; }
+.head .nav .cur { color:var(--acc2); text-decoration:underline; text-underline-offset:8px; }
+.head .tools-menu { background:var(--panel); }
+.head .theme-toggle { white-space:nowrap; min-height:40px; }
+:root[data-theme="light"] .tools-menu a:hover {color:var(--text)}
+@media(max-width:900px){.head .head-in{height:130px;display:block;overflow-x:auto}.head .brand h1{font-size:22px}.head .brand .sub{font-size:12px}.head .nav{gap:16px;width:max-content}.head .nav a{font-size:13px}.head .lang{max-width:95px}}
+.home-entries {max-width:1180px;margin:30px auto; padding:0 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
+.home-entry {border:1px solid var(--line);background:var(--panel);border-radius:10px;overflow:hidden;color:var(--text);box-shadow:0 5px 18px #0000000c;}
+.home-entry img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;}
+.home-entry b,.home-entry span{display:block;padding:12px 16px}.home-entry span{padding-top:0;color:var(--dim);font-size:14px}
+@media(max-width:650px){.home-entries{grid-template-columns:1fr}}
+#effects{scroll-margin-top:90px}

@@ -16,7 +16,7 @@ export interface CodeFile {
 const encoder = new TextEncoder();
 
 
-export function mountCodeBox(container: HTMLElement, files: CodeFile[], zipName: string): void {
+export function mountCodeBox(container: HTMLElement, files: CodeFile[], zipName: string, prepare?: () => Promise<ZipEntry[]>): void {
   // Keep downloadable art links usable on branch previews as well as production.
   files = files.map((file) => ({ ...file, code: file.code.replaceAll("https://pixjuice.pages.dev", location.origin) }));
   container.innerHTML = "";
@@ -81,9 +81,12 @@ export function mountCodeBox(container: HTMLElement, files: CodeFile[], zipName:
     type: "button",
     text: t("tpl.download"),
     "data-i18n": "tpl.download",
-    onclick: () => {
+    onclick: async () => {
+      dl.disabled = true;
+      try {
+      const extras = prepare ? await prepare() : [];
       const entries: ZipEntry[] = files.map((f) => ({ name: f.name, data: f.data ?? encoder.encode(f.code) }));
-      const blob = makeZip(entries);
+      const blob = makeZip(entries.concat(extras));
       const a = el("a", { href: URL.createObjectURL(blob), download: zipName });
       document.body.appendChild(a);
       a.click();
@@ -91,6 +94,7 @@ export function mountCodeBox(container: HTMLElement, files: CodeFile[], zipName:
         URL.revokeObjectURL(a.href);
         a.remove();
       }, 500);
+      } finally { dl.disabled = false; }
     },
   });
   actions.appendChild(dl);

@@ -1,0 +1,25 @@
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
+import assert from 'node:assert/strict';
+const b=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,args:['--no-sandbox']});
+const p=await b.newPage({viewport:{width:1440,height:1100}}),base=process.env.TEST_URL||'http://localhost:4174',out='/workspace/pixjuice-briefs/';
+const errors=[];p.on('pageerror',e=>errors.push(e.message));
+for(const [name,url] of [['home','/zh/'],['templates','/zh/templates/'],['assets','/zh/free-assets/'],['normal','/zh/normal-map/'],['credits','/zh/credits/'],['case','/zh/templates/gacha/']]){
+ await p.goto(base+url);await p.locator('.theme-toggle').waitFor();await p.evaluate(()=>document.fonts.ready);
+ assert.equal(await p.locator('.head .sub').innerText(),'免费游戏素材');
+ assert.equal(await p.locator('.head .nav > a').count(),4);
+ await p.locator('.head').screenshot({path:out+'site-v3-nav-'+name+'.png'});
+ if(name==='assets') {await p.locator('#fa-grid .fa-card').waitFor();assert.equal(await p.locator('#fa-grid .fa-card').count(),1);assert.deepEqual(await p.locator('#fa-filters button').allTextContents(),['全部','道具']);assert.ok((await p.locator('#fa-grid').innerText()).includes('半写实'));await p.screenshot({path:out+'templates-v3-grid-after.png',fullPage:true});}
+ if(name==='home')await p.waitForTimeout(1200);
+ if(name==='home')for(const theme of ['dark','light']){await p.evaluate(t=>{localStorage.setItem('pixjuice-theme',t);document.documentElement.dataset.theme=t},theme);await p.screenshot({path:out+'site-v3-home-'+theme+'.png',fullPage:true});}
+ if(name==='case'){assert.equal(await p.locator('[data-skin-id]').count(),0);await p.locator('[data-i18n="cx.open"]').click();await p.locator('.cx-modal').waitFor();}
+ assert.ok(!/\bRealistic\b|(?<!半)写实/.test((await p.locator('body').innerText()).replaceAll('Semi-Realistic','')));
+}
+for(const [prefix,label] of [['','Semi-Realistic'],['/zh','半写实'],['/ja','セミリアル'],['/ko','세미 리얼'],['/es','Semirrealista']]){
+ await p.goto(base+prefix+'/free-assets/chest-wood-realistic-wood-intact/');
+ await p.locator('.fa-info').waitFor();
+ assert.ok((await p.locator('.fa-info').innerText()).includes(label));
+ assert.ok((await p.title()).includes(label));
+ assert.equal(await p.locator('[data-variant=style]').count(),0);
+}
+await p.goto(base+'/zh/editor/');await p.waitForURL('**/zh/#effects');
+assert.deepEqual(errors,[]);console.log('Six pages, navigation, themes, one-card grid, populated categories, crate and editor redirect passed');await b.close();

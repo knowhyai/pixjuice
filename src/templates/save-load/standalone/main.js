@@ -116,7 +116,7 @@
     "sv.reset": "Reset demo", "sv.resetDone": "Demo reset.", "sv.autosaved": "Auto-saved.",
     "sv.up": "Up", "sv.down": "Down", "sv.left": "Left", "sv.right": "Right",
     "sv.heroAria": "Game preview",
-    "tpl.skin": "Skin", "tpl.skin.realistic": "Realistic", "tpl.skin.stylized": "Stylized",
+    "tpl.skin": "Skin", "tpl.skin.realistic": "Semi-Realistic", "tpl.skin.stylized": "Stylized",
     "tpl.skin.lowpoly": "Clean Low Poly", "tpl.skin.pixel": "Pixel Art",
   };
   function defaultText(key) {
@@ -149,16 +149,9 @@
   // ---- side panel ---------------------------------------------------------------------
 
   side.appendChild(h("h3", { text: "Settings", "data-i18n": "sv.settings" }));
-  side.appendChild(h("h4", { text: "Skin", "data-i18n": "gx.skin" }));
   var skinRow = h("div", { class: "gx-skins", role: "group" });
-  S.SKINS.forEach(function (s) {
-    skinRow.appendChild(h("button", {
-      class: "gx-skin-btn", type: "button", "data-skin-id": s, "data-i18n": S.SKIN_KEYS[s],
-      text: defaultText(S.SKIN_KEYS[s]),
-      onclick: function () { setSkin(s); },
-    }));
-  });
-  side.appendChild(skinRow);
+
+
 
   side.appendChild(h("h4", { text: "Slot count", "data-i18n": "sv.slotsCfg" }));
   var slotsRow = h("label", { class: "gx-slider" });

@@ -11,7 +11,7 @@
 // pile) ships as `placeholder: true` procedural entries — swap in real files by editing
 // CHESTS below and re-running, no page code changes needed.
 
-import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -26,6 +26,7 @@ const flag = (name, dflt) => {
 };
 const ASSETS = flag("--assets-dir", "/workspace/pixjuice-assets");
 const OUT = join(ROOT, flag("--out", "public/free-assets"));
+const previous = await readFile(join(OUT, "manifest.json"), "utf8").then(JSON.parse).catch(()=>({assets:[]}));
 const CHEST_ROOT = join(ASSETS, "chest-wood");
 
 // [style, palette, variant, withFbx] — the flagship wood chest carries the FBX pair.
@@ -47,7 +48,7 @@ const PLACEHOLDERS = [
   {
     id: "wall-stone",
     procedural: "wall",
-    category: "structure",
+    category: "environment",
     palette: "stone",
     name: { en: "Dungeon Stone Wall", zh: "地下城石墙" },
     tags: ["wall", "dungeon", "stone", "structure"],
@@ -55,7 +56,7 @@ const PLACEHOLDERS = [
   {
     id: "floor-stone",
     procedural: "floor",
-    category: "structure",
+    category: "environment",
     palette: "stone",
     name: { en: "Dungeon Stone Floor", zh: "地下城石地板" },
     tags: ["floor", "dungeon", "stone", "structure"],
@@ -63,7 +64,7 @@ const PLACEHOLDERS = [
   {
     id: "torch-wall",
     procedural: "torch",
-    category: "lighting",
+    category: "props",
     palette: "iron",
     name: { en: "Wall Torch", zh: "墙上火把" },
     tags: ["torch", "fire", "lighting", "dungeon"],
@@ -117,7 +118,7 @@ async function buildChestEntry([style, palette, variant, withFbx]) {
 
   const glb = {
     lod0: await copy(join(srcDir, "chest_LOD0.glb"), `${base}/chest_LOD0.glb`),
-    lod1: await copy(join(srcDir, "chest_LOD1.glb"), `${base}/chest_LOD1.glb`),
+    lod1: null,
   };
   const sprites = {};
   for (const clip of SPRITE_CLIPS) {
@@ -130,7 +131,7 @@ async function buildChestEntry([style, palette, variant, withFbx]) {
   );
   const fbx = [];
   if (withFbx) {
-    for (const lod of ["LOD0", "LOD1"]) {
+    for (const lod of ["LOD0"]) {
       const rel = await copy(join(srcDir, "fbx", `chest_${lod}.fbx`), `${base}/fbx/chest_${lod}.fbx`);
       if (rel) fbx.push(rel);
     }
@@ -150,11 +151,15 @@ https://creativecommons.org/publicdomain/zero/1.0/
 
   return {
     id: meta.id,
-    name: { en: meta.name.en, zh: meta.name.zh },
+    product_id: "chest-wood",
+    hidden: previous.assets.find(a=>a.id===meta.id)?.hidden ?? false,
+    product_hidden: previous.assets.find(a=>a.id===meta.id)?.product_hidden ?? false,
+    state: variant,
+    name: { en: meta.name.en.replace(/Realistic/g, "Semi-Realistic"), zh: meta.name.zh?.replace(/写实/g, "半写实") },
     category: "props",
     style_tier: style,
     palette,
-    tags: meta.tags.filter((t) => !t.startsWith("pixjuice-")).slice(0, 12),
+    tags: meta.tags.map(t => t === "realistic" ? "semi-realistic" : t).filter((t) => !t.startsWith("pixjuice-")).slice(0, 12),
     placeholder: false,
     animations: meta.animations ?? [],
     glb,
@@ -172,7 +177,7 @@ https://creativecommons.org/publicdomain/zero/1.0/
 const styleGuide = await readFile(join(ASSETS, "taxonomy.md"), "utf8").catch(() => "");
 if (!styleGuide) console.warn("(note) taxonomy.md not found — continuing anyway");
 
-await rm(OUT, { recursive: true, force: true });
+// Existing files stay available to old links and template demos.
 await mkdir(OUT, { recursive: true });
 
 const chestEntries = [];
@@ -197,6 +202,7 @@ const placeholderEntries = PLACEHOLDERS.map((p) => ({
 
 const manifest = {
   version: 1,
+  categories: ["props", "characters", "vehicles", "environment"],
   generated: new Date().toISOString().slice(0, 10),
   base: "/free-assets/",
   note: "Curated sample of chest-wood outputs; placeholder entries render procedurally until real assets land. Regenerate with scripts/build-assets-manifest.mjs.",

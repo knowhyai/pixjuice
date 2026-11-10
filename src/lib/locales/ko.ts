@@ -530,7 +530,7 @@ const ko: Partial<Dict> = {
     expP: `내보낸 모든 스프라이트 시트와 JSON에는 아트의 출처가 기록됩니다: JSON의 <code>meta.app</code>은 pixelfx 저장소를 가리키고 <code>meta.pixelfx.id</code>가 이펙트 이름을 담습니다. 내보내기에 대해 PixJuice에 지불할 것은 없습니다 — 다만 당신의 크레딧 화면에서 <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">pixelfx</a>에 한 줄 언급한다면 아티스트들은 기뻐할 겁니다.`,
   },
   tpl: {
-    "badgeSkins": "스킨 4종",
+    "badgeSkins": "사실적 다크 골드",
     "badgeVanilla": "바닐라 JS",
     "badgeI18n": "5개 언어",
     "badgeGodot": "Godot: 추후 제공",
@@ -542,7 +542,7 @@ const ko: Partial<Dict> = {
     "assetsNote": "데모 아트(보관함 애니메이션)는 <a href=\"/free-assets/chest-wood-realistic-wood-intact/\">PixJuice 무료 에셋 라이브러리</a>에서 로드됩니다——ZIP에는 포함되지 않습니다.",
     "filesNote": "독립 실행형 바닐라 HTML/CSS/JS · CC0 · 아트 미포함",
     "skin": {
-      "realistic": "리얼리스틱",
+      "realistic": "세미 리얼",
       "stylized": "스타일라이즈드",
       "lowpoly": "클린 로우폴리",
       "pixel": "픽셀 아트"
@@ -582,7 +582,7 @@ const ko: Partial<Dict> = {
     },
     "feat": {
       "h": "구성",
-      "p": "<b>룰 엔진</b>(확률→등급→아이템, SSR 천장, 10연 보장, 룰렛 가중치)은 의존성 없는 파일 하나로 단위 테스트·헤드리스 구동이 가능하고, <b>UI 레이어</b>(룰렛, 카드 뒤집기, 보관함 애니메이션, 기록, 설정)는 자유롭게 스타일링할 수 있는 순수 DOM입니다. 공식 4스킨(리얼리스틱/스타일라이즈드/클린 로우폴리/픽셀 아트)은 모든 PixJuice 템플릿이 공유하는 CSS 변수 한 세트입니다."
+      "p": "<b>룰 엔진</b>(확률→등급→아이템, SSR 천장, 10연 보장, 룰렛 가중치)은 의존성 없는 파일 하나로 단위 테스트·헤드리스 구동이 가능하고, <b>UI 레이어</b>(룰렛, 카드 뒤집기, 보관함 애니메이션, 기록, 설정)는 자유롭게 스타일링할 수 있는 순수 DOM입니다. 공통 다크 골드 UI는 CSS 변수로 조정할 수 있습니다."
     },
     "tabPool": "카드 뽑기",
     "tabWheel": "룰렛",
@@ -681,7 +681,7 @@ const ko: Partial<Dict> = {
   },
   fa: {
     types2d: "스프라이트 · 아이콘 · UI · 타일 · 배경",
-    types3d: "모델 · GLB · LOD0 / LOD1",
+    types3d: "모델 · 고해상도 GLB",
     search: "이름 또는 태그 검색",
     "sub": "무료 게임 에셋",
     "h1": "무료 게임 에셋",
@@ -702,13 +702,9 @@ const ko: Partial<Dict> = {
     "moreTemplates": "더 공개 예정 →",
     "templatesCat": "게임 UI 템플릿",
     "templatesCatD": "가챠 & 룰렛, 세이브/로드——플레이어블 데모와 CC0 코드 다운로드 제공.",
-    "cat": {
-      "props": "소품",
-      "structure": "구조물",
-      "lighting": "조명"
-    },
+    "cat": {"props": "소품", "characters": "캐릭터", "vehicles": "차량", "environment": "환경"},
     "style": {
-      "realistic": "리얼리스틱",
+      "realistic": "세미 리얼",
       "stylized": "스타일라이즈드",
       "lowpoly": "클린 로우폴리",
       "pixel": "픽셀 아트"
