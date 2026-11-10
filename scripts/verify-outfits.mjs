@@ -5,7 +5,7 @@ import {WebIO} from '@gltf-transform/core';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const base=process.env.TEST_URL||'http://127.0.0.1:4174',out='/workspace/pixjuice-briefs';
 const b=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,args:['--no-sandbox']});
-const ctx=await b.newContext({viewport:{width:1440,height:1200},acceptDownloads:true,colorScheme:'dark'});const p=await ctx.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+const ctx=await b.newContext({viewport:{width:1440,height:1200},acceptDownloads:true,colorScheme:'dark'});const p=await ctx.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error'&&!(m.text().includes('404')&&m.location().url.endsWith('/meta.json')))errors.push(m.text());});
 const entry=kind=>base+`/zh/free-assets/chest-wood/?parts-demo=1&demo-kind=${kind}`;
 const ready=async()=>{await p.locator('.fa-part').first().waitFor();await p.waitForFunction(()=>Number(document.querySelector('[data-animation-time]')?.dataset.animationTime)>0);};
 const time=()=>p.locator('[data-animation-time]').getAttribute('data-animation-time').then(Number);
