@@ -149,7 +149,7 @@
   // ---- side panel ---------------------------------------------------------------------
 
   side.appendChild(h("h3", { text: "Settings", "data-i18n": "sv.settings" }));
-  side.appendChild(h("h4", { text: "Skin", "data-i18n": "tpl.skin" }));
+  side.appendChild(h("h4", { text: "Skin", "data-i18n": "gx.skin" }));
   var skinRow = h("div", { class: "gx-skins", role: "group" });
   S.SKINS.forEach(function (s) {
     skinRow.appendChild(h("button", {
