@@ -19,6 +19,7 @@ async function downloadCode(slug){
  const pending=p.waitForEvent('download');await click('tpl.download');const dl=await pending;
  const files=unzipSync(new Uint8Array(await readFile(await dl.path())));
  assert.ok(files['styles.css']&&files['README.md']&&files.LICENSE);
+ assert.ok(new TextDecoder().decode(files['README.md']).includes(base),'ZIP art links use the active deployment');
  assert.ok(!Object.keys(files).some(n=>/\.(png|glb|fbx|jpg)$/i.test(n)),'no art in code ZIP');
  const root='/tmp/pixjuice-standalone-'+slug;
  for(const [name,bytes] of Object.entries(files)){await mkdir(dirname(join(root,name)),{recursive:true});await writeFile(join(root,name),bytes);}

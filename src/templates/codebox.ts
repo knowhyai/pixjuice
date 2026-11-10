@@ -16,6 +16,8 @@ const encoder = new TextEncoder();
 
 
 export function mountCodeBox(container: HTMLElement, files: CodeFile[], zipName: string): void {
+  // Keep downloadable art links usable on branch previews as well as production.
+  files = files.map((file) => ({ ...file, code: file.code.replaceAll("https://pixjuice.pages.dev", location.origin) }));
   container.innerHTML = "";
   const wrap = el("div", { className: "codebox" });
 
