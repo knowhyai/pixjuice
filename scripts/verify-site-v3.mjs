@@ -17,7 +17,7 @@ for(const [name,url] of [['home','/zh/'],['templates','/zh/templates/'],['assets
 for(const [prefix,label] of [['','Semi-Realistic'],['/zh','半写实'],['/ja','セミリアル'],['/ko','세미 리얼'],['/es','Semirrealista']]){
  await p.goto(base+prefix+'/free-assets/chest-wood-realistic-wood-intact/');
  await p.locator('.fa-info').waitFor();
- assert.ok((await p.locator('.fa-info').innerText()).includes(label));
+ assert.ok((await p.locator('.fa-info').textContent()).includes(label));
  assert.ok((await p.title()).includes(label));
  assert.equal(await p.locator('[data-variant=style]').count(),0);
 }
