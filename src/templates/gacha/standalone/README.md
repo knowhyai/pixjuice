@@ -72,7 +72,7 @@ chest sprite sets from the PixJuice free asset library at runtime:
   `https://pixjuice.pages.dev/free-assets/chest-wood/<style>/wood/intact/sprites/{idle,open,close,locked_shake,open_burst}.png`
   with `<style>` one of `realistic`, `stylized`, `clean-low-poly`, `pixel-art`
   (one set per skin, switched automatically).
-- Free for commercial use — see the license file on the asset page.
+- CC0 1.0 Universal — commercial use without attribution.
 
 To run fully offline: download the five sprites for one style, put them next to
 `index.html` (e.g. `assets/sprites/`), and in `js/main.js` set
@@ -87,4 +87,8 @@ If the sprites can't load, the demo skips the chest animation and still works.
 
 Template code: [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) —
 public domain, use in commercial games, no attribution required. The demo art
-has its own license, published on its asset page (free for commercial use).
+is also CC0 1.0 Universal: commercial use, redistribution and resale without attribution.
+
+Typography: Cinzel and Cormorant (Latin, weight 500), bundled in fonts/ for offline use. Font software remains SIL OFL 1.1; see fonts/Cinzel-OFL.txt and fonts/Cormorant-OFL.txt. Sources: https://github.com/google/fonts/tree/main/ofl/cinzel and https://github.com/google/fonts/tree/main/ofl/cormorant .
+PixJuice wooden chest art is CC0 1.0 Universal, commercial use without attribution.
+Pixel Art uses bundled Silkscreen Latin 400, SIL OFL 1.1: fonts/Silkscreen-OFL.txt. Source: https://github.com/google/fonts/tree/main/ofl/silkscreen .

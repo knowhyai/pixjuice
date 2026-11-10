@@ -14,6 +14,11 @@ test('published manifest files exist; only real assets have downloads',()=>{
  const a=sanitizeManifest(JSON.parse(readFileSync('public/free-assets/manifest.json','utf8')));
  assert.equal(a.length,15);
  for(const x of a.filter(x=>!x.placeholder)) {
+  assert.equal(x.license.id,'CC0 1.0');
+  const license=readFileSync('public/free-assets/'+x.license.file,'utf8');
+  assert.ok(license.includes('CC0 1.0 Universal'));
+  assert.ok(license.includes('distribute and sell'));
+  assert.ok(license.includes('without asking permission or providing attribution'));
   for(const p of [x.thumb,x.license.file,...Object.values(x.glb||{}),...Object.values(x.sprites||{})].filter(Boolean)) assert.ok(existsSync('public/free-assets/'+p),p);
  }
 });

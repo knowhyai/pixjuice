@@ -22,7 +22,7 @@ function faqFor(name, kind) {
       name: `Is the ${name} free for commercial use?`,
       acceptedAnswer: {
         "@type": "Answer",
-        text: `Yes — the ${name} ships with a free-commercial license published on this page: use it in commercial games at no cost, no attribution required.`,
+        text: `Yes — the ${name} ships with CC0 1.0 published on this page: use it in commercial games at no cost, no attribution required.`,
       },
     },
     {
@@ -98,7 +98,8 @@ const header = (crumb) => `  <header class="head">
 ${crumb}`;
 
 const crumbBlock = `  <section class="tpl-hero" style="padding-bottom:0">
-    <p class="tpl-crumbs"><a href="/free-assets/" data-i18n="nav.assets">free assets</a> / <span id="fa-crumb">asset</span></p>
+    <p class="tpl-crumbs"><a href="/free-assets/" data-i18n="nav.assets">free assets</a>
+            <a href="/free-resources/" data-i18n="fr.h1">More free game assets</a> / <span id="fa-crumb">asset</span></p>
   </section>`;
 
 const footer = `  <footer>

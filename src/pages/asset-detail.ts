@@ -121,7 +121,7 @@ function extOf(path: string): string {
   const tags = el("div", { className: "fa-tags" });
   for (const tag of a.tags) tags.appendChild(el("a", { text: tag, href: `/free-assets/?tag=${encodeURIComponent(tag)}` }));
   info.appendChild(tags);
-  info.appendChild(el("p", {className:"body",text: a.placeholder ? t("fa.soon") : `License: ${a.license.id} (art is not CC0)`}));
+  info.appendChild(el("p", {className:"body",text: a.placeholder ? t("fa.soon") : t("fa.licenseNotice"), "data-i18n": a.placeholder ? "fa.soon" : "fa.licenseNotice"}));
 
   if (a.placeholder) {
     const panel = el("div", { className: "fa-soon-panel", style: "margin-top:18px" });
@@ -182,7 +182,7 @@ function readmeFor(a: FaAsset): string {
   return [
     `${a.name.en}${a.name.zh ? ` (${a.name.zh})` : ""}`,
     `From the PixJuice free asset library: https://pixjuice.pages.dev/free-assets/${a.id}/`,
-    `License: ${a.license.id} — free for commercial use (${a.license.file ?? "see the asset page"}).`,
+    `License: ${a.license.id} — commercial use, no attribution required (${a.license.file ?? "see the asset page"}).`,
     "",
     "Files in this ZIP are the asset's published files; the detail page above documents",
     "the sprite sheet layout (128px frames, 8 per sheet) and the GLB LODs.",

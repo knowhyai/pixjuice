@@ -2,6 +2,52 @@
 import type { Dict } from "./en";
 
 const zh: Partial<Dict> = {
+  fr: {
+    "c0": {
+      "desc": "适合原型和成品游戏的全能基础素材。",
+      "license": "CC0，可商用、无需署名。请勿使用 Kenney 标志。",
+      "types": "2D 精灵 · 3D 模型 · UI · 音频 · 字体"
+    },
+    "c1": {
+      "desc": "为冒险游戏提供角色、场景和动画。",
+      "license": "多数资源包采用 CC0 1.0；部分较新资源包采用 Quaternius Asset License（QAL）。请检查每个资源包。QAL 允许个人、教育和商业项目免费使用、无需署名，但禁止将素材（含修改后版本）作为独立素材再分发或转售。",
+      "types": "3D 角色 · 环境 · 套件 · 动画"
+    },
+    "c2": {
+      "desc": "为灯光和精细世界提供写实素材。",
+      "license": "CC0，可商用、无需署名。",
+      "types": "HDRI · PBR 纹理 · 3D 模型"
+    },
+    "c3": {
+      "desc": "用表面细节和灯光塑造可信的环境。",
+      "license": "CC0 1.0，可商用、无需署名。",
+      "types": "PBR 材质 · 纹理 · HDRI · 模型"
+    },
+    "c4": {
+      "desc": "覆盖美术、音乐和音效的社区素材库。",
+      "license": "混合授权：CC0、CC-BY、CC-BY-SA、OGA-BY 等。请逐个检查许可与署名要求。",
+      "types": "2D/3D 美术 · 音乐 · 音效"
+    },
+    "c5": {
+      "desc": "浏览 itch.io 上标记为 CC0 的社区素材。",
+      "license": "这是 CC0 标签列表；仍请核对每个条目的 Asset license。",
+      "types": "标记为 CC0 的社区游戏素材"
+    },
+    "c6": {
+      "desc": "风格统一的低模资源包，包含角色和道具。",
+      "license": "免费 KayKit 资源包采用 CC0 1.0；请核对每个条目。付费 Complete 套装和 SOURCE 文件可能采用不同条款。",
+      "types": "风格化低模 3D 角色 · 道具 · 动画"
+    },
+    "license": "授权",
+    "types": "素材类型",
+    "source": "授权详情 ↗",
+    "h1": "更多免费游戏素材",
+    "lede": "发现更多游戏素材来源。PixJuice 自有素材同样采用 CC0 1.0，可商用、无需署名。",
+    "own": "查看 PixJuice CC0 素材 →",
+    "q": "这些网站的素材都是 CC0 吗？",
+    "a": "不是。请逐个检查资源包或条目的许可。部分来源混合多种授权，QAL 限制独立素材再分发和转售。PixJuice 自有游戏素材采用 CC0 1.0。"
+  },
+
   lang: {
     aria: "语言",
   },
@@ -60,7 +106,7 @@ const zh: Partial<Dict> = {
     home2: `<a href="/credits/">致谢与许可</a> · 为独立游戏开发者而作`,
     credits2: `<a href="/credits/">致谢与许可</a>`,
     catalog: `<a href="/">特效库</a>`,
-    templates: "<a href=\"/templates/\">游戏模板</a> · <a href=\"/free-assets/\">免费素材</a> · PixJuice 免费库，为独立开发者而作",
+    templates: "<a href=\"/templates/\">游戏模板</a> · <a href=\"/free-assets/\">免费素材</a> · PixJuice 免费库，为独立开发者而作 · <a href=\"/free-resources/\">更多免费游戏素材</a>",
   },
   cat: {
     moves: "招式",
@@ -458,6 +504,8 @@ const zh: Partial<Dict> = {
     fallback: "兜底哔声",
   },
   credits: {
+    assets: "PixJuice 自有游戏素材（含木宝箱美术）及模板代码均采用 CC0 1.0 Universal，可商用、修改、分发和转售，无需署名。规划中的素材暂无下载。 <a href=\"/free-assets/\">CC0</a> · <a href=\"/free-resources/\">更多免费游戏素材</a>",
+
     sub: "致谢与许可",
     h1: "致谢与许可",
     lede: "PixJuice 只是包裹了他人出色像素画的一层薄薄的工作室。这里说明每样东西出自谁手，以及让我们得以发布的许可证。",
@@ -474,7 +522,7 @@ const zh: Partial<Dict> = {
     sfxLi2: `<a href="https://sfxr.me" target="_blank" rel="noopener">sfxr.me</a> — jsfxr 在线生成器`,
     h2own: "哪些属于 PixJuice，哪些不属于",
     own1: `<strong>PixJuice 不是 "pixelfx"。</strong>pixelfx 是上游库，其名称归其作者所有。PixJuice 是构建于其上的独立工具，与 Patch 或 Hugo Duprez 无隶属关系，也未获其背书。`,
-    own2: `<strong>字体：</strong>本站使用系统自带界面字体。pixelfx 官方画廊使用的像素字体（"Patch Pixel"）<em>不在</em> MIT 许可范围内，故刻意不在此使用。`,
+    own2: `Cinzel / Cormorant / Silkscreen — SIL Open Font License 1.1. <a href="/licenses/Cinzel-OFL.txt">Cinzel OFL</a> · <a href="/licenses/Cormorant-OFL.txt">Cormorant OFL</a> · <a href="/licenses/Silkscreen-OFL.txt">Silkscreen OFL</a>. <a href="https://github.com/google/fonts/tree/main/ofl" target="_blank" rel="noopener">google/fonts</a>`,
     own3: `<strong>GIF 编码</strong>由 <a href="https://github.com/mattdesl/gifenc" target="_blank" rel="noopener">gifenc</a>（MIT）在浏览器中完成。`,
     own5: `<strong>MP3 编码</strong>由 <a href="https://github.com/breezystack/lamejs" target="_blank" rel="noopener">lamejs</a>（LGPL-3.0）在浏览器中完成，仅在你导出 MP3 时按需加载；OGG 使用浏览器自带的 Opus 编码器。`,
     own4: `<strong>PixJuice 应用代码</strong>（编辑器、导出、音效合成、样式）同样采用 MIT；导出的特效美术受 pixelfx 的 MIT 许可证保护，可用于你的游戏，包括商业用途。`,
@@ -644,7 +692,8 @@ const zh: Partial<Dict> = {
     "filterTpl": "UI 模板",
     "soon": "即将上线",
     "soonBody": "素材制作中——完成后会在此提供预览、下载与许可。",
-    "freeCommercial": "可免费商用",
+    "freeCommercial": "CC0 1.0",
+    "licenseNotice": "CC0 1.0 Universal — 可商用、无需署名。",
     "loadErr": "素材列表加载失败，刷新重试。",
     "notFound": "未找到该素材。",
     "backAll": "← 全部素材",

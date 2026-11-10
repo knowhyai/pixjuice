@@ -17,7 +17,7 @@
   if (!host || !G || !S) return;
 
   var reduced = root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var STORE_KEY = "pix-tpl-gacha";
+  var STORE_KEY = "pix-tpl-gacha-v2";
   var ASSETS_BASE = location.protocol === "file:" ? "https://pixjuice.pages.dev/free-assets/chest-wood" : "/free-assets/chest-wood"; // library URL — the ZIP does not bundle art
 
   // ---- state -----------------------------------------------------------------
@@ -26,7 +26,7 @@
   var pity = G.makeState(0, 0);
   var history = [];
   var gems = 6000;
-  var skin = "stylized";
+  var skin = "realistic";
   var busy = false;
 
   function persist() {
@@ -307,7 +307,9 @@
       renderCards(show);
     };
 
-    if (times > 1 && !reduced) {
+    var peak = show.reduce(function(a,b){return rank(b)>rank(a)?b:a;},show[0]);
+    revealLight(peak.rarity);
+    if (!reduced) {
       chestNote.hidden = false;
       playChest(["open", "open_burst"], function () {
         chestNote.hidden = true;
@@ -318,6 +320,21 @@
     }
   }
 
+  function revealLight(rarity) {
+    var old=chestWrap.querySelector(".gx-reveal");if(old)old.remove();
+    var fx=h("div",{class:"gx-reveal r-"+rarity,"aria-hidden":"true"});
+    fx.appendChild(h("i",{class:"gx-flare"}));
+    if(!reduced){
+      var n={N:4,R:10,SR:20,SSR:36}[rarity]||4;
+      for(var j=0;j<n;j++){
+        var theta=j*2.39996,dist=35+(j%7)*16;
+        fx.appendChild(h("i",{class:"gx-spark",style:"--dx:"+Math.cos(theta)*dist+"px;--dy:"+(Math.sin(theta)*dist-50)+"px;--delay:"+(j%6)*.055+"s"}));
+      }
+    }
+    chestWrap.appendChild(fx);
+    setTimeout(function(){fx.remove();},reduced?400:2200);
+  }
+
   function rank(item) { return G.RARITIES.indexOf(item.rarity); }
 
   function renderCards(items) {
@@ -325,8 +342,9 @@
       var card = h("div", { class: "gx-card r-" + it.rarity, style: "transition-delay:" + i * 70 + "ms" });
       var inner = h("div", { class: "gx-card-in" });
       var back = h("div", { class: "gx-face gx-back" });
-      back.appendChild(h("span", { class: "gx-mark", "aria-hidden": "true", text: "?" }));
+      back.appendChild(h("span", { class: "gx-mark", "aria-hidden": "true", text: "◇" }));
       var front = h("div", { class: "gx-face gx-front" });
+      front.appendChild(h("i", {class:"gx-sigil", "aria-hidden":"true",text:it.rarity === "SSR" ? "✦" : "◇"}));
       front.appendChild(h("b", { text: it.name }));
       front.appendChild(h("span", { text: it.rarity + " · " + defaultText("gx.rar." + it.rarity), "data-i18n": "gx.rar." + it.rarity }));
       inner.appendChild(back);
@@ -447,7 +465,7 @@
     }
   }
   function segColor(rarity, i) {
-    var map = { N: ["#5a6070", "#4c5261"], R: ["#3f7fc4", "#356da8"], SR: ["#8a4fc0", "#7641a6"], SSR: ["#d99a2b", "#bf8620"] };
+    var map = { N: ["#5a6070", "#4c5261"], R: ["#496577", "#3d5768"], SR: ["#665375", "#574663"], SSR: ["#a28b5b", "#88734e"] };
     var pair = map[rarity] || ["#5a6070", "#4c5261"];
     return pair[i % 2];
   }

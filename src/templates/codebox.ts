@@ -10,6 +10,7 @@ export interface CodeFile {
   /** path inside the ZIP, e.g. "index.html" or "js/main.js" */
   name: string;
   code: string;
+  data?: Uint8Array;
 }
 
 const encoder = new TextEncoder();
@@ -81,7 +82,7 @@ export function mountCodeBox(container: HTMLElement, files: CodeFile[], zipName:
     text: t("tpl.download"),
     "data-i18n": "tpl.download",
     onclick: () => {
-      const entries: ZipEntry[] = files.map((f) => ({ name: f.name, data: encoder.encode(f.code) }));
+      const entries: ZipEntry[] = files.map((f) => ({ name: f.name, data: f.data ?? encoder.encode(f.code) }));
       const blob = makeZip(entries);
       const a = el("a", { href: URL.createObjectURL(blob), download: zipName });
       document.body.appendChild(a);

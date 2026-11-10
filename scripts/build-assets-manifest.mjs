@@ -135,7 +135,18 @@ async function buildChestEntry([style, palette, variant, withFbx]) {
       if (rel) fbx.push(rel);
     }
   }
-  const license = await copy(join(CHEST_ROOT, style, "LICENSE.txt"), `chest-wood/${style}/LICENSE.txt`);
+  const license = `chest-wood/${style}/LICENSE.txt`;
+  await mkdir(dirname(join(OUT, license)), {recursive:true});
+  await writeFile(join(OUT, license), `PixJuice Free Assets — Wooden Chest #1
+CC0 1.0 Universal
+
+To the extent possible under law, PixJuice has waived all copyright and
+related or neighboring rights to this work worldwide under CC0 1.0 Universal.
+You may copy, modify, distribute and sell this work, including for commercial
+purposes, without asking permission or providing attribution.
+This work is provided without warranty. No trademark or patent rights are waived.
+https://creativecommons.org/publicdomain/zero/1.0/
+`);
 
   return {
     id: meta.id,
@@ -150,7 +161,7 @@ async function buildChestEntry([style, palette, variant, withFbx]) {
     fbx,
     sprites,
     thumb,
-    license: { id: "pixjuice-free-commercial", file: license, commercial_use: true },
+    license: { id: "CC0 1.0", file: license, commercial_use: true },
     dimensions_m: meta.dimensions_m ?? null,
     polycount_lod0: meta.polycount_lod0 ?? null,
   };
@@ -179,7 +190,7 @@ const placeholderEntries = PLACEHOLDERS.map((p) => ({
   fbx: [],
   sprites: null,
   thumb: null,
-  license: { id: "pixjuice-free-commercial", file: null, commercial_use: true },
+  license: { id: "CC0 1.0", file: null, commercial_use: true },
   dimensions_m: null,
   polycount_lod0: null,
 }));

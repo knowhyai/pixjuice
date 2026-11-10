@@ -2,6 +2,52 @@
 import type { Dict } from "./en";
 
 const es: Partial<Dict> = {
+  fr: {
+    "c0": {
+      "desc": "Recursos versátiles para prototipos y juegos terminados.",
+      "license": "CC0: uso comercial sin atribución. No uses el logotipo de Kenney.",
+      "types": "Sprites 2D · modelos 3D · UI · audio · fuentes"
+    },
+    "c1": {
+      "desc": "Mundos y personajes animados para tu próxima aventura.",
+      "license": "La mayoría de los paquetes son CC0 1.0; algunos nuevos usan Quaternius Asset License (QAL). Revisa cada paquete. QAL permite proyectos personales, educativos y comerciales sin atribución, pero prohíbe redistribuir o revender recursos independientes, incluso modificados.",
+      "types": "Personajes 3D · entornos · kits · animaciones"
+    },
+    "c2": {
+      "desc": "Recursos fotorrealistas para iluminación y mundos detallados.",
+      "license": "CC0: uso comercial sin atribución.",
+      "types": "HDRI · texturas PBR · modelos 3D"
+    },
+    "c3": {
+      "desc": "Detalle de superficies e iluminación para entornos convincentes.",
+      "license": "CC0 1.0: uso comercial sin atribución.",
+      "types": "Materiales PBR · texturas · HDRI · modelos"
+    },
+    "c4": {
+      "desc": "Biblioteca comunitaria de arte, música y sonido.",
+      "license": "Licencias mixtas: CC0, CC-BY, CC-BY-SA, OGA-BY y otras. Revisa la licencia y atribución de cada recurso.",
+      "types": "Arte 2D/3D · música · efectos de sonido"
+    },
+    "c5": {
+      "desc": "Explora recursos comunitarios con etiqueta CC0 en itch.io.",
+      "license": "Listado con etiqueta CC0; verifica el campo Asset license de cada entrada.",
+      "types": "Recursos comunitarios etiquetados CC0"
+    },
+    "c6": {
+      "desc": "Paquetes low poly coherentes con personajes y objetos.",
+      "license": "Los paquetes gratuitos KayKit son CC0 1.0; revisa cada entrada. Los paquetes Complete de pago y archivos SOURCE pueden tener otras condiciones.",
+      "types": "Personajes 3D low poly estilizados · objetos · animaciones"
+    },
+    "license": "Licencia",
+    "types": "Tipos de recursos",
+    "source": "Detalles de licencia ↗",
+    "h1": "Más recursos gratuitos para juegos",
+    "lede": "Descubre más sitios para crear tu juego. Los recursos propios de PixJuice también son CC0 1.0: uso comercial sin atribución.",
+    "own": "Explorar recursos CC0 de PixJuice →",
+    "q": "¿Todos estos sitios son CC0?",
+    "a": "Consulta cada paquete. Algunas fuentes mezclan licencias; QAL restringe la redistribución y reventa de recursos independientes. Los recursos propios de PixJuice son CC0 1.0."
+  },
+
   lang: {
     aria: "Idioma",
   },
@@ -60,7 +106,7 @@ const es: Partial<Dict> = {
     home2: `<a href="/credits/">créditos y licencias</a> · hecho para devs de videojuegos indie`,
     credits2: `<a href="/credits/">créditos y licencias</a>`,
     catalog: `<a href="/">catálogo</a>`,
-    templates: "<a href=\"/templates/\">plantillas de juego</a> · <a href=\"/free-assets/\">recursos gratis</a> · parte de la biblioteca gratuita de PixJuice para devs indie",
+    templates: "<a href=\"/templates/\">plantillas de juego</a> · <a href=\"/free-assets/\">recursos gratis</a> · parte de la biblioteca gratuita de PixJuice para devs indie · <a href=\"/free-resources/\">Más recursos gratuitos para juegos</a>",
   },
   cat: {
     moves: "Ataques",
@@ -458,6 +504,8 @@ const es: Partial<Dict> = {
     fallback: "blip de reserva",
   },
   credits: {
+    assets: "Los recursos propios de PixJuice, incluido el cofre de madera, y el código de plantillas usan CC0 1.0 Universal: uso comercial, modificación, redistribución y reventa sin atribución. Los recursos previstos aún no tienen descarga. <a href=\"/free-assets/\">CC0</a> · <a href=\"/free-resources/\">Más recursos gratuitos para juegos</a>",
+
     sub: "créditos y licencias",
     h1: "Créditos y licencias",
     lede: "PixJuice es un estudio fino alrededor del excelente pixel art de otras personas. Aquí está quién hizo qué, y las licencias que nos dejan publicarlo.",
@@ -474,7 +522,7 @@ const es: Partial<Dict> = {
     sfxLi2: `<a href="https://sfxr.me" target="_blank" rel="noopener">sfxr.me</a> — el generador jsfxr en línea`,
     h2own: "Qué es de PixJuice y qué no",
     own1: `<strong>PixJuice no es "pixelfx".</strong> pixelfx es la librería original y su nombre pertenece a sus autores. PixJuice es una herramienta independiente construida encima, sin afiliación ni respaldo de Patch ni Hugo Duprez.`,
-    own2: `<strong>Fuentes:</strong> este sitio usa las fuentes de interfaz de tu sistema. La fuente pixel que usa la galería oficial de pixelfx ("Patch Pixel") <em>no</em> tiene licencia MIT y aquí no se usa a propósito.`,
+    own2: `Cinzel / Cormorant / Silkscreen — SIL Open Font License 1.1. <a href="/licenses/Cinzel-OFL.txt">Cinzel OFL</a> · <a href="/licenses/Cormorant-OFL.txt">Cormorant OFL</a> · <a href="/licenses/Silkscreen-OFL.txt">Silkscreen OFL</a>. <a href="https://github.com/google/fonts/tree/main/ofl" target="_blank" rel="noopener">google/fonts</a>`,
     own3: `<strong>La codificación GIF</strong> se hace en el navegador con <a href="https://github.com/mattdesl/gifenc" target="_blank" rel="noopener">gifenc</a> (MIT).`,
     own5: `<strong>La codificación MP3</strong> se hace en el navegador con <a href="https://github.com/breezystack/lamejs" target="_blank" rel="noopener">lamejs</a> (LGPL-3.0), cargada solo cuando exportas MP3; el OGG usa el codificador Opus del propio navegador.`,
     own4: `<strong>El código de la app PixJuice</strong> (editor, exportaciones, síntesis de sonido, estilos) también es MIT; el arte exportado queda cubierto por la licencia MIT de pixelfx, así puedes usarlo en tus juegos, incluido el uso comercial.`,
@@ -644,7 +692,8 @@ const es: Partial<Dict> = {
     "filterTpl": "Plantillas de UI",
     "soon": "Próximamente",
     "soonBody": "Este recurso está en producción — cuando salga, aquí estarán su previsualización, descargas y licencia.",
-    "freeCommercial": "Uso comercial gratuito",
+    "freeCommercial": "CC0 1.0",
+    "licenseNotice": "CC0 1.0 Universal — uso comercial sin atribución.",
     "loadErr": "No se pudo cargar la lista de recursos. Recarga para reintentar.",
     "notFound": "Recurso no encontrado.",
     "backAll": "← Todos los recursos",

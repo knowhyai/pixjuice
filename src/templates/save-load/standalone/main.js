@@ -19,7 +19,7 @@
   if (!host || !P || !S) return;
 
   var NS = "pix-tpl-save";          // localStorage namespace for the save slots
-  var SETTINGS_KEY = "pix-tpl-save-settings";
+  var SETTINGS_KEY = "pix-tpl-save-settings-v2";
   var GAME_KEY = "pix-tpl-save-game";
 
   // ---- demo game state ---------------------------------------------------------
@@ -32,7 +32,7 @@
   var autosave = true;
   var AUTOSAVE_SEC = 30;
   var lastAuto = Date.now();
-  var skin = "stylized";
+  var skin = "realistic";
   var busy = false;
 
   var fallbackStorage = P.memoryAdapter();
@@ -299,51 +299,49 @@
     var ctx = cv.getContext("2d");
     var pixel = skin === "pixel-art";
     ctx.imageSmoothingEnabled = !pixel;
-    var accent = skinVar("--skin-accent", "#ff4d6d");
-    var panel = skinVar("--skin-panel-2", "#2a2537");
-    var border = skinVar("--skin-border", "#3a3450");
-    ctx.fillStyle = panel;
-    ctx.fillRect(0, 0, cv.width, cv.height);
-    // checker tiles
-    for (var y = 0; y < ROWS; y++) {
-      for (var x = 0; x < COLS; x++) {
-        if ((x + y) % 2 === 0) {
-          ctx.fillStyle = "rgba(255,255,255,0.045)";
-          ctx.fillRect(x * CELL, y * CELL, CELL, CELL);
-        }
-      }
+    var w = cv.width, ht = cv.height;
+    // Stone flags with irregular seams, worn edges and dust. Deterministic so
+    // snapshots preserve the same world after a save/load round trip.
+    ctx.fillStyle = "#161e21"; ctx.fillRect(0,0,w,ht);
+    for (var y=0;y<ROWS;y++) for(var x=0;x<COLS;x++) {
+      var tone=28+((x*17+y*31)%17), px=x*CELL, py=y*CELL;
+      ctx.fillStyle="rgb("+tone+","+(tone+6)+","+(tone+7)+")";
+      ctx.fillRect(px+1,py+1,CELL-2,CELL-2);
+      ctx.strokeStyle="#73807824";ctx.strokeRect(px+2,py+2,CELL-4,CELL-4);
+      ctx.fillStyle="#00000030";ctx.fillRect(px+3,py+CELL-4,CELL-6,2);
+      ctx.strokeStyle="#101819";ctx.beginPath();ctx.moveTo(px+8,py+3);ctx.lineTo(px+12,py+8);ctx.lineTo(px+10,py+13);ctx.stroke();
+      ctx.fillStyle="#9b9b7920";for(var d=0;d<5;d++)ctx.fillRect(px+(d*13+x*7)%28,py+(d*7+y*11)%28,1,1);
     }
-    // coins
-    for (var c = 0; c < coins.length; c++) {
-      var cx = coins[c].x * CELL + CELL / 2, cy = coins[c].y * CELL + CELL / 2;
-      ctx.beginPath();
-      ctx.arc(cx, cy, 8, 0, Math.PI * 2);
-      ctx.fillStyle = "#ffb238";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(0,0,0,0.35)";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(cx - 2, cy - 3, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255,255,255,0.85)";
-      ctx.fill();
+    // Deep masonry arch along the north wall and side buttresses.
+    var wall=ctx.createLinearGradient(0,0,0,35);wall.addColorStop(0,"#070e13");wall.addColorStop(1,"#303a3b");
+    ctx.fillStyle=wall;ctx.fillRect(0,0,w,25);
+    for(var bx=0;bx<w;bx+=42){ctx.strokeStyle="#59626255";ctx.strokeRect(bx+1,2,39,20);}
+    ctx.fillStyle="#080e13";ctx.beginPath();ctx.moveTo(w/2-22,26);ctx.lineTo(w/2-22,13);ctx.quadraticCurveTo(w/2, -8,w/2+22,13);ctx.lineTo(w/2+22,26);ctx.fill();
+    for(var sideX of [3,w-14])for(var by=32;by<ht;by+=54){ctx.fillStyle="#11191c";ctx.fillRect(sideX,by,11,35);ctx.fillStyle="#56605a";ctx.fillRect(sideX,by,11,3);}
+    // Lanterns cast warm pools over the cool stone without concealing the map.
+    for(var lamp of [[32,40],[w-32,ht-34]]){
+      var light=ctx.createRadialGradient(lamp[0],lamp[1],1,lamp[0],lamp[1],95);
+      light.addColorStop(0,"#d3a26565");light.addColorStop(.35,"#aa784c28");light.addColorStop(1,"#a97e4900");ctx.fillStyle=light;ctx.fillRect(0,0,w,ht);
+      ctx.fillStyle="#080d11";ctx.fillRect(lamp[0]-5,lamp[1]-7,10,16);
+      ctx.fillStyle="#c8ac78";ctx.fillRect(lamp[0]-2,lamp[1]-4,4,9);ctx.fillStyle="#f4dcab";ctx.fillRect(lamp[0]-1,lamp[1]-2,2,4);
     }
-    // hero
-    var hx = game.x * CELL + CELL / 2, hy = game.y * CELL + CELL / 2;
-    ctx.fillStyle = accent;
-    if (ctx.roundRect) {
-      ctx.beginPath();
-      ctx.roundRect(hx - 11, hy - 13, 22, 26, pixel ? 0 : 7);
-      ctx.fill();
-    } else {
-      ctx.fillRect(hx - 11, hy - 13, 22, 26);
+    // Small metal coins, with a restrained highlight and grounded shadows.
+    for(var c=0;c<coins.length;c++){
+      var cx=coins[c].x*CELL+CELL/2,cy=coins[c].y*CELL+CELL/2;
+      ctx.fillStyle="#0007";ctx.beginPath();ctx.ellipse(cx+2,cy+3,7,3,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#807453";ctx.beginPath();ctx.ellipse(cx,cy,5,3.5,-.4,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle="#c1b18a";ctx.lineWidth=1;ctx.stroke();ctx.fillStyle="#d6c7a2";ctx.fillRect(cx-2,cy-2,2,1);
     }
-    ctx.fillStyle = "rgba(0,0,0,0.55)";
-    ctx.fillRect(hx - 6, hy - 7, 3, 4);
-    ctx.fillRect(hx + 3, hy - 7, 3, 4);
-    ctx.strokeStyle = border;
-    ctx.lineWidth = 2;
-    ctx.strokeRect(1, 1, cv.width - 2, cv.height - 2);
+    // Cloaked explorer silhouette, hood, shoulder armor and a narrow sword.
+    var hx=game.x*CELL+CELL/2,hy=game.y*CELL+CELL/2;
+    ctx.fillStyle="#0009";ctx.beginPath();ctx.ellipse(hx+2,hy+10,12,5,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#0c131b";ctx.beginPath();ctx.moveTo(hx,hy-9);ctx.lineTo(hx-11,hy+10);ctx.lineTo(hx+9,hy+11);ctx.closePath();ctx.fill();
+    ctx.fillStyle="#45555b";ctx.beginPath();ctx.moveTo(hx,hy-8);ctx.lineTo(hx-8,hy+8);ctx.lineTo(hx-2,hy+5);ctx.closePath();ctx.fill();
+    ctx.fillStyle="#626d69";ctx.fillRect(hx-8,hy-4,5,3);ctx.fillStyle="#111a20";ctx.beginPath();ctx.arc(hx,hy-9,5,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="#899796";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(hx+7,hy+2);ctx.lineTo(hx+12,hy-10);ctx.stroke();
+    ctx.fillStyle="#9b8b66";ctx.fillRect(hx+5,hy+1,6,2);
+    var shade=ctx.createRadialGradient(w/2,ht/2,30,w/2,ht/2,w*.6);shade.addColorStop(0,"#0000");shade.addColorStop(1,"#000a");ctx.fillStyle=shade;ctx.fillRect(0,0,w,ht);
+    ctx.strokeStyle="#7c806155";ctx.lineWidth=1;ctx.strokeRect(1,1,w-2,ht-2);
   }
 
   /** Small snapshot for save thumbnails. */

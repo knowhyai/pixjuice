@@ -2,6 +2,52 @@
 // missing keys fall back here, so raw key paths can never reach the user.
 
 const en = {
+  fr: {
+    "c0": {
+      "desc": "Versatile essentials for prototypes and finished games.",
+      "license": "CC0 — commercial use, no attribution required. Do not use the Kenney logo.",
+      "types": "2D sprites · 3D models · UI · audio · fonts"
+    },
+    "c1": {
+      "desc": "Animated worlds and characters for building your next adventure.",
+      "license": "Most packs are CC0 1.0; some newer packs use the Quaternius Asset License (QAL). Check the license on each pack. QAL allows personal, educational and commercial projects without attribution, but prohibits standalone asset redistribution or resale, including modified assets.",
+      "types": "3D characters · environments · kits · animations"
+    },
+    "c2": {
+      "desc": "Photorealistic assets for lighting and richly detailed worlds.",
+      "license": "CC0 — commercial use, no attribution required.",
+      "types": "HDRIs · PBR textures · 3D models"
+    },
+    "c3": {
+      "desc": "Surface detail and lighting for convincing environments.",
+      "license": "CC0 1.0 — commercial use, no attribution required.",
+      "types": "PBR materials · textures · HDRIs · models"
+    },
+    "c4": {
+      "desc": "A community library spanning art, music and sound.",
+      "license": "Mixed licenses: CC0, CC-BY, CC-BY-SA, OGA-BY and others. Check each asset’s license and attribution requirements.",
+      "types": "2D/3D art · music · sound effects"
+    },
+    "c5": {
+      "desc": "Browse community assets tagged CC0 on itch.io.",
+      "license": "CC0-tagged listings; still verify the Asset license on every listing.",
+      "types": "Community game assets tagged CC0"
+    },
+    "c6": {
+      "desc": "Cohesive low-poly packs with expressive characters and props.",
+      "license": "KayKit free packs are CC0 1.0; check each listing. Paid Complete bundles and SOURCE files may have different terms.",
+      "types": "Stylized low-poly 3D characters · props · animations"
+    },
+    "license": "License",
+    "types": "Asset types",
+    "source": "License details ↗",
+    "h1": "More free game assets",
+    "lede": "Discover more places to build your game. PixJuice’s own assets are also CC0 1.0 — commercial use, no attribution required.",
+    "own": "Explore PixJuice CC0 assets →",
+    "q": "Are all these sites CC0?",
+    "a": "No. Check each pack or listing. Some sources mix licenses; QAL restricts standalone asset redistribution and resale. PixJuice’s own game assets are CC0 1.0."
+  },
+
   lang: {
     aria: "Language",
   },
@@ -60,7 +106,7 @@ const en = {
     home2: `<a href="/credits/">credits &amp; licenses</a> · made for indie game devs`,
     credits2: `<a href="/credits/">credits &amp; licenses</a>`,
     catalog: `<a href="/">catalog</a>`,
-    templates: "<a href=\"/templates/\">game templates</a> · <a href=\"/free-assets/\">free assets</a> · part of the PixJuice free library for indie devs",
+    templates: "<a href=\"/templates/\">game templates</a> · <a href=\"/free-assets/\">free assets</a> · part of the PixJuice free library for indie devs · <a href=\"/free-resources/\">More free game assets</a>",
   },
   cat: {
     moves: "Moves",
@@ -458,6 +504,8 @@ const en = {
     fallback: "fallback blip",
   },
   credits: {
+    assets: "PixJuice game assets, including wooden chest art, and template code use CC0 1.0 Universal: commercial use, modification, redistribution and resale are allowed, without attribution. Planned assets have no downloads yet. <a href=\"/free-assets/\">CC0</a> · <a href=\"/free-resources/\">More free game assets</a>",
+
     sub: "credits & licenses",
     h1: "Credits & licenses",
     lede: "PixJuice is a thin studio around other people's excellent pixel art. Here is who made what, and the licenses that let us ship it.",
@@ -474,7 +522,7 @@ const en = {
     sfxLi2: `<a href="https://sfxr.me" target="_blank" rel="noopener">sfxr.me</a> — the online jsfxr generator`,
     h2own: "What's PixJuice's, and what isn't",
     own1: `<strong>PixJuice is not "pixelfx".</strong> pixelfx is the upstream library and its name belongs to its authors. PixJuice is an independent tool built on top of it, and is not affiliated with or endorsed by Patch or Hugo Duprez.`,
-    own2: `<strong>Fonts:</strong> this site uses your system UI fonts. The pixel font used by the official pixelfx gallery ("Patch Pixel") is <em>not</em> MIT-licensed and is deliberately not used here.`,
+    own2: `Cinzel / Cormorant / Silkscreen — SIL Open Font License 1.1. <a href="/licenses/Cinzel-OFL.txt">Cinzel OFL</a> · <a href="/licenses/Cormorant-OFL.txt">Cormorant OFL</a> · <a href="/licenses/Silkscreen-OFL.txt">Silkscreen OFL</a>. <a href="https://github.com/google/fonts/tree/main/ofl" target="_blank" rel="noopener">google/fonts</a>`,
     own3: `<strong>GIF encoding</strong> is done in the browser with <a href="https://github.com/mattdesl/gifenc" target="_blank" rel="noopener">gifenc</a> (MIT).`,
     own5: `<strong>MP3 encoding</strong> is done in the browser with <a href="https://github.com/breezystack/lamejs" target="_blank" rel="noopener">lamejs</a> (LGPL-3.0), loaded only when you export MP3s. OGG uses the browser's own Opus encoder.`,
     own4: `<strong>The PixJuice app code</strong> (editor, exports, sound synthesis, styling) is MIT too; the exported effect art is covered by pixelfx's MIT license, so you can use it in your games, commercial included.`,
@@ -644,7 +692,8 @@ const en = {
     "filterTpl": "UI templates",
     "soon": "Coming soon",
     "soonBody": "This asset is in production — the entry goes live here with previews, downloads and license once it ships.",
-    "freeCommercial": "Free for commercial use",
+    "freeCommercial": "CC0 1.0",
+    "licenseNotice": "CC0 1.0 Universal — commercial use, no attribution required.",
     "loadErr": "Couldn't load the asset list. Refresh to retry.",
     "notFound": "Asset not found.",
     "backAll": "← All assets",

@@ -121,7 +121,7 @@
   font-size: 12px;
   font-weight: 700;
   padding: 5px 12px;
-  border-radius: 999px;
+  border-radius: 2px;
   background: var(--skin-panel-2);
   border: 1px solid var(--skin-border);
   color: var(--skin-muted);
@@ -282,3 +282,5 @@
 .sv-pad { flex:none; }
 @media(max-width:600px) { .sv-slots { grid-template-columns:1fr; } .sv-game {padding:12px;} }
 .sv-demo .gx-slider { grid-template-columns:minmax(0,1fr) 32px; }
+
+.sv-game canvas{width:420px;max-width:100%;image-rendering:auto;border:1px solid #6b6b53;box-shadow:0 12px 30px #0008,inset 0 0 25px #0008}.sv-hud span{background:transparent;border-width:0 0 1px;padding:5px 10px;border-radius:0}.sv-slot-empty::before{content:"◇";font-family:Cinzel,serif;color:var(--skin-accent)}.sv-thumb{width:100px;height:66px}.sv-slot-meta{line-height:1.5}.sv-danger{color:#c79892}

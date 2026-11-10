@@ -46,6 +46,7 @@ export default defineConfig({
         gacha: "templates/gacha/index.html",
         save: "templates/save-load/index.html",
         assets: "free-assets/index.html",
+        resources: "free-resources/index.html",
         ...assetDetailInputs(),
         notfound: "404.html",
       },

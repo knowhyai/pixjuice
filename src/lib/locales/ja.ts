@@ -2,6 +2,52 @@
 import type { Dict } from "./en";
 
 const ja: Partial<Dict> = {
+  fr: {
+    "c0": {
+      "desc": "試作から完成作まで使える多彩な基本素材。",
+      "license": "CC0。商用利用可能・表記不要。Kenney のロゴは使用しないでください。",
+      "types": "2D スプライト · 3D モデル · UI · 音声 · フォント"
+    },
+    "c1": {
+      "desc": "冒険の世界を作るためのキャラクターとアニメーション。",
+      "license": "多くのパックは CC0 1.0、一部の新しいパックは Quaternius Asset License（QAL）です。各パックを確認してください。QAL は個人・教育・商用利用と表記不要を認めますが、改変後を含む素材単体の再配布・販売は禁止です。",
+      "types": "3D キャラクター · 環境 · キット · アニメーション"
+    },
+    "c2": {
+      "desc": "照明と緻密な世界のための写実素材。",
+      "license": "CC0。商用利用可能・表記不要。",
+      "types": "HDRI · PBR テクスチャ · 3D モデル"
+    },
+    "c3": {
+      "desc": "質感と照明で説得力のある環境を制作。",
+      "license": "CC0 1.0。商用利用可能・表記不要。",
+      "types": "PBR マテリアル · テクスチャ · HDRI · モデル"
+    },
+    "c4": {
+      "desc": "美術、音楽、効果音を集めたコミュニティライブラリ。",
+      "license": "CC0、CC-BY、CC-BY-SA、OGA-BY などが混在。各素材の許諾と表記条件を確認してください。",
+      "types": "2D/3D アート · 音楽 · 効果音"
+    },
+    "c5": {
+      "desc": "itch.io の CC0 タグ付きコミュニティ素材を探す。",
+      "license": "CC0 タグの一覧です。各項目の Asset license も確認してください。",
+      "types": "CC0 タグ付きゲーム素材"
+    },
+    "c6": {
+      "desc": "統一感のあるローポリのキャラクターと小道具。",
+      "license": "無料 KayKit パックは CC0 1.0。各項目を確認してください。有料 Complete バンドルや SOURCE ファイルは条件が異なる場合があります。",
+      "types": "スタイライズ 3D キャラクター · 小道具 · アニメーション"
+    },
+    "license": "ライセンス",
+    "types": "素材の種類",
+    "source": "ライセンス詳細 ↗",
+    "h1": "無料ゲーム素材をもっと探す",
+    "lede": "ゲーム制作に役立つ素材サイト。PixJuice 自身の素材も CC0 1.0 で、商用利用可能・表記不要です。",
+    "own": "PixJuice CC0 素材を見る →",
+    "q": "すべて CC0 ですか？",
+    "a": "各パックのライセンスをご確認ください。複数のライセンスや、素材単体の再配布・販売を制限する QAL があります。PixJuice の素材は CC0 1.0 です。"
+  },
+
   lang: {
     aria: "言語",
   },
@@ -60,7 +106,7 @@ const ja: Partial<Dict> = {
     home2: `<a href="/credits/">クレジットとライセンス</a> · インディーゲーム開発者のために`,
     credits2: `<a href="/credits/">クレジットとライセンス</a>`,
     catalog: `<a href="/">カタログ</a>`,
-    templates: "<a href=\"/templates/\">ゲームテンプレート</a> · <a href=\"/free-assets/\">無料アセット</a> · インディー開発者のためのPixJuice無料ライブラリ",
+    templates: "<a href=\"/templates/\">ゲームテンプレート</a> · <a href=\"/free-assets/\">無料アセット</a> · インディー開発者のためのPixJuice無料ライブラリ · <a href=\"/free-resources/\">無料ゲーム素材をもっと探す</a>",
   },
   cat: {
     moves: "アクション",
@@ -458,6 +504,8 @@ const ja: Partial<Dict> = {
     fallback: "フォールバック",
   },
   credits: {
+    assets: "PixJuice のゲーム素材（木の宝箱を含む）とテンプレートコードは CC0 1.0 Universal。商用利用、改変、再配布、販売が可能で、表記は不要です。予定素材はまだダウンロードできません。 <a href=\"/free-assets/\">CC0</a> · <a href=\"/free-resources/\">無料ゲーム素材をもっと探す</a>",
+
     sub: "クレジットとライセンス",
     h1: "クレジットとライセンス",
     lede: "PixJuice は、他の人たちの優れたピクセルアートを包む薄いスタジオです。誰が何を作ったのか、そして公開を可能にするライセンスについてここに記します。",
@@ -474,7 +522,7 @@ const ja: Partial<Dict> = {
     sfxLi2: `<a href="https://sfxr.me" target="_blank" rel="noopener">sfxr.me</a> — jsfxr のオンラインジェネレーター`,
     h2own: "PixJuice のもの、そうでないもの",
     own1: `<strong>PixJuice は "pixelfx" ではありません。</strong>pixelfx は上流ライブラリであり、その名前は作者たちのものです。PixJuice はその上に築かれた独立したツールで、Patch や Hugo Duprez と提携したり推薦を受けたりしたものではありません。`,
-    own2: `<strong>フォント:</strong> 当サイトはシステム UI フォントを使用します。pixelfx 公式ギャラリーが使うピクセルフォント（"Patch Pixel"）は MIT ライセンス<em>ではない</em>ため、意図的に使っていません。`,
+    own2: `Cinzel / Cormorant / Silkscreen — SIL Open Font License 1.1. <a href="/licenses/Cinzel-OFL.txt">Cinzel OFL</a> · <a href="/licenses/Cormorant-OFL.txt">Cormorant OFL</a> · <a href="/licenses/Silkscreen-OFL.txt">Silkscreen OFL</a>. <a href="https://github.com/google/fonts/tree/main/ofl" target="_blank" rel="noopener">google/fonts</a>`,
     own3: `<strong>GIF エンコード</strong>は <a href="https://github.com/mattdesl/gifenc" target="_blank" rel="noopener">gifenc</a>（MIT）によりブラウザ内で行われます。`,
     own5: `<strong>MP3 エンコード</strong>は <a href="https://github.com/breezystack/lamejs" target="_blank" rel="noopener">lamejs</a>（LGPL-3.0）によりブラウザ内で行われ、MP3 を書き出すときにだけ読み込まれます。OGG はブラウザ内蔵の Opus エンコーダを使います。`,
     own4: `<strong>PixJuice のアプリコード</strong>（エディター、書き出し、音声合成、スタイル）も MIT です。書き出されたエフェクトアートは pixelfx の MIT ライセンスでカバーされるため、商用を含めゲームに使えます。`,
@@ -644,7 +692,8 @@ const ja: Partial<Dict> = {
     "filterTpl": "UIテンプレート",
     "soon": "近日公開",
     "soonBody": "制作中——公開時にこのページでプレビュー・ダウンロード・ライセンスを提供します。",
-    "freeCommercial": "商用利用無料",
+    "freeCommercial": "CC0 1.0",
+    "licenseNotice": "CC0 1.0 Universal — 商用利用可能・表記不要。",
     "loadErr": "アセット一覧を読み込めませんでした。更新して再試行してください。",
     "notFound": "アセットが見つかりません。",
     "backAll": "← すべてのアセット",

@@ -137,7 +137,7 @@
   position: absolute;
   inset: 0 auto 0 0;
   width: 0;
-  background: linear-gradient(90deg, #b46bf2, #ffb238);
+  background: linear-gradient(90deg, #b46bf2, #b5a17a);
   transition: width 0.5s ease;
 }
 .gx-pitybar span {
@@ -388,3 +388,22 @@
 @keyframes reward-enter { from {opacity:0;translate:0 8px;} to{opacity:1;translate:0 0;} }
 @media(max-width:720px) { .gx-card { width:calc(33.333% - 8px); } .gx-chest { min-height:175px; } }
 .tpl-demo[data-skin="clean-low-poly"] .gx-pitybar span { color:var(--skin-ink);text-shadow:none; }
+
+/* Rarity drives light, from a cool glint to a gold-white bloom. */
+.gx-reveal{--light:var(--r-n);position:absolute;inset:0;pointer-events:none;display:grid;place-items:center;z-index:2;overflow:hidden}
+.gx-reveal.r-R{--light:var(--r-r)}.gx-reveal.r-SR{--light:var(--r-sr)}.gx-reveal.r-SSR{--light:var(--r-ssr)}
+.gx-flare{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,#fff9, color-mix(in srgb,var(--light) 65%,transparent) 20%,transparent 70%);animation:chest-flare 1.7s ease-out both;mix-blend-mode:screen}
+.r-SR .gx-flare{width:210px;height:210px}.r-SSR .gx-flare{width:320px;height:320px;background:radial-gradient(circle,#fff,#eee8d099 8%,#c0ab7270 28%,transparent 68%)}
+.gx-spark{position:absolute;left:50%;top:54%;width:2px;height:10px;background:var(--light);box-shadow:0 0 8px var(--light);animation:chest-spark 1.5s var(--delay) ease-out both}
+@keyframes chest-flare{0%{opacity:0;transform:scale(.05)}25%{opacity:1;transform:scale(.8)}100%{opacity:0;transform:scale(1.5)}}
+@keyframes chest-spark{0%{opacity:0;transform:translate(0,20px) rotate(-35deg) scaleY(8)}20%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(30deg) scaleY(.2)}}
+.tpl-demo .gx-card{--card-light:var(--r-n)}.tpl-demo .gx-card.r-R{--card-light:var(--r-r)}.tpl-demo .gx-card.r-SR{--card-light:var(--r-sr)}.tpl-demo .gx-card.r-SSR{--card-light:var(--r-ssr)}
+.tpl-demo .gx-card .gx-front{background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--card-light) 16%,transparent),transparent 75%),var(--skin-panel);border-color:color-mix(in srgb,var(--card-light) 55%,var(--skin-border));box-shadow:inset 0 0 0 3px #0006,0 0 10px -9px var(--card-light)}
+.tpl-demo .r-SR .gx-front{box-shadow:inset 0 0 0 3px #0006,0 0 20px -7px var(--r-sr)}.tpl-demo .r-SSR .gx-front{box-shadow:inset 0 0 0 3px #0006,0 0 26px -6px var(--r-ssr)}
+.gx-sigil{font-style:normal;font-size:26px;color:var(--card-light);text-shadow:0 0 12px var(--card-light)}
+.tpl-demo .gx-pitybar i{background:linear-gradient(90deg,#626074,#aca17d)}
+.tpl-demo .gx-gem{background:linear-gradient(135deg,#c4d3d5,#637e8e);box-shadow:none}
+.tpl-demo .gx-back{background:linear-gradient(45deg,transparent 48%,#b8aa7122 49% 51%,transparent 52%),var(--skin-panel)}
+@media(prefers-reduced-motion:reduce){.gx-spark{display:none}.gx-flare{animation:none;opacity:.2;transform:none}}
+
+.tpl-demo .gx-card.r-N .gx-front{box-shadow:inset 0 0 0 3px #0006;border-color:#66706a}.tpl-demo .gx-card.r-N .gx-sigil{text-shadow:none;opacity:.65}

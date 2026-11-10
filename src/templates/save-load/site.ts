@@ -23,6 +23,8 @@ import readme from "./standalone/README.md?raw";
 import license from "./standalone/LICENSE?raw";
 import skinsCss from "../shared/skins.css?raw";
 
+import {fontFiles, offlineStyles} from "../fonts";
+
 mountToolsMenu();
 mountLangSwitcher();
 window.PixI18nRefresh = () => applyStaticText(document);
@@ -34,12 +36,13 @@ onLocaleChange(() => { applyStaticText(document); window.dispatchEvent(new Event
 
 mountCodeBox(document.getElementById("codebox")!, [
   { name: "index.html", code: indexHtml },
-  { name: "styles.css", code: skinsCss + "\n" + demoStyles },
+  { name: "styles.css", code: offlineStyles(skinsCss + "\n" + demoStyles) },
   { name: "js/save-core.js", code: coreJs },
   { name: "js/skins.js", code: skinsJs },
   { name: "js/main.js", code: mainJs },
   { name: "README.md", code: readme },
   { name: "LICENSE", code: license },
+  ...fontFiles,
 ], "pixjuice-save-load-template.zip");
 
 const note = document.querySelector<HTMLElement>("[data-tpl-files]");

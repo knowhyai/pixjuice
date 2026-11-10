@@ -2,6 +2,52 @@
 import type { Dict } from "./en";
 
 const ko: Partial<Dict> = {
+  fr: {
+    "c0": {
+      "desc": "프로토타입부터 완성 게임까지 활용할 기본 소재.",
+      "license": "CC0: 상업적 사용 가능, 출처 표시 불필요. Kenney 로고는 사용하지 마세요.",
+      "types": "2D 스프라이트 · 3D 모델 · UI · 오디오 · 글꼴"
+    },
+    "c1": {
+      "desc": "모험을 위한 애니메이션 캐릭터와 세계.",
+      "license": "대부분의 팩은 CC0 1.0이며 일부 최신 팩은 Quaternius Asset License(QAL)를 사용합니다. 각 팩을 확인하세요. QAL은 개인·교육·상업 프로젝트에서 무표기 사용을 허용하지만 수정본을 포함한 독립 소재 재배포와 재판매를 금지합니다.",
+      "types": "3D 캐릭터 · 환경 · 키트 · 애니메이션"
+    },
+    "c2": {
+      "desc": "조명과 세밀한 세계를 위한 사실적 소재.",
+      "license": "CC0: 상업적 사용 가능, 출처 표시 불필요.",
+      "types": "HDRI · PBR 텍스처 · 3D 모델"
+    },
+    "c3": {
+      "desc": "표면 디테일과 조명으로 생생한 환경 제작.",
+      "license": "CC0 1.0: 상업적 사용 가능, 출처 표시 불필요.",
+      "types": "PBR 재질 · 텍스처 · HDRI · 모델"
+    },
+    "c4": {
+      "desc": "미술, 음악, 효과음을 모은 커뮤니티 라이브러리.",
+      "license": "CC0, CC-BY, CC-BY-SA, OGA-BY 등 혼합 라이선스입니다. 각 소재의 라이선스와 출처 표시 요건을 확인하세요.",
+      "types": "2D/3D 미술 · 음악 · 효과음"
+    },
+    "c5": {
+      "desc": "itch.io에서 CC0 태그가 붙은 커뮤니티 소재 탐색.",
+      "license": "CC0 태그 목록입니다. 각 항목의 Asset license도 확인하세요.",
+      "types": "CC0 태그 커뮤니티 게임 소재"
+    },
+    "c6": {
+      "desc": "통일된 스타일의 로우 폴리 캐릭터와 소품 팩.",
+      "license": "무료 KayKit 팩은 CC0 1.0입니다. 각 항목을 확인하세요. 유료 Complete 번들과 SOURCE 파일은 조건이 다를 수 있습니다.",
+      "types": "스타일화 로우 폴리 3D 캐릭터 · 소품 · 애니메이션"
+    },
+    "license": "라이선스",
+    "types": "소재 유형",
+    "source": "라이선스 상세 ↗",
+    "h1": "더 많은 무료 게임 에셋",
+    "lede": "게임 제작을 위한 소재 사이트를 찾아보세요. PixJuice 자체 소재도 CC0 1.0이며 상업적 사용과 무표기 사용이 가능합니다.",
+    "own": "PixJuice CC0 소재 보기 →",
+    "q": "모든 사이트가 CC0인가요?",
+    "a": "각 팩과 항목의 라이선스를 확인하세요. 라이선스가 혼합될 수 있으며 QAL은 독립 소재 재배포와 재판매를 제한합니다. PixJuice 자체 소재는 CC0 1.0입니다."
+  },
+
   lang: {
     aria: "언어",
   },
@@ -60,7 +106,7 @@ const ko: Partial<Dict> = {
     home2: `<a href="/credits/">크레딧 및 라이선스</a> · 인디 게임 개발자를 위해`,
     credits2: `<a href="/credits/">크레딧 및 라이선스</a>`,
     catalog: `<a href="/">카탈로그</a>`,
-    templates: "<a href=\"/templates/\">게임 템플릿</a> · <a href=\"/free-assets/\">무료 에셋</a> · 인디 개발자를 위한 PixJuice 무료 라이브러리",
+    templates: "<a href=\"/templates/\">게임 템플릿</a> · <a href=\"/free-assets/\">무료 에셋</a> · 인디 개발자를 위한 PixJuice 무료 라이브러리 · <a href=\"/free-resources/\">더 많은 무료 게임 에셋</a>",
   },
   cat: {
     moves: "기술",
@@ -458,6 +504,8 @@ const ko: Partial<Dict> = {
     fallback: "기본 삑",
   },
   credits: {
+    assets: "나무 보물상자를 포함한 PixJuice 게임 소재와 템플릿 코드는 CC0 1.0 Universal입니다. 상업적 사용, 수정, 재배포, 재판매가 가능하며 출처 표시가 필요 없습니다. 예정 소재는 아직 다운로드할 수 없습니다. <a href=\"/free-assets/\">CC0</a> · <a href=\"/free-resources/\">더 많은 무료 게임 에셋</a>",
+
     sub: "크레딧 및 라이선스",
     h1: "크레딧 및 라이선스",
     lede: "PixJuice는 다른 이들의 훌륭한 픽셀 아트를 감싸는 얇은 스튜디오입니다. 누가 무엇을 만들었는지, 그리고 이를 공개할 수 있게 해주는 라이선스를 여기에 적습니다.",
@@ -474,7 +522,7 @@ const ko: Partial<Dict> = {
     sfxLi2: `<a href="https://sfxr.me" target="_blank" rel="noopener">sfxr.me</a> — jsfxr 온라인 제너레이터`,
     h2own: "PixJuice의 것과 아닌 것",
     own1: `<strong>PixJuice는 "pixelfx"가 아닙니다.</strong> pixelfx는 상위 라이브러리이며 그 이름은 저자들의 것입니다. PixJuice는 그 위에 세워진 독립 도구로, Patch나 Hugo Duprez와 제휴하거나 추천받은 적이 없습니다.`,
-    own2: `<strong>글꼴:</strong> 이 사이트는 시스템 UI 글꼴을 사용합니다. pixelfx 공식 갤러리가 쓰는 픽셀 글꼴("Patch Pixel")은 MIT 라이선스가 <em>아니므로</em> 의도적으로 사용하지 않습니다.`,
+    own2: `Cinzel / Cormorant / Silkscreen — SIL Open Font License 1.1. <a href="/licenses/Cinzel-OFL.txt">Cinzel OFL</a> · <a href="/licenses/Cormorant-OFL.txt">Cormorant OFL</a> · <a href="/licenses/Silkscreen-OFL.txt">Silkscreen OFL</a>. <a href="https://github.com/google/fonts/tree/main/ofl" target="_blank" rel="noopener">google/fonts</a>`,
     own3: `<strong>GIF 인코딩</strong>은 <a href="https://github.com/mattdesl/gifenc" target="_blank" rel="noopener">gifenc</a>(MIT)로 브라우저 안에서 처리됩니다.`,
     own5: `<strong>MP3 인코딩</strong>은 <a href="https://github.com/breezystack/lamejs" target="_blank" rel="noopener">lamejs</a>(LGPL-3.0)로 브라우저 안에서 처리되며, MP3를 내보낼 때만 필요할 때 로드됩니다. OGG는 브라우저 내장 Opus 인코더를 사용합니다.`,
     own4: `<strong>PixJuice 앱 코드</strong>(에디터, 내보내기, 사운드 합성, 스타일) 역시 MIT입니다. 내보낸 이펙트 아트는 pixelfx의 MIT 라이선스로 보호되므로 상업 용도를 포함해 게임에 사용할 수 있습니다.`,
@@ -644,7 +692,8 @@ const ko: Partial<Dict> = {
     "filterTpl": "UI 템플릿",
     "soon": "출시 예정",
     "soonBody": "제작 중입니다——공개되면 이 페이지에서 미리보기, 다운로드, 라이선스를 제공합니다.",
-    "freeCommercial": "상업적 이용 무료",
+    "freeCommercial": "CC0 1.0",
+    "licenseNotice": "CC0 1.0 Universal — 상업적 사용 가능, 출처 표시 불필요.",
     "loadErr": "에셋 목록을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.",
     "notFound": "에셋을 찾을 수 없습니다.",
     "backAll": "← 전체 에셋",

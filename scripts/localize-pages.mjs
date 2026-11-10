@@ -14,12 +14,12 @@ const translate=(l,k)=>lookup(dicts[l],k)??lookup(dicts.en,k)??k;
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const strip=s=>s.replace(/<[^>]*>/g,'');
 const manifest=JSON.parse(await readFile('public/free-assets/manifest.json','utf8'));
-const paths=['templates/','templates/gacha/','templates/save-load/','free-assets/',...manifest.assets.map(a=>`free-assets/${a.id}/`)];
+const paths=['templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/',...manifest.assets.map(a=>`free-assets/${a.id}/`)];
 const url=(l,p)=>`${SITE}/${l==='en'?'':l+'/'}${p}`;
 for(const path of paths) {
  const original=await readFile(`dist/${path}index.html`,'utf8');
  for(const lang of langs) {
-  const d=seo[lang],key=path==='templates/gacha/'?'gx':path==='templates/save-load/'?'sv':path==='templates/'?'tplIndex':'fa';
+  const d=seo[lang],key=path==='templates/gacha/'?'gx':path==='templates/save-load/'?'sv':path==='templates/'?'tplIndex':path==='free-resources/'?'fr':'fa';
   const asset=manifest.assets.find(a=>path===`free-assets/${a.id}/`);
   const name=asset?(lang==='zh'?asset.name.zh||asset.name.en:asset.name.en):null;
   let title=asset?`${name} — ${d.assetTitle}`:translate(lang,key==='gx'||key==='sv'?key+'.hero.h1':key+'.h1');
@@ -34,13 +34,13 @@ for(const path of paths) {
    .replace(/(<meta property="og:title" content=")[^"]*(")/,`$1${esc(title)}$2`)
    .replace(/(<meta property="og:description" content=")[^"]*(")/,`$1${esc(desc)}$2`)
    .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'');
-  const questions=key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
-  const json=[{'@context':'https://schema.org','@type':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:key==='fa'?(asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined):'https://creativecommons.org/publicdomain/zero/1.0/'},{'@context':'https://schema.org','@type':'FAQPage',inLanguage:lang,mainEntity:questions.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))}];
+  const questions=key==='fr'?[[translate(lang,'fr.q'),translate(lang,'fr.a')]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
+  const json=[{'@context':'https://schema.org','@type':key==='fr'?'CollectionPage':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:key==='fr'?undefined:key==='fa'?(asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined):'https://creativecommons.org/publicdomain/zero/1.0/'},{'@context':'https://schema.org','@type':'FAQPage',inLanguage:lang,mainEntity:questions.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))}];
   const head=`<link rel="canonical" href="${url(lang,path)}">\n${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url(l,path)}">`).join('\n')}\n<link rel="alternate" hreflang="x-default" href="${url('en',path)}">\n<script type="application/ld+json">${JSON.stringify(json).replaceAll('<','\\u003c')}</script>`;
   html=html.replace('</head>',head+'\n</head>');
   const faq=`<section class="tpl-faq"><h2>${esc(d.faq)}</h2>${questions.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</section>`;
   html=html.replace(/\s*<footer>/,faq+'\n<footer>');
-  if(lang!=='en') html=html.replace(/href="\/(templates|free-assets)(\/[^"?#]*)?"/g,`href="/${lang}/$1$2"`);
+  if(lang!=='en') html=html.replace(/href="\/(templates|free-assets|free-resources)(\/[^"?#]*)?"/g,`href="/${lang}/$1$2"`);
   const folder=`dist/${lang==='en'?'':lang+'/'}${path}`;
   await mkdir(folder,{recursive:true});await writeFile(folder+'index.html',html);
  }
