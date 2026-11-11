@@ -48,7 +48,7 @@
         <a href="/templates/" data-i18n="nav.templates">game templates</a>
         <a href="/free-assets/" data-i18n="nav.assets">free assets</a>
         <a href="/#effects" data-i18n="nav.effects">effects</a>
-        <a href="/feel/" class="cur" aria-current="page" data-i18n="nav.feel">game feel</a>
+        <a href="/feel/" class="cur" aria-current="page" data-i18n="nav.feel">Game Feel</a>
         <details class="tools">
           <summary data-i18n="nav.tools">tools ▾</summary>
           <div class="tools-menu">
@@ -84,7 +84,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="hitStop"></div>
-          <p class="feel-rec" data-i18n="feel.l1rec">Recommended: 3–4 frames (~50–67 ms) for light hits, 10+ for heavy.</p>
+          <p class="feel-rec" data-i18n="feel.l1rec">Published anchors: action games freeze “a few frames” (Song 2005); Guilty Gear Xrd ≈7 light / ≈10 heavy (Lin et al. 2022); Smash Ultimate ≈15 frames at 15% damage, 30-frame cap (SmashWiki). The 3–4 / 10+ starting points below are heuristics.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l1p">Past ~10 frames it starts reading as a stutter rather than weight — the player thinks the game dropped frames.</span></p>
         </section>
 
@@ -96,7 +96,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="shake"></div>
-          <p class="feel-rec" data-i18n="feel.l2rec">Recommended: 0.15–0.3 trauma for light hits, decay 2.5/s or faster.</p>
+          <p class="feel-rec" data-i18n="feel.l2rec">Directional, short and fast with quick decay — practice from Nijman (2013) and Song (2005); Lin et al. (2022) count camera control among the three make-or-break factors. Amplitudes have no published standard: heuristic.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l2p">Fresh random jitter every frame reads as a glitch. During hit stop, decay trauma with unscaled time — or the shake freezes with the world.</span></p>
         </section>
 
@@ -108,7 +108,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="feedback"></div>
-          <p class="feel-rec" data-i18n="feel.l3rec">Recommended: one number per hit, flash ~0.3–0.5, squash to taste.</p>
+          <p class="feel-rec" data-i18n="feel.l3rec">A 1–2 frame flash matches the range Jonasson &amp; Purho demo (2012); exact counts are heuristics. Damage numbers come from Chinese studio practice (2014), not from a paper.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l3p">Flash + squash + a wall of numbers on one hit is noise, not feedback — the overdone preset shows exactly how bad it gets.</span></p>
         </section>
 
@@ -120,7 +120,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="knockback"></div>
-          <p class="feel-rec" data-i18n="feel.l4rec">Recommended: ~0.5 m in ~0.15 s for light hits, ~2 m in ~0.3 s for heavy.</p>
+          <p class="feel-rec" data-i18n="feel.l4rec">Direction follows the attack line (Song 2005; Nijman 2013). No published distance/duration table — the slider values are heuristics; compare with the presets.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l4p">A uniform slide feels weightless. Fast out, sudden stop — never a constant-velocity glide.</span></p>
         </section>
 
@@ -132,7 +132,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="vfx"></div>
-          <p class="feel-rec" data-i18n="feel.l5rec">Recommended: 40–80 sparks for light hits, add the shockwave on heavy ones.</p>
+          <p class="feel-rec" data-i18n="feel.l5rec">Particles and hit light appear in the Juice It or Lose It demo and Song (2005); counts have no standard — start restrained (heuristic), pile on only in the overdone preset, per Kao (2020).</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l5p">An isotropic burst at the impact point reads as confetti. Aim the cone along the hit direction.</span></p>
         </section>
 
@@ -144,7 +144,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="sfx"></div>
-          <p class="feel-rec" data-i18n="feel.l6rec">Recommended: low + high for quick hits, low + mid for heavy blows.</p>
+          <p class="feel-rec" data-i18n="feel.l6rec">The layer structure (whoosh / effort / impact / reaction) is from Song (2005); “low = weight, mid = texture, high = crisp” is a common heuristic, not a published model. Lin et al. (2022) list sound consistency as a make-or-break factor.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l6p">Stacking all three bands on every single hit washes the sound out — mix per attack weight instead.</span></p>
         </section>
       </div>
@@ -167,7 +167,7 @@
               <button type="button" class="btn feel-preset" data-preset="heavy" data-i18n="feel.preset.heavy">Heavy hammer</button>
               <button type="button" class="btn feel-preset" data-preset="overdone" data-i18n="feel.preset.overdone">Everything maxed</button>
             </div>
-            <p class="cap" data-i18n="feel.presetHint">Switch, then attack to compare. Preset notes: light = fast and restrained; heavy = long freeze, big shake, slow motion; maxed = deliberately too much.</p>
+            <p class="cap" data-i18n="feel.presetHint">Switch, then attack to compare. Basis: light ≈ Song’s fast-attack observation + GGXRD’s light/heavy split; heavy ≈ Song’s heavy-weapon camera shift + Sakurai’s “higher damage, longer stop”; maxed = Kao (2020): extreme juiciness scores worse than moderate.</p>
           </div>
         </section>
 
@@ -179,6 +179,21 @@
         </section>
       </aside>
     </div>
+    <section class="feel-sources" aria-labelledby="feel-hitsources-h">
+      <h2 id="feel-hitsources-h" data-i18n="feel.sourcesH">Sources &amp; method</h2>
+      <p class="feel-sources-note" data-i18n="feel.sourcesNote">Numbers on this page carry one of two labels: a published source, or 经验值 (heuristic) — the industry's oral tradition. Heuristics are fine slider defaults; they are not findings. Retune everything.</p>
+      <div data-i18n-html="feel.sourcesHit">
+        <ul>
+          <li>Song, “Improving the Combat ‘Impact’ of Action Games” (2005) — frame freezing, directional camera shift, hit light, layered audio. <a href="https://www.gamedeveloper.com/audio/improving-the-combat-impact-of-action-games" target="_blank" rel="noopener">Article ↗</a></li>
+          <li>Sakurai, Famitsu vol. 490–491 — hitstop scales with damage; both sides freeze equally. <a href="https://sourcegaming.info/2015/11/11/thoughts-on-hitstop-sakurais-famitsu-column-vol-490-1/" target="_blank" rel="noopener">Translation ↗</a></li>
+          <li>SmashWiki, “Hitlag” — per-game formulas: Ultimate ≈15 frames at 15% damage, 30-frame cap. <a href="https://www.ssbwiki.com/Hitlag" target="_blank" rel="noopener">Wiki ↗</a></li>
+          <li>Lin et al. (2022) — Guilty Gear Xrd ≈7 light / ≈10 heavy frames; hit stop, sound consistency and camera control are the critical three. <a href="https://arxiv.org/abs/2208.06155" target="_blank" rel="noopener">arXiv ↗</a></li>
+          <li>Jonasson &amp; Purho, “Juice It or Lose It” (2012) — flash, squash, particles, the toggle-and-compare method. <a href="https://github.com/grapefrukt/juicy-breakout" target="_blank" rel="noopener">Demo ↗</a></li>
+          <li>Nijman, “The Art of Screenshake” (2013) — directional, fast-decaying shake; knockback as a layer.</li>
+          <li>Kao (2020) — moderate juiciness beats none and extreme: the overdone preset is the controlled failure case. <a href="https://doi.org/10.1016/j.entcom.2020.100359" target="_blank" rel="noopener">DOI ↗</a></li>
+        </ul>
+      </div>
+    </section>
   </main>
 
   <footer>

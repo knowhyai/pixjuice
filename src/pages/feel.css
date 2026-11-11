@@ -79,6 +79,155 @@
   font-size: 14px;
 }
 
+.feel-domains {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 10px 20px 34px;
+}
+
+.feel-domain {
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 16px 18px 14px;
+}
+
+.feel-domain-live {
+  border-color: color-mix(in srgb, var(--acc) 45%, var(--line));
+}
+
+.feel-domain-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.feel-domain-num {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+  padding-top: 4px;
+}
+
+.feel-domain-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.feel-domain-text h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.feel-domain-gloss {
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.feel-domain-text p {
+  margin: 0;
+  color: var(--dim);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.feel-badge {
+  flex: none;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--faint);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.feel-badge-soon {
+  border-style: dashed;
+}
+
+.feel-badge-live {
+  color: var(--good);
+  border-color: color-mix(in srgb, var(--good) 50%, var(--line));
+}
+
+.feel-leaves {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.feel-leaves li {
+  font-size: 12.5px;
+  font-weight: 650;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--faint);
+}
+
+.feel-domain-live .feel-recipes {
+  margin: 14px 0 0;
+}
+
+.feel-sources {
+  margin: 0 20px 42px;
+  padding: 18px 20px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.feel-sources h2 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+}
+
+.feel-sources-note {
+  margin: 0 0 12px;
+  color: var(--dim);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.feel-sources ul {
+  margin: 0;
+  padding: 0 0 0 1.15em;
+  color: var(--dim);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.feel-sources li {
+  margin: 0 0 6px;
+}
+
+.feel-sources a {
+  font-weight: 650;
+}
+
+
 .feel-soon {
   margin: 0 20px 42px;
   padding: 16px 18px;
@@ -486,8 +635,16 @@
     border-right: 0;
     border-bottom: 2px solid var(--line);
   }
+  .feel-domain-head {
+    flex-wrap: wrap;
+  }
+  .feel-badge {
+    margin-left: 0;
+  }
   .feel-recipes,
   .feel-soon,
+  .feel-domains,
+  .feel-sources,
   .feel-main {
     margin-left: 0;
     margin-right: 0;

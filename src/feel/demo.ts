@@ -1,12 +1,9 @@
-// The /feel/hit/ arena: two rigged knights, IK-driven strikes on the attacker,
-// local physical-feeling reactions on the victim, and the six juice layers
-// wired to the live parameter object.
-//
-// The source rig ships reference-pose animation clips, so the demo is fully
-// procedural on top of the skinned skeletons: a combat stance and breathing
-// sway are layered over the animated pose, the attacker's arm is solved with
-// a two-bone IK toward the selected hit zone, and the victim reacts through
-// per-bone spring impulses — no capsules, no block people.
+// The /feel/hit/ arena: two rigged knights driven by their Mixamo clips —
+// the striker loops idle and plays the slash on attack, the victim loops idle
+// and plays the body-hit clip on contact. The six juice layers stack on top
+// of the clips: hit stop freezes the simulation clock (mixers included),
+// screen shake rides the unscaled clock, flash/knockback/sparks/numbers/audio
+// fire from the impact moment. No capsules; visible motion comes from the clips.
 
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -30,38 +27,11 @@ const ZONE_BONES: Record<HitZone, string> = {
   belly: "mixamorig:Spine",
 };
 
-/** Seconds from attack start to contact (the strike phase is built around it). */
-const CONTACT_AT = 0.34;
-
-/** Per-frame world-space reaction spring for one bone. */
-interface SpringBone {
-  bone: THREE.Bone;
-  basePos: THREE.Vector3; // animated (+ stance) local transform, captured per frame
-  baseQuat: THREE.Quaternion;
-  pos: THREE.Vector3; // current world-space offset
-  posVel: THREE.Vector3;
-  axis: THREE.Vector3; // world rotation axis
-  rot: number;
-  rotVel: number;
-}
-
 const scratch = {
-  q0: new THREE.Quaternion(),
-  q1: new THREE.Quaternion(),
-  q2: new THREE.Quaternion(),
   v0: new THREE.Vector3(),
   v1: new THREE.Vector3(),
   v2: new THREE.Vector3(),
 };
-
-/**
- * Stance offsets that survive as rotations: only the torso lean. The arms are
- * handled by IK (they hang in guard positions) because the rig's per-bone
- * local axes make axis-guess rotations unpredictable.
- */
-const STANCE: { bone: string; axis: "x" | "z"; angle: number }[] = [
-  { bone: "mixamorig:Spine1", axis: "x", angle: 0.06 },
-];
 
 export async function createFeelDemo(host: HTMLElement, initialParams: FeelParams): Promise<FeelDemo> {
   let params = initialParams;
@@ -156,10 +126,13 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   const themeObserver = new MutationObserver(applyTheme);
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-  // --- knights --------------------------------------------------------------------
+  // --- knights + clips -------------------------------------------------------------
   const gltf = await new GLTFLoader().loadAsync("/feel/knight.glb");
-  const clips = gltf.animations;
-  const idle = THREE.AnimationClip.findByName(clips, "idle") ?? clips[0];
+  const clipOf = (names: string[]): THREE.AnimationClip =>
+    names.map((n) => THREE.AnimationClip.findByName(gltf.animations, n)).find((c): c is THREE.AnimationClip => !!c) ?? gltf.animations[0];
+  const idle = clipOf(["idle"]);
+  const slash = clipOf(["slash", "attack"]);
+  const hit = clipOf(["hit_to_body_01", "hit"]);
 
   const attackerRoot = new THREE.Group();
   const victimRoot = new THREE.Group();
@@ -169,13 +142,10 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   victimRoot.add(victim);
   attackerRoot.position.set(-0.82, 0, 0.14);
   victimRoot.position.set(0.82, 0, -0.14);
-  // orientation measured from the posed skeleton's facing (head − hips):
-  // the reference pose itself turns the character, so the roots are set to
-  // make each knight look at the other
+  // orientation measured from the posed skeleton's facing (head − hips)
   attackerRoot.rotation.y = -Math.PI / 2 + 0.06;
   victimRoot.rotation.y = Math.PI / 2 - 0.3;
   scene.add(attackerRoot, victimRoot);
-  const attackerHome = attackerRoot.position.clone();
   const victimHome = victimRoot.position.clone();
 
   // the victim fights bare-handed; sword and shield stay on the striker
@@ -185,8 +155,16 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
 
   const mixerA = new THREE.AnimationMixer(attacker);
   const mixerV = new THREE.AnimationMixer(victim);
-  mixerA.clipAction(idle).play();
-  mixerV.clipAction(idle).play();
+  const idleA = mixerA.clipAction(idle);
+  const idleV = mixerV.clipAction(idle);
+  idleA.play();
+  idleV.play();
+  const slashA = mixerA.clipAction(slash);
+  slashA.setLoop(THREE.LoopOnce, 1);
+  slashA.clampWhenFinished = true;
+  const hitV = mixerV.clipAction(hit);
+  hitV.setLoop(THREE.LoopOnce, 1);
+  hitV.clampWhenFinished = true;
 
   const boneMap = new Map<THREE.Object3D, Map<string, THREE.Bone>>();
   function bone(root: THREE.Object3D, name: string): THREE.Bone | undefined {
@@ -207,6 +185,38 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   }
   const zoneBone = (z: HitZone): THREE.Bone => bone(victim, ZONE_BONES[z]) ?? (bone(victim, "mixamorig:Hips") as THREE.Bone);
 
+  /**
+   * Contact timing, measured from the clip itself: step through the slash and
+   * find when the sword hand passes closest to the victim's chest. The impact
+   * therefore tracks the animation, not a hardcoded phase fraction.
+   */
+  const hand = bone(attacker, "mixamorig:RightHand");
+  const contactDelay = measureContact();
+  function measureContact(): number {
+    if (!hand) return slash.duration * 0.4;
+    const target = zoneBone("chest").getWorldPosition(new THREE.Vector3());
+    let bestT = slash.duration * 0.4;
+    let bestD = Infinity;
+    slashA.reset();
+    slashA.play();
+    slashA.setEffectiveWeight(1);
+    for (let t = 0; t <= slash.duration; t += 1 / 30) {
+      slashA.time = t;
+      mixerA.update(0);
+      const d = hand.getWorldPosition(scratch.v0).distanceTo(target);
+      if (d < bestD) {
+        bestD = d;
+        bestT = t;
+      }
+    }
+    // back to the idle loop, as if nothing was sampled
+    slashA.stop();
+    slashA.reset();
+    idleA.reset().play();
+    mixerA.update(0);
+    return bestT;
+  }
+
   // victim materials for the flash layer
   const victimMats: THREE.MeshStandardMaterial[] = [];
   victim.traverse((o) => {
@@ -218,89 +228,6 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
       }
     }
   });
-
-  // --- stance + breathing sway (applied after the mixer, before the springs) ----
-  // Per-bone local axes are arbitrary in this rig, so stance offsets are
-  // expressed in the HIPS frame — the character's own posed frame — and
-  // conjugated through each bone's parent into bone space.
-  const axisVecs = { x: new THREE.Vector3(1, 0, 0), z: new THREE.Vector3(0, 0, 1) };
-  const hipsFrameQ = new THREE.Quaternion();
-  function applyStance(root: THREE.Object3D, isVictim: boolean, t: number, ikFade: number): void {
-    const hips = bone(root, "mixamorig:Hips");
-    if (!hips) return;
-    hips.getWorldQuaternion(hipsFrameQ);
-    for (const s of STANCE) {
-      const b = bone(root, s.bone);
-      if (!b) continue;
-      let angle = s.angle;
-      if (s.bone === "mixamorig:Spine1") angle += 0.02 * Math.sin(t * 1.7 + (isVictim ? 2.1 : 0));
-      void ikFade;
-      const parent = b.parent as THREE.Object3D;
-      parent.getWorldQuaternion(scratch.q1);
-      // character-frame axis → world, then conjugate through the parent
-      scratch.v1.copy(axisVecs[s.axis]).applyQuaternion(hipsFrameQ);
-      scratch.q2.setFromAxisAngle(scratch.v1, angle);
-      scratch.q0.copy(scratch.q1).invert().multiply(scratch.q2).multiply(scratch.q1);
-      b.quaternion.premultiply(scratch.q0);
-    }
-  }
-
-  // --- victim local reactions: springs on the torso/neck/head chain ------------
-  const springs: SpringBone[] = [];
-  const addSpring = (name: string): SpringBone | null => {
-    const b = bone(victim, name);
-    if (!b) return null;
-    const s: SpringBone = {
-      bone: b,
-      basePos: b.position.clone(),
-      baseQuat: b.quaternion.clone(),
-      pos: new THREE.Vector3(),
-      posVel: new THREE.Vector3(),
-      axis: new THREE.Vector3(1, 0, 0),
-      rot: 0,
-      rotVel: 0,
-    };
-    springs.push(s); // hierarchy order: hips → spine → spine1 → spine2 → neck → head
-    return s;
-  };
-  const S = {
-    hips: addSpring("mixamorig:Hips"),
-    spine: addSpring("mixamorig:Spine"),
-    spine1: addSpring("mixamorig:Spine1"),
-    spine2: addSpring("mixamorig:Spine2"),
-    neck: addSpring("mixamorig:Neck"),
-    head: addSpring("mixamorig:Head"),
-  };
-
-  /**
-   * Per-zone reaction, as impulses on the springs. Belly: the torso caves in
-   * and the head tips toward the strike. Chest: the ribcage rocks back and the
-   * chin lifts. Head: whiplash down the neck. The squash sub-toggle scales the
-   * exaggeration; a base reaction always plays so the hit always lands.
-   */
-  function impulseZone(z: HitZone, dir: THREE.Vector3): void {
-    const k = params.feedback.on && params.feedback.squash ? 0.5 + params.feedback.squashAmount : 0.5;
-    const across = scratch.v0.crossVectors(scratch.v1.set(0, 1, 0), dir).normalize().clone();
-    const kick = (s: SpringBone | null, meters: number, deg: number) => {
-      if (!s) return;
-      s.posVel.addScaledVector(dir, meters * 30);
-      s.axis.copy(across);
-      s.rotVel += (deg * Math.PI) / 180 * 16;
-    };
-    if (z === "belly") {
-      kick(S.spine, 0.1 * k, 15 * k); // belly caves in, torso folds over it
-      kick(S.spine1, 0.05 * k, 9 * k);
-      kick(S.head, -0.045 * k, -13 * k); // head tips forward into the strike
-    } else if (z === "chest") {
-      kick(S.spine2, 0.09 * k, -16 * k); // ribcage rocks back
-      kick(S.spine1, 0.05 * k, -9 * k);
-      kick(S.head, 0.03 * k, 11 * k); // chin lifts
-    } else {
-      kick(S.head, 0.12 * k, 21 * k); // whiplash
-      kick(S.neck, 0.045 * k, 9 * k);
-      kick(S.spine2, 0.03 * k, 5 * k);
-    }
-  }
 
   // --- knockback: fast out, constant deceleration, hard stop ------------------
   const kbVel = new THREE.Vector3();
@@ -320,7 +247,7 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   sparkGeo.setAttribute("position", new THREE.BufferAttribute(sparkPos, 3));
   sparkGeo.setAttribute("color", new THREE.BufferAttribute(sparkCol, 3));
   const sparkMat = new THREE.PointsMaterial({
-    size: 0.045,
+    size: 0.05,
     vertexColors: true,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
@@ -388,107 +315,11 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     });
   }
 
-  // --- arm IK: both knights, both arms -----------------------------------------
-  // The rig's reference pose holds the arms out along the character's forward
-  // axis, and its per-bone local axes are arbitrary — so instead of guessing
-  // rotation axes, every arm is SOLVED toward a world-space target: guard
-  // positions at rest, the choreographed strike path for the swinging arm.
-  const ARMS: Record<"attR" | "attL" | "vicR" | "vicL", { upper?: THREE.Bone; fore?: THREE.Bone; hand?: THREE.Bone; side: number }> = {
-    attR: { upper: bone(attacker, "mixamorig:RightArm"), fore: bone(attacker, "mixamorig:RightForeArm"), hand: bone(attacker, "mixamorig:RightHand"), side: 1 },
-    attL: { upper: bone(attacker, "mixamorig:LeftArm"), fore: bone(attacker, "mixamorig:LeftForeArm"), hand: bone(attacker, "mixamorig:LeftHand"), side: -1 },
-    vicR: { upper: bone(victim, "mixamorig:RightArm"), fore: bone(victim, "mixamorig:RightForeArm"), hand: bone(victim, "mixamorig:RightHand"), side: 1 },
-    vicL: { upper: bone(victim, "mixamorig:LeftArm"), fore: bone(victim, "mixamorig:LeftForeArm"), hand: bone(victim, "mixamorig:LeftHand"), side: -1 },
-  };
-  const ik = {
-    upperPos: new THREE.Vector3(),
-    forePos: new THREE.Vector3(),
-    handPos: new THREE.Vector3(),
-    elbow: new THREE.Vector3(),
-    target: new THREE.Vector3(),
-    dir: new THREE.Vector3(),
-    pole: new THREE.Vector3(),
-    rot: new THREE.Quaternion(),
-    worldQ: new THREE.Quaternion(),
-  };
-
-  /**
-   * Two-bone IK in world space for one arm chain, blended by weight: the
-   * shoulder and forearm rotate toward the law-of-cosines solution, so the
-   * base pose keeps its shape and only the reach is solved.
-   */
-  function solveArm(arm: { upper?: THREE.Bone; fore?: THREE.Bone; hand?: THREE.Bone }, target: THREE.Vector3, weight: number, poleBias: number): void {
-    const { upper, fore, hand } = arm;
-    if (!upper || !fore || !hand || weight < 0.002) return;
-    upper.getWorldPosition(ik.upperPos);
-    fore.getWorldPosition(ik.forePos);
-    hand.getWorldPosition(ik.handPos);
-    ik.dir.copy(target).sub(ik.upperPos);
-    const dist = ik.dir.length();
-    if (dist < 1e-4) return;
-    ik.dir.normalize();
-    ik.target.copy(ik.upperPos).addScaledVector(ik.dir, dist);
-
-    const l1 = ik.upperPos.distanceTo(ik.forePos);
-    const l2 = ik.forePos.distanceTo(ik.handPos);
-    const reach = THREE.MathUtils.clamp(ik.upperPos.distanceTo(ik.target), Math.abs(l1 - l2) + 0.015, l1 + l2 - 0.015);
-    // elbow hint: down and slightly behind the shoulder (poleBias nudges the
-    // strike arm's elbow outward so the swing reads from the side)
-    ik.pole.set(poleBias, -1, -0.15).sub(scratch.v0.copy(ik.dir).multiplyScalar(ik.pole.dot(ik.dir)));
-    if (ik.pole.lengthSq() < 1e-6) ik.pole.set(0, -1, 0);
-    ik.pole.normalize();
-    const x = (l1 * l1 + reach * reach - l2 * l2) / (2 * reach);
-    const h = Math.sqrt(Math.max(l1 * l1 - x * x, 0));
-    ik.elbow.copy(ik.upperPos).addScaledVector(ik.dir, x).addScaledVector(ik.pole, h);
-
-    // Aim each bone along its solved direction. The desired world orientation
-    // is built from the bone's +Y convention and blended in local space —
-    // from-to deltas go degenerate when the arm must reverse direction.
-    aimBone(upper, scratch.v0.copy(ik.elbow).sub(ik.upperPos).normalize(), weight);
-    aimBone(fore, scratch.v1.copy(ik.target).sub(ik.elbow).normalize(), weight);
-  }
-
-  const boneUp = new THREE.Vector3(0, 1, 0);
-  function aimBone(b: THREE.Bone, dirWorld: THREE.Vector3, weight: number): void {
-    if (dirWorld.lengthSq() < 1e-8) return;
-    dirWorld.normalize();
-    if (dirWorld.dot(boneUp) < -0.999) {
-      // pointing straight down: pick any stable perpendicular to avoid the
-      // degenerate from-to case
-      dirWorld.x += 0.01;
-      dirWorld.normalize();
-    }
-    const parent = b.parent as THREE.Object3D;
-    parent.getWorldQuaternion(scratch.q1);
-    scratch.q2.setFromUnitVectors(boneUp, dirWorld); // desired world orientation
-    scratch.q0.copy(scratch.q1).invert().multiply(scratch.q2); // ...as local
-    b.quaternion.slerp(scratch.q0, weight);
-  }
-
-  /** Resting hand position: beside the body, slightly toward the opponent. */
-  function guardPosition(arm: { upper?: THREE.Bone; side: number }, self: THREE.Object3D, opponent: THREE.Object3D, out: THREE.Vector3): void {
-    if (!arm.upper) return;
-    arm.upper.getWorldPosition(out);
-    const toward = scratch.v0.subVectors(opponent.position, self.position).setY(0).normalize();
-    const lateral = scratch.v1.crossVectors(scratch.v2.set(0, 1, 0), toward).multiplyScalar(arm.side * 0.14);
-    out.add(toward.multiplyScalar(0.1)).add(lateral);
-    out.y -= 0.52; // hand hangs below the shoulder
-  }
-
-  // --- attack choreography ----------------------------------------------------------
-  // Fully procedural swing: windup raises the arm through the IK target, the
-  // strike sweeps it to the zone, the impact freezes/recoils, the recover eases
-  // back to the stance.
+  // --- attack state ----------------------------------------------------------------
   let attacking = false;
   let attackT = 0;
   let contactFired = false;
-  let ikWeight = 0;
-  let armRecoil = 0;
-  const restHand = new THREE.Vector3();
-  const windupPos = new THREE.Vector3();
-  const strikeTarget = new THREE.Vector3();
-  const guardA = new THREE.Vector3();
-  const guardB = new THREE.Vector3();
-  let haveRest = false;
+  let victimRecover = -1; // sim time when the victim blends back to idle
 
   let timeScale = 1;
   let freezeLeft = 0; // real seconds of hit stop remaining
@@ -502,8 +333,9 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     attacking = true;
     attackT = 0;
     contactFired = false;
-    armRecoil = 0;
-    strikeTarget.set(0, 0, 0); // re-aim at the currently selected zone
+    slashA.reset();
+    slashA.crossFadeFrom(idleA, 0.1, false);
+    slashA.play();
   }
 
   function fireImpact(): void {
@@ -518,12 +350,15 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     }
     // 2 — screen shake
     if (params.shake.on) trauma = Math.min(1, trauma + params.shake.trauma);
-    // 3 — flash / local reaction / numbers
+    // 3 — flash / victim hit clip / numbers
     if (params.feedback.on && params.feedback.flash) {
       flashLevel = params.feedback.flashIntensity;
       if (params.overdoneExtras) flashStrobe = 3;
     }
-    impulseZone(zone, dir);
+    hitV.reset();
+    hitV.crossFadeFrom(idleV, 0.06, false);
+    hitV.play();
+    victimRecover = hit.duration + 0.1;
     spawnNumber(impactPoint, true);
     if (params.overdoneExtras) {
       const extras = ["+12.7", "CRIT!", "×3", "27.3", "MAX", "!!!"];
@@ -546,8 +381,6 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
         shockMat.color.copy(themeColors.sparkB);
       }
     }
-    // arm recoil: the strike meets mass and the arm gives a few centimetres
-    armRecoil = 0.05 + params.feedback.squashAmount * 0.08;
     // heavy finisher — inverted flash + slow motion
     if (params.heavyFinisher) {
       slowLeft = 0.26;
@@ -555,84 +388,6 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     }
     impactHooks.forEach((f) => f());
   }
-
-  /** Windup/strike/recover curve. Returns the IK weight for this frame. */
-  function choreograph(dt: number): void {
-    if (!attacking) {
-      ikWeight += (0 - ikWeight) * Math.min(1, dt * 10);
-      armRecoil = Math.max(0, armRecoil - dt * 0.5);
-      return;
-    }
-    attackT += dt;
-    if (!contactFired && attackT >= CONTACT_AT) {
-      contactFired = true;
-      fireImpact();
-    }
-    const t = attackT;
-    if (t < 0.24) {
-      // windup: raise the arm, weight climbs part-way
-      const w = t / 0.24;
-      ikWeight = 0.85 * easeOut(w);
-    } else if (t < CONTACT_AT) {
-      // strike: full commitment, fast sweep
-      ikWeight = 1;
-    } else if (t < CONTACT_AT + 0.4) {
-      // hold through the freeze, then the recoil spring relaxes
-      ikWeight = 1;
-      armRecoil = Math.max(0, armRecoil - dt * 0.35);
-    } else if (t < CONTACT_AT + 0.95) {
-      // recover: hand the arm back to the stance
-      const w = (t - CONTACT_AT - 0.4) / 0.55;
-      ikWeight = 1 - easeInOut(w);
-      armRecoil = Math.max(0, armRecoil - dt * 0.5);
-    } else {
-      attacking = false;
-      ikWeight = 0;
-      armRecoil = 0;
-    }
-    // a small lunge sells the commitment; it eases back during recovery
-    const lungeDir = scratch.v0.subVectors(victimRoot.position, attackerHome).setY(0).normalize();
-    const lunge =
-      t < 0.24 ? 0.02 * easeOut(t / 0.24) - 0.05 * easeOut(t / 0.24) : t < CONTACT_AT ? 0.16 * easeIn((t - 0.24) / (CONTACT_AT - 0.24)) - 0.03 : t < CONTACT_AT + 0.4 ? 0.13 : Math.max(0, 0.13 - 0.13 * easeInOut((t - CONTACT_AT - 0.4) / 0.55));
-    attackerRoot.position.copy(attackerHome).addScaledVector(lungeDir, lunge);
-  }
-
-  /** The IK target path: rest → raised windup → the struck zone. */
-  function ikTarget(out: THREE.Vector3): void {
-    zoneBone(zone).getWorldPosition(out);
-    const towardAttacker = scratch.v1.subVectors(attackerRoot.position, victimRoot.position).setY(0).normalize();
-    out.addScaledVector(towardAttacker, 0.17 + armRecoil); // just in front of the body
-    if (!attacking || attackT >= CONTACT_AT) return; // on/after contact: aim at the zone
-    if (!haveRest) {
-      guardPosition(ARMS.attR, attackerRoot, victimRoot, restHand);
-      haveRest = true;
-    }
-    const t = attackT;
-    if (t < 0.24) {
-      // windup position: high and behind, relative to the resting hand
-      if (windupPos.lengthSq() === 0) {
-        windupPos
-          .copy(restHand)
-          .add(new THREE.Vector3(0, 0.5, 0))
-          .addScaledVector(towardAttaker0, -0.28);
-      }
-      const w = easeOut(t / 0.24);
-      out.lerpVectors(restHand, windupPos, w);
-    } else {
-      const w = easeIn(Math.min(1, (t - 0.24) / (CONTACT_AT - 0.24)));
-      if (strikeTarget.lengthSq() === 0) strikeTarget.copy(out);
-      out.lerpVectors(windupPos.lengthSq() === 0 ? restHand : windupPos, strikeTarget, w);
-    }
-  }
-
-  const easeOut = (x: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 2);
-  const easeIn = (x: number) => Math.pow(Math.min(1, Math.max(0, x)), 2);
-  const easeInOut = (x: number) => {
-    const c = Math.min(1, Math.max(0, x));
-    return c < 0.5 ? 2 * c * c : 1 - Math.pow(-2 * c + 2, 2) / 2;
-  };
-  /** attacker→victim horizontal direction, captured once for the windup path */
-  const towardAttaker0 = new THREE.Vector3();
 
   // --- pointer: click = attack; clicking the victim picks the nearest zone ------
   let downAt = { x: 0, y: 0, t: 0 };
@@ -681,7 +436,6 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   // --- main loop ----------------------------------------------------------------------
   let lastReal = performance.now();
   let disposed = false;
-  let simClock = 0;
   const camBase = new THREE.Vector3();
 
   renderer.setAnimationLoop(() => {
@@ -708,56 +462,32 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     trauma = Math.max(0, trauma - shakeDecay * realDt * (0.3 + trauma));
 
     const dt = realDt * timeScale;
-    simClock += dt;
+
+    // attack timeline: the slash clip carries the swing; the impact fires at
+    // the measured contact moment, then the striker blends back to idle
+    if (attacking) {
+      attackT += dt;
+      if (!contactFired && attackT >= contactDelay) {
+        contactFired = true;
+        fireImpact();
+      }
+      if (attackT >= Math.min(slash.duration, contactDelay + 0.85)) {
+        attacking = false;
+        idleA.reset().fadeIn(0.18).play();
+        slashA.fadeOut(0.25);
+      }
+    }
+    if (victimRecover > 0) {
+      victimRecover -= dt;
+      if (victimRecover <= 0) {
+        victimRecover = -1;
+        idleV.reset().fadeIn(0.2).play();
+        hitV.fadeOut(0.25);
+      }
+    }
 
     mixerA.update(dt);
     mixerV.update(dt);
-
-    choreograph(dt);
-    if (towardAttaker0.lengthSq() === 0)
-      towardAttaker0.subVectors(victimRoot.position, attackerHome).setY(0).normalize();
-
-    // stance + sway (after the mixer, before springs/IK so everything stacks)
-    applyStance(attacker, false, simClock, ikWeight);
-    applyStance(victim, true, simClock, 0);
-
-    // arms: both knights rest in guard; the striker's right arm follows the
-    // choreographed path, blended from its guard position
-    guardPosition(ARMS.attR, attackerRoot, victimRoot, guardA);
-    ikTarget(scratch.v2);
-    guardA.lerp(scratch.v2, ikWeight);
-    solveArm(ARMS.attR, guardA, 0.88 + 0.12 * ikWeight, 0.45);
-    guardPosition(ARMS.attL, attackerRoot, victimRoot, guardB);
-    solveArm(ARMS.attL, guardB, 0.85, -0.45);
-    guardPosition(ARMS.vicR, victimRoot, attackerRoot, guardA);
-    solveArm(ARMS.vicR, guardA, 0.85, 0.45);
-    guardPosition(ARMS.vicL, victimRoot, attackerRoot, guardB);
-    solveArm(ARMS.vicL, guardB, 0.85, -0.45);
-
-    // springs: capture the posed transform, then write pose + world offsets
-    for (const s of springs) {
-      s.basePos.copy(s.bone.position);
-      s.baseQuat.copy(s.bone.quaternion);
-
-      const stiffness = 170;
-      const damping = 13;
-      s.posVel.addScaledVector(s.pos, -stiffness * dt).addScaledVector(s.posVel, -damping * dt);
-      s.pos.addScaledVector(s.posVel, dt);
-      s.rotVel += (-stiffness * s.rot - damping * s.rotVel) * dt;
-      s.rot += s.rotVel * dt;
-
-      const parent = s.bone.parent as THREE.Object3D;
-      // Conjugate the world-axis rotation into bone space:
-      // localNew = parentWorld⁻¹ · R · parentWorld · localAnimated
-      parent.getWorldQuaternion(scratch.q1);
-      scratch.q0.copy(scratch.q1).invert();
-      scratch.q2.setFromAxisAngle(s.axis, s.rot);
-      scratch.q2.premultiply(scratch.q0).multiply(scratch.q1);
-      s.bone.quaternion.copy(s.baseQuat).premultiply(scratch.q2);
-      // position offset: world delta expressed in the parent's frame
-      scratch.v2.copy(s.pos).applyQuaternion(scratch.q0);
-      s.bone.position.copy(s.basePos).add(scratch.v2);
-    }
 
     // knockback profile: constant deceleration to a full stop, then walk back
     if (kbPhase === "fly") {

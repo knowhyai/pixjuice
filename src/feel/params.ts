@@ -34,7 +34,7 @@ export interface FeelParams {
 
 export const LAYER_IDS = ["hit-stop", "screen-shake", "hit-feedback", "knockback", "directional-vfx", "impact-sfx"] as const;
 
-/** Slider metadata: range, step and the recommended value shown next to it. */
+/** Slider metadata: range, step and the heuristic default shown next to it. */
 export const SLIDERS = {
   frames: { min: 0, max: 30, step: 1, rec: 4, heavyRec: 12 },
   trauma: { min: 0, max: 1, step: 0.01, rec: 0.25, heavyRec: 0.6 },

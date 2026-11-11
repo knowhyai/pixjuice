@@ -131,11 +131,14 @@ await p.screenshot({path:join(out,'templates-save.png'),fullPage:true});
  for(const a of await p.locator('.fa-file').evaluateAll(es=>es.map(e=>e.href))){assert.equal((await ctx.request.get(a)).status(),200);}
 
  // ---- Game Feel Lab -----------------------------------------------------
- await p.goto(base+'/feel/');await p.locator('.feel-card').waitFor();
+ await p.goto(base+'/feel/');await p.locator('.feel-domain').first().waitFor();
+ assert.equal(await p.locator('.feel-domain').count(),4);
+ assert.ok(await p.locator('#support,#physicality,#amplification,#context').count()===4);
+ assert.ok(await p.locator('#amplification .feel-card a[href="/feel/hit/"]').count()>0);
  assert.equal(await p.locator('.feel-card').count(),1);
- assert.ok(await p.locator('.feel-card a[href="/feel/hit/"]').count()>0);
+ assert.equal(await p.locator('.feel-badge-soon').count(),3);
  assert.equal(await p.locator('nav.nav a[href="/feel/"]').getAttribute('aria-current'),'page');
- assert.equal(await p.locator('.feel-soon-list li').count(),3);
+ assert.equal(await p.locator('#amplification .feel-leaves, #amplification ul ul').count(),0);
  await p.screenshot({path:join(out,'juice-lab-home.png'),fullPage:true});
 
  await p.goto(base+'/feel/hit/');await p.locator('.feel-layer').first().waitFor();

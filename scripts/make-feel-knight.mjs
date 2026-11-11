@@ -73,6 +73,19 @@ const scene=root.getDefaultScene()||root.listScenes()[0];
 if(!scene)throw Error('base.glb has no scene');
 root.setDefaultScene(scene);
 
+// The re-exported base.glb can carry a second scene with a duplicate armature
+// (same Mixamo names, not in the default graph). Prefer the default scene's
+// bones when rebinding parts; otherwise listNodes() order would bind outfits
+// to the unused copy and the later unreachable-node sweep would empty those skins.
+for(const s of root.listScenes())if(s!==scene)s.dispose();
+{
+  const reachable=new Set();scene.traverse(n=>reachable.add(n));
+  for(const skin of root.listSkins()){
+    if(!skin.listJoints().some(j=>reachable.has(j)))skin.dispose();
+  }
+  for(const n of root.listNodes())if(!reachable.has(n))n.dispose();
+}
+
 // Merge each equipped part onto the master armature, exactly like the runtime
 // outfit exporter: skins rebind to the base skeleton, mesh nodes join the scene.
 const baseNodes=[...root.listNodes()],byName=new Map(baseNodes.map(n=>[n.getName(),n]));
@@ -95,7 +108,16 @@ for(const part of meta.parts.filter(p=>outfit[p.slot]===p.id&&p.attach?.mode==='
 }
 // Drop armature duplicates that nothing references anymore.
 const reachable=new Set();scene.traverse(n=>reachable.add(n));
-for(const n of root.listNodes())if(!reachable.has(n))n.dispose();
+const jointNodes=new Set(root.listSkins().flatMap(s=>[...s.listJoints(),s.getSkeleton()].filter(Boolean)));
+for(const n of root.listNodes()){
+  if(reachable.has(n)||jointNodes.has(n))continue;
+  n.dispose();
+}
+
+// Keep only the clips the demo plays (idle / slash / hit); the walk, run and
+// death tracks would more than double the download for no on-page use.
+const USED_ANIMS=new Set(['idle','slash','attack','hit_to_body_01','hit']);
+for(const anim of root.listAnimations())if(!USED_ANIMS.has(anim.getName()))anim.dispose();
 
 await MeshoptSimplifier.ready;
 await simplifyDoc(doc);

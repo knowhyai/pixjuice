@@ -1,5 +1,5 @@
-// /feel/ — Game Feel Lab section home. Static card list; one recipe today
-// (hit feel), structured so future recipes just add another card.
+// /feel/ — Game Feel Lab section home. Four domains (support, physicality,
+// amplification, context); one live recipe today (hit feel, under amplification).
 
 import "../style.css";
 import "../templates/templates.css";

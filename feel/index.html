@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Game Feel Lab — hit stop, screen shake &amp; impact recipes – PixJuice</title>
-  <meta name="description" content="A lab for game feel: layered, tweakable impact recipes with live demos and ready-to-paste Godot 4 and Unity code. First recipe: hit feel on two rigged knights.">
+  <meta name="description" content="A lab for game feel in four domains — support, physicality, amplification, context — with live recipes you can toggle and retune, plus ready-to-paste Godot 4 and Unity code. First recipe: hit feel.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PixJuice">
   <meta property="og:title" content="Game Feel Lab — hit stop, screen shake &amp; impact recipes">
-  <meta property="og:description" content="Layered, tweakable impact recipes with live demos and ready-to-paste Godot 4 and Unity code. First recipe: hit feel.">
+  <meta property="og:description" content="Game feel in four domains — support, physicality, amplification, context. Live recipes with demos and ready-to-paste Godot 4 and Unity code. First recipe: hit feel.">
   <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#0b0a10">
@@ -48,7 +48,7 @@
         <a href="/templates/" data-i18n="nav.templates">game templates</a>
         <a href="/free-assets/" data-i18n="nav.assets">free assets</a>
         <a href="/#effects" data-i18n="nav.effects">effects</a>
-        <a href="/feel/" class="cur" aria-current="page" data-i18n="nav.feel">game feel</a>
+        <a href="/feel/" class="cur" aria-current="page" data-i18n="nav.feel">Game Feel</a>
         <details class="tools">
           <summary data-i18n="nav.tools">tools ▾</summary>
           <div class="tools-menu">
@@ -69,46 +69,106 @@
     <section class="tpl-hero">
       <p class="resources-eyebrow">PIXJUICE / GAME FEEL LAB</p>
       <h1 data-i18n="feel.h1">Game Feel Lab</h1>
-      <p class="lede" data-i18n="feel.lede">Game feel is how your game behaves in the player's hands: weight, timing, response. This lab turns feel into recipes you can toggle, stack and tune — with a live arena, and engine code that follows your sliders.</p>
+      <p class="lede" data-i18n="feel.lede">Game feel is how your game behaves in the player's hands. The lab splits it into four domains — support (response &amp; forgiveness), physicality, amplification and context — and ships one live recipe at a time: a demo you can toggle, retune and compare, with engine code that follows the sliders.</p>
     </section>
 
-    <section aria-labelledby="feel-recipes-h">
-      <h2 id="feel-recipes-h" data-i18n="feel.recipes">Recipes</h2>
-      <div class="feel-recipes">
-        <article class="feel-card">
-          <div class="feel-card-art" aria-hidden="true">
-            <svg viewBox="0 0 160 90" width="160" height="90" role="img" aria-hidden="true">
-              <rect width="160" height="90" fill="#12101a"/>
-              <rect x="0" y="64" width="160" height="2" fill="#2b2740"/>
-              <rect x="30" y="18" width="10" height="46" rx="2" fill="#3a3552"/>
-              <rect x="28" y="12" width="14" height="8" rx="2" fill="#3a3552"/>
-              <rect x="118" y="22" width="12" height="42" rx="2" fill="#463f63"/>
-              <rect x="116" y="14" width="16" height="9" rx="2" fill="#463f63"/>
-              <path d="M44 34 L112 40" stroke="#ff4d6d" stroke-width="3" stroke-linecap="round"/>
-              <path d="M112 40 l10 -6 M112 40 l12 2 M112 40 l6 10" stroke="#ff4d6d" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="112" cy="40" r="4" fill="#ffd9e0"/>
-              <path d="M60 24 h14 v8 h-14z" fill="#4cd7ff" opacity="0.9"/>
-              <path d="M64 20 l3 -6 3 6z" fill="#4cd7ff"/>
-            </svg>
+    <div class="feel-domains">
+      <section class="feel-domain" id="support" aria-labelledby="feel-d1-h">
+        <header class="feel-domain-head">
+          <span class="feel-domain-num" aria-hidden="true">01</span>
+          <div class="feel-domain-text">
+            <h2 id="feel-d1-h"><span data-i18n="feel.d1t">Support</span> <span class="feel-domain-gloss" data-i18n="feel.d1g">input</span></h2>
+            <p data-i18n="feel.d1d">The game catches what the player meant: latency windows, coyote time, input buffers, corner correction.</p>
           </div>
-          <div class="feel-card-body">
-            <h3><a href="/feel/hit/" data-i18n="feel.recipe.hit.t">Hit feel</a></h3>
-            <p data-i18n="feel.recipe.hit.d">Six stackable layers — hit stop, screen shake, hit feedback, knockback, directional VFX and three-band audio — on two rigged knights, with Godot 4 and Unity code that updates as you tune.</p>
-            <p class="feel-card-meta"><span data-i18n="feel.recipe.hit.layers">6 layers · Godot 4 + Unity</span> · CC0</p>
-            <a class="feel-card-cta" href="/feel/hit/" data-i18n="feel.recipe.hit.cta">Open the hit feel recipe →</a>
+          <span class="feel-badge feel-badge-soon" data-i18n="feel.soonBadge">Coming soon</span>
+        </header>
+        <ul class="feel-leaves" data-i18n-html="feel.d1leaves">
+          <li>Coyote time</li><li>Input buffer</li><li>Variable jump height</li><li>Corner correction</li>
+        </ul>
+      </section>
+
+      <section class="feel-domain" id="physicality" aria-labelledby="feel-d2-h">
+        <header class="feel-domain-head">
+          <span class="feel-domain-num" aria-hidden="true">02</span>
+          <div class="feel-domain-text">
+            <h2 id="feel-d2-h"><span data-i18n="feel.d2t">Physicality</span> <span class="feel-domain-gloss" data-i18n="feel.d2g">simulation</span></h2>
+            <p data-i18n="feel.d2d">Motion with weight and predictability: gravity and terminal velocity, acceleration and braking, knockback and recoil.</p>
           </div>
-        </article>
+          <span class="feel-badge feel-badge-soon" data-i18n="feel.soonBadge">Coming soon</span>
+        </header>
+        <ul class="feel-leaves" data-i18n-html="feel.d2leaves">
+          <li>Gravity &amp; terminal velocity</li><li>Ground acceleration</li><li>Knockback &amp; recoil</li><li>Arm IK force feedback</li><li>Local hit deformation</li>
+        </ul>
+      </section>
+
+      <section class="feel-domain feel-domain-live" id="amplification" aria-labelledby="feel-d3-h">
+        <header class="feel-domain-head">
+          <span class="feel-domain-num" aria-hidden="true">03</span>
+          <div class="feel-domain-text">
+            <h2 id="feel-d3-h"><span data-i18n="feel.d3t">Amplification</span> <span class="feel-domain-gloss" data-i18n="feel.d3g">juice</span></h2>
+            <p data-i18n="feel.d3d">Make the hit legible: hit stop, screen shake, flash, particles, layered audio — toggle every layer and stack them.</p>
+          </div>
+          <span class="feel-badge feel-badge-live" data-i18n="feel.liveBadge">Live now</span>
+        </header>
+        <div class="feel-recipes">
+          <article class="feel-card">
+            <div class="feel-card-art" aria-hidden="true">
+              <svg viewBox="0 0 160 90" width="160" height="90" role="img" aria-hidden="true">
+                <rect width="160" height="90" fill="#12101a"/>
+                <rect x="0" y="64" width="160" height="2" fill="#2b2740"/>
+                <rect x="30" y="18" width="10" height="46" rx="2" fill="#3a3552"/>
+                <rect x="28" y="12" width="14" height="8" rx="2" fill="#3a3552"/>
+                <rect x="118" y="22" width="12" height="42" rx="2" fill="#463f63"/>
+                <rect x="116" y="14" width="16" height="9" rx="2" fill="#463f63"/>
+                <path d="M44 34 L112 40" stroke="#ff4d6d" stroke-width="3" stroke-linecap="round"/>
+                <path d="M112 40 l10 -6 M112 40 l12 2 M112 40 l6 10" stroke="#ff4d6d" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="112" cy="40" r="4" fill="#ffd9e0"/>
+                <path d="M60 24 h14 v8 h-14z" fill="#4cd7ff" opacity="0.9"/>
+                <path d="M64 20 l3 -6 3 6z" fill="#4cd7ff"/>
+              </svg>
+            </div>
+            <div class="feel-card-body">
+              <h3><a href="/feel/hit/" data-i18n="feel.recipe.hit.t">Hit feel</a></h3>
+              <p data-i18n="feel.recipe.hit.d">Six stackable layers — hit stop, screen shake, hit feedback, knockback, directional VFX and three-band audio — on two rigged knights, with Godot 4 and Unity code that updates as you tune.</p>
+              <p class="feel-card-meta"><span data-i18n="feel.recipe.hit.layers">6 layers · Godot 4 + Unity</span> · CC0</p>
+              <a class="feel-card-cta" href="/feel/hit/" data-i18n="feel.recipe.hit.cta">Open the hit feel recipe →</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="feel-domain" id="context" aria-labelledby="feel-d4-h">
+        <header class="feel-domain-head">
+          <span class="feel-domain-num" aria-hidden="true">04</span>
+          <div class="feel-domain-text">
+            <h2 id="feel-d4-h"><span data-i18n="feel.d4t">Context</span> <span class="feel-domain-gloss" data-i18n="feel.d4g">metaphor · rules</span></h2>
+            <p data-i18n="feel.d4d">The same parameters read differently in another space or metaphor: scale, metaphor, and how much information the screen can carry.</p>
+          </div>
+          <span class="feel-badge feel-badge-soon" data-i18n="feel.soonBadge">Coming soon</span>
+        </header>
+        <ul class="feel-leaves" data-i18n-html="feel.d4leaves">
+          <li>Spatial scale</li><li>Metaphor</li><li>Readability &amp; information load</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="feel-sources" aria-labelledby="feel-sources-h">
+      <h2 id="feel-sources-h" data-i18n="feel.sourcesH">Sources &amp; method</h2>
+      <p class="feel-sources-note" data-i18n="feel.sourcesNote">Numbers on this site carry one of two labels: a published source, or 经验值 (heuristic) — the industry's oral tradition. Heuristics are fine slider defaults; they are not findings. Retune everything.</p>
+      <div data-i18n-html="feel.sourcesHome">
+        <ul>
+          <li>Steve Swink, <i>Game Feel</i> (2008) — the lab's working definition and its six dimensions. <a href="https://www.gamedeveloper.com/design/game-feel-the-secret-ingredient" target="_blank" rel="noopener">Precursor article ↗</a></li>
+          <li>Pichlmair &amp; Johansen, “Designing Game Feel: A Survey”, <i>IEEE Transactions on Games</i> (2022; arXiv 2020) — the three design domains this section is built on. <a href="https://arxiv.org/abs/2011.09201" target="_blank" rel="noopener">arXiv ↗</a></li>
+          <li>Jonasson &amp; Purho, “Juice It or Lose It” (2012) — the toggle-and-compare demo method every recipe here copies. <a href="https://github.com/grapefrukt/juicy-breakout" target="_blank" rel="noopener">Demo source ↗</a></li>
+          <li>Nijman, “The Art of Screenshake” (2013) — screenshake, knockback and impact layered one decision at a time.</li>
+          <li>Song, “Improving the Combat ‘Impact’ of Action Games” (2005) — animation, frame freezing, camera, VFX, rumble and layered audio. <a href="https://www.gamedeveloper.com/audio/improving-the-combat-impact-of-action-games" target="_blank" rel="noopener">Article ↗</a></li>
+          <li>Masahiro Sakurai, Famitsu column vol. 490–491 — hitstop design in fighting games. <a href="https://sourcegaming.info/2015/11/11/thoughts-on-hitstop-sakurais-famitsu-column-vol-490-1/" target="_blank" rel="noopener">Translation ↗</a></li>
+          <li>SmashWiki, “Hitlag” — per-game hitlag formulas and caps. <a href="https://www.ssbwiki.com/Hitlag" target="_blank" rel="noopener">Wiki ↗</a></li>
+          <li>Lin et al., “What Features Influence Impact Feel?” (2022) — ranks impact feel across 44 action games; hit stop, sound consistency and camera control as the critical three. <a href="https://arxiv.org/abs/2208.06155" target="_blank" rel="noopener">arXiv ↗</a></li>
+          <li>Kao, “The Effects of Juiciness in an Action RPG” (2020) — moderate juiciness beats both none and extreme. <a href="https://doi.org/10.1016/j.entcom.2020.100359" target="_blank" rel="noopener">DOI ↗</a></li>
+          <li>Thorson, “Celeste's forgiveness” (2020) and Fasterholdt et al., “You Say Jump, I Say How High?” (2016) — measured windows and jump parameters for the upcoming Support and Physicality recipes. <a href="https://maddythorson.medium.com/celeste-forgiveness-31e4a40399f1" target="_blank" rel="noopener">Post ↗</a></li>
+        </ul>
       </div>
-    </section>
-
-    <section class="feel-soon" aria-labelledby="feel-soon-h">
-      <h2 id="feel-soon-h" data-i18n="feel.soonH">Planned recipes</h2>
-      <p data-i18n="feel.soonNote">Next in the lab — one full page each, no empty shells:</p>
-      <ul class="feel-soon-list">
-        <li data-i18n="feel.soon.jump">Jump feel</li>
-        <li data-i18n="feel.soon.pickup">Pickup feel</li>
-        <li data-i18n="feel.soon.ui">UI feedback</li>
-      </ul>
     </section>
   </main>
 
