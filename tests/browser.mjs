@@ -181,6 +181,9 @@ await p.screenshot({path:join(out,'templates-save.png'),fullPage:true});
  await p.screenshot({path:join(out,'juice-hit-light.png'),fullPage:true});
  await p.locator('button[data-preset="heavy"]').click();
  assert.ok((await p.locator('.feel-code-pre').innerText()).includes('hit_stop_seconds := 0.233'));
+ assert.equal(await p.locator('button[data-preset="heavy"]').getAttribute('aria-pressed'),'true');
+ assert.equal(await p.locator('input[data-feel-slider="hitStop.frames"]').inputValue(),'14');
+ assert.ok((await p.locator('.feel-slider:has([data-feel-slider="hitStop.frames"]) output').innerText())==='14');
  await p.waitForTimeout(900); // let the heavy finisher play out on screen
  await p.screenshot({path:join(out,'juice-hit-heavy.png'),fullPage:true});
  await p.locator('button[data-preset="overdone"]').click();

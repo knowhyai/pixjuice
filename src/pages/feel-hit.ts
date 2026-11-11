@@ -188,7 +188,11 @@ function refreshControlValues(): void {
       i.checked = Boolean(getPath(params, i.dataset.feelSub!));
     });
     layer.mount.querySelectorAll<HTMLInputElement>("[data-feel-slider]").forEach((i) => {
-      i.value = String(getPath(params, i.dataset.feelSlider!));
+      const v = Number(getPath(params, i.dataset.feelSlider!));
+      i.value = String(v);
+      const spec = layer.sliders.find((s) => s.path === i.dataset.feelSlider);
+      const out = i.closest(".feel-slider")?.querySelector("output");
+      if (out && spec) out.textContent = formatValue(v, spec.key);
     });
     layer.mount.querySelector<HTMLElement>(".feel-layer-sliders")?.classList.toggle(
       "is-off",
@@ -205,12 +209,15 @@ const zoneButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".fe
 function applyPreset(id: PresetId): void {
   Object.assign(params, cloneParams(PRESETS[id]));
   refreshControlValues();
+  // setParams + code only — do not go through onParamsChanged, which clears the
+  // active-preset highlight (that path is for manual slider tweaks).
+  demo?.setParams(params);
+  renderCodebox();
   presetButtons.forEach((b) => {
     const on = b.dataset.preset === id;
     b.classList.toggle("on", on);
     b.setAttribute("aria-pressed", String(on));
   });
-  onParamsChanged();
   if (demo) demo.attack();
 }
 
