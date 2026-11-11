@@ -6,3 +6,4 @@ import './case.test.mjs';
 import './remesh.test.mjs';
 
 import './parts.test.mjs';
+import './feel.test.mjs';

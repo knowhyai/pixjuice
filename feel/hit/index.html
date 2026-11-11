@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hit feel recipe: hit stop, screen shake, knockback &amp; layered impact SFX – PixJuice</title>
+  <meta name="description" content="Tune a hit until it lands: six toggleable layers on two rigged knights — hit stop, screen shake, flash/squash/numbers, knockback, directional sparks, three-band audio — with Godot 4 and Unity code that follows every slider.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="Hit feel recipe — hit stop, screen shake &amp; layered impact SFX">
+  <meta property="og:description" content="Six toggleable layers on two rigged knights, with Godot 4 and Unity code that follows every slider.">
+  <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b0a10">
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="PixJuice home">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub" data-i18n="fa.sub">free game assets</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/templates/" data-i18n="nav.templates">game templates</a>
+        <a href="/free-assets/" data-i18n="nav.assets">free assets</a>
+        <a href="/#effects" data-i18n="nav.effects">effects</a>
+        <a href="/feel/" class="cur" aria-current="page" data-i18n="nav.feel">game feel</a>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+            <a href="/free-resources/" data-i18n="fr.h1">More free game assets</a>
+          </div>
+        </details>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tpl-page feel-hit">
+    <section class="tpl-hero">
+      <p class="tpl-crumbs"><a href="/feel/" data-i18n="nav.feel">game feel</a> / <span data-i18n="feel.recipe.hit.t">Hit feel</span></p>
+      <h1 data-i18n="feel.hitH1">Hit feel — six layers you can stack</h1>
+      <p class="lede" data-i18n="feelHit.lede">Two rigged knights in an arena: strike the head, chest or belly and tune what the hit feels like — hit stop, screen shake, flash/squash/numbers, knockback, directional sparks and synthesized three-band audio. Every switch and slider rewrites the Godot 4 and Unity code below.</p>
+    </section>
+
+    <div class="feel-main">
+      <div class="feel-layers" aria-labelledby="feel-layers-h">
+        <h2 id="feel-layers-h" data-i18n="feel.layers">Six layers, stack them yourself</h2>
+
+        <section class="feel-layer" id="hit-stop" data-layer="hitStop">
+          <header class="feel-layer-head">
+            <div class="feel-layer-text">
+              <h3><a href="#hit-stop">1 · <span data-i18n="feel.l1t">Hit stop</span></a></h3>
+              <p data-i18n="feel.l1d">Freeze the whole simulation for a few frames at the moment of impact. The pause is the weight: everything stops, then releases together.</p>
+            </div>
+          </header>
+          <div class="feel-layer-controls" data-controls="hitStop"></div>
+          <p class="feel-rec" data-i18n="feel.l1rec">Recommended: 3–4 frames (~50–67 ms) for light hits, 10+ for heavy.</p>
+          <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l1p">Past ~10 frames it starts reading as a stutter rather than weight — the player thinks the game dropped frames.</span></p>
+        </section>
+
+        <section class="feel-layer" id="screen-shake" data-layer="shake">
+          <header class="feel-layer-head">
+            <div class="feel-layer-text">
+              <h3><a href="#screen-shake">2 · <span data-i18n="feel.l2t">Screen shake</span></a></h3>
+              <p data-i18n="feel.l2d">Add trauma on impact and shake the camera by trauma², biased along the attack direction, with a fast, smooth decay.</p>
+            </div>
+          </header>
+          <div class="feel-layer-controls" data-controls="shake"></div>
+          <p class="feel-rec" data-i18n="feel.l2rec">Recommended: 0.15–0.3 trauma for light hits, decay 2.5/s or faster.</p>
+          <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l2p">Fresh random jitter every frame reads as a glitch. During hit stop, decay trauma with unscaled time — or the shake freezes with the world.</span></p>
+        </section>
+
+        <section class="feel-layer" id="hit-feedback" data-layer="feedback">
+          <header class="feel-layer-head">
+            <div class="feel-layer-text">
+              <h3><a href="#hit-feedback">3 · <span data-i18n="feel.l3t">Hit feedback</span></a></h3>
+              <p data-i18n="feel.l3d">One layer, three parts: a white flash, a local squash of the body part you struck, and one readable damage number. Each part has its own switch.</p>
+            </div>
+          </header>
+          <div class="feel-layer-controls" data-controls="feedback"></div>
+          <p class="feel-rec" data-i18n="feel.l3rec">Recommended: one number per hit, flash ~0.3–0.5, squash to taste.</p>
+          <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l3p">Flash + squash + a wall of numbers on one hit is noise, not feedback — the overdone preset shows exactly how bad it gets.</span></p>
+        </section>
+
+        <section class="feel-layer" id="knockback" data-layer="knockback">
+          <header class="feel-layer-head">
+            <div class="feel-layer-text">
+              <h3><a href="#knockback">4 · <span data-i18n="feel.l4t">Knockback</span></a></h3>
+              <p data-i18n="feel.l4d">Launch the victim along the hit direction with constant deceleration and a hard stop — the stop is where the mass reads.</p>
+            </div>
+          </header>
+          <div class="feel-layer-controls" data-controls="knockback"></div>
+          <p class="feel-rec" data-i18n="feel.l4rec">Recommended: ~0.5 m in ~0.15 s for light hits, ~2 m in ~0.3 s for heavy.</p>
+          <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l4p">A uniform slide feels weightless. Fast out, sudden stop — never a constant-velocity glide.</span></p>
+        </section>
+
+        <section class="feel-layer" id="directional-vfx" data-layer="vfx">
+          <header class="feel-layer-head">
+            <div class="feel-layer-text">
+              <h3><a href="#directional-vfx">5 · <span data-i18n="feel.l5t">Directional VFX</span></a></h3>
+              <p data-i18n="feel.l5d">Sparks and a shockwave that travel with the force, into and through the target — the burst inherits the attack direction.</p>
+            </div>
+          </header>
+          <div class="feel-layer-controls" data-controls="vfx"></div>
+          <p class="feel-rec" data-i18n="feel.l5rec">Recommended: 40–80 sparks for light hits, add the shockwave on heavy ones.</p>
+          <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l5p">An isotropic burst at the impact point reads as confetti. Aim the cone along the hit direction.</span></p>
+        </section>
+
+        <section class="feel-layer" id="impact-sfx" data-layer="sfx">
+          <header class="feel-layer-head">
+            <div class="feel-layer-text">
+              <h3><a href="#impact-sfx">6 · <span data-i18n="feel.l6t">Three-band audio</span></a></h3>
+              <p data-i18n="feel.l6d">Synthesized live in the page: the low band carries weight, the mid band texture, the high band crispness. Each band has its own switch.</p>
+            </div>
+          </header>
+          <div class="feel-layer-controls" data-controls="sfx"></div>
+          <p class="feel-rec" data-i18n="feel.l6rec">Recommended: low + high for quick hits, low + mid for heavy blows.</p>
+          <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l6p">Stacking all three bands on every single hit washes the sound out — mix per attack weight instead.</span></p>
+        </section>
+      </div>
+
+      <aside class="feel-side">
+        <section class="feel-demo-card" aria-label="hit feel demo">
+          <div id="feel-demo" class="feel-demo"><p class="feel-status" role="status" data-i18n="feel.loading">Loading the knights…</p></div>
+          <p class="cap feel-hint" data-i18n="feel.demoHint">Click the arena to attack · click the victim to pick a zone · drag to orbit</p>
+          <div class="feel-demo-controls">
+            <div class="feel-zone" role="group" aria-label="hit zone">
+              <span class="feel-ctl-label" data-i18n="feel.zone">Hit zone</span>
+              <button type="button" class="btn feel-zone-btn" data-zone="head" data-i18n="feel.zHead">Head</button>
+              <button type="button" class="btn feel-zone-btn on" data-zone="chest" data-i18n="feel.zChest">Chest</button>
+              <button type="button" class="btn feel-zone-btn" data-zone="belly" data-i18n="feel.zBelly">Belly</button>
+              <button type="button" class="btn primary feel-attack" data-i18n="feel.attack">Attack</button>
+            </div>
+            <div class="feel-presets" role="group" aria-label="presets">
+              <span class="feel-ctl-label" data-i18n="feel.presets">Presets</span>
+              <button type="button" class="btn feel-preset on" data-preset="light" data-i18n="feel.preset.light">Light punch</button>
+              <button type="button" class="btn feel-preset" data-preset="heavy" data-i18n="feel.preset.heavy">Heavy hammer</button>
+              <button type="button" class="btn feel-preset" data-preset="overdone" data-i18n="feel.preset.overdone">Everything maxed</button>
+            </div>
+            <p class="cap" data-i18n="feel.presetHint">Switch, then attack to compare. Preset notes: light = fast and restrained; heavy = long freeze, big shake, slow motion; maxed = deliberately too much.</p>
+          </div>
+        </section>
+
+        <section class="feel-code" aria-labelledby="feel-code-h">
+          <h2 id="feel-code-h" data-i18n="feel.code">Engine code</h2>
+          <p class="cap" data-i18n="feel.codeNote">These snippets rebuild from the switches and sliders above — copy them straight into your project. The two smaller files cover the attacker's arm IK and the victim's local bone reactions.</p>
+          <div class="codebox feel-codebox" id="feel-codebox"></div>
+          <p class="cap feel-license" data-i18n="feel.cc0">Snippets and demo models are CC0 — use them without attribution.</p>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.templates">
+<a href="/templates/">game templates</a> · <a href="/free-assets/">free assets</a> · part of the PixJuice free library for indie devs</span>
+      <span data-i18n-html="foot.home2">
+<a href="/credits/">credits &amp; licenses</a> · made for indie game devs</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/pages/feel-hit.ts"></script>
+</body>
+</html>

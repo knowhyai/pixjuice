@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Game Feel Lab — hit stop, screen shake &amp; impact recipes – PixJuice</title>
+  <meta name="description" content="A lab for game feel: layered, tweakable impact recipes with live demos and ready-to-paste Godot 4 and Unity code. First recipe: hit feel on two rigged knights.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PixJuice">
+  <meta property="og:title" content="Game Feel Lab — hit stop, screen shake &amp; impact recipes">
+  <meta property="og:description" content="Layered, tweakable impact recipes with live demos and ready-to-paste Godot 4 and Unity code. First recipe: hit feel.">
+  <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b0a10">
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="PixJuice home">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub" data-i18n="fa.sub">free game assets</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/templates/" data-i18n="nav.templates">game templates</a>
+        <a href="/free-assets/" data-i18n="nav.assets">free assets</a>
+        <a href="/#effects" data-i18n="nav.effects">effects</a>
+        <a href="/feel/" class="cur" aria-current="page" data-i18n="nav.feel">game feel</a>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+            <a href="/free-resources/" data-i18n="fr.h1">More free game assets</a>
+          </div>
+        </details>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tpl-page feel-index">
+    <section class="tpl-hero">
+      <p class="resources-eyebrow">PIXJUICE / GAME FEEL LAB</p>
+      <h1 data-i18n="feel.h1">Game Feel Lab</h1>
+      <p class="lede" data-i18n="feel.lede">Game feel is how your game behaves in the player's hands: weight, timing, response. This lab turns feel into recipes you can toggle, stack and tune — with a live arena, and engine code that follows your sliders.</p>
+    </section>
+
+    <section aria-labelledby="feel-recipes-h">
+      <h2 id="feel-recipes-h" data-i18n="feel.recipes">Recipes</h2>
+      <div class="feel-recipes">
+        <article class="feel-card">
+          <div class="feel-card-art" aria-hidden="true">
+            <svg viewBox="0 0 160 90" width="160" height="90" role="img" aria-hidden="true">
+              <rect width="160" height="90" fill="#12101a"/>
+              <rect x="0" y="64" width="160" height="2" fill="#2b2740"/>
+              <rect x="30" y="18" width="10" height="46" rx="2" fill="#3a3552"/>
+              <rect x="28" y="12" width="14" height="8" rx="2" fill="#3a3552"/>
+              <rect x="118" y="22" width="12" height="42" rx="2" fill="#463f63"/>
+              <rect x="116" y="14" width="16" height="9" rx="2" fill="#463f63"/>
+              <path d="M44 34 L112 40" stroke="#ff4d6d" stroke-width="3" stroke-linecap="round"/>
+              <path d="M112 40 l10 -6 M112 40 l12 2 M112 40 l6 10" stroke="#ff4d6d" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="112" cy="40" r="4" fill="#ffd9e0"/>
+              <path d="M60 24 h14 v8 h-14z" fill="#4cd7ff" opacity="0.9"/>
+              <path d="M64 20 l3 -6 3 6z" fill="#4cd7ff"/>
+            </svg>
+          </div>
+          <div class="feel-card-body">
+            <h3><a href="/feel/hit/" data-i18n="feel.recipe.hit.t">Hit feel</a></h3>
+            <p data-i18n="feel.recipe.hit.d">Six stackable layers — hit stop, screen shake, hit feedback, knockback, directional VFX and three-band audio — on two rigged knights, with Godot 4 and Unity code that updates as you tune.</p>
+            <p class="feel-card-meta"><span data-i18n="feel.recipe.hit.layers">6 layers · Godot 4 + Unity</span> · CC0</p>
+            <a class="feel-card-cta" href="/feel/hit/" data-i18n="feel.recipe.hit.cta">Open the hit feel recipe →</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="feel-soon" aria-labelledby="feel-soon-h">
+      <h2 id="feel-soon-h" data-i18n="feel.soonH">Planned recipes</h2>
+      <p data-i18n="feel.soonNote">Next in the lab — one full page each, no empty shells:</p>
+      <ul class="feel-soon-list">
+        <li data-i18n="feel.soon.jump">Jump feel</li>
+        <li data-i18n="feel.soon.pickup">Pickup feel</li>
+        <li data-i18n="feel.soon.ui">UI feedback</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.templates">
+<a href="/templates/">game templates</a> · <a href="/free-assets/">free assets</a> · part of the PixJuice free library for indie devs</span>
+      <span data-i18n-html="foot.home2">
+<a href="/credits/">credits &amp; licenses</a> · made for indie game devs</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/pages/feel-index.ts"></script>
+</body>
+</html>

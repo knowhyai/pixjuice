@@ -1,0 +1,497 @@
+/* /feel/ section styles — Game Feel Lab. Reuses the site variables so the
+   dark/light themes carry over; nothing here introduces new fonts. */
+
+/* ---- section home (/feel/) ---- */
+
+.feel-index .tpl-hero h1 {
+  font-size: clamp(30px, 4.4vw, 46px);
+}
+
+.feel-recipes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px;
+  margin: 10px 20px 34px;
+}
+
+.feel-card {
+  display: flex;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.feel-card-art {
+  flex: none;
+  width: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg2);
+  border-right: 2px solid var(--line);
+}
+
+.feel-card-art svg {
+  width: 100%;
+  height: auto;
+}
+
+.feel-card-body {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feel-card-body h3 {
+  margin: 0;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+}
+
+.feel-card-body h3 a {
+  color: var(--text);
+}
+
+.feel-card-body h3 a:hover {
+  color: var(--acc);
+  text-decoration: none;
+}
+
+.feel-card-body p {
+  margin: 0;
+  color: var(--dim);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.feel-card-meta {
+  font-size: 11.5px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--faint) !important;
+}
+
+.feel-card-cta {
+  margin-top: auto;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.feel-soon {
+  margin: 0 20px 42px;
+  padding: 16px 18px;
+  border: 2px dashed var(--line);
+  border-radius: 10px;
+  color: var(--dim);
+}
+
+.feel-soon h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+}
+
+.feel-soon p {
+  margin: 0 0 10px;
+  font-size: 13.5px;
+}
+
+.feel-soon-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.feel-soon-list li {
+  font-size: 12.5px;
+  font-weight: 650;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--faint);
+}
+
+/* ---- hit page layout ---- */
+
+.feel-hit .tpl-hero h1 {
+  font-size: clamp(26px, 3.6vw, 40px);
+  max-width: 26ch;
+}
+
+.feel-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 430px;
+  gap: 22px;
+  align-items: start;
+  padding: 0 20px 40px;
+}
+
+.feel-layers > h2 {
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+  margin: 4px 0 14px;
+}
+
+.feel-layer {
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 16px 18px 14px;
+  margin-bottom: 16px;
+  scroll-margin-top: 84px;
+}
+
+.feel-layer:target {
+  border-color: var(--acc);
+}
+
+.feel-layer-head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.feel-layer-text h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+}
+
+.feel-layer-text h3 a {
+  color: var(--text);
+}
+
+.feel-layer-text h3 a:hover {
+  color: var(--acc);
+  text-decoration: none;
+}
+
+.feel-layer-text p {
+  margin: 0;
+  color: var(--dim);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* switch */
+
+.feel-switch {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  flex: none;
+  padding-top: 2px;
+}
+
+.feel-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 44px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.feel-switch-track {
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--panel2);
+  border: 2px solid var(--line);
+  position: relative;
+  pointer-events: none; /* the invisible checkbox on top receives the click */
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.feel-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--faint);
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.feel-switch input:checked + .feel-switch-track {
+  background: #2a1524;
+  border-color: var(--acc);
+}
+
+.feel-switch input:checked + .feel-switch-track::after {
+  transform: translateX(20px);
+  background: var(--acc);
+}
+
+.feel-switch input:focus-visible + .feel-switch-track {
+  outline: 2px solid var(--acc2);
+  outline-offset: 2px;
+}
+
+/* sliders & sub-switches */
+
+.feel-layer-sliders {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.feel-layer-sliders.is-off {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.feel-slider-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--dim);
+}
+
+.feel-slider-top output {
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+
+.feel-slider-rec {
+  font-size: 11.5px;
+  color: var(--faint);
+}
+
+.feel-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--dim);
+  cursor: pointer;
+}
+
+.feel-sub input {
+  accent-color: var(--acc);
+  width: 15px;
+  height: 15px;
+}
+
+.feel-rec {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--good);
+}
+
+.feel-pit {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  color: var(--dim);
+  border-top: 1px dashed var(--line);
+  padding-top: 8px;
+}
+
+.feel-pit b {
+  color: var(--acc);
+  text-transform: uppercase;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  margin-right: 6px;
+}
+
+/* ---- side column: demo + code ---- */
+
+.feel-side {
+  position: sticky;
+  top: 14px;
+  display: grid;
+  gap: 18px;
+  min-width: 0; /* let the grid track win over the canvas's intrinsic width */
+}
+
+.feel-demo-card {
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 12px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.feel-host-wrap {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  max-width: 100%;
+}
+
+.feel-canvas {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0; /* replaced elements otherwise hold the grid open at their intrinsic size */
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.feel-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.feel-invert {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  mix-blend-mode: difference;
+  opacity: 0;
+}
+
+.feel-numbers {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.feel-dmg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-weight: 800;
+  color: var(--text);
+  font-family: var(--mono);
+  text-shadow: 0 2px 0 #000, 0 0 8px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+
+.feel-dmg-big {
+  color: var(--acc);
+}
+
+.feel-status {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dim);
+  font-size: 13px;
+  margin: 0;
+}
+
+.feel-error {
+  color: var(--acc);
+  padding: 20px;
+}
+
+.feel-hint {
+  margin: 8px 2px 10px;
+}
+
+.feel-demo-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.feel-ctl-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+  margin: 0 0 5px;
+}
+
+.feel-zone,
+.feel-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.feel-zone .feel-ctl-label,
+.feel-presets .feel-ctl-label {
+  flex: 1 0 100%;
+  margin-bottom: 0;
+}
+
+.feel-attack {
+  margin-left: auto;
+}
+
+.feel-demo,
+.feel-code {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.feel-code h2 {
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+  margin: 2px 0 8px;
+}
+
+.feel-codebox {
+  margin-top: 6px;
+}
+
+.feel-engine-tabs {
+  margin-bottom: 6px;
+}
+
+.feel-code-pre {
+  max-height: 300px;
+  overflow: auto;
+}
+
+.feel-license {
+  margin-top: 8px;
+}
+
+/* ---- responsive ---- */
+
+@media (max-width: 1020px) {
+  .feel-main {
+    grid-template-columns: 1fr;
+  }
+  .feel-side {
+    position: static;
+    order: -1;
+  }
+}
+
+@media (max-width: 620px) {
+  .feel-card {
+    flex-direction: column;
+  }
+  .feel-card-art {
+    width: auto;
+    border-right: 0;
+    border-bottom: 2px solid var(--line);
+  }
+  .feel-recipes,
+  .feel-soon,
+  .feel-main {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}

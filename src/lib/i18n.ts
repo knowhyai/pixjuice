@@ -40,7 +40,7 @@ const STORAGE_KEY = "pixjuice-lang";
 function detect(): Locale {
   const prefix = location.pathname.split("/")[1];
   if (["zh", "ja", "ko", "es"].includes(prefix)) return prefix as Locale;
-  if (/^\/(templates|free-assets|free-resources)(\/|$)/.test(location.pathname)) return "en";
+  if (/^\/(templates|free-assets|free-resources|feel)(\/|$)/.test(location.pathname)) return "en";
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved && saved in DICTS) return saved as Locale;
@@ -106,7 +106,7 @@ export function onLocaleChange(fn: Listener): void {
 export function setLocale(next: Locale): void {
   if (!(next in DICTS) || next === locale) return;
   const path = location.pathname.replace(/^\/(zh|ja|ko|es)(?=\/)/, "");
-  if (/^\/(templates|free-assets|free-resources)(\/|$)/.test(path)) {
+  if (/^\/(templates|free-assets|free-resources|feel)(\/|$)/.test(path)) {
     location.assign((next === "en" ? "" : "/" + next) + path + location.search + location.hash);
     return;
   }

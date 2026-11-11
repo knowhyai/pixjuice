@@ -89,7 +89,7 @@ await p.screenshot({path:join(out,'templates-save.png'),fullPage:true});
  await downloadCode('save-load');await p.clock.resume();
  for(const lang of ['en','zh','ja','ko','es']){
   const prefix=lang==='en'?'':'/'+lang;
-  for(const route of ['/templates/','/templates/gacha/','/templates/save-load/','/free-assets/','/free-resources/']){
+  for(const route of ['/templates/','/templates/gacha/','/templates/save-load/','/free-assets/','/free-resources/','/feel/','/feel/hit/']){
    const seoPage=await ctx.newPage();
    const res=await seoPage.goto(base+prefix+route);assert.equal(res.status(),200);
    assert.equal(await seoPage.locator('html').getAttribute('lang'),lang);
@@ -107,10 +107,11 @@ await p.screenshot({path:join(out,'templates-save.png'),fullPage:true});
  await p.screenshot({path:join(out,'free-resources.png'),fullPage:true});
  await p.locator('#lang').selectOption('zh');await p.waitForURL('**/zh/free-resources/');
  assert.equal(await p.locator('html').getAttribute('lang'),'zh');
- await p.goto(base+'/free-assets/');await p.locator('.fa-card').first().waitFor();
- assert.equal(await p.locator('#fa-filters button').count(),2);
- assert.equal(await p.locator('.fa-card').count(),1);
- assert.equal(await p.locator('.fa-soon-card').count(),0);
+ await p.goto(base+'/free-assets/');await p.locator('#fa-empty:not([hidden])').waitFor();
+ // the legacy chest is unpublished (product_hidden), so the grid shows the
+ // "in production" empty state; detail pages stay reachable below
+ assert.equal(await p.locator('.fa-card').count(),0);
+ assert.ok(await p.locator('#fa-filters').isHidden());
  await p.goto(base+'/free-assets/chest-wood-realistic-wood-intact/');await p.locator('.fa-file').first().waitFor();
  assert.ok(await p.locator('.fa-file').count()>=7);
  assert.equal(await p.locator('[data-variant=style]').count(),0);
@@ -128,10 +129,76 @@ await p.screenshot({path:join(out,'templates-save.png'),fullPage:true});
  }
 
  for(const a of await p.locator('.fa-file').evaluateAll(es=>es.map(e=>e.href))){assert.equal((await ctx.request.get(a)).status(),200);}
- for(const route of ['/templates/','/templates/gacha/','/templates/save-load/','/free-assets/','/free-resources/']){
+
+ // ---- Game Feel Lab -----------------------------------------------------
+ await p.goto(base+'/feel/');await p.locator('.feel-card').waitFor();
+ assert.equal(await p.locator('.feel-card').count(),1);
+ assert.ok(await p.locator('.feel-card a[href="/feel/hit/"]').count()>0);
+ assert.equal(await p.locator('nav.nav a[href="/feel/"]').getAttribute('aria-current'),'page');
+ assert.equal(await p.locator('.feel-soon-list li').count(),3);
+ await p.screenshot({path:join(out,'juice-lab-home.png'),fullPage:true});
+
+ await p.goto(base+'/feel/hit/');await p.locator('.feel-layer').first().waitFor();
+ assert.equal(await p.locator('.feel-layer').count(),6);
+ await p.locator('.feel-host-wrap[data-ready]').waitFor({timeout:30000});
+ for(const anchor of ['hit-stop','screen-shake','hit-feedback','knockback','directional-vfx','impact-sfx'])
+  assert.equal(await p.locator('#'+anchor).count(),1,'layer anchor '+anchor);
+ // six top-level toggles flip and rewrite the exported code
+ const stopBox=p.locator('input[data-feel-toggle="hitStop"]');
+ assert.ok(await stopBox.isChecked());
+ await stopBox.uncheck();
+ assert.ok(await p.locator('button[data-preset].on').count()===0,'manual change clears the preset highlight');
+ assert.ok((await p.locator('.feel-code-pre').innerText()).includes('hit_stop_enabled := false'));
+ await stopBox.check();
+ assert.ok((await p.locator('.feel-code-pre').innerText()).includes('hit_stop_enabled := true'));
+ // sliders drive the code: 20 frames @60 → 0.333 s
+ await p.locator('input[data-feel-slider="hitStop.frames"]').fill('20');
+ assert.ok((await p.locator('.feel-code-pre').innerText()).includes('hit_stop_seconds := 0.333'));
+ // sub-switches: kill the mid band and watch the flag flip
+ await p.locator('input[data-feel-sub="sfx.mid"]').uncheck();
+ assert.ok((await p.locator('.feel-code-pre').innerText()).includes('audio_band_mid := false'));
+ await p.locator('input[data-feel-sub="sfx.mid"]').check();
+ // Unity tab exports C# and reacts too
+ await p.locator('.feel-engine-tabs button',{hasText:'Unity'}).click();
+ assert.ok((await p.locator('.feel-code-pre').innerText()).includes('WaitForSecondsRealtime'));
+ assert.ok((await p.locator('.feel-code-pre').innerText()).includes('hitStopSeconds = 0.333f'));
+ await p.locator('.feel-engine-tabs button',{hasText:'Godot'}).click();
+ // copy produces non-empty text
+ const codeText=await p.locator('.feel-code-pre').innerText();
+ assert.ok(codeText.length>500);
+ // zone buttons switch, attack fires a number and layer 6 bands exist
+ await p.locator('button[data-zone="belly"]').click();
+ assert.equal(await p.locator('button[data-zone="belly"]').getAttribute('aria-pressed'),'true');
+ assert.equal(await p.locator('input[data-feel-sub="sfx.high"]').count(),1);
+ await p.locator('button[data-i18n="feel.attack"]').click();
+ await p.waitForSelector('.feel-dmg',{timeout:15000});
+ // three presets: light → heavy → overdone, each sets params and re-attacks
+ await p.locator('button[data-preset="light"]').click();
+ assert.ok((await p.locator('.feel-code-pre').innerText()).includes('hit_stop_seconds := 0.067'));
+ await p.screenshot({path:join(out,'juice-hit-light.png'),fullPage:true});
+ await p.locator('button[data-preset="heavy"]').click();
+ assert.ok((await p.locator('.feel-code-pre').innerText()).includes('hit_stop_seconds := 0.233'));
+ await p.waitForTimeout(900); // let the heavy finisher play out on screen
+ await p.screenshot({path:join(out,'juice-hit-heavy.png'),fullPage:true});
+ await p.locator('button[data-preset="overdone"]').click();
+ assert.ok((await p.locator('.feel-code-pre').innerText()).includes('hit_stop_seconds := 0.433'));
+ await p.waitForTimeout(600);
+ await p.screenshot({path:join(out,'juice-hit-overdone.png'),fullPage:true});
+ // the knight model ships with the page
+ assert.equal((await ctx.request.get(base+'/feel/knight.glb')).status(),200);
+ assert.equal((await ctx.request.get(base+'/feel/LICENSE.txt')).status(),200);
+ // Chinese edition renders localized copy and the same demo
+ await p.goto(base+'/zh/feel/hit/');await p.locator('.feel-host-wrap[data-ready]').waitFor({timeout:30000});
+ assert.equal(await p.locator('html').getAttribute('lang'),'zh');
+ assert.ok((await p.locator('main h1').innerText()).includes('打击感'));
+ await p.locator('button[data-i18n="feel.attack"]').click();
+ await p.waitForSelector('.feel-dmg',{timeout:15000});
+ await p.screenshot({path:join(out,'juice-hit-zh.png'),fullPage:true});
+
+ for(const route of ['/templates/','/templates/gacha/','/templates/save-load/','/free-assets/','/free-resources/','/feel/','/feel/hit/']){
   await p.setViewportSize({width:390,height:844});await p.goto(base+route);await p.waitForTimeout(200);await noOverflow();
   await p.screenshot({path:join(out,'mobile-'+route.split('/').filter(Boolean).join('-')+'.png'),fullPage:true});
  }
  assert.deepEqual(errors,[]);
- console.log('PASS: gacha, wheel, persistence, save confirmations/import/export/autosave, single dark gold interface, 5-language static SEO, asset links, 2 standalone ZIPs, mobile overflow; no page errors.');
+ console.log('PASS: gacha, wheel, persistence, save confirmations/import/export/autosave, single dark gold interface, 5-language static SEO, asset links, 2 standalone ZIPs, Game Feel Lab (routes, layers, presets, code, zh), mobile overflow; no page errors.');
 } finally {await b.close();}

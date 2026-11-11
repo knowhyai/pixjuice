@@ -47,6 +47,8 @@ export default defineConfig({
         save: "templates/save-load/index.html",
         assets: "free-assets/index.html",
         resources: "free-resources/index.html",
+        feel: "feel/index.html",
+        feelhit: "feel/hit/index.html",
         ...assetDetailInputs(),
         notfound: "404.html",
       },
