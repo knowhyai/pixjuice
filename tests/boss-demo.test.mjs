@@ -170,6 +170,45 @@ test('boss demo: layer crossing down switches color, ×N and shakes harder; heal
   d.demo.dispose();
 });
 
+test('boss demo: a heal during the hold snaps the ghost — no stale white bar', () => {
+  const d = mount(cloneBossParams(BOSS_PRESETS.heavy));
+  d.demo.damage(60); // 240/300, layer 3 at 40%
+  pump(100); // inside the 350 ms hold, ghost still showing 100%
+  assert.ok(pct(d.lag) > pct(d.fill), 'ghost pending above the fill before the heal');
+  d.demo.heal(30); // 270/300 → 70%
+  pump(30);
+  assert.ok(Math.abs(pct(d.lag) - 70) < 0.01, `heal snaps the ghost onto the grown fill (${pct(d.lag)})`);
+  pump(1000); // nothing pending may resurrect it
+  assert.ok(Math.abs(pct(d.lag) - pct(d.fill)) < 0.01, 'still converged long after the heal');
+  d.demo.dispose();
+});
+
+test('boss demo: a layer break refills the ghost to the top, then it drains', () => {
+  const d = mount(cloneBossParams(BOSS_PRESETS.heavy));
+  d.demo.damage(190); // 110/300 → layer 2 at 10%
+  pump(1200); // settle the ghost at 10%
+  assert.ok(Math.abs(pct(d.lag) - 10) < 0.5, `settled at 10% before the break (${pct(d.lag)})`);
+  d.demo.damage(15); // 95/300 → layer 1 broke, new layer at 95%
+  pump(50); // inside the hold
+  assert.ok(Math.abs(pct(d.lag) - 100) < 0.01, `the break resets the ghost to the top of the new layer (${pct(d.lag)})`);
+  assert.ok(Math.abs(pct(d.fill) - 95) < 0.01, 'fill shows the new layer');
+  pump(1200); // hold + catch elapsed
+  assert.ok(Math.abs(pct(d.lag) - 95) < 0.5, `ghost drained onto the new layer's fill (${pct(d.lag)})`);
+  d.demo.dispose();
+});
+
+test('boss demo: death drains the ghost to zero and it stays converged', () => {
+  const d = mount(cloneBossParams(BOSS_PRESETS.heavy));
+  d.demo.damage(300); // kill shot from full
+  pump(50);
+  assert.equal(pct(d.fill), 0, 'fill empty immediately');
+  assert.equal(pct(d.lag), 100, 'ghost still holds the hit through the wait');
+  pump(1200); // wait + catch elapsed
+  assert.equal(pct(d.lag), 0, `ghost drained to zero (${pct(d.lag)})`);
+  assert.ok(Math.abs(pct(d.lag) - pct(d.fill)) < 0.01, 'converged at 0 hp');
+  d.demo.dispose();
+});
+
 test('boss demo: 0 HP ends dead (×0, dimmed, no alarm) and reset restores', () => {
   const d = mount(cloneBossParams(BOSS_PRESETS.heavy));
   for (let i = 0; i < 12; i++) d.demo.damage(30);

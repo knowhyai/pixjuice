@@ -117,6 +117,70 @@ test('boss: godot code mirrors the live parameters', () => {
   assert.ok(!gdTuned.includes('lag_wait := 0.35'));
 });
 
+test('boss: godot ghost chases the POST-hit fill (lag-convergence regression)', () => {
+  // Shipped bug: take_damage called _ghost_chase() BEFORE _layout(), so the
+  // tween targeted the pre-hit width and the ghost never caught the fill
+  // (measured: lag 640 px vs fill 512 px a full second after one hit).
+  const code = gd(BOSS_PRESETS.heavy);
+  const dmg = code.slice(code.indexOf('func take_damage'), code.indexOf('func heal'));
+  assert.ok(dmg.trim().length > 0, 'take_damage slice sanity');
+  assert.ok(
+    dmg.indexOf('_layout()') < dmg.indexOf('_ghost_chase('),
+    '_layout() must run before _ghost_chase() so the target is the post-hit fill',
+  );
+  assert.ok(dmg.includes('_ghost_chase(broke)'), 'chase receives the layer-break flag');
+  // the ghost only animates while the layer is on, hp remains, and motion is allowed
+  assert.ok(
+    dmg.includes('if delayed_bar_on and hp > 0.0 and not reduce_motion:'),
+    'chase is guarded by layer toggle, hp > 0 (no zombie tween on a kill shot) and reduced motion',
+  );
+  const ghost = code.slice(code.indexOf('func _ghost_chase'), code.indexOf('func _shake_impulse'));
+  assert.ok(ghost.includes('tween_property(lag_fill, "size:x", fill.size.x'), 'tween targets the fill width');
+  assert.ok(!ghost.includes('var target :='), 'no pre-captured stale target variable');
+  assert.ok(
+    ghost.includes('lag_fill.size.x = track.size.x'),
+    'a broken layer resets the ghost to the top of the new layer (matches the demo/web: shown = 100 on break)',
+  );
+});
+
+test('boss: godot heal, setup, resize and reduced-motion keep the ghost honest', () => {
+  const code = gd(BOSS_PRESETS.heavy);
+  const heal = code.slice(code.indexOf('func heal'), code.indexOf('func active_layer'));
+  assert.ok(heal.includes('_lag_tween.kill()'), 'heal kills a pending ghost tween');
+  assert.ok(
+    heal.includes('lag_fill.size.x = fill.size.x'),
+    'heal snaps the ghost onto the grown fill (a kill alone left the stale width forever)',
+  );
+  const setup = code.slice(code.indexOf('func setup'), code.indexOf('func take_damage'));
+  assert.ok(setup.includes('_lag_tween.kill()'), 'setup (reset) kills a pending ghost tween');
+  assert.ok(setup.includes('lag_fill.size.x = fill.size.x'), 'setup re-anchors the ghost (setup(0.5) bug)');
+  assert.ok(code.includes('track.resized.connect(_on_track_resized)'), 'live track resize is handled');
+  const resize = code.slice(code.indexOf('func _on_track_resized'), code.indexOf('func _process'));
+  assert.ok(resize.includes('_lag_tween.kill()') && resize.includes('lag_fill.size.x = fill.size.x'),
+    'resize re-derives both bars so no stale ghost pixels survive');
+  // reduced motion: snap, never animate — including a mid-chase flip
+  assert.ok(
+    code.includes('not reduce_motion else fill.size.x'),
+    '_layout snaps the ghost when motion is reduced (or the boss is dead)',
+  );
+  assert.ok(code.includes('set(value):') && code.includes('is_node_ready()'),
+    'reduce_motion is a setter that drops the in-flight ghost when flipped on');
+});
+
+test('boss: web export lag machine stays ordered like the demo (lock)', () => {
+  // The web export never had the ordering bug — lock the ordering so it stays
+  // that way: the chase target must be captured AFTER the hp update.
+  const code = web(BOSS_PRESETS.heavy);
+  const apply = code.slice(code.indexOf('apply(next, healed)'), code.indexOf('damage(u)'));
+  assert.ok(apply.trim().length > 0, 'apply slice sanity');
+  assert.ok(apply.indexOf('this.hp =') < apply.indexOf('this.target = this.pct()'),
+    'target is the post-update pct');
+  assert.ok(apply.includes('this.shown = broke ? 100'), 'layer breaks refill the ghost to the top');
+  assert.ok(apply.includes('this.shown = this.pct()'), 'heal / reduced motion snap the ghost');
+  const frame = code.slice(code.indexOf('frame(now)'), code.indexOf('const bar ='));
+  assert.ok(frame.includes('this.shown = this.target'), 'the chase always terminates on the target');
+});
+
 test('boss: web export is a self-contained page honoring reduced motion', () => {
   const code = web(BOSS_PRESETS.heavy);
   assert.ok(code.startsWith('<!doctype html>'));

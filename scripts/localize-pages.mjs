@@ -71,4 +71,15 @@ for(const a of manifest.assets.filter(a=>['stylized','clean-low-poly','pixel-art
  const target=manifest.assets.find(b=>b.style_tier==='realistic'&&b.product_id===a.product_id&&b.palette===a.palette&&b.state===a.state);
  for(const lang of langs){const prefix=lang==='en'?'':'/'+lang;redirects.push(`${prefix}/free-assets/${a.id}/ ${prefix}/free-assets/${target?target.id+'/':''} 301`);}
 }
+// Locale hygiene, same rules the vite-preview middleware enforces locally:
+// directory pages canonicalize with a trailing slash in every locale, and any
+// /en/ URL (English is the unprefixed default) lands on the canonical English
+// page in one hop. The splat at the end catches /en paths outside this list.
+for(const p of paths){
+ if(p==='')continue;
+ const noSlash=p.slice(0,-1);
+ for(const lang of langs){const prefix=lang==='en'?'':'/'+lang;redirects.push(`${prefix}/${noSlash} ${prefix}/${p} 301`);}
+ redirects.push(`/en/${noSlash} /${p} 301`,`/en/${p} /${p} 301`);
+}
+redirects.push('/en / 301','/en/* /:splat 301');
 await writeFile('dist/_redirects',redirects.join('\n')+'\n');

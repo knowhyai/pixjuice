@@ -22,11 +22,13 @@ export function godotBossHp(p: BossHpParams): string {
     : [hex(BOSS_LAYER_COLORS[BOSS_LAYER_COLORS.length - 1])];
 
   const lagBlock = p.lag.on
-    ? `	# Layer 1 — delayed white bar. The ghost keeps the pre-hit width through
-	# the wait, then eases to the current fill. A new hit kills the pending
-	# tween and restarts the hold, so rapid damage keeps the ghost readable.
-	if delayed_bar_on:
-		_ghost_chase()`
+    ? `	# Layer 1 — delayed white bar. Runs AFTER _layout() so the chase
+	# targets the post-hit fill. The ghost holds the pre-hit width (or
+	# refills to the top of a freshly broken layer), waits lag_wait, then
+	# eases onto the fill over lag_catch. A new hit kills the pending tween
+	# and restarts the hold, so rapid damage keeps the ghost readable.
+	if delayed_bar_on and hp > 0.0 and not reduce_motion:
+		_ghost_chase(broke)`
     : `	# Layer 1 — delayed white bar is switched off in the current preset.`;
 
   const reactBlock = p.react.on
@@ -48,14 +50,16 @@ export function godotBossHp(p: BossHpParams): string {
 
   // the ghost helper is only emitted when the delayed-bar layer is on
   const ghostFn = p.lag.on
-    ? `func _ghost_chase() -> void:
+    ? `func _ghost_chase(broke := false) -> void:
 	if _lag_tween:
 		_lag_tween.kill()
-	var target := fill.size.x
+	if broke:
+		# the new layer starts full — the ghost drains it whole
+		lag_fill.size.x = track.size.x
 	_lag_tween = create_tween()
 	_lag_tween.tween_interval(lag_wait)
-	_lag_tween.tween_property(lag_fill, "size:x", target, lag_catch) \\
-		.from(lag_fill.size.x).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	_lag_tween.tween_property(lag_fill, "size:x", fill.size.x, lag_catch) \\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 
 `
     : "";
@@ -69,6 +73,8 @@ export function godotBossHp(p: BossHpParams): string {
 #   Track (Control) -> LagFill (ColorRect), Fill (ColorRect), Ticks (Control)
 #   Tag (Label "BOSS"), LayerBadge (Label), FlashRect (ColorRect, white)
 # Animate the bar zone itself for the shake; anchor it inside your HUD.
+# Keep LagFill/Fill anchors equal on both axes (offsets only) — stretched
+# anchors let the layout system override the script's width writes.
 
 @export var units_per_layer := 100.0
 @export var max_layers := ${Math.max(1, Math.round(p.layers.count))}${p.layers.on ? "" : "   # layered HP off: the bar is a single layer"}
@@ -92,7 +98,14 @@ export function godotBossHp(p: BossHpParams): string {
 @export var alarm_threshold := ${Math.round(p.alarm.threshold)}          # percent of TOTAL hp (heuristic)
 @export var alarm_hz := ${n(p.alarm.pulseHz, 1)}             # glow pulse frequency (heuristic)
 @export var alarm_screen_edge := ${gdBool(p.alarm.edge)}
-@export var reduce_motion := false   # wire to your accessibility settings; the web export reads prefers-reduced-motion
+@export var reduce_motion := false:   # wire to your accessibility settings; the web export reads prefers-reduced-motion
+	set(value):
+		reduce_motion = value
+		if value and is_node_ready():
+			# flipping it mid-chase drops the in-flight ghost immediately
+			if _lag_tween:
+				_lag_tween.kill()
+			_layout()
 
 @onready var track: Control = $Track
 @onready var fill: ColorRect = $Track/Fill
@@ -114,26 +127,30 @@ var _flash_tween: Tween
 
 func setup(start_fraction := 1.0) -> void:
 	hp = max_layers * units_per_layer * clampf(start_fraction, 0.0, 1.0)
+	if _lag_tween:
+		_lag_tween.kill()
 	_build_ticks()
 	_layout()
+	lag_fill.size.x = fill.size.x   # a fresh fight starts with no ghost
 
 func take_damage(units: float) -> void:
 	var before := hp
 	hp = maxf(hp - units, 0.0)
 	var broke := active_layer() < ceili(before / units_per_layer)
-${lagBlock}
 ${reactBlock}
 	if broke:
 		# a broken layer reads harder: stronger flash, longer-feeling shake
 		_shake_amp *= 1.35
 	_layout()
+${lagBlock}
 
 func heal(units: float) -> void:
 	hp = minf(hp + units, max_layers * units_per_layer)
-	# healing erases the ghost — the bar just grows
+	# healing erases the ghost — the bar just grows onto the new fill
 	if _lag_tween:
 		_lag_tween.kill()
 	_layout()
+	lag_fill.size.x = fill.size.x
 
 func active_layer() -> int:
 	if hp <= 0.0:
@@ -145,7 +162,7 @@ func _layout() -> void:
 	var frac := 0.0 if layer <= 0 else (hp - (layer - 1) * units_per_layer) / units_per_layer
 	fill.color = layer_colors[maxi(0, mini(layer_colors.size() - 1, max_layers - layer))] if layered_bar else layer_colors[0]
 	fill.size.x = track.size.x * frac
-	lag_fill.size.x = maxf(lag_fill.size.x, fill.size.x) if delayed_bar_on and hp > 0.0 else fill.size.x
+	lag_fill.size.x = maxf(lag_fill.size.x, fill.size.x) if delayed_bar_on and hp > 0.0 and not reduce_motion else fill.size.x
 	layer_badge.text = ("×%d" % layer) if layered_bar and max_layers > 1 else ""
 	flash_rect.visible = hp > 0.0
 
@@ -185,8 +202,17 @@ func _flash() -> void:
 
 func _ready() -> void:
 	_home = position
-	track.resized.connect(_layout)
+	track.resized.connect(_on_track_resized)
 	setup()
+
+func _on_track_resized() -> void:
+	# live edits resize the track in absolute pixels — re-derive both bars so
+	# no stale ghost width (or tween target) survives; the web export works
+	# in percent and never has this problem
+	if _lag_tween:
+		_lag_tween.kill()
+	_layout()
+	lag_fill.size.x = fill.size.x
 
 func _process(delta: float) -> void:
 	# --- shake: layered sines, quadratic decay to zero by shake_decay ---

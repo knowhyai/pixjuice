@@ -1,5 +1,7 @@
 import { readdirSync, statSync } from "node:fs";
+import { resolve } from "node:path";
 import { defineConfig } from "vite";
+import { createRoutingMiddleware } from "./scripts/preview-routing.mjs";
 
 // Multi-page static build for Cloudflare Pages:
 //   /                     catalog (index.html)
@@ -31,6 +33,18 @@ function assetDetailInputs(): Record<string, string> {
 }
 
 export default defineConfig({
+  plugins: [
+    {
+      name: "pages-parity-routing",
+      // vite preview would otherwise SPA-fallback every unknown path to the
+      // homepage (200). Serve like Cloudflare Pages instead: 301 directory
+      // pages to their slashed URL, 301 /en/* to the unprefixed English URL
+      // (English is the default locale), 404 everything else via 404.html.
+      configurePreviewServer(server) {
+        server.middlewares.use(createRoutingMiddleware(resolve(server.config.root, "dist")));
+      },
+    },
+  ],
   build: {
     target: "es2022",
     rollupOptions: {
