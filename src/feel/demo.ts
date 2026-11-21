@@ -2,8 +2,8 @@
 // the striker loops idle and plays the slash on attack, the victim loops idle
 // and plays the body-hit clip on contact. The six juice layers stack on top
 // of the clips: hit stop freezes the simulation clock (mixers included),
-// screen shake rides the unscaled clock, flash/knockback/sparks/numbers/audio
-// fire from the impact moment. No capsules; visible motion comes from the clips.
+// screen shake rides the unscaled clock, and flash, knockback, sparks,
+// numbers and audio fire at impact.
 
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -11,11 +11,14 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import type { FeelParams, HitZone } from "./params";
+import { DEFAULT_CAMERA, placeDuelists } from "./staging";
+import { advanceClock } from "./clock";
 
 export interface FeelDemo {
   setParams(p: FeelParams): void;
   setZone(z: HitZone): void;
   attack(): void;
+  resetView(): void;
   onZonePick(cb: (z: HitZone) => void): void;
   onImpact(cb: () => void): void;
   dispose(): void;
@@ -65,13 +68,18 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   renderer.toneMappingExposure = 1.12;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, 1.6, 0.05, 60);
-  camera.position.set(0.35, 1.8, 5.5);
+  // default view: the staged flank 3/4 of the clash (see staging.ts) — profiles
+  // of both knights, contact centered. Saved so the page's Reset view control
+  // and a fresh reload both return to exactly this frame.
+  camera.position.copy(DEFAULT_CAMERA.position);
   const controls = new OrbitControls(camera, canvas);
-  controls.target.set(0, 0.95, 0);
+  controls.target.copy(DEFAULT_CAMERA.target);
   controls.enableDamping = true;
   controls.minDistance = 2.2;
   controls.maxDistance = 9;
   controls.maxPolarAngle = Math.PI * 0.55;
+  controls.update();
+  controls.saveState();
 
   // a small environment map so the metal armor has something to reflect —
   // without it, PBR metal reads nearly black away from the key light
@@ -158,11 +166,10 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   }
   attackerRoot.add(attacker);
   victimRoot.add(victim);
-  attackerRoot.position.set(-0.82, 0, 0.14);
-  victimRoot.position.set(0.82, 0, -0.14);
-  // orientation measured from the posed skeleton's facing (head − hips)
-  attackerRoot.rotation.y = -Math.PI / 2 + 0.06;
-  victimRoot.rotation.y = Math.PI / 2 - 0.3;
+  // face each other along the measured Mixamo forward (+Z at identity — head −
+  // hips is up, not facing; see staging.ts), so the slash actually crosses to
+  // the victim and the clash reads from the flank camera
+  placeDuelists(attackerRoot, victimRoot, attacker, victim);
   scene.add(attackerRoot, victimRoot);
   const victimHome = victimRoot.position.clone();
 
@@ -202,6 +209,8 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     return map.get(name) ?? map.get(THREE.PropertyBinding.sanitizeNodeName(name));
   }
   const zoneBone = (z: HitZone): THREE.Bone => bone(victim, ZONE_BONES[z]) ?? (bone(victim, "mixamorig:Hips") as THREE.Bone);
+
+  mixerV.update(0);
 
   /**
    * Contact timing, measured from the clip itself: step through the slash and
@@ -466,11 +475,16 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   });
 
   // --- resize -------------------------------------------------------------------------
-  const resize = new ResizeObserver(() => {
+  const resizeCanvas = () => {
     const w = Math.max(1, hostWrap.clientWidth);
-    // 46% viewport cap so the sticky mobile stage (canvas + attack row, see
-    // feel.css ≤1020px) still fits below the wrapped site header on a phone.
-    const h = Math.max(1, Math.round(Math.min(w * 0.66, Math.max(180, window.innerHeight * 0.46))));
+    // Desktop workbench: the demo card is pinned below the sticky site header
+    // while the parameter list scrolls beside it, so the canvas is capped to the
+    // viewport minus the card's fixed chrome (header 88 + offset 14 + rows ≈ 430
+    // — see .feel-demo-card in feel.css). On a single column, leave room for
+    // the header, stage controls, and sliders below the canvas.
+    const desktop = window.matchMedia("(width > 1020px)").matches;
+    const vhCap = desktop ? Math.max(180, window.innerHeight - 532) : window.innerHeight * 0.3;
+    const h = Math.max(1, Math.round(Math.min(w * 0.66, vhCap)));
     renderer.setSize(w, h, false);
     canvas.style.height = `${h}px`;
     camera.aspect = w / h;
@@ -480,8 +494,10 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     // particle when the canvas is small, or it disappears entirely.
     const worldPerPx = (2 * Math.tan((camera.fov * Math.PI) / 360) * 5.2) / h;
     sparkMat.size = THREE.MathUtils.clamp(5.5 * worldPerPx, 0.045, 0.12);
-  });
+  };
+  const resize = new ResizeObserver(resizeCanvas);
   resize.observe(hostWrap);
+  window.addEventListener("resize", resizeCanvas);
 
   // --- main loop ----------------------------------------------------------------------
   let lastReal = performance.now();
@@ -495,19 +511,10 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
 
     // real-time bookkeeping: the freeze clock and shake decay must run on
     // unscaled time, or the hit stop would freeze the shake and itself
-    if (freezeLeft > 0) {
-      freezeLeft -= realDt;
-      if (freezeLeft <= 0) {
-        freezeLeft = 0;
-        timeScale = slowLeft > 0 ? 0.3 : 1;
-      }
-    } else if (slowLeft > 0) {
-      slowLeft -= realDt;
-      if (slowLeft <= 0) {
-        slowLeft = 0;
-        timeScale = 1;
-      }
-    }
+    const stepped = advanceClock({ freezeLeft, slowLeft, timeScale }, realDt);
+    freezeLeft = stepped.freezeLeft;
+    slowLeft = stepped.slowLeft;
+    timeScale = stepped.timeScale;
     const shakeDecay = params.shake.on ? params.shake.decay : 4;
     trauma = Math.max(0, trauma - shakeDecay * realDt * (0.3 + trauma));
 
@@ -657,6 +664,9 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
       zone = z;
     },
     attack,
+    resetView() {
+      controls.reset();
+    },
     onZonePick(cb) {
       zonePickers.push(cb);
     },
@@ -667,6 +677,7 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
       if (disposed) return;
       disposed = true;
       resize.disconnect();
+      window.removeEventListener("resize", resizeCanvas);
       themeObserver.disconnect();
       renderer.setAnimationLoop(null);
       controls.dispose();

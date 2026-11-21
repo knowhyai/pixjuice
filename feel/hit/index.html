@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Hit feel recipe: hit stop, screen shake, knockback &amp; layered impact SFX – PixJuice</title>
-  <meta name="description" content="Tune a hit until it lands: six toggleable layers on two rigged knights — hit stop, screen shake, flash/squash/numbers, knockback, directional sparks, three-band audio — with Godot 4 and Unity code that follows every slider.">
+  <meta name="description" content="The demo lets you tune hit stop, screen shake, flash and damage numbers, knockback, directional sparks, and three-band audio. Squash is a Godot 4 and Unity code reference that needs project wiring.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PixJuice">
   <meta property="og:title" content="Hit feel recipe — hit stop, screen shake &amp; layered impact SFX">
-  <meta property="og:description" content="Six toggleable layers on two rigged knights, with Godot 4 and Unity code that follows every slider.">
+  <meta property="og:description" content="Play with hit stop, shake, flash, knockback, sparks and audio. Squash is an engine-code reference.">
   <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#0b0a10">
@@ -68,13 +68,50 @@
   <main class="tpl-page feel-hit">
     <section class="tpl-hero">
       <p class="tpl-crumbs"><a href="/feel/" data-i18n="nav.feel">game feel</a> / <span data-i18n="feel.recipe.hit.t">Hit feel</span></p>
-      <h1 data-i18n="feel.hitH1">Hit feel — six layers you can stack</h1>
-      <p class="lede" data-i18n="feelHit.lede">Tune a hit until it lands: six toggleable layers on two rigged knights — hit stop, screen shake, flash/squash/numbers, knockback, directional sparks and three-band audio — with Godot 4 and Unity code that follows every slider.</p>
+      <h1 data-i18n="feel.hitH1">Hit feel — tune the impact</h1>
+      <p class="lede" data-i18n="feelHit.lede">The demo lets you tune hit stop, screen shake, flash and damage numbers, knockback, directional sparks, and three-band audio. Squash is a Godot 4 and Unity code reference that needs project wiring.</p>
     </section>
 
     <div class="feel-main">
+      <aside class="feel-side">
+        <section class="feel-demo-card" aria-label="hit feel demo">
+          <div class="feel-stage">
+            <div class="feel-view-row">
+              <p class="cap feel-hint" data-i18n="feel.demoHint">Click the arena to attack · click the victim to pick a zone · drag to orbit</p>
+              <button type="button" class="btn feel-reset-view" data-i18n="feel.resetView">Reset view</button>
+            </div>
+            <div id="feel-demo" class="feel-demo"><p class="feel-status" role="status" data-i18n="feel.loading">Loading the knights…</p></div>
+            <div class="feel-zone" role="group" aria-label="hit zone">
+              <span class="feel-ctl-label" data-i18n="feel.zone">Hit zone</span>
+              <button type="button" class="btn feel-zone-btn" data-zone="head" data-i18n="feel.zHead">Head</button>
+              <button type="button" class="btn feel-zone-btn on" data-zone="chest" data-i18n="feel.zChest">Chest</button>
+              <button type="button" class="btn feel-zone-btn" data-zone="belly" data-i18n="feel.zBelly">Belly</button>
+              <button type="button" class="btn primary feel-attack" data-i18n="feel.attack">Attack</button>
+            </div>
+          </div>
+          <div class="feel-demo-controls">
+            <div class="feel-presets" role="group" aria-label="presets">
+              <span class="feel-ctl-label" data-i18n="feel.presets">Presets</span>
+              <button type="button" class="btn feel-preset on" data-preset="light" data-i18n="feel.preset.light">Light punch</button>
+              <button type="button" class="btn feel-preset" data-preset="heavy" data-i18n="feel.preset.heavy">Heavy hammer</button>
+              <button type="button" class="btn feel-preset" data-preset="overdone" data-i18n="feel.preset.overdone">Everything maxed</button>
+            </div>
+            <div class="feel-compare" role="group" aria-label="compare tune">
+              <span class="feel-ctl-label" data-i18n="feel.compareLabel">Compare on the demo</span>
+              <button type="button" class="btn feel-compare-btn on" data-compare="mine" aria-pressed="true" data-i18n="feel.compareMine">My tune</button>
+              <button type="button" class="btn feel-compare-btn" data-compare="base" aria-pressed="false" data-i18n="feel.compareBase">Page default</button>
+              <button type="button" class="btn feel-share" data-i18n="feel.share">⧉ Share this tune</button>
+            </div>
+            <p class="cap feel-compare-note" hidden data-i18n="feel.compareNote">The demo is now playing the page default — your sliders are untouched. Attack to feel the difference, then switch back to your tune.</p>
+            <p class="cap feel-shared-note" hidden data-i18n="feel.sharedNote">Opened from a shared link — these are that tune’s numbers, not a recommendation.</p>
+            <input class="feel-share-url" type="text" readonly hidden aria-label="share link" data-i18n-aria="feel.shareUrlAria">
+            <p class="cap" data-i18n="feel.presetHint">Switch, then attack to compare. Basis: light ≈ Song’s fast-attack observation + GGXRD’s light/heavy split; heavy ≈ Song’s heavy-weapon camera shift + Sakurai’s “higher damage, longer stop”; maxed = Kao (2020): extreme juiciness scores worse than moderate.</p>
+          </div>
+        </section>
+      </aside>
+
       <div class="feel-layers" aria-labelledby="feel-layers-h">
-        <h2 id="feel-layers-h" data-i18n="feel.layers">Six layers, stack them yourself</h2>
+        <h2 id="feel-layers-h" data-i18n="feel.layers">Web impact controls</h2>
 
         <section class="feel-layer" id="hit-stop" data-layer="hitStop">
           <header class="feel-layer-head">
@@ -104,12 +141,12 @@
           <header class="feel-layer-head">
             <div class="feel-layer-text">
               <h3><a href="#hit-feedback">3 · <span data-i18n="feel.l3t">Hit feedback</span></a></h3>
-              <p data-i18n="feel.l3d">One layer, three parts: a white flash, a local squash of the body part you struck, and one readable damage number. Each part has its own switch.</p>
+              <p data-i18n="feel.l3d">The web demo shows a white flash and one readable damage number. Each has its own switch.</p>
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="feedback"></div>
           <p class="feel-rec" data-i18n="feel.l3rec">A 1–2 frame flash matches the range Jonasson &amp; Purho demo (2012); exact counts are tunable defaults. Damage numbers come from Chinese studio practice (2014), not from a paper.</p>
-          <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l3p">Flash + squash + a wall of numbers on one hit is noise, not feedback — the overdone preset shows exactly how bad it gets.</span></p>
+          <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l3p">A bright flash and a wall of numbers can drown out the impact. Try the overdone preset for an example.</span></p>
         </section>
 
         <section class="feel-layer" id="knockback" data-layer="knockback">
@@ -148,58 +185,30 @@
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l6p">Stacking all three bands on every single hit washes the sound out — mix per attack weight instead.</span></p>
         </section>
       </div>
-
-      <aside class="feel-side">
-        <section class="feel-demo-card" aria-label="hit feel demo">
-          <div class="feel-stage">
-            <p class="cap feel-hint" data-i18n="feel.demoHint">Click the arena to attack · click the victim to pick a zone · drag to orbit</p>
-            <div id="feel-demo" class="feel-demo"><p class="feel-status" role="status" data-i18n="feel.loading">Loading the knights…</p></div>
-            <div class="feel-zone" role="group" aria-label="hit zone">
-              <span class="feel-ctl-label" data-i18n="feel.zone">Hit zone</span>
-              <button type="button" class="btn feel-zone-btn" data-zone="head" data-i18n="feel.zHead">Head</button>
-              <button type="button" class="btn feel-zone-btn on" data-zone="chest" data-i18n="feel.zChest">Chest</button>
-              <button type="button" class="btn feel-zone-btn" data-zone="belly" data-i18n="feel.zBelly">Belly</button>
-              <button type="button" class="btn primary feel-attack" data-i18n="feel.attack">Attack</button>
-            </div>
-          </div>
-          <div class="feel-demo-controls">
-            <div class="feel-presets" role="group" aria-label="presets">
-              <span class="feel-ctl-label" data-i18n="feel.presets">Presets</span>
-              <button type="button" class="btn feel-preset on" data-preset="light" data-i18n="feel.preset.light">Light punch</button>
-              <button type="button" class="btn feel-preset" data-preset="heavy" data-i18n="feel.preset.heavy">Heavy hammer</button>
-              <button type="button" class="btn feel-preset" data-preset="overdone" data-i18n="feel.preset.overdone">Everything maxed</button>
-            </div>
-            <div class="feel-compare" role="group" aria-label="compare tune">
-              <span class="feel-ctl-label" data-i18n="feel.compareLabel">Compare on the demo</span>
-              <button type="button" class="btn feel-compare-btn on" data-compare="mine" aria-pressed="true" data-i18n="feel.compareMine">My tune</button>
-              <button type="button" class="btn feel-compare-btn" data-compare="base" aria-pressed="false" data-i18n="feel.compareBase">Page default</button>
-              <button type="button" class="btn feel-share" data-i18n="feel.share">⧉ Share this tune</button>
-            </div>
-            <p class="cap feel-compare-note" hidden data-i18n="feel.compareNote">The demo is now playing the page default — your sliders are untouched. Attack to feel the difference, then switch back to your tune.</p>
-            <p class="cap feel-shared-note" hidden data-i18n="feel.sharedNote">Opened from a shared link — these are that tune’s numbers, not a recommendation.</p>
-            <input class="feel-share-url" type="text" readonly hidden aria-label="share link" data-i18n-aria="feel.shareUrlAria">
-            <p class="cap" data-i18n="feel.presetHint">Switch, then attack to compare. Basis: light ≈ Song’s fast-attack observation + GGXRD’s light/heavy split; heavy ≈ Song’s heavy-weapon camera shift + Sakurai’s “higher damage, longer stop”; maxed = Kao (2020): extreme juiciness scores worse than moderate.</p>
-          </div>
-        </section>
-
-        <section class="feel-code" aria-labelledby="feel-code-h">
-          <h2 id="feel-code-h" data-i18n="feel.code">Engine code</h2>
-          <p class="cap" data-i18n="feel.codeNote">These snippets rebuild from the switches and sliders above — copy them straight into your project. The two smaller files cover the attacker's arm IK and the victim's local bone reactions.</p>
-          <p class="cap feel-export" data-export="mine"><span data-i18n="feel.exportPrefix">Exporting:</span> <b data-i18n="feel.exportMine">my tune</b></p>
-          <div class="codebox feel-codebox" id="feel-codebox"></div>
-          <details class="feel-hookup">
-            <summary data-i18n="feel.hookupH">Hookup &amp; limits</summary>
-            <ul>
-              <li data-i18n-html="feel.hk1">Targets Godot 4.x GDScript and Unity C# (Unity 6+: on older Unity versions rename <code>linearVelocity</code> back to <code>velocity</code>).</li>
-              <li data-i18n-html="feel.hk2">Hookup: attach the script to a node in your combat scene and call <code>impact(direction, hit_point, damage, bone)</code> from your own hit detection. Each snippet’s header lists the nodes it expects (%Victim, %Sparks, %Camera3D, the impact audio players).</li>
-              <li data-i18n-html="feel.hk3">Every number is a tunable default exported from the lab — retune it for your project; it is a starting point, not a rule.</li>
-              <li data-i18n-html="feel.hk4">This demo’s knights play authored Mixamo clips (idle / slash / body-hit); the demo itself runs no live IK and no ragdoll. <code>arm_ik.gd</code> / <code>TwoBoneIK.cs</code> and <code>local_bones.gd</code> are optional next steps for a real project.</li>
-            </ul>
-          </details>
-          <p class="cap feel-license" data-i18n="feel.cc0">Snippets and demo models are CC0 — use them without attribution.</p>
-        </section>
-      </aside>
     </div>
+    <section class="feel-code feel-code-wide" aria-labelledby="feel-code-h">
+      <h2 id="feel-code-h" data-i18n="feel.code">Engine code</h2>
+      <p class="cap" data-i18n="feel.codeNote">These snippets rebuild from the switches and sliders above — copy them straight into your project. The two smaller files cover the attacker's arm IK and the victim's local bone reactions.</p>
+      <p class="cap feel-export" data-export="mine"><span data-i18n="feel.exportPrefix">Exporting:</span> <b data-i18n="feel.exportMine">my tune</b></p>
+      <fieldset class="feel-squash-reference">
+        <legend data-i18n="feel.squashReference">Engine-code reference only — not previewed on the web.</legend>
+        <p id="feel-squash-note" data-i18n="feel.squashReferenceNote">Changing these values does not affect the on-screen characters. Wire a visual node or transform in your Godot or Unity project.</p>
+        <label class="feel-sub"><input type="checkbox" id="feel-export-squash" aria-describedby="feel-squash-note"> <span data-i18n="feel.sSquash">Hit squash</span></label>
+        <label for="feel-export-squash-amount"><span data-i18n="feel.pSquash">Squash amount</span></label>
+        <input type="number" id="feel-export-squash-amount" aria-describedby="feel-squash-note" required>
+      </fieldset>
+      <div class="codebox feel-codebox" id="feel-codebox"></div>
+      <details class="feel-hookup">
+        <summary data-i18n="feel.hookupH">Hookup &amp; limits</summary>
+        <ul>
+          <li data-i18n-html="feel.hk1">Targets Godot 4.x GDScript and Unity C# (Unity 6+: on older Unity versions rename <code>linearVelocity</code> back to <code>velocity</code>).</li>
+          <li data-i18n-html="feel.hk2">Hookup: attach the script to a node in your combat scene and call <code>impact(direction, hit_point, damage, bone)</code> from your own hit detection. Each snippet’s header lists the nodes it expects (%Victim, %Sparks, %Camera3D, the impact audio players).</li>
+          <li data-i18n-html="feel.hk3">Every number is a tunable default exported from the lab — retune it for your project; it is a starting point, not a rule.</li>
+          <li data-i18n-html="feel.hk4">This demo’s knights play authored Mixamo clips (idle / slash / body-hit); the demo itself runs no live IK and no ragdoll. <code>arm_ik.gd</code> / <code>TwoBoneIK.cs</code> and <code>local_bones.gd</code> are optional next steps for a real project.</li>
+        </ul>
+      </details>
+      <p class="cap feel-license" data-i18n="feel.cc0">Snippets and demo models are CC0 — use them without attribution.</p>
+    </section>
     <section class="feel-sources" aria-labelledby="feel-hitsources-h">
       <h2 id="feel-hitsources-h" data-i18n="feel.sourcesH">Sources &amp; method</h2>
       <p class="feel-sources-note" data-i18n="feel.sourcesNote">Slider numbers are tunable defaults — starting points to retune for your project, not universal rules. Published sources are cited separately below; unlabeled numbers come from action-game practice (the industry's oral tradition), not research. Retune for your game.</p>

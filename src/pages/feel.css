@@ -385,10 +385,18 @@ a.feel-prob-card:hover {
 
 .feel-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 430px;
+  /* side column wide enough to actually work the demo while tuning, capped so
+     the long slider rows still get the majority of wide screens (the old fixed
+     430px left ~75% of the screen to sliders) */
+  grid-template-columns: minmax(0, 1fr) clamp(400px, 31vw, 520px);
   gap: 22px;
   align-items: start;
   padding: 0 20px 40px;
+}
+
+.feel-layers {
+  grid-area: 1 / 1;
+  min-width: 0;
 }
 
 .feel-layers > h2 {
@@ -582,18 +590,25 @@ a.feel-prob-card:hover {
   margin: 0;
 }
 
-/* ---- side column: demo + code ---- */
+/* ---- side column: pinned demo workbench ---- */
 
+/* The sidebar supplies sticky travel while the document supplies the scrollport. */
 .feel-side {
-  position: sticky;
-  /* below the sticky site header — top:14px alone tucked the column under it */
-  top: calc(var(--head-h, 88px) + 14px);
-  display: grid;
-  gap: 18px;
-  min-width: 0; /* let the grid track win over the canvas's intrinsic width */
+  grid-area: 1 / 2;
+  align-self: stretch;
+  min-width: 0;
+  max-height: none;
+  overflow: visible;
+  overscroll-behavior: auto;
+  padding: 0;
 }
 
 .feel-demo-card {
+  position: sticky;
+  top: calc(var(--head-h, 88px) + 14px);
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
   border: 2px solid var(--line);
   border-radius: 10px;
   background: var(--panel);
@@ -672,6 +687,24 @@ a.feel-prob-card:hover {
 
 .feel-hint {
   margin: 8px 2px 10px;
+}
+
+/* hint row: the drag-to-orbit hint plus the control that returns the camera to
+   the staged flank default (controls.saveState snapshot) */
+.feel-view-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.feel-view-row .feel-hint {
+  flex: 1;
+}
+
+.feel-reset-view {
+  flex: none;
+  padding: 4px 10px;
+  font-size: 12px;
 }
 
 .feel-demo-controls {
@@ -805,6 +838,44 @@ a.feel-prob-card:hover {
   margin-top: 8px;
 }
 
+/* Engine code moved OUT of the side column (it made the old sticky column
+   taller than the viewport) into a full-width block below the workbench —
+   wide code lines read better there and it can never shove the demo off-screen. */
+.feel-code-wide {
+  margin: 0 20px 34px;
+  padding: 18px 20px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.feel-code-wide .feel-codebox {
+  margin-top: 4px;
+}
+
+.feel-squash-reference {
+  min-inline-size: 0;
+  margin: 12px 0;
+  border: 1px solid var(--line);
+}
+
+.feel-squash-reference legend {
+  font-weight: 700;
+}
+
+.feel-squash-reference input[type="number"] {
+  width: 6rem;
+  max-width: 100%;
+}
+
+/* short viewports: drop the advisory hint lines inside the pinned demo card so
+   canvas + attack + preset rows still fit between the sticky header and the fold */
+@media (max-height: 780px) {
+  .feel-demo-card .feel-demo-controls > .cap {
+    display: none;
+  }
+}
+
 /* ---- boss HP bar demo (/feel/boss-hp/) ---- */
 
 .feel-boss-host {
@@ -821,7 +892,7 @@ a.feel-prob-card:hover {
 .feel-boss-stage {
   --boss-pulse: 0.4s;
   position: relative;
-  min-height: 300px;
+  min-height: min(300px, 38dvh);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1018,29 +1089,58 @@ a.feel-prob-card:hover {
 
 /* ---- responsive ---- */
 
+@media (width > 1020px) {
+  .feel-layers {
+    /* Keep the card under the header when the last slider is around mid-screen. */
+    padding-bottom: max(0px, calc(var(--feel-card-h, 0px) + var(--head-h, 88px) + 14px - 50dvh));
+  }
+  .feel-demo-card {
+    max-height: calc(100dvh - var(--head-h, 88px) - 26px);
+  }
+  .feel-demo-card > .feel-stage {
+    flex: none;
+  }
+  .feel-demo-card > .feel-demo-controls {
+    min-height: 0;
+    overflow: auto;
+    padding: 4px;
+    margin: 0 -4px -4px;
+  }
+}
+
 @media (max-width: 1020px) {
   .feel-main {
-    grid-template-columns: 1fr;
+    display: block;
   }
-  .feel-side {
-    position: static;
-    order: -1;
+  .feel-side,
+  .feel-demo-card {
+    display: contents;
   }
-  /* pin just the demo stage (canvas/bar + attack row) under the sticky header
-     so the hit stays confirmable on the same screen; presets / compare / share
-     scroll on below it and stay reachable. Solid background + border so the
-     page content slides cleanly under the pinned stage. */
+  /* The stage and layers share the workbench block, including its full height. */
   .feel-stage {
     position: sticky;
     top: var(--head-h, 88px);
     z-index: 30;
     background: var(--panel);
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--line);
+    padding: 8px 10px 10px;
+    border: 2px solid var(--line);
     border-radius: 8px;
   }
+  .feel-demo-controls {
+    margin: 10px 0 16px;
+  }
+  .feel-layer,
+  .feel-layer :is(input, button, select) {
+    scroll-margin-top: calc(var(--head-h, 88px) + var(--feel-stage-h, 0px) + 12px);
+  }
   .feel-boss-stage {
-    min-height: min(300px, 42dvh);
+    min-height: min(300px, 28dvh);
+  }
+}
+
+@media (max-width: 1020px) and (max-height: 560px) {
+  .feel-stage .feel-hint {
+    display: none;
   }
 }
 
@@ -1064,14 +1164,126 @@ a.feel-prob-card:hover {
   .feel-domains,
   .feel-sources,
   .feel-problems,
-  .feel-main {
+  .feel-main,
+  .feel-code-wide {
     margin-left: 0;
     margin-right: 0;
     padding-left: 14px;
     padding-right: 14px;
   }
   .feel-boss-stage {
-    min-height: 210px;
-    padding: 34px 12px 30px;
+    min-height: min(210px, 28dvh);
+    padding: min(34px, 4dvh) 12px min(30px, 4dvh);
   }
 }
+
+
+/* ---- feel index: catalog-first, domains/sources folded ---- */
+.feel-index .tpl-hero { padding-top: 18px; padding-bottom: 4px; }
+.feel-index .tpl-hero .lede { max-width: 68ch; }
+.feel-index .feel-catalog { padding-top: 8px; }
+.feel-index .tile-grid .feel-card { margin: 0; border: 0; background: transparent; box-shadow: none; }
+.feel-index .tile-grid .feel-card-art {
+  margin: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  border: 0;
+}
+.feel-index .tile-grid figcaption.feel-card-body {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  border-top: 2px solid var(--line);
+}
+.feel-index .tile-grid figcaption.feel-card-body b {
+  font-size: 13px;
+  font-weight: 650;
+}
+.feel-index .tile-grid figcaption.feel-card-body small {
+  color: var(--faint);
+  font: 600 11px/1.4 var(--mono);
+  white-space: nowrap;
+}
+
+.feel-more {
+  max-width: 1180px;
+  margin: 18px auto;
+  padding: 0 20px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+}
+.feel-more > summary {
+  cursor: pointer;
+  font-weight: 700;
+  padding: 12px 14px;
+  list-style: none;
+}
+.feel-more > summary::-webkit-details-marker { display: none; }
+.feel-more > summary::after {
+  content: "▾";
+  float: right;
+  color: var(--dim);
+  font-weight: 600;
+}
+.feel-more[open] > summary::after { content: "▴"; }
+.feel-more .feel-domains,
+.feel-more .feel-sources-note,
+.feel-more [data-i18n-html="feel.sourcesHome"] {
+  padding: 0 14px 16px;
+}
+.feel-card-inline {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.feel-card-inline h3 { margin: 4px 0; font-size: 15px; }
+
+@media (max-width: 650px) {
+  .feel-index .tile-grid figcaption.feel-card-body small { white-space: normal; }
+}
+
+
+/* feel index: one main column, complete recipe cards, upcoming problems stay folded */
+.feel-index {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 20px));
+  padding-right: max(20px, env(safe-area-inset-right, 20px));
+}
+.feel-index .tpl-hero,
+.feel-index .feel-catalog,
+.feel-index .feel-more {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+.feel-index .tpl-hero { padding-top: 18px; padding-bottom: 8px; }
+.feel-index .tpl-hero h1 { font-size: clamp(26px, 4vw, 36px); }
+.feel-index .feel-catalog { padding-top: 4px; padding-bottom: 8px; }
+.feel-upcoming { padding: 0 14px 16px; }
+.feel-upcoming h3 { margin: 4px 0 8px; font-size: 16px; }
+.feel-upcoming ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 10px;
+  padding: 0;
+}
+.feel-upcoming li {
+  font-size: 12.5px;
+  font-weight: 650;
+  padding: 5px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 999px;
+  color: var(--faint);
+}
+.feel-upcoming p { margin: 0 0 8px; color: var(--dim); font-size: 13.5px; line-height: 1.55; }

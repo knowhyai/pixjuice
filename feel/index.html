@@ -69,39 +69,48 @@
     <section class="tpl-hero">
       <p class="resources-eyebrow">PIXJUICE / GAME FEEL LAB</p>
       <h1 data-i18n="feel.h1">Game Feel Lab</h1>
-      <p class="lede" data-i18n="feel.lede">Game feel is how your game behaves in the player's hands. The lab splits it into four domains — support (response &amp; forgiveness), physicality, amplification and context — and ships live recipes one at a time: arrive with a problem, retune a real demo, compare it against its own default, and leave with engine code that follows the sliders.</p>
+      <p class="lede" data-i18n="feel.catalogLede">Retune a recipe, compare it with the page default, and copy Godot, Unity or web code.</p>
     </section>
 
-    <section class="feel-problems" aria-labelledby="feel-prob-h">
-      <h2 id="feel-prob-h" data-i18n="feel.probH">Start from a problem</h2>
-      <p class="feel-prob-lede" data-i18n="feel.probLede">Land on the complaint you actually have. Each live recipe is a demo you can retune, compare against its page default and share as a link — problems without a live recipe stay unlinked until one ships.</p>
-      <div class="feel-prob-grid">
-        <a class="feel-prob-card" href="/feel/hit/">
-          <span class="feel-prob-tag feel-prob-live" data-i18n="feel.probLive">Live recipe</span>
-          <h3 data-i18n="feel.probHitQ">My hits feel soft or mushy</h3>
-          <p data-i18n="feel.probHitA">The hit lands but carries no weight. Stack six amplification layers — hit stop, screen shake, flash/squash/numbers, knockback, directional sparks, three-band audio — until it reads.</p>
-          <span class="feel-prob-cta" data-i18n="feel.recipe.hit.cta">Open the hit feel recipe →</span>
+    <section class="feel-catalog" id="recipes" aria-labelledby="feel-cat-h">
+      <div class="sec-head">
+        <h2 id="feel-cat-h" data-i18n="feel.catalogH">Live recipes</h2>
+      </div>
+      <div class="recipe-grid">
+        <a class="recipe-card" href="/feel/hit/">
+          <div class="stage"><img class="tile-preview" src="/previews/en/feel-hit.jpg" data-preview="feel-hit" alt="" width="640" height="400" loading="lazy"></div>
+          <div class="recipe-card-body">
+            <b data-i18n="feel.recipe.hit.t">Hit feel</b>
+            <p data-i18n="feel.recipe.hit.solves">For hits that land but feel soft or mushy.</p>
+            <small data-i18n="feel.recipe.hit.webLayers">Web demo · Godot 4 + Unity reference</small>
+            <span class="recipe-card-cta" data-i18n="feel.recipe.hit.cta">Open the hit feel recipe →</span>
+          </div>
         </a>
-        <a class="feel-prob-card" href="/feel/boss-hp/">
-          <span class="feel-prob-tag feel-prob-live" data-i18n="feel.probLive">Live recipe</span>
-          <h3 data-i18n="feel.probBossQ">Boss HP or damage is hard to read</h3>
-          <p data-i18n="feel.probBossA">Players can't tell how big a hit was or how close the boss is to dying. A delayed white damage bar, hit shake and flash, scale ticks, layered HP with a ×N counter and a low-health alarm fix exactly that.</p>
-          <span class="feel-prob-cta" data-i18n="feel.recipe.boss.cta">Open the boss HP bar recipe →</span>
+        <a class="recipe-card" href="/feel/boss-hp/">
+          <div class="stage"><img class="tile-preview" src="/previews/en/feel-boss.jpg" data-preview="feel-boss" alt="" width="640" height="400" loading="lazy"></div>
+          <div class="recipe-card-body">
+            <b data-i18n="feel.recipe.boss.t">Boss HP bar</b>
+            <p data-i18n="feel.recipe.boss.solves">For a boss bar that hides how much damage landed, or how close the fight is to ending.</p>
+            <small data-i18n="feel.recipe.boss.layers">5 layers · Godot 4 + Web</small>
+            <span class="recipe-card-cta" data-i18n="feel.recipe.boss.cta">Open the boss HP bar recipe →</span>
+          </div>
         </a>
-        <div class="feel-prob-card feel-prob-none">
-          <span class="feel-prob-tag feel-prob-soon" data-i18n="feel.probSoonTag">No live recipe yet</span>
-          <h3 data-i18n="feel.probSoonTitle">Something else feels off</h3>
-          <ul aria-label="not live yet">
-            <li data-i18n="feel.probSoon1">Movement feels floaty</li>
-            <li data-i18n="feel.probSoon2">Jumps don't commit</li>
-            <li data-i18n="feel.probSoon3">The camera lags behind the action</li>
-          </ul>
-          <p class="feel-prob-note" data-i18n="feel.probSoonNote">These need the support and physicality recipes, which are not live. Nothing to click yet — when a recipe ships, it appears here with a real demo.</p>
-        </div>
       </div>
     </section>
 
-    <div class="feel-domains">
+    <details class="feel-more">
+      <summary data-i18n="feel.moreDomains">Four domains and recipes still to come</summary>
+      <div class="feel-upcoming">
+        <h3 data-i18n="feel.probSoonTitle">Something else feels off</h3>
+        <ul aria-label="not live yet">
+          <li data-i18n="feel.probSoon1">Movement feels floaty</li>
+          <li data-i18n="feel.probSoon2">Jumps don't commit</li>
+          <li data-i18n="feel.probSoon3">The camera lags behind the action</li>
+        </ul>
+        <p data-i18n="feel.probSoonNote">These need the support and physicality recipes, which are not live. Nothing to click yet — when a recipe ships, it appears here with a real demo.</p>
+        <p data-i18n="feel.componentsNote">Feel recipes are collections of components — standalone pages for screen shake, hit-stop and the rest are not available yet.</p>
+      </div>
+      <div class="feel-domains">
       <section class="feel-domain" id="support" aria-labelledby="feel-d1-h">
         <header class="feel-domain-head">
           <span class="feel-domain-num" aria-hidden="true">01</span>
@@ -140,52 +149,11 @@
           <span class="feel-badge feel-badge-live" data-i18n="feel.liveBadge">Live now</span>
         </header>
         <div class="feel-recipes">
-          <article class="feel-card">
-            <div class="feel-card-art" aria-hidden="true">
-              <svg viewBox="0 0 160 90" width="160" height="90" role="img" aria-hidden="true">
-                <rect width="160" height="90" fill="#12101a"/>
-                <rect x="0" y="64" width="160" height="2" fill="#2b2740"/>
-                <rect x="30" y="18" width="10" height="46" rx="2" fill="#3a3552"/>
-                <rect x="28" y="12" width="14" height="8" rx="2" fill="#3a3552"/>
-                <rect x="118" y="22" width="12" height="42" rx="2" fill="#463f63"/>
-                <rect x="116" y="14" width="16" height="9" rx="2" fill="#463f63"/>
-                <path d="M44 34 L112 40" stroke="#ff4d6d" stroke-width="3" stroke-linecap="round"/>
-                <path d="M112 40 l10 -6 M112 40 l12 2 M112 40 l6 10" stroke="#ff4d6d" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="112" cy="40" r="4" fill="#ffd9e0"/>
-                <path d="M60 24 h14 v8 h-14z" fill="#4cd7ff" opacity="0.9"/>
-                <path d="M64 20 l3 -6 3 6z" fill="#4cd7ff"/>
-              </svg>
-            </div>
-            <div class="feel-card-body">
-              <h3><a href="/feel/hit/" data-i18n="feel.recipe.hit.t">Hit feel</a></h3>
-              <p data-i18n="feel.recipe.hit.d">Six stackable layers — hit stop, screen shake, hit feedback, knockback, directional VFX and three-band audio — on two rigged knights, with Godot 4 and Unity code that updates as you tune.</p>
-              <p class="feel-card-meta"><span data-i18n="feel.recipe.hit.layers">6 layers · Godot 4 + Unity</span> · CC0</p>
-              <a class="feel-card-cta" href="/feel/hit/" data-i18n="feel.recipe.hit.cta">Open the hit feel recipe →</a>
-            </div>
+          <article class="feel-card feel-card-inline">
+            <h3><a href="/feel/hit/" data-i18n="feel.recipe.hit.t">Hit feel</a></h3>
           </article>
-          <article class="feel-card">
-            <div class="feel-card-art" aria-hidden="true">
-              <svg viewBox="0 0 160 90" width="160" height="90" role="img" aria-hidden="true">
-                <rect width="160" height="90" fill="#12101a"/>
-                <rect x="14" y="34" width="132" height="16" rx="3" fill="#191527"/>
-                <rect x="14" y="34" width="132" height="16" rx="3" fill="none" stroke="#3a3352" stroke-width="2"/>
-                <rect x="16" y="36" width="86" height="12" rx="2" fill="#9d7bff"/>
-                <rect x="100" y="36" width="26" height="12" rx="2" fill="#efeaff"/>
-                <rect x="16" y="36" width="70" height="12" rx="2" fill="#ff9a3d"/>
-                <rect x="16" y="36" width="38" height="12" rx="2" fill="#ff4d5e"/>
-                <path d="M45 31 l-4 -8 h8 z" fill="#4cd7ff" opacity="0.9"/>
-                <path d="M80 31 l-4 -8 h8 z" fill="#4cd7ff" opacity="0.9"/>
-                <path d="M114 31 l-4 -8 h8 z" fill="#4cd7ff" opacity="0.9"/>
-                <text x="136" y="24" font-family="monospace" font-size="13" font-weight="bold" fill="#efeaff" text-anchor="end">×2</text>
-                <path d="M8 50 q8 10 0 20 M152 50 q-8 10 0 20" stroke="#ff2d3f" stroke-width="3" stroke-linecap="round" opacity="0.55" fill="none"/>
-              </svg>
-            </div>
-            <div class="feel-card-body">
-              <h3><a href="/feel/boss-hp/" data-i18n="feel.recipe.boss.t">Boss HP bar</a></h3>
-              <p data-i18n="feel.recipe.boss.d">Five stackable layers — a delayed white damage bar, hit shake and flash, scale ticks, layered HP colors with a ×N counter and a low-health alarm — on one live boss bar, with Godot 4 and web code that updates as you tune.</p>
-              <p class="feel-card-meta"><span data-i18n="feel.recipe.boss.layers">5 layers · Godot 4 + Web</span> · CC0</p>
-              <a class="feel-card-cta" href="/feel/boss-hp/" data-i18n="feel.recipe.boss.cta">Open the boss HP bar recipe →</a>
-            </div>
+          <article class="feel-card feel-card-inline">
+            <h3><a href="/feel/boss-hp/" data-i18n="feel.recipe.boss.t">Boss HP bar</a></h3>
           </article>
         </div>
       </section>
@@ -203,10 +171,12 @@
           <li>Spatial scale</li><li>Metaphor</li><li>Readability &amp; information load</li>
         </ul>
       </section>
+    </details>
+
     </div>
 
-    <section class="feel-sources" aria-labelledby="feel-sources-h">
-      <h2 id="feel-sources-h" data-i18n="feel.sourcesH">Sources &amp; method</h2>
+    <details class="feel-more feel-sources" aria-labelledby="feel-sources-h">
+      <summary id="feel-sources-h" data-i18n="feel.sourcesH">Sources &amp; method</summary>
       <p class="feel-sources-note" data-i18n="feel.sourcesNote">Slider numbers are tunable defaults — starting points to retune for your project, not universal rules. Published sources are cited separately below; unlabeled numbers come from action-game practice (the industry's oral tradition), not research. Retune for your game.</p>
       <div data-i18n-html="feel.sourcesHome">
         <ul>
@@ -222,7 +192,7 @@
           <li>Thorson, “Celeste's forgiveness” (2020) and Fasterholdt et al., “You Say Jump, I Say How High?” (2016) — measured windows and jump parameters for the upcoming Support and Physicality recipes. <a href="https://maddythorson.medium.com/celeste-forgiveness-31e4a40399f1" target="_blank" rel="noopener">Post ↗</a></li>
         </ul>
       </div>
-    </section>
+    </details>
   </main>
 
   <footer>

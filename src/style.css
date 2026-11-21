@@ -302,7 +302,7 @@ section.cat .blurb { margin: 0; color: var(--dim); font-size: 13.5px; }
   }
   .stagewrap canvas { width: auto; height: auto; max-width: 100%; max-height: 100%; }
 
-  aside {
+  .ed-grid > aside {
     align-self: stretch;
     max-height: 100%;
     min-height: 0;
@@ -840,11 +840,229 @@ footer {
   .head .nav a{font-size:13px}
   .head .lang{max-width:95px}
 }
-.home-entries {max-width:1180px;margin:30px auto; padding:0 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
-.home-entry {border:1px solid var(--line);background:var(--panel);border-radius:10px;overflow:hidden;color:var(--text);box-shadow:0 5px 18px #0000000c;}
-.home-entry img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;}
-.home-entry b,.home-entry span{display:block;padding:12px 16px}.home-entry span{padding-top:0;color:var(--dim);font-size:14px}
-@media(max-width:650px){.home-entries{grid-template-columns:1fr}}
-#effects{scroll-margin-top:90px}
+/* ---- homepage bands (site home sits above the 244-effect catalog) ---- */
+.home-hero,
+.home-band {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 16px 20px 6px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
+.home-hero { padding-top: 18px; padding-bottom: 4px; }
+.home-hero h1 {
+  margin: 0 0 6px;
+  font-size: clamp(22px, 3.4vw, 30px);
+  line-height: 1.15;
+}
+.home-hero .lede {
+  margin: 0;
+  max-width: 68ch;
+  color: var(--dim);
+  font-size: 15px;
+}
+.home-band .sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 8px 0 14px;
+  flex-wrap: wrap;
+}
+.home-band .sec-head h2 { font-size: 21px; margin: 0; letter-spacing: 0.3px; }
+.home-band .blurb { margin: 0; color: var(--dim); font-size: 13.5px; }
+
+/* static 16:10 previews inside the same tile chrome as the live effect catalog */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+a.tile-link { color: inherit; text-decoration: none; display: block; }
+a.tile-link:hover { text-decoration: none; }
+a.tile-link .tile { height: 100%; }
+.stage > img.tile-preview {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  image-rendering: auto;
+}
+
+.home-prob-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+a.home-prob,
+.home-prob {
+  display: block;
+  padding: 14px 16px;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+a.home-prob:hover { border-color: var(--faint); text-decoration: none; }
+.home-prob b { display: block; font-size: 15px; margin: 0 0 4px; }
+.home-prob span { display: block; color: var(--dim); font-size: 13.5px; }
+.home-prob small {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--acc2);
+  font: 600 12px/1.4 var(--mono);
+}
+
+.home-entries {
+  max-width: 1180px;
+  margin: 8px auto 16px;
+  padding: 0 20px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.home-entries.home-libs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.home-entries.home-tools { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.home-entry {
+  border: 2px solid var(--line);
+  background: var(--panel);
+  border-radius: 6px;
+  overflow: hidden;
+  color: var(--text);
+}
+.home-entry:hover { border-color: var(--faint); text-decoration: none; }
+.home-entry img { display: block; width: 100%; aspect-ratio: 16/10; object-fit: cover; object-position: top; }
+.home-entry b, .home-entry span { display: block; padding: 10px 12px; }
+.home-entry span { padding-top: 0; color: var(--dim); font-size: 13.5px; }
+
+@media (max-width: 900px) {
+  .home-entries.home-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 650px) {
+  .home-entries,
+  .home-entries.home-libs,
+  .home-entries.home-tools { grid-template-columns: 1fr; }
+}
+
+
+/* complete recipe / library cards — shared by home and /feel/ */
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.recipe-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+a.recipe-card {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  min-width: 0;
+}
+a.recipe-card:hover { border-color: var(--faint); text-decoration: none; }
+.recipe-card .stage {
+  background: var(--panel);
+  aspect-ratio: 16 / 10;
+}
+.recipe-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px 14px;
+  flex: 1;
+}
+.recipe-card-body b { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+.recipe-card-body p { margin: 0; color: var(--dim); font-size: 14px; line-height: 1.45; }
+.recipe-card-body small { color: var(--faint); font: 600 12px/1.4 var(--mono); }
+.recipe-card-cta {
+  margin-top: auto;
+  align-self: flex-start;
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: var(--acc);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+a.recipe-card:hover .recipe-card-cta { filter: brightness(1.08); }
+
+.home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+a.home-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+}
+a.home-cta:hover { border-color: var(--faint); text-decoration: none; }
+
+.home-scope {
+  max-width: 1180px;
+  margin: 8px auto 18px;
+  padding: 0 20px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
+.home-scope > summary {
+  cursor: pointer;
+  font-weight: 700;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  list-style: none;
+}
+.home-scope > summary::-webkit-details-marker { display: none; }
+.home-scope[open] > summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.home-scope > p,
+.home-scope-list { margin: 0; padding: 12px 14px; border: 2px solid var(--line); border-top: 0; background: var(--panel); color: var(--dim); font-size: 13.5px; line-height: 1.55; }
+.home-scope-list { border-radius: 0 0 6px 6px; }
+.home-scope-list ul { margin: 0; padding-left: 1.2em; }
+.home-scope-list li { margin: 0 0 6px; }
+.home-scope-list b { color: var(--text); }
+.home-scope-list a { pointer-events: none; } /* map text must not become fake doors if a key ever includes a link */
+
+@media (max-width: 960px) {
+  .recipe-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .recipe-grid,
+  .recipe-grid-3 { grid-template-columns: 1fr; }
+  .home-hero h1 { font-size: clamp(20px, 6vw, 26px); }
+  .home-hero { padding-top: 12px; padding-bottom: 2px; }
+  .home-hero .lede { font-size: 14.5px; max-width: none; }
+}
+
+#effects { scroll-margin-top: var(--head-h, 88px); }
+.home-fx-note {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 8px 20px 0;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+  color: var(--dim);
+  font-size: 13.5px;
+}
 
 .fa-parts{margin-top:28px;padding-top:20px;border-top:1px solid #625333}.fa-parts h2{color:#dfc181}.fa-part{display:flex;gap:14px;margin:18px 0;align-items:center}.fa-part img{width:76px;height:76px;object-fit:cover;border:1px solid #625333;border-radius:8px}.fa-part>div{display:grid;gap:8px;min-width:0;flex:1}.fa-part select{width:100%;padding:8px;background:#19171a;color:#eadfc6;border:1px solid #625333;border-radius:5px}.fa-part a{font-size:12px;text-align:center}

@@ -376,8 +376,9 @@
 .gx-pitybar > span { position:relative; height:100%; }
 .gx-pitybar > span > span { position:static; }
 .gx-pitybar { height:28px; }
-.tpl-side .gx-slider:has(input[type="number"]) { grid-template-columns:1fr 80px; }
+.tpl-side .gx-slider:has(input[type="number"]) { grid-template-columns:1fr 80px auto; }
 .gx-slider input[type="number"] { width:80px; }
+.gx-slider .gx-pityhint { font-size:11px; line-height:1.2; opacity:.6; align-self:center; white-space:nowrap; }
 .tpl-record h3:not(:first-child) { margin-top:24px; }
 .tpl-stage .gx-btnrow { justify-content:center; }
 .tpl-stage .gx-note { text-align:center; }
@@ -425,3 +426,21 @@
 @media(max-width:1000px){.tpl-demo.cx-active{grid-template-columns:150px minmax(0,1fr)}.cx-contents{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:680px){.tpl-demo.cx-active{grid-template-columns:minmax(0,1fr)}.cx-contents{grid-template-columns:repeat(3,minmax(0,1fr))}.cx-controls{gap:12px}.cx-pane{padding-top:10px}}
 @media(prefers-reduced-motion:reduce){.cx-card{transition:none}}
+
+/* Rate lab sits under the playable demo, not in the crate-mode-hidden sidebar. */
+.gx-lab{margin-top:28px;padding:20px 22px 24px;border:1px solid color-mix(in srgb,currentColor 16%,transparent);border-radius:12px;background:color-mix(in srgb,currentColor 5%,transparent)}
+.gx-lab h2{margin:0 0 8px;font-size:1.15rem}
+.gx-lab-lede,.gx-lab-note,.gx-lab-meta{margin:0 0 14px;max-width:70ch;line-height:1.5;font-size:.95rem}
+.gx-lab-note,.gx-lab-meta{color:color-mix(in srgb,currentColor 72%,transparent);font-size:.9rem}
+.gx-lab-controls{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:end;margin:0 0 16px}
+.gx-lab-field{display:flex;flex-direction:column;gap:4px;font-size:.85rem}
+.gx-lab-field select{min-width:16rem;padding:.35rem .5rem;font:inherit}
+.gx-lab-table{width:100%;border-collapse:collapse;margin:0 0 16px;font-variant-numeric:tabular-nums}
+.gx-lab-table th,.gx-lab-table td{border-bottom:1px solid color-mix(in srgb,currentColor 14%,transparent);padding:.45rem .6rem;text-align:left}
+.gx-lab-table thead th{font-size:.8rem;font-weight:600}
+@media (max-width:680px){
+  .gx-lab{padding:16px}
+  .gx-lab-field select{min-width:0;width:100%}
+  .gx-lab-controls{flex-direction:column;align-items:stretch}
+  .gx-lab-table{display:block;overflow-x:auto}
+}

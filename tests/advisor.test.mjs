@@ -63,6 +63,7 @@ test('advisor: hit tune round-trips through the URL token (presets and custom tu
   custom.shake.trauma = 0.42;
   custom.shake.decay = 3.1;
   custom.feedback.flashIntensity = 0.62;
+  custom.feedback.squash = false;
   custom.feedback.squashAmount = 0.51;
   custom.feedback.numberScale = 1.7;
   custom.knockback.distance = 1.25;
@@ -79,6 +80,11 @@ test('advisor: hit tune round-trips through the URL token (presets and custom tu
   assert.ok(back, 'custom token parses');
   assert.equal(back.preset, null, 'a custom tune matches no preset');
   assert.ok(same(back.params, custom), 'every layer switch and number survives');
+  assert.equal(back.params.feedback.squash, false);
+  assert.equal(back.params.feedback.squashAmount, 0.51);
+  assert.equal(serializeFeel(DEFAULT_PARAMS), 'light', 'parsing preserves the page default');
+  assert.match(godotHitFeel(back.params), /squash_on := false/);
+  assert.match(unityHitFeel(back.params), /squashAmount = 0\.51f/);
 });
 
 test('advisor: boss tune round-trips through the URL token', () => {
@@ -228,19 +234,17 @@ test('advisor: generated code carries the demo side of the compare (repro tunes)
 
 // ---- problem entry links only to live routes --------------------------------------------
 
-test('advisor: problem entry on /feel/ links only to the two live recipes', () => {
+test('advisor: /feel/ catalog cards link only to the two live recipes', () => {
   const html = fs.readFileSync('feel/index.html', 'utf8');
-  const section = html.slice(html.indexOf('feel-problems'), html.indexOf('feel-domains'));
-  assert.ok(section.length > 0, 'problem section exists before the domain grid');
-  const hrefs = [...section.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+  const catalog = html.slice(html.indexOf('id="recipes"'), html.indexOf('feel-more'));
+  assert.ok(catalog.length > 0, 'recipe catalog exists before the folded section');
+  const hrefs = [...catalog.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
   assert.deepEqual(hrefs.sort(), ['/feel/boss-hp/', '/feel/hit/'], 'exactly the two live recipes are linked');
-  // the "no live recipe yet" card carries no anchor at all
-  const soonCard = section.slice(section.indexOf('feel-prob-none'));
-  assert.equal(soonCard.indexOf('<a '), -1, 'not-yet-live problems must not link anywhere');
-  // every problem string is translated (no raw copy shipped as locale-less)
-  for (const key of ['feel.probH', 'feel.probLede', 'feel.probHitQ', 'feel.probHitA', 'feel.probBossQ', 'feel.probBossA',
-    'feel.probSoonTag', 'feel.probSoon1', 'feel.probSoon2', 'feel.probSoon3', 'feel.probSoonNote']) {
-    assert.ok(section.includes(`data-i18n="${key}"`) || section.includes(`data-i18n-html="${key}"`), `${key} on the page`);
+  const upcoming = html.slice(html.indexOf('feel-upcoming'), html.indexOf('feel-domains'));
+  assert.ok(upcoming.length > 0, 'unreleased problems moved into the folded plan');
+  assert.equal(upcoming.indexOf('<a '), -1, 'not-yet-live problems must not link anywhere');
+  for (const key of ['feel.probSoonTitle', 'feel.probSoon1', 'feel.probSoon2', 'feel.probSoon3', 'feel.probSoonNote', 'feel.componentsNote']) {
+    assert.ok(upcoming.includes(`data-i18n="${key}"`) || upcoming.includes(`data-i18n-html="${key}"`), `${key} in the folded plan`);
   }
 });
 
@@ -325,14 +329,21 @@ test('advisor: ≤900px header wraps the nav instead of forcing sideways scroll'
   assert.match(mobile, /html\{overflow-x:clip\}/, 'document clips horizontal overflow at ≤900px');
 });
 
-test('advisor: ≤1020px feel demo stage is sticky under the header-height offset', () => {
+test('advisor: feel demo stays pinned — stage on ≤1020px, demo card on desktop', () => {
   const css = fs.readFileSync('src/pages/feel.css', 'utf8');
   const wide = css.slice(css.indexOf('@media (max-width: 1020px)'), css.indexOf('@media (max-width: 620px)'));
   assert.ok(wide.length > 0, '1020px block exists before the 620px one');
   assert.match(wide, /\.feel-stage\s*\{[\s\S]*?position:\s*sticky/, 'stage pins on narrow screens');
   assert.match(wide, /top:\s*var\(--head-h,\s*88px\)/, 'stage top offset follows the sticky header height');
-  // desktop side column no longer tucks under the sticky header either
-  assert.match(css, /\.feel-side\s*\{[\s\S]*?top:\s*calc\(var\(--head-h,\s*88px\)\s*\+\s*14px\)/, 'desktop sticky side column sits below the header');
+  // Desktop: only the demo card pins, below the sticky site header. The whole
+  // side column (demo + code) used to be the sticky box — taller than the
+  // viewport, its sticky range ran out mid-parameter-list and let the demo
+  // scroll away (the t444u "布局差" report). The column now stretches to the
+  // layer list instead, so the card's sticky range reaches the last slider.
+  assert.match(css, /\.feel-demo-card\s*\{[\s\S]*?position:\s*sticky/, 'demo card pins on desktop');
+  assert.match(css, /\.feel-demo-card\s*\{[\s\S]*?top:\s*calc\(var\(--head-h,\s*88px\)\s*\+\s*14px\)/, 'pinned card sits below the header');
+  assert.match(css, /\.feel-side\s*\{[\s\S]*?align-self:\s*stretch/, 'side column stretches to the layer list height');
+  assert.ok(!/\.feel-side\s*\{[^}]*position:\s*sticky/.test(css), 'the whole side column is no longer the sticky box');
   // the pages keep the real wrapped header height in --head-h
   for (const page of ['./src/pages/feel-hit.ts', './src/pages/feel-boss.ts']) {
     assert.ok(fs.readFileSync(page, 'utf8').includes('syncHeaderOffset()'), `${page} measures the header height`);

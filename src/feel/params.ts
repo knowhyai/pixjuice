@@ -10,7 +10,7 @@ export interface FeelParams {
   hitStop: { on: boolean; frames: number };
   /** 2 — screen shake: trauma-based, biased along the attack direction. */
   shake: { on: boolean; trauma: number; decay: number };
-  /** 3 — hit feedback: flash + local squash + damage numbers (sub-toggles). */
+  /** 3 — hit feedback: flash and damage numbers; squash is an engine-code reference. */
   feedback: {
     on: boolean;
     flash: boolean;

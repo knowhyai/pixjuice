@@ -44,7 +44,7 @@ export function godotHitFeel(p: FeelParams): string {
 	if flash_on:
 		_flash_victim()
 	if squash_on:
-		_squash_bone(hit_bone, ${n(p.feedback.squashAmount)})
+		_squash_visual(${n(p.feedback.squashAmount)})
 	if numbers_on:
 		_spawn_number(hit_point, damage)`
     : `	# Layer 3 — hit feedback is switched off in the current preset.`;
@@ -88,6 +88,7 @@ export function godotHitFeel(p: FeelParams): string {
 @export var shake_decay := ${shakeDecay}               # trauma lost per second
 @export var flash_on := ${gdBool(p.feedback.on && p.feedback.flash)}
 @export var squash_on := ${gdBool(p.feedback.on && p.feedback.squash)}
+@export var visual: Node3D  # mesh holder under the logical body; squash scales this, not the origin
 @export var numbers_on := ${gdBool(p.feedback.on && p.feedback.numbers)}
 @export var knockback_enabled := ${gdBool(p.knockback.on)}
 @export var knockback_distance := ${knock}
@@ -100,6 +101,7 @@ export function godotHitFeel(p: FeelParams): string {
 @export var audio_band_high := ${gdBool(p.sfx.high)}
 
 var _trauma := 0.0
+var _squash_tween: Tween
 var _launch_decel := 0.0
 var _freeze_owner: SceneTreeTimer
 @onready var victim: CharacterBody3D = %Victim
@@ -150,6 +152,30 @@ func _physics_process(delta: float) -> void:
 		victim.velocity = victim.velocity.move_toward(Vector3.ZERO, _launch_decel * delta)
 		if victim.velocity.is_zero_approx():
 			_launch_decel = 0.0
+
+
+func _squash_visual(amount: float) -> void:
+	# Cartoon scale of the struck character's appearance, from the feet —
+	# engine reference only. Hook the visual export to a node that
+	# holds the mesh, parented under the logical / collision body, so this
+	# never moves the origin. Not IK, a ragdoll, or local muscle. The tween
+	# uses scaled time so a hit stop holds the peak; a second call kills the
+	# previous tween (no stacking).
+	if amount <= 0.0:
+		return
+	var node := visual if visual != null else victim
+	if node == null:
+		return
+	if _squash_tween:
+		_squash_tween.kill()
+	var rest := Vector3.ONE
+	node.scale = rest
+	var along := 1.0 - 0.5 * amount
+	var across := 1.0 + 0.32 * amount
+	var peak := Vector3(across, along, across)
+	node.scale = peak
+	_squash_tween = create_tween()
+	_squash_tween.tween_property(node, "scale", rest, 0.36)
 
 func play_band(band: String, volume: float) -> void:
 	# The demo page synthesizes the three bands with WebAudio. In a project,
@@ -267,6 +293,7 @@ public sealed class HitFeel : MonoBehaviour {
     [SerializeField] float shakeDecay = ${shakeDecay}f;          // trauma lost per second
     [SerializeField] bool flashOn = ${csBool(p.feedback.on && p.feedback.flash)};
     [SerializeField] bool squashOn = ${csBool(p.feedback.on && p.feedback.squash)};
+    [SerializeField] float squashAmount = ${n(p.feedback.squashAmount)}f;  // visual figure scale, 0..1
     [SerializeField] bool numbersOn = ${csBool(p.feedback.on && p.feedback.numbers)};
     [SerializeField] bool knockbackEnabled = ${csBool(p.knockback.on)};
     [SerializeField] float knockbackDistance = ${knock}f;
@@ -295,7 +322,7 @@ public sealed class HitFeel : MonoBehaviour {
         ${p.shake.on ? `if (shakeEnabled) _trauma = Mathf.Min(_trauma + shakeAmount, 1f);` : `// Layer 2 — screen shake is switched off in the current preset.`}
         ${p.feedback.on ? `// Layer 3 — flash, squash and one clean number, as three sub-flags.
         if (flashOn) FlashVictim();
-        if (squashOn) SquashBone(hitPoint);
+        if (squashOn) SquashVisual();
         if (numbersOn) SpawnNumber(hitPoint, damage);` : `// Layer 3 — hit feedback is switched off in the current preset.`}
         ${p.knockback.on ? `// Layer 4 — fast launch, constant deceleration, full stop at the marked
         // time. A uniform slide reads as weightless.
@@ -358,6 +385,42 @@ public sealed class HitFeel : MonoBehaviour {
             yield return new WaitForFixedUpdate();
         }
     }
+
+    // Cartoon scale of the struck character's appearance, from the feet —
+    // engine reference only. Assign the visual field to a child that
+    // holds the mesh, not the logical / rigidbody root. Not IK, a ragdoll,
+    // or local muscle. A second hit replaces the first (no stacking).
+    [SerializeField] Transform visual; // mesh holder under the logical body
+    Coroutine _squash;
+    void SquashVisual() {
+        if (squashAmount <= 0f) return;
+        var node = visual != null ? visual : victim;
+        if (node == null) return;
+        if (_squash != null) StopCoroutine(_squash);
+        _squash = StartCoroutine(SquashRoutine(node));
+    }
+
+    IEnumerator SquashRoutine(Transform node) {
+        Vector3 rest = Vector3.one;
+        node.localScale = rest;
+        float along = 1f - 0.5f * squashAmount;
+        float across = 1f + 0.32f * squashAmount;
+        Vector3 peak = new Vector3(across, along, across);
+        node.localScale = peak;
+        float t = 0f;
+        const float dur = 0.36f;
+        while (t < dur) {
+            t += Time.deltaTime; // scaled: holds during a timeScale=0 hit stop
+            float u = Mathf.Clamp01(t / dur);
+            float e = u < 0.20f ? 0f : (u - 0.20f) / 0.80f;
+            e = e * e * (3f - 2f * e);
+            node.localScale = Vector3.Lerp(peak, rest, e);
+            yield return null;
+        }
+        node.localScale = rest;
+        _squash = null;
+    }
+
 }
 `;
 }

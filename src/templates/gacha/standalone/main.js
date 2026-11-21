@@ -90,6 +90,27 @@
     "tpl.skin": "Skin", "tpl.skin.realistic": "Semi-Realistic", "tpl.skin.stylized": "Stylized",
     "tpl.skin.lowpoly": "Clean Low Poly", "tpl.skin.pixel": "Pixel Art",
     "gx.wheelNote": "Wheel odds = each prize's weight. Card-pool odds & pity live in the config JSON.",
+    "gx.lab.h": "Rate lab",
+    "gx.lab.lede": "Advertised card-pool rates ignore pity. This lab runs the same engine as the card pool (not the crate reel, which has no pity). Tune the sliders above, then run a batch. The theoretical SSR column applies only to single pulls with hard pity enabled — it is not a model of the ten-pull SR+ guarantee.",
+    "gx.lab.pulls": "Simulated pulls",
+    "gx.lab.mode": "Pull mode",
+    "gx.lab.single": "Single pulls (SSR hard pity only)",
+    "gx.lab.ten": "Ten-pulls (includes SR+ guarantee)",
+    "gx.lab.run": "Run simulation",
+    "gx.lab.rarity": "Rarity",
+    "gx.lab.advertised": "Advertised (no pity)",
+    "gx.lab.expected": "Expected (single + hard pity only)",
+    "gx.lab.observed": "Observed",
+    "gx.lab.forced": "Forced",
+    "gx.lab.note": "A design experiment on this template's rules, not a recreation of any commercial title. Observed values have sampling error; the denominator is the number of individual pulls in the run. For single pulls with hard pity N and base rate p, expected SSR is p / (1 − (1−p)^N). Ten-pull mode (and the SR+ guarantee) has no such closed form here — only observed counts are shown. Pity 0 turns hard pity off; the ten-pull guarantee is separate. Export is the same config.json as the demo. Numbers are tunable defaults.",
+    "gx.lab.export": "Download this config.json",
+    "gx.lab.meta": "Ran {pulls} {mode} pulls · SSR pity {pity} · first SSR at pull {first}",
+    "gx.lab.metaNone": "Ran {pulls} {mode} pulls · SSR pity {pity} · no SSR in this run",
+    "gx.lab.na": "—",
+    "gx.lab.forcedSsr": "{n} SSR",
+    "gx.lab.forcedSr": "{n} SR+",
+    "gx.lab.running": "Running…",
+    "gx.pityOff": "0 = off",
   };
   function defaultText(key) {
     if (typeof root.PixTranslate === "function") return root.PixTranslate(key);
@@ -122,6 +143,100 @@
   demo.appendChild(record);
   host.appendChild(demo);
 
+  // ---- rate lab (same live config as the card-pool settings) -------------------
+
+  var lab = h("section", { class: "gx-lab", "aria-labelledby": "gx-lab-h" });
+  lab.appendChild(h("h2", { id: "gx-lab-h", text: "Rate lab", "data-i18n": "gx.lab.h" }));
+  lab.appendChild(h("p", { class: "gx-lab-lede", text: EN["gx.lab.lede"], "data-i18n": "gx.lab.lede" }));
+  var labRow = h("div", { class: "gx-lab-controls" });
+  var pullsLabel = h("label", { class: "gx-lab-field" });
+  pullsLabel.appendChild(h("span", { text: "Simulated pulls", "data-i18n": "gx.lab.pulls" }));
+  var pullsSel = h("select", { "aria-label": "Simulated pulls" });
+  [["10000", "10,000"], ["50000", "50,000"], ["100000", "100,000"]].forEach(function (opt) {
+    var o = h("option", { value: opt[0], text: opt[1] });
+    if (opt[0] === "50000") o.selected = true;
+    pullsSel.appendChild(o);
+  });
+  pullsLabel.appendChild(pullsSel);
+  var modeLabel = h("label", { class: "gx-lab-field" });
+  modeLabel.appendChild(h("span", { text: "Pull mode", "data-i18n": "gx.lab.mode" }));
+  var modeSel = h("select", { "aria-label": "Pull mode" });
+  modeSel.appendChild(h("option", { value: "single", text: EN["gx.lab.single"], "data-i18n": "gx.lab.single" }));
+  var modeTen = h("option", { value: "ten", text: EN["gx.lab.ten"], "data-i18n": "gx.lab.ten" });
+  modeSel.appendChild(modeTen);
+  modeLabel.appendChild(modeSel);
+  var runBtn = h("button", { class: "tpl-btn", type: "button", "data-i18n": "gx.lab.run", text: "Run simulation" });
+  var exportLabBtn = h("button", { class: "tpl-btn tpl-btn-ghost", type: "button", "data-i18n": "gx.lab.export", text: "Download this config.json", onclick: downloadConfig });
+  labRow.appendChild(pullsLabel);
+  labRow.appendChild(modeLabel);
+  labRow.appendChild(runBtn);
+  labRow.appendChild(exportLabBtn);
+  lab.appendChild(labRow);
+  var labMeta = h("p", { class: "gx-lab-meta", hidden: "" });
+  var labTable = h("table", { class: "gx-lab-table", hidden: "" });
+  lab.appendChild(labMeta);
+  lab.appendChild(labTable);
+  lab.appendChild(h("p", { class: "gx-lab-note", text: EN["gx.lab.note"], "data-i18n": "gx.lab.note" }));
+  host.appendChild(lab);
+
+  function pct(x) { return (x * 100).toFixed(3) + "%"; }
+  function forcedCell(r, out) {
+    if (r === "SSR") return defaultText("gx.lab.forcedSsr").replace("{n}", String(out.forcedSsr));
+    if (r === "SR") return defaultText("gx.lab.forcedSr").replace("{n}", String(out.forcedSr));
+    return defaultText("gx.lab.na");
+  }
+  function renderLab(out) {
+    var modeLabelText = out.mode === "ten" ? defaultText("gx.lab.ten") : defaultText("gx.lab.single");
+    var metaKey = out.firstSsrAt == null ? "gx.lab.metaNone" : "gx.lab.meta";
+    labMeta.hidden = false;
+    labMeta.textContent = defaultText(metaKey)
+      .replace("{pulls}", String(out.pulls))
+      .replace("{mode}", modeLabelText)
+      .replace("{pity}", String(out.pity.ssr))
+      .replace("{first}", String(out.firstSsrAt == null ? "" : out.firstSsrAt));
+    labTable.hidden = false;
+    labTable.innerHTML = "";
+    var thead = h("thead");
+    var head = h("tr");
+    ["gx.lab.rarity", "gx.lab.advertised", "gx.lab.expected", "gx.lab.observed", "gx.lab.forced"].forEach(function (key) {
+      head.appendChild(h("th", { text: defaultText(key), "data-i18n": key }));
+    });
+    thead.appendChild(head);
+    labTable.appendChild(thead);
+    var tbody = h("tbody");
+    G.RARITIES.forEach(function (r) {
+      var tr = h("tr");
+      tr.appendChild(h("th", { scope: "row", text: r }));
+      tr.appendChild(h("td", { text: pct(out.advertised[r]) }));
+      var expectedText = defaultText("gx.lab.na");
+      if (r === "SSR" && out.mode === "single" && out.expectedSsrHardPity != null) expectedText = pct(out.expectedSsrHardPity);
+      tr.appendChild(h("td", { text: expectedText }));
+      tr.appendChild(h("td", { text: pct(out.observed[r]) }));
+      tr.appendChild(h("td", { text: forcedCell(r, out) }));
+      tbody.appendChild(tr);
+    });
+    labTable.appendChild(tbody);
+    refreshI18n();
+  }
+  runBtn.addEventListener("click", function () {
+    var n = Number(pullsSel.value);
+    var mode = modeSel.value === "ten" ? "ten" : "single";
+    if (runBtn.disabled) return;
+    runBtn.disabled = true;
+    labMeta.hidden = false;
+    labMeta.textContent = defaultText("gx.lab.running");
+    refreshI18n();
+    setTimeout(function () {
+      try {
+        renderLab(G.simulate(cfg, { pulls: n, mode: mode }));
+      } catch (e) {
+        say("gx.cfgBad", { e: e && e.message ? e.message : String(e) });
+      }
+      runBtn.disabled = false;
+    }, 0);
+  });
+
+
   // ---- side panel: skins + params ---------------------------------------------
 
   side.appendChild(h("h3", { text: "Settings", "data-i18n": "gx.settings" }));
@@ -147,8 +262,9 @@
 
   var pityRow = h("label", { class: "gx-slider" });
   pityRow.appendChild(h("b", { text: "SSR pity", "data-i18n": "gx.pityCfg" }));
-  var pityInput = h("input", { type: "number", min: "10", max: "500", step: "10", "aria-label": "SSR pity threshold" });
+  var pityInput = h("input", { type: "number", min: "0", max: "1000", step: "1", "aria-label": "SSR hard pity (0 disables it)" });
   pityRow.appendChild(pityInput);
+  pityRow.appendChild(h("span", { class: "gx-pityhint", "data-i18n": "gx.pityOff", text: defaultText("gx.pityOff") }));
   side.appendChild(pityRow);
   pityInput.addEventListener("change", function () {
     if (busy || spinning) return;
@@ -274,7 +390,8 @@
   function syncPity() {
     var max = cfg.pity.ssr;
     var n = Math.min(pity.sinceSsr, max);
-    pityFill.style.width = (n / max) * 100 + "%";
+    // max 0 means hard pity is off — guard the fill math instead of writing "NaN%".
+    pityFill.style.width = max >= 1 ? (n / max) * 100 + "%" : "0%";
     while (pityText.firstChild) pityText.removeChild(pityText.firstChild);
     pityText.appendChild(h("span", { "data-i18n": "gx.pityNow", "data-i18n-vars": JSON.stringify({n:n,max:max}), text: defaultText("gx.pityNow").replace("{n}", String(n)).replace("{max}", String(max)) }));
 

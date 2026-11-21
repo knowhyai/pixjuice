@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>PixJuice — Pixel Art VFX Maker for game devs</title>
-  <meta name="description" content="Recolor, preview and export 244 pixel skill effects for Godot, Unity, Phaser and Aseprite. Sprite sheets, JSON and GIF in the browser — plus matching 8-bit sound effects.">
+  <title>PixJuice — pixel effects, feel recipes, assets and tools for game devs</title>
+  <meta name="description" content="Free browser tools for game developers: 244 pixel skill effects to recolor and export, live feel recipes with engine code, plus CC0 assets, UI templates and image tools.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PixJuice">
-  <meta property="og:title" content="PixJuice — Pixel Art VFX Maker for game devs">
-  <meta property="og:description" content="Recolor, preview and export 244 pixel skill effects as sprite sheets, JSON and GIF — with matching 8-bit SFX. All in the browser.">
+  <meta property="og:title" content="PixJuice — pixel effects, feel recipes, assets and tools for game devs">
+  <meta property="og:description" content="Free browser tools for game developers: 244 pixel skill effects to recolor and export, live feel recipes with engine code, plus CC0 assets, UI templates and image tools.">
   <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#0b0a10">
@@ -63,7 +63,91 @@
     </div>
   </header>
 
-<section class="home-entries"><a class="home-entry" href="/templates/"><img src="/previews/en/templates.jpg" data-preview="templates" alt="" loading="lazy"><b data-i18n="nav.templates">Game templates</b><span data-i18n="home.entryTplD">Playable gacha, crate opening and save/load UI in a dark-gold Semi-Realistic look, plus a CC0 download.</span></a><a class="home-entry" href="/free-assets/"><img src="/previews/en/assets.jpg" data-preview="assets" alt="" loading="lazy"><b data-i18n="nav.assets">Free assets</b><span data-i18n="home.entryAssetsD">CC0 2D sprites and 3D models for commercial use. Preview, swap parts and download in the browser.</span></a><a class="home-entry" href="/#effects"><img src="/previews/en/effects.jpg" data-preview="effects" alt="" loading="lazy"><b data-i18n="home.entryEffects">Effects library</b><span data-i18n="home.entryEffectsD">Recolor, preview and export 244 pixel skill effects as sprite sheets, GIF and sound — free, in your browser.</span></a><a class="home-entry" href="/feel/"><img src="/previews/en/feel.jpg" data-preview="feel" alt="" loading="lazy"><b data-i18n="home.entryFeel">Game Feel Lab</b><span data-i18n="home.entryFeelD">A layered hit-feel recipe: hit stop, shake, knockback and synthesized impact audio on rigged knights — with Godot &amp; Unity code.</span></a><a class="home-entry" href="/image-to-pixel-art/"><img src="/previews/en/pixel.jpg" data-preview="pixel" alt="" loading="lazy"><b data-i18n="home.toolPa">pixel</b><span data-i18n="home.toolPaD">Preview and create in your browser.</span></a><a class="home-entry" href="/normal-map/"><img src="/previews/en/normal.jpg" data-preview="normal" alt="" loading="lazy"><b data-i18n="home.toolNm">normal</b><span data-i18n="home.toolNmD">Preview and create in your browser.</span></a><a class="home-entry" href="/pixel-art-upscaler/"><img src="/previews/en/upscale.jpg" data-preview="upscale" alt="" loading="lazy"><b data-i18n="home.toolUp">upscale</b><span data-i18n="home.toolUpD">Preview and create in your browser.</span></a><a class="home-entry" href="/sprite-sheet/"><img src="/previews/en/sheet.jpg" data-preview="sheet" alt="" loading="lazy"><b data-i18n="home.toolSh">sheet</b><span data-i18n="home.toolShD">Preview and create in your browser.</span></a></section>
+  <div class="home-page">
+    <section class="home-hero">
+      <h1 data-i18n="home.heroH">A game-development workshop: systems, feel, art, and tools</h1>
+      <p class="lede" data-i18n="home.heroLede">Tune a live recipe, try a playable system, export an effect or asset, or run a browser tool — free, in your browser.</p>
+      <div class="home-hero-actions">
+        <a class="home-cta" href="/#effects" data-i18n="home.heroCtaFx">Browse 244 effects</a>
+        <a class="home-cta" href="/feel/" data-i18n="home.heroCtaRecipes">Open feel recipes</a>
+        <a class="home-cta" href="/templates/" data-i18n="home.heroCtaTemplates">Try game templates</a>
+      </div>
+    </section>
+
+    <section class="home-band" id="live" aria-labelledby="home-now-h">
+      <div class="sec-head">
+        <h2 id="home-now-h" data-i18n="home.nowH">Now live</h2>
+      </div>
+      <div class="recipe-grid recipe-grid-3" id="recipes">
+        <a class="recipe-card" href="/feel/hit/">
+          <div class="stage"><img class="tile-preview" src="/previews/en/feel-hit.jpg" data-preview="feel-hit" alt="" width="640" height="400" loading="lazy"></div>
+          <div class="recipe-card-body">
+            <b data-i18n="feel.recipe.hit.t">Hit feel</b>
+            <p data-i18n="feel.recipe.hit.solves">For hits that land but feel soft or mushy.</p>
+            <small data-i18n="feel.recipe.hit.layers">6 layers · Godot 4 + Unity</small>
+            <span class="recipe-card-cta" data-i18n="feel.recipe.hit.cta">Open the hit feel recipe →</span>
+          </div>
+        </a>
+        <a class="recipe-card" href="/feel/boss-hp/">
+          <div class="stage"><img class="tile-preview" src="/previews/en/feel-boss.jpg" data-preview="feel-boss" alt="" width="640" height="400" loading="lazy"></div>
+          <div class="recipe-card-body">
+            <b data-i18n="feel.recipe.boss.t">Boss HP bar</b>
+            <p data-i18n="feel.recipe.boss.solves">For a boss bar that hides how much damage landed, or how close the fight is to ending.</p>
+            <small data-i18n="feel.recipe.boss.layers">5 layers · Godot 4 + Web</small>
+            <span class="recipe-card-cta" data-i18n="feel.recipe.boss.cta">Open the boss HP bar recipe →</span>
+          </div>
+        </a>
+        <a class="recipe-card" href="/#effects">
+          <div class="stage"><img class="tile-preview" src="/previews/en/effects.jpg" data-preview="effects" alt="" width="640" height="400" loading="lazy"></div>
+          <div class="recipe-card-body">
+            <b data-i18n="home.fxCardT">244 pixel skill effects</b>
+            <p data-i18n="home.fxCardD">Recolor a skill effect and export a sprite sheet, GIF or sound. These are visual components, not the feel-recipe layers.</p>
+            <small data-i18n="home.fxCardMeta">244 effects · MIT · in the browser</small>
+            <span class="recipe-card-cta" data-i18n="home.fxCardCta">Open the effects library →</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="home-band" id="libraries" aria-labelledby="home-libs-h">
+      <div class="sec-head">
+        <h2 id="home-libs-h" data-i18n="home.libsH">Assets and templates</h2>
+        <p class="blurb" data-i18n="home.libsLede">CC0 art and playable UI modules you can download or demo in the browser.</p>
+      </div>
+    </section>
+    <div class="home-entries home-libs">
+      <a class="home-entry" href="/templates/"><img src="/previews/en/templates.jpg" data-preview="templates" alt="" width="640" height="400" loading="lazy"><b data-i18n="nav.templates">Game templates</b><span data-i18n="home.entryTplD">Playable gacha, crate opening and save/load UI in a dark-gold Semi-Realistic look, plus a CC0 download.</span></a>
+      <a class="home-entry" href="/free-assets/"><img src="/previews/en/assets.jpg" data-preview="assets" alt="" width="640" height="400" loading="lazy"><b data-i18n="nav.assets">Free assets</b><span data-i18n="home.entryAssetsD">CC0 2D sprites and 3D models for commercial use. Preview, swap parts and download in the browser.</span></a>
+    </div>
+
+    <section class="home-band" id="tools" aria-labelledby="home-tools-h">
+      <div class="sec-head">
+        <h2 id="home-tools-h" data-i18n="home.toolsH">Browser tools</h2>
+        <p class="blurb" data-i18n="home.toolsLede">Convert, light, upscale or slice sprites without uploading them to a server.</p>
+      </div>
+    </section>
+    <div class="home-entries home-tools">
+      <a class="home-entry" href="/image-to-pixel-art/"><img src="/previews/en/pixel.jpg" data-preview="pixel" alt="" width="640" height="400" loading="lazy"><b data-i18n="home.toolPa">pixel</b><span data-i18n="home.toolPaD">Preview and create in your browser.</span></a>
+      <a class="home-entry" href="/normal-map/"><img src="/previews/en/normal.jpg" data-preview="normal" alt="" width="640" height="400" loading="lazy"><b data-i18n="home.toolNm">normal</b><span data-i18n="home.toolNmD">Preview and create in your browser.</span></a>
+      <a class="home-entry" href="/pixel-art-upscaler/"><img src="/previews/en/upscale.jpg" data-preview="upscale" alt="" width="640" height="400" loading="lazy"><b data-i18n="home.toolUp">upscale</b><span data-i18n="home.toolUpD">Preview and create in your browser.</span></a>
+      <a class="home-entry" href="/sprite-sheet/"><img src="/previews/en/sheet.jpg" data-preview="sheet" alt="" width="640" height="400" loading="lazy"><b data-i18n="home.toolSh">sheet</b><span data-i18n="home.toolShD">Preview and create in your browser.</span></a>
+    </div>
+
+    <details class="home-scope" id="coverage">
+      <summary data-i18n="home.scopeH">What else this station covers</summary>
+      <p data-i18n="home.scopeLede">A map of the advisor station, not a list of pages. Nothing below is a link unless it already has a live loop elsewhere on this home page. Movement, camera, audio, performance and shipping are planned; they are not shipped categories.</p>
+      <div data-i18n-html="home.scopeList" class="home-scope-list">
+      <ul>
+        <li><b>Gameplay &amp; systems</b> — live: gacha and save/load templates.</li>
+        <li><b>Combat feedback</b> — live: hit feel and boss HP bar recipes.</li>
+        <li><b>Visuals &amp; assets</b> — live: 244 effects, the CC0 library, and four image tools.</li>
+        <li><b>Movement, camera, audio, performance &amp; shipping</b> — planned; not live, and not in the nav.</li>
+      </ul>
+    </div>
+    </details>
+  </div>
+
+  <p class="home-fx-note" id="effects-label" data-i18n="home.fxLede">The library below is 244 pixel visual effects (MIT, from pixelfx). Recolor, preview and export them here — they are not a count of feel-recipe components.</p>
   <div class="bar" id="effects">
     <div class="bar-in">
       <div class="chips" id="chips" role="toolbar" aria-label="Effect categories" data-i18n-aria="home.catsAria"></div>

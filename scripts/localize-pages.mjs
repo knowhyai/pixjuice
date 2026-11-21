@@ -26,6 +26,26 @@ const listedPaths=paths.filter(path=>{
   return manifest.assets.some(a=>a.product_id===id&&isPublicListing(a));
 });
 const url=(l,p)=>`${SITE}/${l==='en'?'':l+'/'}${p}`;
+
+const TOOL_SEO = {
+  'image-to-pixel-art/': { title: 'title.pa', desc: 'pa.lede' },
+  'normal-map/': { title: 'title.nm', desc: 'nm.lede' },
+  'pixel-art-upscaler/': { title: 'title.up', desc: 'up.lede' },
+  'sprite-sheet/': { title: 'title.sheet', desc: 'sheet.lede' },
+  'editor/': { title: 'title.editor' },
+  'credits/': { title: 'title.credits' },
+};
+const LOCALE_PREFIXES = ['/zh/', '/ja/', '/ko/', '/es/', '/zh', '/ja', '/ko', '/es'];
+const STATIC_HREF = /\.(svg|png|jpg|jpeg|webp|gif|css|js|json|xml|ico|woff2?|map)(\?|$)/i;
+function prefixLocalizedHrefs(html, lang) {
+  if (lang === 'en') return html;
+  return html.replace(/href="(\/[^"]*)"/g, (all, href) => {
+    if (STATIC_HREF.test(href)) return all;
+    if (LOCALE_PREFIXES.some((p) => href === p.replace(/\/$/, '') || href.startsWith(p) || href.startsWith(p.replace(/\/$/, '') + '#'))) return all;
+    return `href="/${lang}${href}"`;
+  });
+}
+
 for(const path of paths) {
  const original=await readFile(`dist/${path}index.html`,'utf8');
  for(const lang of langs) {
@@ -36,25 +56,31 @@ for(const path of paths) {
   let title=asset?`${name} — ${d.assetTitle}`:translate(lang,key==='gx'||key==='sv'?key+'.hero.h1':key+'.h1');
   if (lang === "en" && key === "gx") title = "Gacha System Template & Loot Box UI — Spin Wheel Game Template";
   if (lang === "en" && key === "sv") title = "Save Load System UI — Game Save Menu Template";
-  const desc=asset?`${name} — ${d.assetDesc}`:strip(translate(lang,key==='gx'||key==='sv'?key+'.hero.lede':key+'.lede'));
+  let desc=asset?`${name} — ${d.assetDesc}`:strip(translate(lang,key==='gx'||key==='sv'?key+'.hero.lede':key+'.lede'));
+  if(path===''){title=translate(lang,'title.home');desc=strip(translate(lang,'home.heroLede'));}
+  if(TOOL_SEO[path]){
+    title=translate(lang,TOOL_SEO[path].title);
+    if(TOOL_SEO[path].desc) desc=strip(translate(lang,TOOL_SEO[path].desc));
+  }
   let html=original.replace('<html lang="en">',`<html lang="${lang}">`);
   if(lang==='zh') html=html.replaceAll('/previews/en/','/previews/zh/');
   else html=html.replaceAll('/previews/zh/','/previews/en/');
   // Translate static text and rich text (the same data keys the browser uses).
   html=html.replace(/<([a-z][\w-]*)\b([^>]*\bdata-i18n(?:-html)?="([^"]+)"[^>]*)>[\s\S]*?<\/\1>/gi,(all,tag,attrs,k)=>`<${tag}${attrs}>${attrs.includes('data-i18n-html=')?translate(lang,k):esc(translate(lang,k))}</${tag}>`);
-  html=html.replace(/<title>[\s\S]*?<\/title>/,`<title>${esc(title)} – PixJuice</title>`)
+  html=html.replace(/<title>[\s\S]*?<\/title>/,`<title>${esc(title)}${(path===''||TOOL_SEO[path]||/PixJuice/i.test(title))?'':' – PixJuice'}</title>`)
    .replace(/(<meta name="description" content=")[^"]*(")/,`$1${esc(desc)}$2`)
    .replace(/(<meta property="og:title" content=")[^"]*(")/,`$1${esc(title)}$2`)
    .replace(/(<meta property="og:description" content=")[^"]*(")/,`$1${esc(desc)}$2`)
    .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'');
-  const questions=asset?[[`${name} — ${translate(lang,'v3.license')}`,d.assetA]]:key==='fr'?[[translate(lang,'fr.q'),translate(lang,'fr.a')]]:key==='feelIndex'||key==='feelHit'?[[translate(lang,'feel.faq1q'),translate(lang,'feel.faq1a')],[translate(lang,'feel.faq2q'),translate(lang,'feel.faq2a')],[translate(lang,'feel.faq3q'),translate(lang,'feel.faq3a')]]:key==='feelBoss'?[[translate(lang,'boss.faq1q'),translate(lang,'boss.faq1a')],[translate(lang,'boss.faq2q'),translate(lang,'boss.faq2a')],[translate(lang,'boss.faq3q'),translate(lang,'boss.faq3a')]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
-  const json=[{'@context':'https://schema.org','@type':key==='fr'?'CollectionPage':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:key==='fr'?undefined:key==='fa'?(asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined):'https://creativecommons.org/publicdomain/zero/1.0/'},{'@context':'https://schema.org','@type':'FAQPage',inLanguage:lang,mainEntity:questions.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))}];
+  const questions=path===''?[]:asset?[[`${name} — ${translate(lang,'v3.license')}`,d.assetA]]:key==='fr'?[[translate(lang,'fr.q'),translate(lang,'fr.a')]]:key==='feelIndex'||key==='feelHit'?[[translate(lang,'feel.faq1q'),translate(lang,'feel.faq1a')],[translate(lang,'feel.faq2q'),translate(lang,'feel.faq2a')],[translate(lang,'feel.faq3q'),translate(lang,'feel.faq3a')]]:key==='feelBoss'?[[translate(lang,'boss.faq1q'),translate(lang,'boss.faq1a')],[translate(lang,'boss.faq2q'),translate(lang,'boss.faq2a')],[translate(lang,'boss.faq3q'),translate(lang,'boss.faq3a')]]:TOOL_SEO[path]?[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
+  const json=[{'@context':'https://schema.org','@type':path===''||key==='fr'?'CollectionPage':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:path===''||key==='fr'?undefined:key==='fa'?(asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined):'https://creativecommons.org/publicdomain/zero/1.0/'}];
+  if(questions.length) json.push({'@context':'https://schema.org','@type':'FAQPage',inLanguage:lang,mainEntity:questions.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))});
   const unpublished=asset? !isPublicListing(asset) && !(path===`free-assets/${asset.product_id}/` && manifest.assets.some(a=>a.product_id===asset.product_id&&isPublicListing(a))) : path.startsWith('free-assets/') && path!=='free-assets/' && !listedPaths.includes(path);
   const head=`${unpublished?'<meta name="robots" content="noindex, nofollow">\n':''}<link rel="canonical" href="${url(lang,path)}">\n${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url(l,path)}">`).join('\n')}\n<link rel="alternate" hreflang="x-default" href="${url('en',path)}">\n<script type="application/ld+json">${JSON.stringify(json).replaceAll('<','\\u003c')}</script>`;
   html=html.replace('</head>',head+'\n</head>');
-  const faq=`<section class="tpl-faq"><h2>${esc(d.faq)}</h2>${questions.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</section>`;
-  html=html.replace(/\s*<footer>/,faq+'\n<footer>');
-  if(lang!=='en') html=html.replace(/href="\/(templates|free-assets|free-resources|feel)(\/[^"?#]*)?"/g,`href="/${lang}/$1$2"`);
+  const faq=questions.length?`<section class="tpl-faq"><h2>${esc(d.faq)}</h2>${questions.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</section>\n`:'';
+  html=html.replace(/\s*<footer>/,faq+'<footer>');
+  if(lang!=='en') html=prefixLocalizedHrefs(html, lang);
   const folder=`dist/${lang==='en'?'':lang+'/'}${path}`;
   await mkdir(folder,{recursive:true});await writeFile(folder+'index.html',html);
  }

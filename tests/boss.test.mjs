@@ -249,7 +249,7 @@ test('boss: no fixed width in the feel styles can overflow a 390px phone', () =>
   const widths = [...css.matchAll(/(?:^|\s)(?:min-)?width:\s*(\d+(?:\.\d+)?)px/g)].map((m) => Number(m[1]));
   assert.ok(widths.length > 0, 'regex sanity');
   for (const w of widths) assert.ok(w <= 390, `fixed width ${w}px exceeds a 390px viewport`);
-  // the side column is 430px on desktop but collapses to one column under 1020px
+  // the side column is clamped (400–520px) on desktop but collapses to one column under 1020px
   assert.ok(css.includes('@media (max-width: 1020px)'), 'desktop grid must collapse');
 });
 

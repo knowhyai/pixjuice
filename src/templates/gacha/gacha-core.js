@@ -15,7 +15,11 @@
      `pity.sr`, the multi-batch length this applies to).
    - Lucky wheel: separate prize game. Segments are the configured items, each
      weighted by its `weight` (default 1); the wheel picks one entry by weight
-     and the UI animates to the matching segment. */
+     and the UI animates to the matching segment.
+   - Rate lab: `itemOdds` / `rates` are the advertised (no-pity) figures.
+     `hardPityEffectiveRate` is the closed-form effective SSR rate for single
+     pulls with a hard ceiling. `simulate` runs the same `rollOnce`/`pull`
+     rules for many draws so a designer can compare advertised vs observed. */
 
 (function (root) {
   "use strict";
@@ -67,11 +71,15 @@
     var pity = { ssr: 90, sr: 10 };
     if (r.pity && typeof r.pity === "object") {
       var pssr = Math.round(Number(r.pity.ssr));
-      if (isFinite(pssr) && pssr >= 1) pity.ssr = Math.min(pssr, 1000);
+      // 0 disables the SSR hard pity. The ten-pull SR guarantee is independent.
+      if (isFinite(pssr) && pssr >= 0) pity.ssr = Math.min(pssr, 1000);
       var psr = Math.round(Number(r.pity.sr));
       if (isFinite(psr) && psr >= 2) pity.sr = Math.min(psr, 100);
     }
-    if (pity.sr > pity.ssr) pity.sr = pity.ssr;
+    // Keep the SR+ window inside an enabled SSR ceiling — except a ceiling of 1,
+    // where every pull is already forced SSR; clamping sr to 1 there would make
+    // ten-pull batches degenerate and simulate(mode:"ten") invalid.
+    if (pity.ssr >= 2 && pity.sr > pity.ssr) pity.sr = pity.ssr;
 
     if (r.items !== undefined && (!Array.isArray(r.items) || !r.items.length)) return {ok:false,error:"items list is empty"};
     var rawItems = r.items || DEFAULT_CONFIG.items;
@@ -134,7 +142,7 @@
    */
   function rollOnce(config, state, rng, opts) {
     var forced = null;
-    if (state.sinceSsr + 1 >= config.pity.ssr) forced = "SSR";
+    if (config.pity.ssr >= 1 && state.sinceSsr + 1 >= config.pity.ssr) forced = "SSR";
     else if (opts && opts.forceSrPlus) forced = "SR";
 
     var rarity = forced || pickWeighted(RARITIES, function (k) { return config.rates[k]; }, rng);
@@ -198,6 +206,112 @@
     return idx;
   }
 
+  /**
+   * Effective SSR rate for single pulls with a hard ceiling: each pull has
+   * base probability `p` until pull `n`, which is forced SSR. Equals
+   * p / (1 - (1-p)^n). This does not model the ten-pull SR guarantee.
+   */
+  function hardPityEffectiveRate(p, n) {
+    p = Number(p);
+    n = Math.round(Number(n));
+    if (!isFinite(p) || p < 0) return 0;
+    if (p >= 1) return 1;
+    // n < 1 means hard pity is disabled: the effective rate is the base rate.
+    if (!isFinite(n) || n < 1) return p;
+    // p = 0 still hits the hard ceiling, so the long-run rate is 1/n.
+    if (p === 0) return 1 / n;
+    // expm1/log1p keep the denominator exact when p is so small that
+    // 1 - (1-p)^n would round to 0 and falsely report a 100% effective rate.
+    var denom = -Math.expm1(n * Math.log1p(-p));
+    if (!(denom > 0)) return 1;
+    return p / denom;
+  }
+
+  var SIM_MAX_PULLS = 500000;
+
+  /**
+   * Run many pulls with the live template rules.
+   * opts.mode "single" — one pull at a time (SSR hard pity only).
+   * opts.mode "ten" — batches of `config.pity.sr` (includes the SR+ guarantee).
+   * Remainder pulls in "ten" mode are singles. Does not mutate `config`.
+   * Returns advertised (no-pity) rates, observed frequencies, force counts,
+   * and, for single mode, the closed-form expected SSR rate.
+   */
+  function simulate(config, opts) {
+    opts = opts || {};
+    var pulls = Math.round(Number(opts.pulls));
+    if (!isFinite(pulls) || pulls < 1) throw new Error("invalid pull count");
+    var max = opts.maxPulls != null ? Math.round(Number(opts.maxPulls)) : SIM_MAX_PULLS;
+    if (!isFinite(max) || max < 1) throw new Error("invalid max pull count");
+    if (pulls > max) throw new Error("pull count exceeds " + max);
+    var mode = opts.mode === "ten" ? "ten" : "single";
+    var rng = opts.rng;
+    var state = makeState();
+    var counts = { N: 0, R: 0, SR: 0, SSR: 0 };
+    var itemCounts = Object.create(null);
+    var forcedSsr = 0;
+    var forcedSr = 0;
+    var firstSsrAt = null;
+    var total = 0;
+
+    function take(item, wasForcedSsr, wasForcedSr) {
+      counts[item.rarity]++;
+      itemCounts[item.id] = (itemCounts[item.id] || 0) + 1;
+      total++;
+      if (wasForcedSsr) forcedSsr++;
+      if (wasForcedSr) forcedSr++;
+      if (item.rarity === "SSR" && firstSsrAt == null) firstSsrAt = total;
+    }
+
+    function runBatch(times) {
+      var results = [];
+      for (var i = 0; i < times; i++) {
+        var isLast = i === times - 1;
+        var noSrYet = !results.some(function (r) { return r.rarity === "SR" || r.rarity === "SSR"; });
+        var forceSsr = config.pity.ssr >= 1 && state.sinceSsr + 1 >= config.pity.ssr;
+        var forceSrPlus = isLast && times > 1 && times >= config.pity.sr && noSrYet;
+        var out = rollOnce(config, state, rng, { forceSrPlus: forceSrPlus });
+        state = out.state;
+        take(out.item, forceSsr, forceSrPlus && !forceSsr);
+        results.push(out.item);
+      }
+    }
+
+    if (mode === "single") {
+      for (var s = 0; s < pulls; s++) runBatch(1);
+    } else {
+      var batch = config.pity.sr;
+      if (!(batch >= 2)) throw new Error("invalid ten-pull length");
+      var batches = Math.floor(pulls / batch);
+      var rem = pulls - batches * batch;
+      for (var b = 0; b < batches; b++) runBatch(batch);
+      if (rem) runBatch(rem);
+    }
+
+    var advertised = { N: config.rates.N, R: config.rates.R, SR: config.rates.SR, SSR: config.rates.SSR };
+    var observed = {
+      N: counts.N / total,
+      R: counts.R / total,
+      SR: counts.SR / total,
+      SSR: counts.SSR / total,
+    };
+    return {
+      pulls: total,
+      mode: mode,
+      advertised: advertised,
+      observed: observed,
+      expectedSsrHardPity: mode === "single" && config.pity.ssr >= 1
+        ? hardPityEffectiveRate(config.rates.SSR, config.pity.ssr)
+        : null,
+      counts: counts,
+      forcedSsr: forcedSsr,
+      forcedSr: forcedSr,
+      firstSsrAt: firstSsrAt,
+      itemCounts: itemCounts,
+      pity: { ssr: config.pity.ssr, sr: config.pity.sr },
+    };
+  }
+
   /** Trim a history list to `limit` most-recent entries. */
   function record(history, items, at, limit) {
     var next = history.concat(items.map(function (it) { return { at: at, item: it }; }));
@@ -214,6 +328,9 @@
     rollOnce: rollOnce,
     pull: pull,
     itemOdds: itemOdds,
+    hardPityEffectiveRate: hardPityEffectiveRate,
+    SIM_MAX_PULLS: SIM_MAX_PULLS,
+    simulate: simulate,
     wheelSegments: wheelSegments,
     wheelPick: wheelPick,
     record: record,

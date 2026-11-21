@@ -73,6 +73,39 @@
     </section>
 
     <div class="feel-main">
+      <aside class="feel-side">
+        <section class="feel-demo-card" aria-label="boss hp demo">
+          <div class="feel-stage">
+            <p class="cap feel-hint" data-i18n="boss.demoHint">Click the stage for a light hit · buttons for heavier play · heal crosses layers back up</p>
+            <div id="boss-demo" class="feel-boss-host" data-i18n-aria="boss.barAria"></div>
+            <div class="feel-zone boss-actions" role="group" aria-label="damage controls">
+              <span class="feel-ctl-label" data-i18n="boss.actions">Boss actions</span>
+              <button type="button" class="btn boss-hit" data-i18n="boss.hitBtn">Hit −12</button>
+              <button type="button" class="btn boss-heavy" data-i18n="boss.heavyBtn">Heavy −30</button>
+              <button type="button" class="btn boss-heal" data-i18n="boss.healBtn">Heal +18</button>
+              <button type="button" class="btn primary boss-reset" data-i18n="boss.resetBtn">Reset</button>
+            </div>
+          </div>
+          <div class="feel-demo-controls">
+            <div class="feel-presets" role="group" aria-label="presets">
+              <span class="feel-ctl-label" data-i18n="feel.presets">Presets</span>
+              <button type="button" class="btn boss-preset" data-preset="light" data-i18n="boss.preset.light">Restrained</button>
+              <button type="button" class="btn boss-preset on" data-preset="heavy" data-i18n="boss.preset.heavy">Full recipe</button>
+            </div>
+            <div class="feel-compare" role="group" aria-label="compare tune">
+              <span class="feel-ctl-label" data-i18n="feel.compareLabel">Compare on the demo</span>
+              <button type="button" class="btn feel-compare-btn on" data-compare="mine" aria-pressed="true" data-i18n="feel.compareMine">My tune</button>
+              <button type="button" class="btn feel-compare-btn" data-compare="base" aria-pressed="false" data-i18n="feel.compareBase">Page default</button>
+              <button type="button" class="btn feel-share" data-i18n="feel.share">⧉ Share this tune</button>
+            </div>
+            <p class="cap feel-compare-note" hidden data-i18n="feel.compareNote">The demo is now playing the page default — your sliders are untouched. Attack or hit it to feel the difference, then switch back to your tune.</p>
+            <p class="cap feel-shared-note" hidden data-i18n="feel.sharedNote">Opened from a shared link — these are that tune’s numbers, not a recommendation.</p>
+            <input class="feel-share-url" type="text" readonly hidden aria-label="share link" data-i18n-aria="feel.shareUrlAria">
+            <p class="cap" data-i18n="boss.presetHint">Restrained trims every layer to its quietest readable version — single bar, no screen edge. Full recipe is the default you landed on: all five layers with the tunable default values.</p>
+          </div>
+        </section>
+      </aside>
+
       <div class="feel-layers" aria-labelledby="boss-layers-h">
         <h2 id="boss-layers-h" data-i18n="boss.layers">Five layers, stack them yourself</h2>
 
@@ -146,57 +179,23 @@
           <div class="feel-layer-controls feel-layer-motion" data-controls="motion"></div>
         </section>
       </div>
-
-      <aside class="feel-side">
-        <section class="feel-demo-card" aria-label="boss hp demo">
-          <div class="feel-stage">
-            <p class="cap feel-hint" data-i18n="boss.demoHint">Click the stage for a light hit · buttons for heavier play · heal crosses layers back up</p>
-            <div id="boss-demo" class="feel-boss-host" data-i18n-aria="boss.barAria"></div>
-            <div class="feel-zone boss-actions" role="group" aria-label="damage controls">
-              <span class="feel-ctl-label" data-i18n="boss.actions">Boss actions</span>
-              <button type="button" class="btn boss-hit" data-i18n="boss.hitBtn">Hit −12</button>
-              <button type="button" class="btn boss-heavy" data-i18n="boss.heavyBtn">Heavy −30</button>
-              <button type="button" class="btn boss-heal" data-i18n="boss.healBtn">Heal +18</button>
-              <button type="button" class="btn primary boss-reset" data-i18n="boss.resetBtn">Reset</button>
-            </div>
-          </div>
-          <div class="feel-demo-controls">
-            <div class="feel-presets" role="group" aria-label="presets">
-              <span class="feel-ctl-label" data-i18n="feel.presets">Presets</span>
-              <button type="button" class="btn boss-preset" data-preset="light" data-i18n="boss.preset.light">Restrained</button>
-              <button type="button" class="btn boss-preset on" data-preset="heavy" data-i18n="boss.preset.heavy">Full recipe</button>
-            </div>
-            <div class="feel-compare" role="group" aria-label="compare tune">
-              <span class="feel-ctl-label" data-i18n="feel.compareLabel">Compare on the demo</span>
-              <button type="button" class="btn feel-compare-btn on" data-compare="mine" aria-pressed="true" data-i18n="feel.compareMine">My tune</button>
-              <button type="button" class="btn feel-compare-btn" data-compare="base" aria-pressed="false" data-i18n="feel.compareBase">Page default</button>
-              <button type="button" class="btn feel-share" data-i18n="feel.share">⧉ Share this tune</button>
-            </div>
-            <p class="cap feel-compare-note" hidden data-i18n="feel.compareNote">The demo is now playing the page default — your sliders are untouched. Attack or hit it to feel the difference, then switch back to your tune.</p>
-            <p class="cap feel-shared-note" hidden data-i18n="feel.sharedNote">Opened from a shared link — these are that tune’s numbers, not a recommendation.</p>
-            <input class="feel-share-url" type="text" readonly hidden aria-label="share link" data-i18n-aria="feel.shareUrlAria">
-            <p class="cap" data-i18n="boss.presetHint">Restrained trims every layer to its quietest readable version — single bar, no screen edge. Full recipe is the default you landed on: all five layers with the tunable default values.</p>
-          </div>
-        </section>
-
-        <section class="feel-code" aria-labelledby="boss-code-h">
-          <h2 id="boss-code-h" data-i18n="feel.code">Engine code</h2>
-          <p class="cap" data-i18n="boss.codeNote">The Godot tab exports a Control script with the whole recipe; the web tab is one self-contained HTML file (CSS + JS) you can open as-is. Both rebuild from the switches and sliders above.</p>
-          <p class="cap feel-export" data-export="mine"><span data-i18n="feel.exportPrefix">Exporting:</span> <b data-i18n="feel.exportMine">my tune</b></p>
-          <div class="codebox feel-codebox" id="boss-codebox"></div>
-          <details class="feel-hookup">
-            <summary data-i18n="feel.hookupH">Hookup &amp; limits</summary>
-            <ul>
-              <li data-i18n-html="boss.hk1">Targets Godot 4.x (a Control script — the header comment lists the node tree to build: Track, LagFill, Fill, Ticks, labels, optional edge vignette) and any browser for the web tab (one self-contained HTML file).</li>
-              <li data-i18n-html="boss.hk2">Hookup: feed damage through <code>take_damage(units)</code> / <code>heal(units)</code>; <code>setup(fraction)</code> starts a fight. The low-HP threshold compares against the boss’s <b>total</b> HP across all layers, not the active layer.</li>
-              <li data-i18n-html="feel.hk3">Every number is a tunable default exported from the lab — retune it for your project; it is a starting point, not a rule.</li>
-              <li data-i18n-html="boss.hk4">The screen-edge warning belongs in your HUD layer, never on the window root; the exported snippets honor <code>prefers-reduced-motion</code> / the <code>reduce_motion</code> flag on their own.</li>
-            </ul>
-          </details>
-          <p class="cap feel-license" data-i18n="feel.cc0">Snippets and demo models are CC0 — use them without attribution.</p>
-        </section>
-      </aside>
     </div>
+    <section class="feel-code feel-code-wide" aria-labelledby="boss-code-h">
+      <h2 id="boss-code-h" data-i18n="feel.code">Engine code</h2>
+      <p class="cap" data-i18n="boss.codeNote">The Godot tab exports a Control script with the whole recipe; the web tab is one self-contained HTML file (CSS + JS) you can open as-is. Both rebuild from the switches and sliders above.</p>
+      <p class="cap feel-export" data-export="mine"><span data-i18n="feel.exportPrefix">Exporting:</span> <b data-i18n="feel.exportMine">my tune</b></p>
+      <div class="codebox feel-codebox" id="boss-codebox"></div>
+      <details class="feel-hookup">
+        <summary data-i18n="feel.hookupH">Hookup &amp; limits</summary>
+        <ul>
+          <li data-i18n-html="boss.hk1">Targets Godot 4.x (a Control script — the header comment lists the node tree to build: Track, LagFill, Fill, Ticks, labels, optional edge vignette) and any browser for the web tab (one self-contained HTML file).</li>
+          <li data-i18n-html="boss.hk2">Hookup: feed damage through <code>take_damage(units)</code> / <code>heal(units)</code>; <code>setup(fraction)</code> starts a fight. The low-HP threshold compares against the boss’s <b>total</b> HP across all layers, not the active layer.</li>
+          <li data-i18n-html="feel.hk3">Every number is a tunable default exported from the lab — retune it for your project; it is a starting point, not a rule.</li>
+          <li data-i18n-html="boss.hk4">The screen-edge warning belongs in your HUD layer, never on the window root; the exported snippets honor <code>prefers-reduced-motion</code> / the <code>reduce_motion</code> flag on their own.</li>
+        </ul>
+      </details>
+      <p class="cap feel-license" data-i18n="feel.cc0">Snippets and demo models are CC0 — use them without attribution.</p>
+    </section>
     <section class="feel-sources" aria-labelledby="boss-sources-h">
       <h2 id="boss-sources-h" data-i18n="feel.sourcesH">Sources &amp; method</h2>
       <p class="feel-sources-note" data-i18n="feel.sourcesNote">Slider numbers are tunable defaults — starting points to retune for your project, not universal rules. Published sources are cited separately below; unlabeled numbers come from action-game practice (the industry's oral tradition), not research. Retune for your game.</p>

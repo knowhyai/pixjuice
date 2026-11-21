@@ -53,7 +53,7 @@ LICENSE               CC0 — do anything, no attribution required
   to be non-negative.
 - `items` — the prize pool. At least one item per rarity is required; ids must be
   unique. Within a rarity, an item's chance is proportional to `weight`.
-- `pity.ssr` — the pull at this ceiling is forced SSR (90 means at most 89 misses).
+- `pity.ssr` — the pull at this ceiling is forced SSR (90 means at most 89 misses). `0` disables hard pity.
 - `pity.sr` — a pull batch of this size (e.g. 10) always contains at least one
   SR or better.
 - The lucky wheel uses the same `items`; each segment's chance is
@@ -61,6 +61,32 @@ LICENSE               CC0 — do anything, no attribution required
 
 In the demo: **Load config.json** applies a file, **Download config.json**
 exports the current state of the panel.
+
+
+## Rate lab
+
+The demo includes a rate lab under the playable panel. It runs the same
+`PixGacha` rules as the card pool (not the crate reel) for many simulated
+pulls so you can compare:
+
+- advertised rates (`rates` / `itemOdds` — no pity)
+- for **single pulls with hard pity enabled**, the closed-form effective SSR
+  rate `p / (1 − (1−p)^N)`. This formula does **not** describe ten-pulls or
+  the SR+ guarantee.
+- observed frequencies from the live engine, including forced SSR / SR+ counts.
+  The denominator is the number of individual pulls in the run.
+
+`pity.ssr = 0` disables the SSR hard guarantee; `pity.sr` (the ten-pull
+length / SR+ guarantee) stays a separate rule and is not clamped to zero.
+Pity 1 forces every single pull to SSR.
+
+This is a design check on *this* template, not a recreation of a commercial
+gacha table. Observed numbers have sampling error. Download config.json from
+the demo or the lab — it is the same live object the engine just used.
+
+`PixGacha.simulate(config, { pulls, mode, rng })` and
+`PixGacha.hardPityEffectiveRate(p, n)` are also callable from Node tests.
+`hardPityEffectiveRate` returns the base rate `p` when `n < 1` (disabled).
 
 ## Crate opening and offline play
 

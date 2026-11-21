@@ -72,12 +72,10 @@ const LAYERS: LayerSpec[] = [
     toggle: "feedback.on",
     sliders: [
       { key: "flashIntensity", path: "feedback.flashIntensity", label: "feel.pFlash" },
-      { key: "squashAmount", path: "feedback.squashAmount", label: "feel.pSquash" },
       { key: "numberScale", path: "feedback.numberScale", label: "feel.pDigits" },
     ],
     subs: [
       { path: "feedback.flash", label: "feel.sFlash" },
-      { path: "feedback.squash", label: "feel.sSquash" },
       { path: "feedback.numbers", label: "feel.sNumbers" },
     ],
   },
@@ -212,7 +210,34 @@ function refreshControlValues(): void {
       !Boolean(getPath(params, layer.toggle)),
     );
   }
+  refreshSquashReference();
 }
+
+// Engine-reference fields are kept in the user's tune, independently of playback.
+const squashToggle = document.querySelector<HTMLInputElement>("#feel-export-squash")!;
+const squashAmount = document.querySelector<HTMLInputElement>("#feel-export-squash-amount")!;
+const squashRange = SLIDERS.squashAmount;
+squashAmount.min = String(squashRange.min);
+squashAmount.max = String(squashRange.max);
+squashAmount.step = String(squashRange.step);
+
+function refreshSquashReference(): void {
+  squashToggle.checked = params.feedback.squash;
+  squashAmount.value = String(params.feedback.squashAmount);
+}
+
+squashToggle.addEventListener("change", () => {
+  params.feedback.squash = squashToggle.checked;
+  onSquashReferenceChanged();
+});
+squashAmount.addEventListener("change", () => {
+  if (!squashAmount.validity.valid) {
+    refreshSquashReference();
+    return;
+  }
+  params.feedback.squashAmount = squashAmount.valueAsNumber;
+  onSquashReferenceChanged();
+});
 
 // ---- presets / zone / attack ----------------------------------------------------
 
@@ -259,12 +284,14 @@ document.querySelector<HTMLButtonElement>(".feel-attack")?.addEventListener("cli
   demo?.attack();
 });
 
+// returns the camera to the staged flank default (controls.saveState snapshot)
+document.querySelector<HTMLButtonElement>(".feel-reset-view")?.addEventListener("click", () => demo?.resetView());
+
 // ---- baseline compare + shareable link -------------------------------------------
 
 // The demo can play the page default while the sliders keep the user's tune —
 // comparing never destroys the dialled-in state. The generated code follows the
-// demo side (the panel is labeled with whichever tune it is exporting), so a
-// baseline preview never ships numbers that differ from what is on screen.
+// selected tune, including its engine-only squash settings.
 const baselineParams = (): FeelParams => cloneParams(DEFAULT_PARAMS);
 let compareMode: "mine" | "base" = "mine";
 const compareButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".feel-compare-btn"));
@@ -422,12 +449,22 @@ function onParamsChanged(): void {
   // a manual tweak means the user is tuning again — stop previewing the baseline
   setCompareUi("mine");
   pushDemo();
+  clearPresetSelection();
+  renderCodebox();
+  scheduleShareSync();
+}
+
+function onSquashReferenceChanged(): void {
+  clearPresetSelection();
+  if (compareMode === "mine") renderCodebox();
+  scheduleShareSync();
+}
+
+function clearPresetSelection(): void {
   presetButtons.forEach((b) => {
     b.classList.remove("on");
     b.setAttribute("aria-pressed", "false");
   });
-  renderCodebox();
-  scheduleShareSync();
 }
 
 // ---- demo mount ----------------------------------------------------------------------
@@ -454,16 +491,14 @@ void import("../feel/demo")
 // ---- boot -----------------------------------------------------------------------------
 
 buildControls();
+refreshSquashReference();
 renderCodebox();
 setZone("chest");
 if (sharedState?.preset) {
   applyPreset(sharedState.preset);
 } else if (sharedState) {
   // a custom tune from a link: no preset owns these numbers — say where they came from
-  presetButtons.forEach((b) => {
-    b.classList.remove("on");
-    b.setAttribute("aria-pressed", "false");
-  });
+  clearPresetSelection();
   document.querySelector<HTMLElement>(".feel-shared-note")?.removeAttribute("hidden");
 }
 applyStaticText(document);
