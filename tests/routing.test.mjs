@@ -13,9 +13,13 @@ import { resolveRoute, createRoutingMiddleware } from '../scripts/preview-routin
 const pages = new Set([
   '/',
   '/feel/',
+  '/effects/',
   '/feel/hit/',
   '/feel/boss-hp/',
   '/feel/jump/',
+  '/feel/move/',
+  '/feel/camera/',
+  '/feel/spring/',
   '/templates/',
   '/templates/gacha/',
   '/free-assets/chest-wood/',
@@ -24,7 +28,7 @@ const pages = new Set([
   '/zh/feel/hit/',
   '/zh/feel/boss-hp/',
   '/ja/feel/hit/',
-  ...['zh', 'ja', 'ko', 'es'].map((locale) => `/${locale}/feel/jump/`),
+  ...['zh', 'ja', 'ko', 'es'].flatMap((locale) => [`/${locale}/feel/jump/`, `/${locale}/feel/move/`, `/${locale}/feel/camera/`, `/${locale}/feel/spring/`, `/${locale}/effects/`]),
 ]);
 const exists = (dir) => pages.has(dir);
 const resolves = (pathname) => resolveRoute(pathname, exists);
@@ -35,6 +39,38 @@ test('routing: English pages live at unprefixed URLs and pass through', () => {
   assert.deepEqual(resolves('/feel/hit/'), { type: 'next' });
   assert.deepEqual(resolves('/feel/boss-hp/'), { type: 'next' });
   assert.deepEqual(resolves('/zh/feel/hit/'), { type: 'next' });
+});
+
+test('routing: effects library has canonical paths in all five locales', () => {
+  for (const prefix of ['', '/zh', '/ja', '/ko', '/es']) {
+    assert.deepEqual(resolves(`${prefix}/effects/`), { type: 'next' });
+    assert.deepEqual(resolves(`${prefix}/effects`), { type: 'redirect', location: `${prefix}/effects/` });
+  }
+  assert.deepEqual(resolves('/en/effects/'), { type: 'redirect', location: '/effects/' });
+  assert.deepEqual(resolves('/en/effects'), { type: 'redirect', location: '/effects/' });
+  assert.match(readFileSync('public/sitemap.xml', 'utf8'), /https:\/\/pixjuice\.pages\.dev\/effects\//);
+});
+
+test('routing: camera and spring labs have canonical paths in all five locales', () => {
+  for (const slug of ['camera', 'spring']) {
+    for (const prefix of ['', '/zh', '/ja', '/ko', '/es']) {
+      const path = `${prefix}/feel/${slug}/`;
+      assert.deepEqual(resolves(path), { type: 'next' });
+      assert.deepEqual(resolves(path.slice(0, -1)), { type: 'redirect', location: path });
+    }
+    assert.deepEqual(resolves(`/en/feel/${slug}/`), { type: 'redirect', location: `/feel/${slug}/` });
+    assert.ok(readFileSync('public/sitemap.xml', 'utf8').includes(`https://pixjuice.pages.dev/feel/${slug}/`));
+  }
+});
+
+test('routing: movement lab has canonical paths in all five locales', () => {
+  for (const prefix of ['', '/zh', '/ja', '/ko', '/es']) {
+    const path = `${prefix}/feel/move/`;
+    assert.deepEqual(resolves(path), { type: 'next' });
+    assert.deepEqual(resolves(path.slice(0, -1)), { type: 'redirect', location: path });
+  }
+  assert.deepEqual(resolves('/en/feel/move/'), { type: 'redirect', location: '/feel/move/' });
+  assert.match(readFileSync('public/sitemap.xml', 'utf8'), /https:\/\/pixjuice\.pages\.dev\/feel\/move\//);
 });
 
 test('routing: jump lab uses canonical paths in all five locales', () => {
@@ -174,6 +210,17 @@ test('routing: built _redirects keep asset 301s and add locale/slash rules', asy
     '/en / 301',
     '/en/* /:splat 301',
   ]) assert.ok(rules.includes(line), line);
+  // Existing dist may predate a new route. After a build, check its localized output.
+  if (existsSync('dist/effects/index.html')) {
+    const sitemap = readFileSync('dist/sitemap.xml', 'utf8');
+    for (const prefix of ['', '/zh', '/ja', '/ko', '/es']) {
+      assert.ok(rules.includes(`${prefix}/effects ${prefix}/effects/ 301`));
+      assert.ok(sitemap.includes(`https://pixjuice.pages.dev${prefix}/effects/`));
+      const page = readFileSync(`dist${prefix}/effects/index.html`, 'utf8');
+      assert.ok(page.includes(`rel="canonical" href="https://pixjuice.pages.dev${prefix}/effects/"`));
+    }
+    assert.ok(rules.includes('/en/effects/ /effects/ 301'));
+  }
   // explicit rules must win over the catch-all splat
   assert.ok(rules.indexOf('/en/feel/hit /feel/hit/ 301') < rules.indexOf('/en/* /:splat 301'));
 });

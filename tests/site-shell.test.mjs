@@ -7,6 +7,7 @@ import test from "node:test";
 import ts from "typescript";
 import { execFileSync } from "node:child_process";
 import { runInNewContext } from "node:vm";
+import { categories } from "pixelfx/fx/categories";
 
 const loadTs = (file) => {
   const src = ts.transpileModule(fs.readFileSync(file, "utf8"), {
@@ -27,7 +28,7 @@ test("shell: shared header lists real sections and a site tagline, not the asset
   assert.match(src, /theme-toggle/, "light/dark control stays in the shared header");
   assert.match(src, /class="mark"/, "pixel mark is remounted, not dropped");
   assert.ok(!/Free game assets/.test(src), "hardcoded assets-only tagline is gone");
-  assert.match(src, /link\("\/".*link\("\/#effects".*link\("\/feel\/".*link\("\/templates\/".*link\("\/free-assets\/"/,
+  assert.match(src, /link\("\/".*link\("\/effects\/".*link\("\/feel\/".*link\("\/templates\/".*link\("\/free-assets\/"/,
     "nav order is home → effects → feel → templates → assets");
 });
 
@@ -35,9 +36,20 @@ const navScript = ts.transpileModule(fs.readFileSync("src/lib/navmenu.ts", "utf8
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
 }).outputText;
 
+const routes = {};
+runInNewContext(ts.transpileModule(fs.readFileSync("src/lib/effects-routes.ts", "utf8"), {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+}).outputText, {
+  exports: routes,
+  require: (id) => {
+    assert.equal(id, "pixelfx/fx/categories");
+    return { categories };
+  },
+});
+
 function mountHeader(pathname, hash, locale, dict) {
   const window = new EventTarget();
-  const location = { pathname, hash };
+  const location = { pathname, hash, search: "" };
   const header = { innerHTML: "", querySelector: () => new EventTarget() };
   const exports = {};
   runInNewContext(navScript, {
@@ -51,6 +63,7 @@ function mountHeader(pathname, hash, locale, dict) {
     localStorage: { getItem: () => null },
     matchMedia: () => new EventTarget(),
     require: (id) => {
+      if (id === "./effects-routes") return routes;
       assert.equal(id, "./i18n");
       return {
         getLocale: () => locale,
@@ -71,7 +84,7 @@ function mountHeader(pathname, hash, locale, dict) {
       for (const marker of ['aria-current="page"', 'class="cur"']) {
         assert.deepEqual(
           anchors.filter((attrs) => attrs.includes(marker)).map((attrs) => attrs.match(/href="([^"]+)"/)[1]),
-          [href],
+          href ? [href] : [],
         );
       }
     },
@@ -84,30 +97,49 @@ test("shell: localized Home, Effects and brand links preserve locale roots and s
     const dict = await loadTs(`./src/lib/locales/${locale}.ts`);
     const root = locale === "en" ? "/" : `/${locale}/`;
     assert.equal(dict.nav.home, label);
-    for (const hash of ["", "#effects"]) {
-      const header = mountHeader(root, hash, locale, dict);
-      const homeAttrs = hash ? "" : ' aria-current="page" class="cur"';
-      const effectsAttrs = hash ? ' aria-current="page" class="cur"' : "";
-      assert.ok(header.html.includes(`<a class="brand" href="${root}" aria-label="PixJuice home">`));
-      assert.ok(header.html.includes(
-        `<nav class="nav" aria-label="Main"><a href="${root}"${homeAttrs}>${label}</a>` +
-        `<a href="${root}#effects"${effectsAttrs}>${dict.nav.effects}</a>`,
-      ));
-      header.assertCurrent(root + hash);
+    const home = mountHeader(root, "", locale, dict);
+    assert.ok(home.html.includes(`<a class="brand" href="${root}" aria-label="PixJuice home">`));
+    assert.ok(home.html.includes(`<a href="${root}effects/">${dict.nav.effects}</a>`));
+    home.assertCurrent(root);
+    const library = mountHeader(root + "effects/", "#fire", locale, dict);
+    library.assertCurrent(root + "effects/");
+  }
+});
+
+test("shell: Home section anchors and library categories preserve the current nav item", async () => {
+  const dict = await loadTs("./src/lib/locales/en.ts");
+  const home = mountHeader("/", "", "en", dict);
+  const library = mountHeader("/effects/", "", "en", dict);
+  for (const event of ["hashchange", "popstate"]) {
+    for (const hash of ["", "#", "#recipes", "#live", "#libraries", "#tools", "#coverage", "#effects-other"]) {
+      home.changeHash(hash, event);
+      home.assertCurrent("/");
+    }
+    for (const hash of ["#effects", "#fire"]) {
+      home.changeHash(hash, event);
+      home.assertCurrent(null);
+      library.changeHash(hash, event);
+      library.assertCurrent("/effects/");
     }
   }
 });
 
-test("shell: Home and Effects selection follows hashchange and popstate", async () => {
-  const dict = await loadTs("./src/lib/locales/en.ts");
-  const header = mountHeader("/", "", "en", dict);
-  header.assertCurrent("/");
-  for (const event of ["hashchange", "popstate"]) {
-    for (const hash of ["#effects", "", "#", "#recipes", "#live", "#effects-other"]) {
-      header.changeHash(hash, event);
-      header.assertCurrent(hash === "#effects" ? "/#effects" : "/");
+test("shell: old effects bookmarks replace the home entry and preserve locale and category", () => {
+  assert.ok(categories.some(({ id }) => id === "fire"));
+  for (const root of ["/", "/zh/", "/ja/", "/ko/", "/es/"]) {
+    for (const [hash, suffix] of [["#effects", ""], ["#fire", "#fire"]]) {
+      const replaced = [];
+      const old = { pathname: root, search: "?v=checked", hash, replace: (url) => replaced.push(url) };
+      assert.equal(routes.redirectLegacyEffects(old), true);
+      assert.deepEqual(replaced, [`${root}effects/?v=checked${suffix}`]);
+      assert.equal(routes.legacyEffectsTarget(root + "effects/", old.search, hash), null, "no redirect loop");
+    }
+    for (const hash of ["", "#live", "#libraries", "#tools", "#coverage", "#recipes", "#unknown"]) {
+      assert.equal(routes.legacyEffectsTarget(root, "", hash), null);
     }
   }
+  assert.equal(routes.effectCategory("#fire"), "fire");
+  assert.equal(routes.effectCategory("#unknown"), "all");
 });
 
 test("shell: Feel remains current on the catalog and jump recipe even with an effects hash", async () => {
@@ -125,15 +157,19 @@ test("shell: homepage is an advisor station, not only effects or two feel recipe
   assert.match(html, /data-i18n="home\.heroCtaTemplates"/);
   assert.match(html, /id="live"/);
   assert.match(html, /id="recipes"/);
-  assert.match(html, /id="effects"/);
+  assert.doesNotMatch(html, /id="(?:effects|grid|chips)"|<canvas|src="\/src\/main\.ts"/);
+  assert.match(html, /src="\/src\/home\.ts"/);
   assert.match(html, /href="\/feel\/hit\/"/);
   assert.match(html, /href="\/feel\/boss-hp\/"/);
   assert.match(html, /href="\/templates\/"/);
   assert.match(html, /href="\/free-assets\/"/);
-  assert.match(html, /href="\/#effects"/);
+  assert.match(html, /href="\/effects\/"/);
+  assert.match(html, /href="\/feel\/jump\/"/);
+  assert.match(html, /href="\/templates\/gacha\/"/);
   assert.match(html, /data-preview="feel-hit"/);
   assert.match(html, /data-preview="feel-boss"/);
-  assert.match(html, /data-preview="effects"/);
+  assert.match(html, /src="\/previews\/effects-preview\.jpg"/);
+  assert.equal((html.match(/class="recipe-card"/g) || []).length, 3);
   assert.match(html, /class="recipe-card"/);
   assert.match(html, /data-i18n="feel\.recipe\.hit\.solves"/);
   assert.match(html, /data-i18n="feel\.recipe\.hit\.cta"/);
@@ -142,17 +178,17 @@ test("shell: homepage is an advisor station, not only effects or two feel recipe
   assert.ok(!/id="problems"/.test(html), "duplicate problem-card row is gone");
   assert.ok(!/dynamic preview|live preview|动态预览|实时预览/i.test(html), "static JPGs must not be called live/dynamic previews");
   assert.equal((html.match(/href="\/feel\/[^"]+"/g) || []).every((h) =>
-    ["/feel/hit/", "/feel/boss-hp/", "/feel/"].some((ok) => h.includes(ok))
+    ["/feel/hit/", "/feel/boss-hp/", "/feel/jump/", "/feel/"].some((ok) => h.includes(ok))
   ), true);
   assert.ok(!/href="\/feel\/(shake|hit-stop|squash|coyote)/.test(html));
 });
 
-test("shell: /feel/ shows three complete recipe cards first and does not invent component URLs", () => {
+test("shell: /feel/ shows six complete recipe cards first and does not invent component URLs", () => {
   const html = fs.readFileSync("feel/index.html", "utf8");
   const recipesAt = html.indexOf('id="recipes"');
   const upcomingAt = html.indexOf("feel-upcoming");
   const domainsAt = html.indexOf("feel-domains");
-  assert.ok(recipesAt > 0 && recipesAt < upcomingAt && upcomingAt < domainsAt, "catalog, then folded upcoming, then domains");
+  assert.ok(recipesAt > 0 && recipesAt < upcomingAt && upcomingAt < domainsAt, "catalog, then folded context and domains");
   assert.ok(!html.includes("feel-problems"), "duplicate problem cards are not a second full-width row");
   assert.match(html, /class="recipe-grid"/);
   assert.match(html, /data-preview="feel-hit"/);
@@ -161,9 +197,9 @@ test("shell: /feel/ shows three complete recipe cards first and does not invent 
   assert.match(html, /data-i18n="feel\.recipe\.hit\.cta"/);
   assert.match(html, /data-i18n="feel\.componentsNote"/);
   const hrefs = [...html.matchAll(/href="(\/feel\/[^"]+)"/g)].map((m) => m[1]);
-  const allowed = new Set(["/feel/", "/feel/hit/", "/feel/boss-hp/", "/feel/jump/"]);
+  const allowed = new Set(["/feel/", "/feel/hit/", "/feel/boss-hp/", "/feel/jump/", "/feel/move/", "/feel/camera/", "/feel/spring/"]);
   for (const h of hrefs) assert.ok(allowed.has(h), `unexpected feel href ${h}`);
-  assert.ok(html.includes("<details") && html.includes("feel.moreDomains"), "unbuilt domains are folded, not empty category pages");
+  assert.ok(html.includes("<details") && html.includes("feel.moreDomains"), "domain notes remain folded");
 });
 
 test("shell: recipe card previews are real image files, not placeholders", () => {
@@ -180,7 +216,7 @@ test("shell: new browsing copy exists in all five locales and does not invent a 
   const keys = [
     "nav.tagline", "nav.theme",
     "home.heroH", "home.heroLede", "home.heroCtaFx", "home.heroCtaRecipes", "home.heroCtaTemplates",
-    "home.nowH", "home.fxCardT", "home.scopeH", "home.scopeLede", "home.scopeList", "home.fxLede",
+    "home.nowH", "home.fxCardT", "home.scopeH", "home.scopeLede", "home.scopeList", "home.gachaCardD", "effects.h1", "effects.lede",
     "feel.catalogH", "feel.catalogLede", "feel.catalogBlurb", "feel.moreDomains", "feel.componentsNote",
     "feel.recipe.hit.solves", "feel.recipe.boss.solves",
   ];
@@ -192,16 +228,38 @@ test("shell: new browsing copy exists in all five locales and does not invent a 
       assert.equal(typeof v, "string", `${lang} ${key}`);
       assert.ok(v.length > 0, `${lang} ${key} empty`);
     }
-    assert.match(dict.home.fxLede, /244/);
+    assert.match(dict.effects.lede, /244/);
     assert.ok(!/244/.test(dict.feel.catalogBlurb), "feel catalog blurb must not claim 244 components");
   }
 });
 
-test("shell: localize-pages maps tool SEO titles and prefixes /#effects in every locale", () => {
-  const src = fs.readFileSync("scripts/localize-pages.mjs", "utf8");
-  assert.match(src, /'image-to-pixel-art\/': \{ title: 'title\.pa'/);
-  assert.match(src, /function prefixLocalizedHrefs/);
-  assert.match(src, /prefixLocalizedHrefs\(html, lang\)/);
+test("shell: effects library owns the renderer, localized links and editor return", () => {
+  const localize = fs.readFileSync("scripts/localize-pages.mjs", "utf8");
+  const home = fs.readFileSync("src/home.ts", "utf8");
+  const library = fs.readFileSync("effects/index.html", "utf8");
+  const renderer = fs.readFileSync("src/main.ts", "utf8");
+  const editor = fs.readFileSync("src/editor.ts", "utf8");
+  const config = fs.readFileSync("vite.config.ts", "utf8");
+  assert.match(library, /id="grid"/);
+  assert.match(library, /src="\/src\/main\.ts"/);
+  assert.doesNotMatch(home, /lib\/(catalog|player)|requestAnimationFrame/);
+  assert.match(home, /redirectLegacyEffects\(location\)/);
+  assert.match(config, /effects: "effects\/index\.html"/);
+  assert.match(config, /fx-categories/);
+  for (const event of ["hashchange", "popstate"]) {
+    assert.ok(renderer.includes(`addEventListener("${event}", syncCategoryFromLocation)`));
+  }
+  assert.match(renderer, /history\.pushState/);
+  assert.ok(renderer.includes('${prefix}/editor/?fx='));
+  assert.ok(editor.includes('${prefix}/effects/'));
+  assert.equal((editor.match(/location\.replace\(libraryReturnUrl\(\)\)/g) || []).length, 2);
+  assert.match(localize, /'image-to-pixel-art\/': \{ title: 'title\.pa'/);
+  assert.match(localize, /path==='effects\/'\?'effects'/);
+  const prefixSource = localize.slice(localize.indexOf("const LOCALE_PREFIXES"), localize.indexOf("for(const path of paths)"));
+  const prefixLinks = runInNewContext(prefixSource + "\nprefixLocalizedHrefs");
+  for (const locale of ["zh", "ja", "ko", "es"]) {
+    assert.equal(prefixLinks('<a href="/effects/">Effects</a>', locale), `<a href="/${locale}/effects/">Effects</a>`);
+  }
 });
 
 test("shell: hit catalog stills have no black side bars", () => {

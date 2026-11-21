@@ -47,7 +47,7 @@
         </select>
         <a href="/templates/" data-i18n="nav.templates">game templates</a>
         <a href="/free-assets/" data-i18n="nav.assets">free assets</a>
-        <a href="/#effects" data-i18n="nav.effects">effects</a>
+        <a href="/effects/" data-i18n="nav.effects">effects</a>
         <a href="/feel/" class="cur" aria-current="page" data-i18n="nav.feel">Game Feel</a>
         <details class="tools">
           <summary data-i18n="nav.tools">tools ▾</summary>
@@ -104,19 +104,40 @@
             <span class="recipe-card-cta" data-i18n="jump.room">Practice room</span>
           </div>
         </a>
+        <a class="recipe-card" href="/feel/move/">
+          <div class="stage"><img class="tile-preview" src="/previews/move.png" alt="" width="480" height="192" loading="lazy"></div>
+          <div class="recipe-card-body">
+            <b data-i18n="move.h1">Movement feel lab</b>
+            <p data-i18n="move.card">Compare how quickly a character starts, stops and steers in the air.</p>
+            <small data-i18n="move.cardMeta">Character control · JSON export</small>
+            <span class="recipe-card-cta" data-i18n="jump.room">Practice room</span>
+          </div>
+        </a>
+        <a class="recipe-card" href="/feel/camera/">
+          <div class="stage"><img class="tile-preview" src="/previews/camera.png" alt="" width="480" height="224" loading="lazy"></div>
+          <div class="recipe-card-body">
+            <b data-i18n="camera.h1">Camera follow lab</b>
+            <p data-i18n="camera.card">Move the target to see when the view holds still, catches up or reaches the wall.</p>
+            <small data-i18n="camera.meta">Camera · JSON export</small>
+            <span class="recipe-card-cta" data-i18n="jump.room">Practice room</span>
+          </div>
+        </a>
+        <a class="recipe-card" href="/feel/spring/">
+          <div class="stage"><img class="tile-preview" src="/previews/spring.png" alt="" width="480" height="224" loading="lazy"></div>
+          <div class="recipe-card-body">
+            <b data-i18n="spring.h1">UI spring lab</b>
+            <p data-i18n="spring.card">Toggle a panel and see the simulated spring overshoot and settle on a live plot.</p>
+            <small data-i18n="spring.meta">UI motion · JSON export</small>
+            <span class="recipe-card-cta" data-i18n="jump.room">Practice room</span>
+          </div>
+        </a>
       </div>
     </section>
 
     <details class="feel-more">
-      <summary data-i18n="feel.moreDomains">Four domains and recipes still to come</summary>
+      <summary data-i18n="feel.moreDomains">How the labs fit together</summary>
       <div class="feel-upcoming">
-        <h3 data-i18n="feel.probSoonTitle">Something else feels off</h3>
-        <ul aria-label="not live yet">
-          <li data-i18n="feel.probSoon1">Movement feels floaty</li>
-          <li data-i18n="feel.probSoon3">The camera lags behind the action</li>
-        </ul>
-        <p data-i18n="feel.probSoonNote">More movement and camera recipes will appear here when their demos are ready.</p>
-        <p data-i18n="feel.componentsNote">Feel recipes are collections of components — standalone pages for screen shake, hit-stop and the rest are not available yet.</p>
+        <p data-i18n="feel.componentsNote">Each lab explores a mechanic or shows how several settings interact.</p>
       </div>
       <div class="feel-domains">
       <section class="feel-domain feel-domain-live" id="support" aria-labelledby="feel-d1-h">
@@ -140,7 +161,6 @@
             <h2 id="feel-d2-h"><span data-i18n="feel.d2t">Physicality</span> <span class="feel-domain-gloss" data-i18n="feel.d2g">simulation</span></h2>
             <p data-i18n="feel.d2d">Motion with weight and predictability: gravity and terminal velocity, acceleration and braking, knockback and recoil.</p>
           </div>
-          <span class="feel-badge feel-badge-soon" data-i18n="feel.soonBadge">Coming soon</span>
         </header>
         <ul class="feel-leaves" data-i18n-html="feel.d2leaves">
           <li>Gravity &amp; terminal velocity</li><li>Ground acceleration</li><li>Knockback &amp; recoil</li><li>Arm IK force feedback</li><li>Local hit deformation</li>
@@ -173,7 +193,6 @@
             <h2 id="feel-d4-h"><span data-i18n="feel.d4t">Context</span> <span class="feel-domain-gloss" data-i18n="feel.d4g">metaphor · rules</span></h2>
             <p data-i18n="feel.d4d">The same parameters read differently in another space or metaphor: scale, metaphor, and how much information the screen can carry.</p>
           </div>
-          <span class="feel-badge feel-badge-soon" data-i18n="feel.soonBadge">Coming soon</span>
         </header>
         <ul class="feel-leaves" data-i18n-html="feel.d4leaves">
           <li>Spatial scale</li><li>Metaphor</li><li>Readability &amp; information load</li>

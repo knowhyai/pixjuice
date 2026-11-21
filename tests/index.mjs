@@ -8,6 +8,8 @@ import './remesh.test.mjs';
 import './parts.test.mjs';
 import './feel.test.mjs';
 import './jump.test.mjs';
+import './move.test.mjs';
+import './camera-spring.test.mjs';
 import './feel-facing.test.mjs';
 import './feel-squash.test.mjs';
 import './feel-workbench.test.mjs';

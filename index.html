@@ -38,6 +38,9 @@
         </div>
       </a>
       <nav class="nav">
+        <a href="/" class="cur" aria-current="page" data-i18n="nav.home">Home</a>
+        <a href="/effects/" data-i18n="nav.effects">Effects</a>
+        <a href="/feel/" data-i18n="nav.feel">Game Feel</a>
         <select id="lang" class="lang">
           <option value="en">English</option>
           <option value="zh">简体中文</option>
@@ -68,7 +71,7 @@
       <h1 data-i18n="home.heroH">A game-development workshop: systems, feel, art, and tools</h1>
       <p class="lede" data-i18n="home.heroLede">Tune a live recipe, try a playable system, export an effect or asset, or run a browser tool — free, in your browser.</p>
       <div class="home-hero-actions">
-        <a class="home-cta" href="/#effects" data-i18n="home.heroCtaFx">Browse 244 effects</a>
+        <a class="home-cta" href="/effects/" data-i18n="home.heroCtaFx">Browse 244 effects</a>
         <a class="home-cta" href="/feel/" data-i18n="home.heroCtaRecipes">Open feel recipes</a>
         <a class="home-cta" href="/templates/" data-i18n="home.heroCtaTemplates">Try game templates</a>
       </div>
@@ -84,7 +87,7 @@
           <div class="recipe-card-body">
             <b data-i18n="feel.recipe.hit.t">Hit feel</b>
             <p data-i18n="feel.recipe.hit.solves">For hits that land but feel soft or mushy.</p>
-            <small data-i18n="feel.recipe.hit.layers">6 layers · Godot 4 + Unity</small>
+            <small data-i18n="feel.recipe.hit.webLayers">Web demo · Godot 4 + Unity reference</small>
             <span class="recipe-card-cta" data-i18n="feel.recipe.hit.cta">Open the hit feel recipe →</span>
           </div>
         </a>
@@ -97,13 +100,13 @@
             <span class="recipe-card-cta" data-i18n="feel.recipe.boss.cta">Open the boss HP bar recipe →</span>
           </div>
         </a>
-        <a class="recipe-card" href="/#effects">
-          <div class="stage"><img class="tile-preview" src="/previews/en/effects.jpg" data-preview="effects" alt="" width="640" height="400" loading="lazy"></div>
+        <a class="recipe-card" href="/feel/jump/">
+          <div class="stage"><img class="tile-preview" src="/previews/jump.png" alt="" width="480" height="256" loading="lazy"></div>
           <div class="recipe-card-body">
-            <b data-i18n="home.fxCardT">244 pixel skill effects</b>
-            <p data-i18n="home.fxCardD">Recolor a skill effect and export a sprite sheet, GIF or sound. These are visual components, not the feel-recipe layers.</p>
-            <small data-i18n="home.fxCardMeta">244 effects · MIT · in the browser</small>
-            <span class="recipe-card-cta" data-i18n="home.fxCardCta">Open the effects library →</span>
+            <b data-i18n="jump.h1">Jump forgiveness lab</b>
+            <p data-i18n="jump.card">Walk off a ledge or press before landing. Replay the same input with the timers off and on.</p>
+            <small data-i18n="jump.cardExport">Character control · JSON + Godot 4</small>
+            <span class="recipe-card-cta" data-i18n="jump.room">Practice room</span>
           </div>
         </a>
       </div>
@@ -111,11 +114,21 @@
 
     <section class="home-band" id="libraries" aria-labelledby="home-libs-h">
       <div class="sec-head">
-        <h2 id="home-libs-h" data-i18n="home.libsH">Assets and templates</h2>
-        <p class="blurb" data-i18n="home.libsLede">CC0 art and playable UI modules you can download or demo in the browser.</p>
+        <h2 id="home-libs-h" data-i18n="home.libsH">Libraries and templates</h2>
+        <p class="blurb" data-i18n="home.libsLede">Browse effects and CC0 assets, or try playable UI templates.</p>
       </div>
     </section>
     <div class="home-entries home-libs">
+      <a class="home-entry" href="/effects/">
+        <img src="/previews/effects-preview.jpg" alt="" width="480" height="300" loading="lazy">
+        <b data-i18n="home.fxCardT">244 pixel skill effects</b>
+        <span data-i18n="home.fxCardCta">Open the effects library →</span>
+      </a>
+      <a class="home-entry" href="/templates/gacha/">
+        <img src="/previews/gacha-preview.jpg" alt="" width="480" height="300" loading="lazy">
+        <b data-i18n="gx.card.h">Gacha &amp; Lucky Wheel</b>
+        <span data-i18n="home.gachaCardD">Play the gacha template, tune rates and pity, and export the configuration.</span>
+      </a>
       <a class="home-entry" href="/templates/"><img src="/previews/en/templates.jpg" data-preview="templates" alt="" width="640" height="400" loading="lazy"><b data-i18n="nav.templates">Game templates</b><span data-i18n="home.entryTplD">Playable gacha, crate opening and save/load UI in a dark-gold Semi-Realistic look, plus a CC0 download.</span></a>
       <a class="home-entry" href="/free-assets/"><img src="/previews/en/assets.jpg" data-preview="assets" alt="" width="640" height="400" loading="lazy"><b data-i18n="nav.assets">Free assets</b><span data-i18n="home.entryAssetsD">CC0 2D sprites and 3D models for commercial use. Preview, swap parts and download in the browser.</span></a>
     </div>
@@ -135,30 +148,17 @@
 
     <details class="home-scope" id="coverage">
       <summary data-i18n="home.scopeH">What else this station covers</summary>
-      <p data-i18n="home.scopeLede">A map of the advisor station, not a list of pages. Nothing below is a link unless it already has a live loop elsewhere on this home page. Movement, camera, audio, performance and shipping are planned; they are not shipped categories.</p>
+      <p data-i18n="home.scopeLede">The cards above link to available tools and demos.</p>
       <div data-i18n-html="home.scopeList" class="home-scope-list">
       <ul>
         <li><b>Gameplay &amp; systems</b> — live: gacha and save/load templates.</li>
         <li><b>Combat feedback</b> — live: hit feel and boss HP bar recipes.</li>
         <li><b>Visuals &amp; assets</b> — live: 244 effects, the CC0 library, and four image tools.</li>
-        <li><b>Movement, camera, audio, performance &amp; shipping</b> — planned; not live, and not in the nav.</li>
+        <li><b>Character control</b> — live: jump forgiveness lab.</li>
       </ul>
     </div>
     </details>
   </div>
-
-  <p class="home-fx-note" id="effects-label" data-i18n="home.fxLede">The library below is 244 pixel visual effects (MIT, from pixelfx). Recolor, preview and export them here — they are not a count of feel-recipe components.</p>
-  <div class="bar" id="effects">
-    <div class="bar-in">
-      <div class="chips" id="chips" role="toolbar" aria-label="Effect categories" data-i18n-aria="home.catsAria"></div>
-      <input id="q" type="search" placeholder="search 244 effects…  ( / )" aria-label="Search effects" data-i18n-ph="home.searchPh" data-i18n-aria="home.searchAria" autocomplete="off">
-      <button id="cat-toggle" class="cat-toggle" type="button" aria-expanded="false" aria-controls="chips">categories ▾</button>
-    </div>
-  </div>
-
-
-  <main class="grid-main" id="grid"></main>
-  <p class="empty" id="none" hidden data-i18n-html="home.empty">Nothing matches that. Try <b>fire</b>, <b>slash</b> or <b>loop</b>.</p>
 
   <footer>
     <div class="foot-in">
@@ -167,6 +167,6 @@
     </div>
   </footer>
 
-  <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="/src/home.ts"></script>
 </body>
 </html>

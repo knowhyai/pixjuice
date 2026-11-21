@@ -4,7 +4,8 @@ import { defineConfig } from "vite";
 import { createRoutingMiddleware } from "./scripts/preview-routing.mjs";
 
 // Multi-page static build for Cloudflare Pages:
-//   /                     catalog (index.html)
+//   /                      homepage (index.html)
+//   /effects/              full effects catalog (effects/index.html)
 //   /editor/              effect editor (editor/index.html)
 //   /sprite-sheet/        sprite sheet cutter & GIF maker (sprite-sheet/index.html)
 //   /image-to-pixel-art/  image → pixel art converter (image-to-pixel-art/index.html)
@@ -50,6 +51,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: "index.html",
+        effects: "effects/index.html",
         editor: "editor/index.html",
         sheet: "sprite-sheet/index.html",
         pixelart: "image-to-pixel-art/index.html",
@@ -63,6 +65,9 @@ export default defineConfig({
         resources: "free-resources/index.html",
         feel: "feel/index.html",
         feelhit: "feel/hit/index.html",
+        feelcamera: "feel/camera/index.html",
+        feelspring: "feel/spring/index.html",
+        feelmove: "feel/move/index.html",
         feeljump: "feel/jump/index.html",
         feelboss: "feel/boss-hp/index.html",
         ...assetDetailInputs(),
@@ -70,11 +75,13 @@ export default defineConfig({
       },
       output: {
         // pixelfx is most of the site (~1.2MB). The core stays one chunk; the 244 effect
-        // modules split per category, so no chunk trips the 500KB warning, the home page
+        // modules split per category, so no chunk trips the 500KB warning, the effects page
         // loads them all in parallel, and the editor fetches only the category it plays.
         // (The ?raw source copies stay as their own lazy chunks, untouched.)
         manualChunks(id) {
           if (id.includes("?raw")) return undefined;
+          // Home bookmark compatibility only needs category metadata.
+          if (/node_modules\/pixelfx\/src\/fx\/categories\.js$/.test(id)) return "fx-categories";
           // the all-effects aggregator stays out of the core chunk: only the catalog page needs it
           if (/node_modules\/pixelfx\/src\/fx\/index\.js$/.test(id)) return "fx-catalog";
           const fx = id.match(/node_modules\/pixelfx\/src\/fx\/([a-z-]+)\//);

@@ -234,16 +234,16 @@ test('advisor: generated code carries the demo side of the compare (repro tunes)
 
 // ---- problem entry links only to live routes --------------------------------------------
 
-test('advisor: /feel/ catalog cards link only to the three live recipes', () => {
+test('advisor: /feel/ catalog cards link only to the six live recipes', () => {
   const html = fs.readFileSync('feel/index.html', 'utf8');
   const catalog = html.slice(html.indexOf('id="recipes"'), html.indexOf('feel-more'));
   assert.ok(catalog.length > 0, 'recipe catalog exists before the folded section');
   const hrefs = [...catalog.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(hrefs.sort(), ['/feel/boss-hp/', '/feel/hit/', '/feel/jump/'], 'exactly the three live recipes are linked');
+  assert.deepEqual(hrefs.sort(), ['/feel/boss-hp/', '/feel/camera/', '/feel/hit/', '/feel/jump/', '/feel/move/', '/feel/spring/'], 'exactly the six live recipes are linked');
   const upcoming = html.slice(html.indexOf('feel-upcoming'), html.indexOf('feel-domains'));
-  assert.ok(upcoming.length > 0, 'unreleased problems moved into the folded plan');
+  assert.ok(upcoming.length > 0, 'notes remain below the live catalog');
   assert.equal(upcoming.indexOf('<a '), -1, 'not-yet-live problems must not link anywhere');
-  for (const key of ['feel.probSoonTitle', 'feel.probSoon1', 'feel.probSoon3', 'feel.probSoonNote', 'feel.componentsNote']) {
+  for (const key of ['feel.componentsNote']) {
     assert.ok(upcoming.includes(`data-i18n="${key}"`) || upcoming.includes(`data-i18n-html="${key}"`), `${key} in the folded plan`);
   }
 });

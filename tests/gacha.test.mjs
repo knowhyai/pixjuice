@@ -1,5 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 import '../src/templates/gacha/gacha-core.js';
 const G = globalThis.PixGacha;
 const C = G.validateConfig(G.DEFAULT_CONFIG).config;
@@ -133,7 +135,7 @@ function independentAlwaysN(pulls, mode, ssrPity, srPity) {
     if (mode === 'single') {
       for (let i = 0; i < pulls; i++) pullOne(false);
     } else {
-      const batchLen = srPity;
+      const batchLen = 10;
       const batches = Math.floor(pulls / batchLen);
       const rem = pulls - batches * batchLen;
       for (let b = 0; b < batches; b++) {
@@ -141,7 +143,7 @@ function independentAlwaysN(pulls, mode, ssrPity, srPity) {
         for (let i = 0; i < batchLen; i++) {
           const isLast = i === batchLen - 1;
           const noSrYet = !got.some((r) => r === 'SR' || r === 'SSR');
-          got.push(pullOne(isLast && batchLen >= 2 && noSrYet));
+          got.push(pullOne(isLast && batchLen >= srPity && noSrYet));
         }
       }
       for (let i = 0; i < rem; i++) pullOne(false);
@@ -178,7 +180,7 @@ test('0/1 advertised rates, pity 0/1, and denominator stay honest', () => {
 
   const disabled = G.validateConfig({ ...C, rates: { N: 1, R: 0, SR: 0, SSR: 0 }, pity: { ssr: 0, sr: 10 } }).config;
   assert.equal(disabled.pity.ssr, 0);
-  assert.equal(disabled.pity.sr, 10); // ten-pull length must not be clamped to 0
+  assert.equal(disabled.pity.sr, 10); // the SR+ threshold is independent of SSR pity
   const none = G.simulate(disabled, { pulls: 300, mode: 'single', rng: alwaysN });
   assert.equal(none.counts.SSR, 0);
   assert.equal(none.forcedSsr, 0);
@@ -190,20 +192,18 @@ test('0/1 advertised rates, pity 0/1, and denominator stay honest', () => {
   assert.equal(tenDisabled.forcedSr, 20);
 });
 
-test('pity.ssr = 1 stays a valid ceiling in ten-pull mode; the sr clamp only applies for ceilings >= 2', () => {
+test('SSR ceiling does not rewrite the minimum batch size', () => {
   const alwaysN = () => 0;
   const v = G.validateConfig({ ...C, pity: { ssr: 1, sr: 10 } });
   assert.ok(v.ok);
-  // Every pull is forced SSR; the SR+ window length must stay usable, not be
-  // clamped to 1 (which used to make simulate(mode:"ten") throw).
+  // Every pull is forced SSR, regardless of the SR+ threshold.
   assert.equal(v.config.pity.sr, 10);
   const out = G.simulate(v.config, { pulls: 30, mode: 'ten', rng: alwaysN });
   assert.equal(out.counts.SSR, 30);
   assert.equal(out.forcedSsr, 30);
   assert.equal(out.forcedSr, 0);
-  // The documented clamp still shortens the SR+ window to an enabled ceiling >= 2.
-  const clamped = G.validateConfig({ ...C, pity: { ssr: 5, sr: 10 } });
-  assert.equal(clamped.config.pity.sr, 5);
+  const independent = G.validateConfig({ ...C, pity: { ssr: 5, sr: 20 } });
+  assert.equal(independent.config.pity.sr, 20);
 });
 
 test('hard-pity formula stays exact for sub-epsilon base rates', () => {
@@ -217,6 +217,8 @@ test('simulate always-N counts match an independent enumerator, including ten-pu
   const alwaysN = () => 0;
   const cases = [
     { pity: { ssr: 0, sr: 10 }, pulls: 200, mode: 'ten' },
+    { pity: { ssr: 0, sr: 20 }, pulls: 203, mode: 'ten' },
+    { pity: { ssr: 90, sr: 5 }, pulls: 209, mode: 'ten' },
     { pity: { ssr: 90, sr: 10 }, pulls: 900, mode: 'single' },
     { pity: { ssr: 90, sr: 10 }, pulls: 200, mode: 'ten' },
     { pity: { ssr: 1, sr: 10 }, pulls: 30, mode: 'single' },
@@ -232,5 +234,123 @@ test('simulate always-N counts match an independent enumerator, including ten-pu
     assert.equal(got.forcedSr, exp.forcedSr);
     assert.equal(got.firstSsrAt, exp.firstSsrAt);
     assert.equal(got.observed.SSR, got.counts.SSR / got.pulls);
+  }
+});
+
+test('imported SR thresholds use the live ×10 batch size in the rate lab', () => {
+  assert.equal(G.MULTI_PULLS, 10);
+  for (const [sr, perBatch] of [[20, 0], [10, 1], [5, 1]]) {
+    const raw = JSON.parse(JSON.stringify({
+      ...C, rates: { N: 1, R: 0, SR: 0, SSR: 0 }, pity: { ssr: 0, sr },
+    }));
+    const { ok, config } = G.validateConfig(raw);
+    assert.ok(ok);
+    assert.equal(config.currency.multi, 1000);
+    assert.equal(config.pity.sr, sr);
+    const live = G.pull(config, G.makeState(), G.MULTI_PULLS, () => 0);
+    assert.equal(live.results.length, 10);
+    assert.equal(live.results.filter(item => item.rarity === 'SR').length, perBatch);
+    const lab = G.simulate(config, { pulls: 10009, mode: 'ten', rng: () => 0 });
+    assert.deepEqual(lab.counts, { N: 10009 - 1000 * perBatch, R: 0, SR: 1000 * perBatch, SSR: 0 });
+    assert.equal(lab.forcedSr, 1000 * perBatch);
+    assert.equal(lab.forcedSsr, 0);
+  }
+});
+
+test('huge finite rates normalize without inventing SSR and survive JSON round-trip', () => {
+  const checks = [
+    [{ N: 1e308, R: 1e308, SR: 0, SSR: 0 }, { N: 0.5, R: 0.5, SR: 0, SSR: 0 }],
+    [{ N: 0, R: 1e308, SR: 0, SSR: 0 }, { N: 0, R: 1, SR: 0, SSR: 0 }],
+    [{ N: 1e308, R: 5e307, SR: 1e308, SSR: 0 }, { N: 0.4, R: 0.2, SR: 0.4, SSR: 0 }],
+  ];
+  for (const [rates, expected] of checks) {
+    const { ok, config } = G.validateConfig({ ...C, rates, pity: { ssr: 0, sr: 20 } });
+    assert.ok(ok);
+    assert.deepEqual(config.rates, expected);
+    assert.deepEqual(G.validateConfig(JSON.parse(JSON.stringify(config))).config, config);
+    for (const rng of [() => 0, () => 0.6, () => 1 - Number.EPSILON / 2]) {
+      const item = G.rollOnce(config, G.makeState(), rng).item;
+      assert.ok(expected[item.rarity] > 0);
+    }
+    assert.equal(G.simulate(config, { pulls: 1000, mode: 'ten', rng: seeded() }).counts.SSR, 0);
+  }
+});
+
+test('invalid rates and zero-mass pickers reject rather than selecting a fallback rarity', () => {
+  for (const bad of [Infinity, -Infinity, NaN, -1, null]) {
+    assert.equal(G.validateConfig({ ...C, rates: { N: bad, R: 1, SR: 0, SSR: 0 } }).ok, false);
+  }
+  const emptyRates = { N: 0, R: 0, SR: 0, SSR: 0 };
+  assert.equal(G.validateConfig({ ...C, rates: emptyRates }).ok, false);
+  assert.throws(() => G.rollOnce({ ...C, rates: emptyRates }, G.makeState(), () => 0), /positive mass/);
+  for (const weights of [[0, 0], [1, Infinity], [1, NaN], [1, -1], []]) {
+    assert.throws(() => G.pickWeighted(weights, (x) => x, () => 0));
+  }
+  assert.throws(() => G.pickWeighted([1, 0], (x) => x, () => 1), /random/);
+});
+
+test('overflowing item weights use the same finite ratios for prize selection and disclosure', () => {
+  const [a, b, ...rest] = C.items;
+  const items = [{ ...a, weight: 1e308 }, { ...b, weight: 1e308 }, ...rest];
+  const { ok, config } = G.validateConfig({ ...C, items, rates: { N: 1, R: 0, SR: 0, SSR: 0 } });
+  assert.ok(ok);
+  assert.equal(G.wheelPick(config, () => 0.25), 0);
+  assert.equal(G.wheelPick(config, () => 0.75), 1);
+  assert.deepEqual(G.wheelSegments(config).slice(0, 2).map(({ odds }) => odds), [0.5, 0.5]);
+  assert.equal(G.itemOdds(config, config.items[0]), 0.5);
+  assert.equal(G.rollOnce(config, G.makeState(), () => 0.75).item.id, b.id);
+  for (const weight of [Infinity, NaN, 0, -1]) {
+    assert.equal(G.validateConfig({ ...C, items: [{ ...a, weight }, b, ...rest] }).ok, false);
+  }
+});
+
+test('rate-lab summaries distinguish individual pulls, batches and leftovers in all five locales', () => {
+  const script = readFileSync(new URL('../src/templates/gacha/standalone/main.js', import.meta.url), 'utf8');
+  const sandbox = { document: { getElementById: () => null } };
+  runInNewContext(script, sandbox);
+  runInNewContext(readFileSync(new URL('../src/templates/gacha/strings.js', import.meta.url), 'utf8'), sandbox);
+  assert.match(script, /labMeta\.textContent = formatGachaLabSummary\(out, G\.MULTI_PULLS, defaultText\)/);
+
+  const config = G.validateConfig({ ...C, rates: { N: 1, R: 0, SR: 0, SSR: 0 }, pity: { ssr: 0, sr: 10 } }).config;
+  const simulate = (pulls, mode, cfg = config) => G.simulate(cfg, { pulls, mode, rng: () => 0 });
+  const ten = simulate(10000, 'ten');
+  const tenWithLeftover = simulate(10009, 'ten');
+  assert.equal(ten.pulls, 10000);
+  assert.deepEqual(ten.counts, { N: 9000, R: 0, SR: 1000, SSR: 0 });
+  assert.equal(ten.forcedSr, 1000);
+  assert.equal(tenWithLeftover.pulls, 10009);
+  assert.deepEqual(tenWithLeftover.counts, { N: 9009, R: 0, SR: 1000, SSR: 0 });
+  assert.equal(tenWithLeftover.forcedSr, 1000);
+
+  const single = simulate(10000, 'single');
+  const withSsr = simulate(10000, 'ten', { ...config, pity: { ...config.pity, ssr: 90 } });
+  assert.equal(withSsr.firstSsrAt, 90);
+  const expectations = {
+    en: [/10000 individual pulls/, /10-pull batches: 1000\b/, /leftover singles: 9\b/],
+    zh: [/10000 抽/, /十连 1000 批/, /剩余单抽 9 次/],
+    ja: [/10000 回の抽選/, /10連バッチ数: 1000\b/, /残りの単発回数: 9\b/],
+    ko: [/10000회 뽑기/, /10연 묶음 수: 1000\b/, /남은 단일 뽑기: 9회/],
+    es: [/10000 tiradas individuales/, /lotes de 10 tiradas: 1000\b/, /tiradas sueltas restantes: 9\b/],
+  };
+  for (const [locale, [total, batches, leftover]] of Object.entries(expectations)) {
+    const dict = sandbox.PixStrings[locale];
+    const format = (out) => sandbox.formatGachaLabSummary(out, G.MULTI_PULLS, (key) => dict[key]);
+    const summary = format(ten);
+    assert.match(summary, total);
+    assert.match(summary, batches);
+    assert.equal((summary.match(/\b10000\b/g) ?? []).length, 1, locale);
+    assert.doesNotMatch(summary, /\+/, 'an exact batch total has no leftover detail');
+    const partial = format(tenWithLeftover);
+    assert.match(partial, new RegExp(total.source.replace('10000', '10009')));
+    assert.match(partial, batches);
+    assert.match(partial, leftover);
+    assert.match(format(single), total);
+    assert.doesNotMatch(format(single), /\(/, 'singles have no batch detail');
+    assert.match(format(withSsr), /\b90\b.*\b90\b/);
+  }
+  for (const suffix of ['meta', 'metaNone', 'metaBatches', 'metaRemainder']) {
+    const key = 'gx.lab.' + suffix;
+    const line = script.split('\n').find((line) => line.trimStart().startsWith(JSON.stringify(key) + ':'));
+    assert.equal(JSON.parse(line.slice(line.indexOf(':') + 1).trim().replace(/,$/, '')), sandbox.PixStrings.en[key]);
   }
 });

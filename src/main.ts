@@ -5,6 +5,8 @@ import "./style.css";
 import { CATALOG, CATEGORIES, isScreen, type CatalogEntry } from "./lib/catalog";
 import { Player, defaultStyle } from "./lib/player";
 import { applyStaticText, fxDesc, fxName, getLocale, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
+import { effectCategory } from "./lib/effects-routes";
+import { syncHeaderOffset } from "./lib/header-offset";
 import { mountToolsMenu } from "./lib/navmenu";
 
 /** Localized display name for a category id; unknown ids fall back to the id itself. */
@@ -64,7 +66,11 @@ function build() {
         el("figcaption", {}, [nameEl, lenEl]),
       ]);
       const tile: Tile = { fx, fig, nameEl, lenEl, player: null, visible: false };
-      const go = () => (location.href = `editor/?fx=${encodeURIComponent(fx.id)}`);
+      const go = () => {
+        const locale = getLocale();
+        const prefix = locale === "en" ? "" : `/${locale}`;
+        location.href = `${prefix}/editor/?fx=${encodeURIComponent(fx.id)}${location.hash}`;
+      };
       fig.addEventListener("click", go);
       fig.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -156,8 +162,10 @@ function setCat(id: string, fromHash = false) {
   document.querySelectorAll(".chip").forEach((b) =>
     b.setAttribute("aria-pressed", String((b as HTMLElement).dataset.cat === state.cat)),
   );
-  if (!fromHash)
-    history.replaceState(null, "", state.cat === "all" ? location.pathname : `#${state.cat}`);
+  const hash = state.cat === "all" ? "" : `#${state.cat}`;
+  if (!fromHash && hash !== location.hash) {
+    history.pushState(null, "", location.pathname + location.search + hash);
+  }
   filter();
   if (!fromHash) window.scrollTo({ top: 0 });
   chipsBox.classList.remove("open"); // picking a category closes the drawer; tiles come back
@@ -229,10 +237,12 @@ function run() {
 build();
 chips();
 wireSearch();
-const hash = location.hash.replace("#", "");
-if (hash && sections.some((s) => s.id === hash)) setCat(hash, true);
-else setCat("all", true);
-filter();
+function syncCategoryFromLocation(): void {
+  setCat(effectCategory(location.hash), true);
+}
+syncCategoryFromLocation();
+window.addEventListener("hashchange", syncCategoryFromLocation);
+window.addEventListener("popstate", syncCategoryFromLocation);
 run();
 
 // ---- i18n: static chrome now, dynamic bits re-render on switch (no reload — ?fx survives)
@@ -240,9 +250,10 @@ run();
 applyStaticText();
 mountLangSwitcher();
 mountToolsMenu();
-if (getLocale() !== "en") document.title = t("title.home");
+syncHeaderOffset();
+document.title = t("effects.h1") + " – PixJuice";
 onLocaleChange(() => {
-  document.title = t("title.home");
+  document.title = t("effects.h1") + " – PixJuice";
   for (const s of sections) {
     s.head.textContent = catLabel(s.id);
     s.blurb.textContent = t(`blurb.${s.id}`);

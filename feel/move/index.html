@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Movement feel lab — acceleration, braking and air control – PixJuice</title>
+  <meta name="description" content="Run, release and hop in a 2D room. Compare movement acceleration, speed, braking and air control, then share or export your tune.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Movement feel lab">
+  <meta property="og:description" content="Tune acceleration, braking and air control in a playable room.">
+  <meta property="og:image" content="https://pixjuice.pages.dev/previews/move.png">
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="PixJuice home">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub" data-i18n="fa.sub">free game assets</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/templates/" data-i18n="nav.templates">game templates</a>
+        <a href="/free-assets/" data-i18n="nav.assets">free assets</a>
+        <a href="/effects/" data-i18n="nav.effects">effects</a>
+        <a href="/feel/" class="cur" aria-current="page" data-i18n="nav.feel">Game Feel</a>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+            <a href="/free-resources/" data-i18n="fr.h1">More free game assets</a>
+          </div>
+        </details>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tpl-page feel-move">
+    <section class="tpl-hero">
+      <p class="tpl-crumbs"><a href="/feel/" data-i18n="nav.feel">Game Feel Lab</a> / <span data-i18n="jump.domain">Character control</span></p>
+      <h1 data-i18n="move.h1">Movement feel lab</h1>
+      <p class="lede" data-i18n="move.lede">Run, release and hop in a 2D room. Compare movement acceleration, speed, braking and air control, then share or export your tune.</p>
+    </section>
+
+    <div class="feel-main">
+      <aside class="feel-side">
+        <section class="feel-demo-card" aria-labelledby="move-room-title">
+          <div class="feel-stage move-stage">
+            <canvas id="move-room" tabindex="0" width="480" height="192" aria-labelledby="move-room-title" aria-describedby="move-help"></canvas>
+            <div class="move-buttons">
+              <button class="btn" type="button" data-move-action="left" data-i18n-aria="jump.left">←</button>
+              <button class="btn" type="button" data-move-action="right" data-i18n-aria="jump.right">→</button>
+              <button class="btn primary" type="button" data-move-action="jump" data-i18n="move.hop">Hop</button>
+              <button class="btn" type="button" id="move-reset" data-i18n="jump.reset">Reset room</button>
+            </div>
+            <dl class="move-telemetry">
+              <div><dt data-i18n="move.speed">Speed</dt><dd id="move-speed">0 px/s</dd></div>
+              <div><dt data-i18n="move.distance">Stop distance</dt><dd id="move-distance">—</dd></div>
+              <div><dt data-i18n="move.surface">Surface</dt><dd id="move-surface"></dd></div>
+            </dl>
+            <p class="move-status" id="move-status"></p>
+          </div>
+          <div class="feel-demo-controls move-notes">
+            <h2 id="move-room-title" data-i18n="jump.room">Practice room</h2>
+            <p id="move-help" data-i18n="move.help">Focus the room. Move with ←/→ or A/D, and hop with Space or ↑. On touch, hold the arrows and tap Hop. Release the arrows to leave a stop trace.</p>
+          </div>
+        </section>
+      </aside>
+
+      <div class="feel-layers">
+        <section class="feel-layer" aria-labelledby="move-compare">
+          <h2 id="move-compare" data-i18n="move.compare">Compare movement</h2>
+          <div class="feel-compare" role="group" data-i18n-aria="move.compare">
+            <button class="btn" type="button" data-move-mode="mine" aria-pressed="true" data-i18n="feel.compareMine">My tune</button>
+            <button class="btn" type="button" data-move-mode="default" aria-pressed="false" data-i18n="feel.compareBase">Page default</button>
+          </div>
+          <p class="cap" data-i18n="jump.modeHelp">The selected mode drives the room and downloads. The fields edit My tune. Reset room restarts play and keeps your settings.</p>
+        </section>
+
+        <section class="feel-layer" aria-labelledby="move-drive">
+          <h2 id="move-drive" data-i18n="move.drive">Acceleration and speed</h2>
+          <p data-i18n="move.driveHelp">Hold a direction to build speed. Acceleration also governs how quickly you reverse direction. These settings are starting points for this room.</p>
+          <label class="move-slider"><span data-i18n="move.acceleration">Acceleration (px/s²)</span><output>720</output><input type="range" data-move-param="acceleration"></label>
+          <label class="move-slider"><span data-i18n="move.maxSpeed">Maximum speed (px/s)</span><output>240</output><input type="range" data-move-param="maxSpeed"></label>
+        </section>
+
+        <section class="feel-layer" aria-labelledby="move-braking">
+          <h2 id="move-braking" data-i18n="move.braking">Ground braking</h2>
+          <p data-i18n="move.brakeHelp">Build speed, then release before the wall. The trace measures travel since release. A wall stop is marked separately. At zero brake the body coasts until it hits a wall.</p>
+          <label class="move-slider"><span data-i18n="move.brake">Brake (px/s²)</span><output>900</output><input type="range" data-move-param="brake"></label>
+        </section>
+
+        <section class="feel-layer" aria-labelledby="move-air">
+          <h2 id="move-air" data-i18n="move.airControl">Air control (%)</h2>
+          <p data-i18n="move.airHelp">From rest, hop first, then hold an arrow. At 0% you keep your takeoff speed in the air. At 100% steering uses full ground acceleration. Braking on release starts when you land.</p>
+          <label class="move-slider"><span data-i18n="move.airControl">Air control (%)</span><output>35</output><input type="range" data-move-param="airControl"></label>
+        </section>
+      </div>
+    </div>
+
+    <section class="feel-code feel-code-wide" aria-labelledby="move-export">
+      <h2 id="move-export" data-i18n="move.export">Movement settings</h2>
+      <p data-i18n="move.exportHelp">JSON uses the selected mode. Share links always keep My tune. The room uses 120 Hz fixed steps and processes at most 100 ms per frame.</p>
+      <div class="move-export-actions">
+        <button class="btn" type="button" id="move-share" data-i18n="feel.share">Share this tune</button>
+        <button class="btn" type="button" id="move-json" data-i18n="jump.json">Download JSON</button>
+      </div>
+      <input id="move-share-link" class="feel-share-url" type="text" readonly hidden data-i18n-aria="feel.shareUrlAria">
+      <div class="codebox"><pre class="codebox-pre feel-code-pre" tabindex="0"><code id="move-code"></code></pre></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.templates">
+<a href="/templates/">game templates</a> · <a href="/free-assets/">free assets</a> · part of the PixJuice free library for indie devs</span>
+      <span data-i18n-html="foot.home2">
+<a href="/credits/">credits &amp; licenses</a> · made for indie game devs</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/pages/feel-move.ts"></script>
+</body>
+</html>

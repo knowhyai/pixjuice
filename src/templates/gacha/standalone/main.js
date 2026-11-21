@@ -8,6 +8,23 @@
    page may define window.PixI18nRefresh() — it is called after dynamic inserts
    so the host can re-translate; the offline build includes a language selector. */
 
+function formatGachaLabSummary(out, multiPulls, translate) {
+  var batchDetails = "";
+  if (out.mode === "ten") {
+    var batches = Math.floor(out.pulls / multiPulls);
+    var singles = out.pulls % multiPulls;
+    batchDetails = translate("gx.lab.metaBatches").replace("{batches}", String(batches));
+    if (singles) batchDetails += " + " + translate("gx.lab.metaRemainder").replace("{singles}", String(singles));
+    batchDetails = " (" + batchDetails + ")";
+  }
+  var key = out.firstSsrAt == null ? "gx.lab.metaNone" : "gx.lab.meta";
+  return translate(key)
+    .replace("{pulls}", String(out.pulls))
+    .replace("{batchDetails}", batchDetails)
+    .replace("{pity}", String(out.pity.ssr))
+    .replace("{first}", String(out.firstSsrAt == null ? "" : out.firstSsrAt));
+}
+
 (function () {
   "use strict";
   var root = typeof window !== "undefined" ? window : globalThis;
@@ -72,7 +89,9 @@
     "gx.tabPool": "Card pool", "gx.tabWheel": "Lucky wheel",
     "gx.pull1": "Pull ×1", "gx.pull10": "Pull ×10",
     "gx.pityGuarantee": "SSR guaranteed within {n} pulls",
-    "gx.tenNote": "Every 10-pull includes at least one SR or better.",
+    "gx.tenNote": "This 10-pull guarantees at least one SR or better.",
+    "gx.tenNoteOff": "SR+ requires a batch of at least {n}; the 10-pull has no SR+ guarantee.",
+    "gx.ssrPityOff": "SSR hard pity is off.",
     "gx.pityNow": "SSR pity: {n}/{max}",
     "gx.rates": "Drop rates", "gx.pool": "Prize pool", "gx.odds": "Odds",
     "gx.rarity": "Rarity", "gx.item": "Item", "gx.pulls": "Pulls",
@@ -95,17 +114,19 @@
     "gx.lab.pulls": "Simulated pulls",
     "gx.lab.mode": "Pull mode",
     "gx.lab.single": "Single pulls (SSR hard pity only)",
-    "gx.lab.ten": "Ten-pulls (includes SR+ guarantee)",
+    "gx.lab.ten": "10-pull batches",
     "gx.lab.run": "Run simulation",
     "gx.lab.rarity": "Rarity",
     "gx.lab.advertised": "Advertised (no pity)",
     "gx.lab.expected": "Expected (single + hard pity only)",
     "gx.lab.observed": "Observed",
     "gx.lab.forced": "Forced",
-    "gx.lab.note": "A design experiment on this template's rules, not a recreation of any commercial title. Observed values have sampling error; the denominator is the number of individual pulls in the run. For single pulls with hard pity N and base rate p, expected SSR is p / (1 − (1−p)^N). Ten-pull mode (and the SR+ guarantee) has no such closed form here — only observed counts are shown. Pity 0 turns hard pity off; the ten-pull guarantee is separate. Export is the same config.json as the demo. Numbers are tunable defaults.",
+    "gx.lab.note": "A design experiment on this template's rules, not a recreation of any commercial title. Observed values have sampling error; the denominator is the number of individual pulls in the run. For single pulls with hard pity N and base rate p, expected SSR is p / (1 − (1−p)^N). Ten-pull mode (and the SR+ guarantee) has no such closed form here — only observed counts are shown. Pity 0 turns hard pity off; the SR+ batch threshold is separate. Export is the same config.json as the demo. Numbers are tunable defaults. The lab uses the live ×10 batch size. Leftover pulls are singles.",
     "gx.lab.export": "Download this config.json",
-    "gx.lab.meta": "Ran {pulls} {mode} pulls · SSR pity {pity} · first SSR at pull {first}",
-    "gx.lab.metaNone": "Ran {pulls} {mode} pulls · SSR pity {pity} · no SSR in this run",
+    "gx.lab.meta": "Ran {pulls} individual pulls{batchDetails} · SSR pity {pity} · first SSR at pull {first}",
+    "gx.lab.metaNone": "Ran {pulls} individual pulls{batchDetails} · SSR pity {pity} · no SSR in this run",
+    "gx.lab.metaBatches": "10-pull batches: {batches}",
+    "gx.lab.metaRemainder": "leftover singles: {singles}",
     "gx.lab.na": "—",
     "gx.lab.forcedSsr": "{n} SSR",
     "gx.lab.forcedSr": "{n} SR+",
@@ -186,14 +207,8 @@
     return defaultText("gx.lab.na");
   }
   function renderLab(out) {
-    var modeLabelText = out.mode === "ten" ? defaultText("gx.lab.ten") : defaultText("gx.lab.single");
-    var metaKey = out.firstSsrAt == null ? "gx.lab.metaNone" : "gx.lab.meta";
     labMeta.hidden = false;
-    labMeta.textContent = defaultText(metaKey)
-      .replace("{pulls}", String(out.pulls))
-      .replace("{mode}", modeLabelText)
-      .replace("{pity}", String(out.pity.ssr))
-      .replace("{first}", String(out.firstSsrAt == null ? "" : out.firstSsrAt));
+    labMeta.textContent = formatGachaLabSummary(out, G.MULTI_PULLS, defaultText);
     labTable.hidden = false;
     labTable.innerHTML = "";
     var thead = h("thead");
@@ -377,11 +392,12 @@
 
   var btnRow = h("div", { class: "gx-btnrow" });
   var b1 = h("button", { class: "tpl-btn tpl-btn-big", type: "button", "data-i18n": "gx.pull1", text: "Pull ×1", onclick: function () { doPull(1); } });
-  var b10 = h("button", { class: "tpl-btn tpl-btn-big tpl-btn-accent", type: "button", "data-i18n": "gx.pull10", text: "Pull ×10", onclick: function () { doPull(10); } });
+  var b10 = h("button", { class: "tpl-btn tpl-btn-big tpl-btn-accent", type: "button", "data-i18n": "gx.pull10", text: "Pull ×10", onclick: function () { doPull(G.MULTI_PULLS); } });
   btnRow.appendChild(b1);
   btnRow.appendChild(b10);
   poolPane.appendChild(btnRow);
-  poolPane.appendChild(h("p", { class: "gx-note", "data-i18n": "gx.tenNote", text: "Every 10-pull includes at least one SR or better." }));
+  var tenNote = h("p", { class: "gx-note" });
+  poolPane.appendChild(tenNote);
 
   var results = h("div", { class: "gx-results", "aria-live": "polite" });
   poolPane.appendChild(results);
@@ -716,7 +732,8 @@
   record.appendChild(h("h3", { text: "Drop rates", "data-i18n": "gx.rates" }));
   var oddsBox = h("div", { class: "gx-odds" });
   record.appendChild(oddsBox);
-  record.appendChild(h("p", { class: "gx-note", "data-i18n": "gx.pityGuarantee", "data-i18n-vars": JSON.stringify({n:cfg.pity.ssr}), text: "SSR guaranteed within 90 pulls" }));
+  var guarantee = h("p", { class: "gx-note" });
+  record.appendChild(guarantee);
   record.appendChild(h("h3", { text: "Pull history", "data-i18n": "gx.history" }));
   var histList = h("ul", { class: "gx-hist" });
   record.appendChild(histList);
@@ -724,9 +741,15 @@
   clearRow.appendChild(h("button", { class: "tpl-btn tpl-btn-ghost", type: "button", "data-i18n": "gx.clear", text: "Clear", onclick: function () { history = []; persist(); syncHistory(); } }));
   record.appendChild(clearRow);
 
+  function syncGuarantee(node, key, n) {
+    node.setAttribute("data-i18n", key);
+    node.setAttribute("data-i18n-vars", JSON.stringify({n:n}));
+    node.textContent = defaultText(key).replace("{n}", String(n));
+  }
+
   function syncOdds() {
-    var guarantee = record.querySelector("[data-i18n=\"gx.pityGuarantee\"]");
-    if (guarantee) guarantee.setAttribute("data-i18n-vars", JSON.stringify({n:cfg.pity.ssr}));
+    syncGuarantee(tenNote, cfg.pity.sr <= G.MULTI_PULLS ? "gx.tenNote" : "gx.tenNoteOff", cfg.pity.sr);
+    syncGuarantee(guarantee, cfg.pity.ssr ? "gx.pityGuarantee" : "gx.ssrPityOff", cfg.pity.ssr);
     oddsBox.innerHTML = "";
     var table = h("table", {});
     var thead = h("thead", {});

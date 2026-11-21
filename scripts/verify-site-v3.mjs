@@ -27,5 +27,5 @@ for(const [prefix,label] of [['','Semi-Realistic'],['/zh','半写实'],['/ja','�
  assert.ok((await p.title()).includes(label));
  assert.equal(await p.locator('[data-variant=style]').count(),0);
 }
-await p.goto(base+'/zh/editor/');await p.waitForURL('**/zh/#effects');
+await p.goto(base+'/zh/editor/');await p.waitForURL('**/zh/effects/');
 assert.deepEqual(errors,[]);console.log('Six pages, navigation, themes, empty asset library, crate and editor redirect passed');await b.close();

@@ -41,7 +41,7 @@ LICENSE               CC0 — do anything, no attribution required
 {
   "currency": { "name": "Gems", "single": 100, "multi": 1000 },
   "rates":    { "N": 0.79, "R": 0.15, "SR": 0.05, "SSR": 0.01 }, // normalized to sum 1
-  "pity":     { "ssr": 90, "sr": 10 },   // hard SSR guarantee; multi-batch length for the SR+ guarantee
+  "pity":     { "ssr": 90, "sr": 10 },   // hard SSR guarantee; minimum batch size for the SR+ guarantee
   "items": [
     { "id": "wooden-sword", "name": "Wooden Sword", "rarity": "N", "weight": 1 },
     { "id": "excalibur",    "name": "Dawn Relic",    "rarity": "SSR" }
@@ -50,12 +50,13 @@ LICENSE               CC0 — do anything, no attribution required
 ```
 
 - `rates` — base chance per rarity. Normalized automatically, so they only need
-  to be non-negative.
+  to be finite, non-negative numbers with at least one positive value.
 - `items` — the prize pool. At least one item per rarity is required; ids must be
-  unique. Within a rarity, an item's chance is proportional to `weight`.
+  unique. Within a rarity, an item's chance is proportional to `weight`, which must be positive and finite when supplied.
 - `pity.ssr` — the pull at this ceiling is forced SSR (90 means at most 89 misses). `0` disables hard pity.
-- `pity.sr` — a pull batch of this size (e.g. 10) always contains at least one
-  SR or better.
+- `pity.sr` — minimum batch size for at least one SR or better. The live button
+  and lab both use batches of 10. At a threshold above 10 neither batch
+  guarantees SR+. Lab leftovers are singles. `currency.multi` prices the live ×10.
 - The lucky wheel uses the same `items`; each segment's chance is
   `weight / total weight` (shown live in the odds panel).
 
@@ -76,8 +77,8 @@ pulls so you can compare:
 - observed frequencies from the live engine, including forced SSR / SR+ counts.
   The denominator is the number of individual pulls in the run.
 
-`pity.ssr = 0` disables the SSR hard guarantee; `pity.sr` (the ten-pull
-length / SR+ guarantee) stays a separate rule and is not clamped to zero.
+`pity.ssr = 0` disables the SSR hard guarantee. The minimum SR+ batch size
+`pity.sr` is independent of SSR pity.
 Pity 1 forces every single pull to SSR.
 
 This is a design check on *this* template, not a recreation of a commercial

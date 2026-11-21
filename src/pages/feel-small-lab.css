@@ -1,0 +1,23 @@
+.small-lab-canvas {
+  display: block;
+  width: 100%;
+  max-width: min(100%, 52dvh);
+  height: auto;
+  justify-self: center;
+  background: #151726;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+}
+
+.small-lab-canvas:focus-visible { outline: 2px solid var(--acc2); outline-offset: 2px; }
+.small-lab-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.feel-stage .small-lab-actions .btn { flex: 1 0 auto; min-height: 44px; }
+.small-lab-actions [data-camera-direction] { touch-action: none; user-select: none; }
+.small-lab-actions [data-held="true"] { color: var(--acc2); border-color: var(--acc2); }
+.small-lab-status { margin: 0; overflow-wrap: anywhere; font: 600 .8rem/1.55 var(--mono); }
+.small-lab-slider { display: grid; grid-template-columns: 1fr auto; gap: 4px; margin-top: 12px; }
+.small-lab-slider output { font-family: var(--mono); }
+.small-lab-slider input { grid-column: 1 / -1; width: 100%; min-height: 24px; margin: 0; accent-color: var(--acc); }
+@media (max-width: 1020px) and (max-height: 560px) {
+  .small-lab-canvas { max-width: min(100%, 36dvh); }
+}

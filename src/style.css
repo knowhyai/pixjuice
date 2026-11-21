@@ -840,7 +840,7 @@ footer {
   .head .nav a{font-size:13px}
   .head .lang{max-width:95px}
 }
-/* ---- homepage bands (site home sits above the 244-effect catalog) ---- */
+/* ---- homepage bands ---- */
 .home-hero,
 .home-band {
   max-width: 1180px;
@@ -1054,15 +1054,6 @@ a.home-cta:hover { border-color: var(--faint); text-decoration: none; }
   .home-hero .lede { font-size: 14.5px; max-width: none; }
 }
 
-#effects { scroll-margin-top: var(--head-h, 88px); }
-.home-fx-note {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 8px 20px 0;
-  padding-left: max(20px, env(safe-area-inset-left));
-  padding-right: max(20px, env(safe-area-inset-right));
-  color: var(--dim);
-  font-size: 13.5px;
-}
+#effects { top: var(--head-h, 88px); scroll-margin-top: var(--head-h, 88px); }
 
 .fa-parts{margin-top:28px;padding-top:20px;border-top:1px solid #625333}.fa-parts h2{color:#dfc181}.fa-part{display:flex;gap:14px;margin:18px 0;align-items:center}.fa-part img{width:76px;height:76px;object-fit:cover;border:1px solid #625333;border-radius:8px}.fa-part>div{display:grid;gap:8px;min-width:0;flex:1}.fa-part select{width:100%;padding:8px;background:#19171a;color:#eadfc6;border:1px solid #625333;border-radius:5px}.fa-part a{font-size:12px;text-align:center}

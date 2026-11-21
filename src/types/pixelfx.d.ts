@@ -127,6 +127,10 @@ declare module "pixelfx/fx/index" {
   export const categories: { id: string; name: string; blurb: string }[];
 }
 
+declare module "pixelfx/fx/categories" {
+  export const categories: { id: string; name: string; blurb: string }[];
+}
+
 // A single effect, e.g. `import * as nova from "pixelfx/fx/ice/frost-nova"`.
 declare module "pixelfx/fx/*" {
   import type { ActData, FxMeta, Painter } from "pixelfx";

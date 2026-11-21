@@ -30,6 +30,7 @@ interface PixGacha {
   RARITIES: string[];
   DEFAULT_CONFIG: PixGachaConfig;
   HISTORY_LIMIT: number;
+  MULTI_PULLS: number;
   validateConfig(raw: unknown): { ok: true; config: PixGachaConfig } | { ok: false; error: string };
   pickWeighted<T>(entries: T[], weightOf: (e: T) => number, rng?: () => number): T;
   makeState(sinceSsr?: number, sinceSr?: number): { sinceSsr: number; sinceSr: number };

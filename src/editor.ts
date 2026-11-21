@@ -25,7 +25,8 @@ import {
 import { makeZip, type ZipEntry } from "./lib/zip";
 import { familyForCategory, sfx, type SfxDials, type SfxFamily } from "./lib/sfx";
 import { encodeSfx, oggSupported, SFX_LICENSE, type SfxFormat } from "./lib/sfxenc";
-import { applyStaticText, fxDesc, fxName, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
+import { applyStaticText, fxDesc, fxName, getLocale, mountLangSwitcher, onLocaleChange, t } from "./lib/i18n";
+import { effectCategory } from "./lib/effects-routes";
 import { mountToolsMenu } from "./lib/navmenu";
 
 const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector(s) as T;
@@ -745,13 +746,13 @@ function runEditor(entry: CatalogEntry): void {
     }),
   );
 
-  // ---- keys: Esc goes back to the catalog (the "/" search lives on the home page's own entry)
+  // ---- keys: Esc returns to the effects library
 
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     const t = e.target as HTMLElement | null;
     if (t && /^(input|textarea|select)$/i.test(t.tagName)) return;
-    location.href = "/";
+    location.replace(libraryReturnUrl());
   });
 
   // ---- i18n: relabel every dynamic control in place (the static chrome is data-i18n)
@@ -788,6 +789,13 @@ function runEditor(entry: CatalogEntry): void {
   requestAnimationFrame(loop);
 }
 
+function libraryReturnUrl(): string {
+  const locale = getLocale();
+  const prefix = locale === "en" ? "" : `/${locale}`;
+  const category = effectCategory(location.hash);
+  return `${prefix}/effects/${category === "all" ? "" : location.hash}`;
+}
+
 applyStaticText();
 mountLangSwitcher();
 mountToolsMenu();
@@ -798,5 +806,5 @@ if (loadMod) {
   const entry = normalizeEntry(fxId!, (await loadMod()) as FxModule);
   runEditor(entry);
 } else {
-  location.replace("/" + (["zh","ja","ko","es"].includes(document.documentElement.lang) ? document.documentElement.lang + "/" : "") + "#effects");
+  location.replace(libraryReturnUrl());
 }

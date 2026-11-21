@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Camera follow lab – PixJuice</title>
+  <meta name="description" content="Move a target and compare hard follow with smoothing, a deadzone and fixed world bounds.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Camera follow lab">
+  <meta property="og:description" content="Move a target and compare hard follow with smoothing, a deadzone and fixed world bounds.">
+  <meta property="og:image" content="https://pixjuice.pages.dev/previews/camera.png">
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="PixJuice home">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub" data-i18n="fa.sub">free game assets</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/templates/" data-i18n="nav.templates">game templates</a>
+        <a href="/free-assets/" data-i18n="nav.assets">free assets</a>
+        <a href="/effects/" data-i18n="nav.effects">effects</a>
+        <a href="/feel/" class="cur" aria-current="page" data-i18n="nav.feel">Game Feel</a>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+            <a href="/free-resources/" data-i18n="fr.h1">More free game assets</a>
+          </div>
+        </details>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tpl-page feel-camera">
+    <section class="tpl-hero">
+      <p class="tpl-crumbs"><a href="/feel/" data-i18n="nav.feel">Game Feel Lab</a></p>
+      <h1 data-i18n="camera.h1">Camera follow lab</h1>
+      <p class="lede" data-i18n="camera.lede">Move a target and compare hard follow with smoothing, a deadzone and fixed world bounds.</p>
+    </section>
+
+    <div class="feel-main">
+      <aside class="feel-side">
+        <section class="feel-demo-card" aria-labelledby="lab-room-title">
+          <div class="feel-stage">
+            <canvas class="small-lab-canvas" id="camera-room" width="480" height="224" tabindex="0" aria-labelledby="lab-room-title" aria-describedby="lab-help"></canvas>
+            <div class="small-lab-actions">
+              <button class="btn" type="button" data-camera-direction="left" data-i18n-aria="jump.left">←</button>
+              <button class="btn primary" type="button" data-camera-direction="right" data-i18n-aria="jump.right">→</button>
+              <button class="btn" type="button" id="lab-reset" data-i18n="jump.reset">Reset room</button>
+            </div>
+            <p class="small-lab-status" id="camera-status"></p>
+          </div>
+          <div class="feel-demo-controls">
+            <h2 id="lab-room-title" data-i18n="jump.room">Practice room</h2>
+            <p id="lab-help" data-i18n="camera.help">Focus the view and hold ←/→ or A/D. On touch, hold an arrow button. The dashed box is the deadzone. The lower strip shows the camera frame and target across the whole room.</p>
+          </div>
+        </section>
+      </aside>
+      <div class="feel-layers">
+        <section class="feel-layer" aria-labelledby="lab-compare">
+          <h2 id="lab-compare" data-i18n="smallLab.compare">Compare settings</h2>
+          <div class="feel-compare" role="group" data-i18n-aria="smallLab.compare">
+            <button class="btn" type="button" data-lab-mode="mine" aria-pressed="true" data-i18n="feel.compareMine">My tune</button>
+            <button class="btn" type="button" data-lab-mode="default" aria-pressed="false" data-i18n="feel.compareBase">Page default</button>
+          </div>
+          <p data-i18n="jump.modeHelp">The selected mode drives the room and downloads. The fields edit My tune. Reset room restarts play and keeps your settings.</p>
+          <p data-i18n="camera.compareHelp">Page default snaps to the target with a zero deadzone. My tune starts with smoothing and a deadzone so you can compare immediately. Both modes respect the room edges.</p>
+        </section>
+        <section class="feel-layer" aria-labelledby="lab-parameters">
+          <h2 id="lab-parameters" data-i18n="camera.settings">Follow settings</h2>
+          <p data-i18n="camera.settingsHelp">Smoothing time controls how quickly the view catches up. Deadzone is measured from the view center to either side. Move the target to a wall to see the camera reach its bound.</p>
+          <label class="small-lab-slider"><span data-i18n="camera.smoothingMs">Smoothing time (ms)</span><output>250</output><input type="range" data-lab-param="smoothingMs"></label>
+          <label class="small-lab-slider"><span data-i18n="camera.deadzonePx">Deadzone half-width (px)</span><output>56</output><input type="range" data-lab-param="deadzonePx"></label>
+        </section>
+      </div>
+    </div>
+
+    <section class="feel-code feel-code-wide" aria-labelledby="lab-export">
+      <h2 id="lab-export" data-i18n="smallLab.export">Export settings</h2>
+      <p data-i18n="move.exportHelp">JSON uses the selected mode. Share links always keep My tune. The room uses 120 Hz fixed steps and processes at most 100 ms per frame.</p>
+      <div class="small-lab-actions">
+        <button class="btn" type="button" id="lab-share" data-i18n="feel.share">Share this tune</button>
+        <button class="btn" type="button" id="lab-json" data-i18n="jump.json">Download JSON</button>
+      </div>
+      <input id="lab-share-link" class="feel-share-url" type="text" readonly hidden data-i18n-aria="feel.shareUrlAria">
+      <div class="codebox"><pre class="codebox-pre feel-code-pre" tabindex="0"><code id="lab-code"></code></pre></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.templates">
+<a href="/templates/">game templates</a> · <a href="/free-assets/">free assets</a> · part of the PixJuice free library for indie devs</span>
+      <span data-i18n-html="foot.home2">
+<a href="/credits/">credits &amp; licenses</a> · made for indie game devs</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/pages/feel-camera.ts"></script>
+</body>
+</html>
