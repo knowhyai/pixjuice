@@ -49,6 +49,7 @@ export default defineConfig({
         resources: "free-resources/index.html",
         feel: "feel/index.html",
         feelhit: "feel/hit/index.html",
+        feelboss: "feel/boss-hp/index.html",
         ...assetDetailInputs(),
         notfound: "404.html",
       },

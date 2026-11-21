@@ -614,6 +614,217 @@
   margin-top: 8px;
 }
 
+/* ---- boss HP bar demo (/feel/boss-hp/) ---- */
+
+.feel-boss-host {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--acc) 7%, transparent), transparent 60%),
+    var(--bg);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.feel-boss-stage {
+  --boss-pulse: 0.4s;
+  position: relative;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 46px 26px 38px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* the red screen-edge warning lives strictly inside the stage */
+.feel-boss-edge {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: inset 0 0 56px 10px rgba(255, 45, 63, 0.38);
+  transition: opacity 0.25s ease;
+}
+
+.feel-boss-edge.is-on {
+  opacity: 1;
+  animation: boss-pulse var(--boss-pulse) infinite;
+}
+
+.feel-boss-stage.is-reduced .feel-boss-edge.is-on {
+  animation: none;
+  opacity: 0.55;
+}
+
+.feel-boss-zone {
+  width: min(560px, 100%);
+  will-change: transform; /* the shake drives this element */
+}
+
+.feel-boss-name {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 7px;
+}
+
+.feel-boss-tag {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.34em;
+  color: var(--dim);
+}
+
+.feel-boss-badge {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 2px 9px;
+}
+
+.feel-boss-badge.is-zero {
+  color: var(--faint);
+  border-style: dashed;
+}
+
+.feel-boss-track {
+  position: relative;
+  height: 26px;
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--bg2, var(--bg)) 82%, #000);
+  overflow: hidden;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.35);
+}
+
+.feel-boss-lag,
+.feel-boss-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+}
+
+.feel-boss-lag {
+  background: #efeaff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.25);
+}
+
+.feel-boss-fill {
+  background: #9d7bff;
+  transition: width 0.12s linear, background 0.3s ease;
+}
+
+.feel-boss-glow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -26px;
+  height: 34px;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(60% 100% at var(--fill-x, 50%) 0%, rgba(255, 45, 63, 0.5), transparent 70%);
+  filter: blur(4px);
+}
+
+.feel-boss-stage.is-alarm:not(.is-dead) .feel-boss-glow {
+  opacity: 1;
+  animation: boss-pulse var(--boss-pulse) infinite;
+}
+
+.feel-boss-stage.is-reduced.is-alarm .feel-boss-glow {
+  animation: none;
+  opacity: 0.5;
+}
+
+.feel-boss-stage.is-alarm:not(.is-dead) .feel-boss-track {
+  border-color: color-mix(in srgb, #ff2d3f 55%, var(--line));
+  animation: boss-pulse var(--boss-pulse) infinite;
+}
+
+.feel-boss-stage.is-reduced.is-alarm .feel-boss-track {
+  animation: none;
+  border-color: color-mix(in srgb, #ff2d3f 40%, var(--line));
+}
+
+@keyframes boss-pulse {
+  50% {
+    filter: brightness(1.5);
+  }
+}
+
+.feel-boss-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.feel-boss-tick {
+  position: absolute;
+  top: 24%;
+  bottom: 24%;
+  width: 1px;
+  background: rgba(10, 8, 16, 0.4);
+}
+
+.feel-boss-stage:not(.is-layered) .feel-boss-tick,
+.feel-boss-mark {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.feel-boss-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 5px solid transparent;
+  border-top: 7px solid rgba(255, 255, 255, 0.75);
+  transform: translateX(-2px);
+}
+
+.feel-boss-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.feel-boss-stage.is-dead .feel-boss-zone {
+  opacity: 0.55;
+  filter: saturate(0.25);
+}
+
+.feel-boss-stage.is-dead .feel-boss-tag {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.boss-actions .btn {
+  flex: none;
+}
+
+.feel-motion-row select {
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12.5px;
+}
+
+.feel-layer-motion .feel-sub {
+  cursor: default;
+}
+
 /* ---- responsive ---- */
 
 @media (max-width: 1020px) {
@@ -650,5 +861,9 @@
     margin-right: 0;
     padding-left: 14px;
     padding-right: 14px;
+  }
+  .feel-boss-stage {
+    min-height: 210px;
+    padding: 34px 12px 30px;
   }
 }

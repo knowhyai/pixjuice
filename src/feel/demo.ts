@@ -59,6 +59,10 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  // Filmic tone mapping: without it the light budget below drives bright armor
+  // past 1.0 and the whole model clips into a washed-out white shell.
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.12;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, 1.6, 0.05, 60);
   camera.position.set(0.35, 1.8, 5.5);
@@ -73,18 +77,20 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   // without it, PBR metal reads nearly black away from the key light
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  scene.environmentIntensity = 0.8;
+  scene.environmentIntensity = 0.45;
   pmrem.dispose();
 
-  scene.add(new THREE.HemisphereLight(0xe9f1ff, 0x55483a, 3.0));
-  const key = new THREE.DirectionalLight(0xffe7bc, 3.0);
+  // Light budget kept around ~1.0 pre-tonemap on the armor so the baseColor
+  // textures stay visible (hemisphere + env = ambient floor, key does the work).
+  scene.add(new THREE.HemisphereLight(0xe9f1ff, 0x55483a, 0.55));
+  const key = new THREE.DirectionalLight(0xffe7bc, 2.4);
   key.position.set(4, 7, 5);
   scene.add(key);
-  const rim = new THREE.DirectionalLight(0x8fb7ff, 1.3);
+  const rim = new THREE.DirectionalLight(0x8fb7ff, 1.0);
   rim.position.set(-5, 3, -4);
   scene.add(rim);
   // camera-side fill so the far duelist never reads as a silhouette
-  const fill = new THREE.DirectionalLight(0xbfd2ff, 1.1);
+  const fill = new THREE.DirectionalLight(0xbfd2ff, 0.5);
   fill.position.set(0.4, 3, 7);
   scene.add(fill);
 
@@ -138,6 +144,18 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   const victimRoot = new THREE.Group();
   const attacker = SkeletonUtils.clone(gltf.scene);
   const victim = SkeletonUtils.clone(gltf.scene);
+  // SkeletonUtils.clone shares material instances between copies — give each
+  // knight its own set (textures stay shared) so the victim's hit flash can
+  // never repaint the striker's armor.
+  for (const root of [attacker, victim]) {
+    root.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      mesh.material = Array.isArray(mesh.material)
+        ? mesh.material.map((m) => (m as THREE.Material).clone())
+        : (mesh.material as THREE.Material).clone();
+    });
+  }
   attackerRoot.add(attacker);
   victimRoot.add(victim);
   attackerRoot.position.set(-0.82, 0, 0.14);
@@ -246,8 +264,25 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   const sparkGeo = new THREE.BufferGeometry();
   sparkGeo.setAttribute("position", new THREE.BufferAttribute(sparkPos, 3));
   sparkGeo.setAttribute("color", new THREE.BufferAttribute(sparkCol, 3));
+  // A soft radial sprite reads as a glowing ember at any size; a bare point
+  // aliasing to a 2-3px square vanishes on a phone-sized canvas.
+  const sparkTex = (() => {
+    const c = document.createElement("canvas");
+    c.width = c.height = 64;
+    const g = c.getContext("2d")!;
+    const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, "rgba(255,255,255,1)");
+    grad.addColorStop(0.3, "rgba(255,255,255,0.85)");
+    grad.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 64, 64);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  })();
   const sparkMat = new THREE.PointsMaterial({
     size: 0.05,
+    map: sparkTex,
     vertexColors: true,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
@@ -285,7 +320,8 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
       sparkVel.set([scratch.v0.x, scratch.v0.y, scratch.v0.z], i * 3);
       sparkLife[i] = 0.22 + Math.random() * 0.32;
       const c = Math.random() < 0.62 ? themeColors.sparkA : themeColors.sparkB;
-      sparkBase.set([c.r, c.g, c.b], i * 3);
+      // slight overbright: additive blending turns it into a hot core
+      sparkBase.set([Math.min(1, c.r * 1.25 + 0.1), Math.min(1, c.g * 1.25 + 0.1), Math.min(1, c.b * 1.25 + 0.1)], i * 3);
     }
   }
 
@@ -328,12 +364,19 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   let flashLevel = 0;
   let flashStrobe = 0;
 
+  // The Mixamo slash carries a multi-second windup before the strike. Trim the
+  // start so playback begins this far ahead of the measured contact moment: the
+  // swing itself still runs at its natural, authored speed. Heuristic.
+  const SLASH_ANTICIPATION = 0.42;
+  const slashStart = Math.max(0, contactDelay - SLASH_ANTICIPATION);
+
   function attack(): void {
     if (attacking) return;
     attacking = true;
-    attackT = 0;
+    attackT = slashStart;
     contactFired = false;
     slashA.reset();
+    slashA.time = slashStart;
     slashA.crossFadeFrom(idleA, 0.1, false);
     slashA.play();
   }
@@ -430,6 +473,11 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     canvas.style.height = `${h}px`;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    // Keep sparks a legible ~5.5px across regardless of canvas size: world
+    // size per pixel grows with distance/(height·fov), so shrink-world the
+    // particle when the canvas is small, or it disappears entirely.
+    const worldPerPx = (2 * Math.tan((camera.fov * Math.PI) / 360) * 5.2) / h;
+    sparkMat.size = THREE.MathUtils.clamp(5.5 * worldPerPx, 0.045, 0.12);
   });
   resize.observe(hostWrap);
 
@@ -634,6 +682,7 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
       materials.forEach((m) => m.dispose());
       sparkGeo.dispose();
       sparkMat.dispose();
+      sparkTex.dispose();
       renderer.dispose();
       hostWrap.remove();
     },
