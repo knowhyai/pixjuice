@@ -5,10 +5,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 import ts from "typescript";
-import { createRequire } from "node:module";
 import { execFileSync } from "node:child_process";
+import { runInNewContext } from "node:vm";
 
-const require = createRequire(import.meta.url);
 const loadTs = (file) => {
   const src = ts.transpileModule(fs.readFileSync(file, "utf8"), {
     compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
@@ -20,6 +19,7 @@ const loadTs = (file) => {
 test("shell: shared header lists real sections and a site tagline, not the assets-only subtitle", () => {
   const src = fs.readFileSync("src/lib/navmenu.ts", "utf8");
   assert.match(src, /t\("nav\.tagline"\)/, "brand sub uses nav.tagline");
+  assert.match(src, /t\("nav\.home"\)/);
   assert.match(src, /t\("nav\.effects"\)/, "effects is a first-class nav item");
   assert.match(src, /t\("nav\.feel"\)/);
   assert.match(src, /t\("nav\.templates"\)/);
@@ -27,11 +27,94 @@ test("shell: shared header lists real sections and a site tagline, not the asset
   assert.match(src, /theme-toggle/, "light/dark control stays in the shared header");
   assert.match(src, /class="mark"/, "pixel mark is remounted, not dropped");
   assert.ok(!/Free game assets/.test(src), "hardcoded assets-only tagline is gone");
-  const effectsAt = src.indexOf('link("/#effects"');
-  const feelAt = src.indexOf('link("/feel/"');
-  const tplAt = src.indexOf('link("/templates/"');
-  const assetsAt = src.indexOf('link("/free-assets/"');
-  assert.ok(effectsAt < feelAt && feelAt < tplAt && tplAt < assetsAt, "nav order is effects → feel → templates → assets");
+  assert.match(src, /link\("\/".*link\("\/#effects".*link\("\/feel\/".*link\("\/templates\/".*link\("\/free-assets\/"/,
+    "nav order is home → effects → feel → templates → assets");
+});
+
+const navScript = ts.transpileModule(fs.readFileSync("src/lib/navmenu.ts", "utf8"), {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+}).outputText;
+
+function mountHeader(pathname, hash, locale, dict) {
+  const window = new EventTarget();
+  const location = { pathname, hash };
+  const header = { innerHTML: "", querySelector: () => new EventTarget() };
+  const exports = {};
+  runInNewContext(navScript, {
+    exports, window, location,
+    document: {
+      documentElement: { dataset: {} },
+      querySelector: () => header,
+      querySelectorAll: () => [],
+      addEventListener() {},
+    },
+    localStorage: { getItem: () => null },
+    matchMedia: () => new EventTarget(),
+    require: (id) => {
+      assert.equal(id, "./i18n");
+      return {
+        getLocale: () => locale,
+        onLocaleChange() {},
+        LOCALES: [{ code: locale, native: locale }],
+        t: (key) => key.split(".").reduce((value, part) => value?.[part], dict) ?? key,
+      };
+    },
+  });
+  exports.mountToolsMenu();
+  return {
+    changeHash(hash, event) {
+      location.hash = hash;
+      window.dispatchEvent(new Event(event));
+    },
+    assertCurrent(href) {
+      const anchors = [...header.innerHTML.matchAll(/<a ([^>]+)>/g)].map((match) => match[1]);
+      for (const marker of ['aria-current="page"', 'class="cur"']) {
+        assert.deepEqual(
+          anchors.filter((attrs) => attrs.includes(marker)).map((attrs) => attrs.match(/href="([^"]+)"/)[1]),
+          [href],
+        );
+      }
+    },
+    get html() { return header.innerHTML; },
+  };
+}
+
+test("shell: localized Home, Effects and brand links preserve locale roots and select one item", async () => {
+  for (const [locale, label] of Object.entries({ en: "Home", zh: "首页", ja: "ホーム", ko: "홈", es: "Inicio" })) {
+    const dict = await loadTs(`./src/lib/locales/${locale}.ts`);
+    const root = locale === "en" ? "/" : `/${locale}/`;
+    assert.equal(dict.nav.home, label);
+    for (const hash of ["", "#effects"]) {
+      const header = mountHeader(root, hash, locale, dict);
+      const homeAttrs = hash ? "" : ' aria-current="page" class="cur"';
+      const effectsAttrs = hash ? ' aria-current="page" class="cur"' : "";
+      assert.ok(header.html.includes(`<a class="brand" href="${root}" aria-label="PixJuice home">`));
+      assert.ok(header.html.includes(
+        `<nav class="nav" aria-label="Main"><a href="${root}"${homeAttrs}>${label}</a>` +
+        `<a href="${root}#effects"${effectsAttrs}>${dict.nav.effects}</a>`,
+      ));
+      header.assertCurrent(root + hash);
+    }
+  }
+});
+
+test("shell: Home and Effects selection follows hashchange and popstate", async () => {
+  const dict = await loadTs("./src/lib/locales/en.ts");
+  const header = mountHeader("/", "", "en", dict);
+  header.assertCurrent("/");
+  for (const event of ["hashchange", "popstate"]) {
+    for (const hash of ["#effects", "", "#", "#recipes", "#live", "#effects-other"]) {
+      header.changeHash(hash, event);
+      header.assertCurrent(hash === "#effects" ? "/#effects" : "/");
+    }
+  }
+});
+
+test("shell: Feel remains current on the catalog and jump recipe even with an effects hash", async () => {
+  const dict = await loadTs("./src/lib/locales/en.ts");
+  for (const path of ["/feel/", "/feel/jump/"]) {
+    mountHeader(path, "#effects", "en", dict).assertCurrent("/feel/");
+  }
 });
 
 test("shell: homepage is an advisor station, not only effects or two feel recipes", () => {
@@ -64,7 +147,7 @@ test("shell: homepage is an advisor station, not only effects or two feel recipe
   assert.ok(!/href="\/feel\/(shake|hit-stop|squash|coyote)/.test(html));
 });
 
-test("shell: /feel/ shows two complete recipe cards first and does not invent component URLs", () => {
+test("shell: /feel/ shows three complete recipe cards first and does not invent component URLs", () => {
   const html = fs.readFileSync("feel/index.html", "utf8");
   const recipesAt = html.indexOf('id="recipes"');
   const upcomingAt = html.indexOf("feel-upcoming");
@@ -78,7 +161,7 @@ test("shell: /feel/ shows two complete recipe cards first and does not invent co
   assert.match(html, /data-i18n="feel\.recipe\.hit\.cta"/);
   assert.match(html, /data-i18n="feel\.componentsNote"/);
   const hrefs = [...html.matchAll(/href="(\/feel\/[^"]+)"/g)].map((m) => m[1]);
-  const allowed = new Set(["/feel/", "/feel/hit/", "/feel/boss-hp/"]);
+  const allowed = new Set(["/feel/", "/feel/hit/", "/feel/boss-hp/", "/feel/jump/"]);
   for (const h of hrefs) assert.ok(allowed.has(h), `unexpected feel href ${h}`);
   assert.ok(html.includes("<details") && html.includes("feel.moreDomains"), "unbuilt domains are folded, not empty category pages");
 });

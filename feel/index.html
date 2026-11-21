@@ -95,6 +95,15 @@
             <span class="recipe-card-cta" data-i18n="feel.recipe.boss.cta">Open the boss HP bar recipe →</span>
           </div>
         </a>
+        <a class="recipe-card" href="/feel/jump/">
+          <div class="stage"><img class="tile-preview" src="/previews/jump.png" alt="" width="480" height="256" loading="lazy"></div>
+          <div class="recipe-card-body">
+            <b data-i18n="jump.h1">Jump forgiveness lab</b>
+            <p data-i18n="jump.card">Walk off a ledge or press before landing. Replay the same input with the timers off and on.</p>
+            <small data-i18n="jump.cardExport">Character control · JSON + Godot 4</small>
+            <span class="recipe-card-cta" data-i18n="jump.room">Practice room</span>
+          </div>
+        </a>
       </div>
     </section>
 
@@ -104,21 +113,20 @@
         <h3 data-i18n="feel.probSoonTitle">Something else feels off</h3>
         <ul aria-label="not live yet">
           <li data-i18n="feel.probSoon1">Movement feels floaty</li>
-          <li data-i18n="feel.probSoon2">Jumps don't commit</li>
           <li data-i18n="feel.probSoon3">The camera lags behind the action</li>
         </ul>
-        <p data-i18n="feel.probSoonNote">These need the support and physicality recipes, which are not live. Nothing to click yet — when a recipe ships, it appears here with a real demo.</p>
+        <p data-i18n="feel.probSoonNote">More movement and camera recipes will appear here when their demos are ready.</p>
         <p data-i18n="feel.componentsNote">Feel recipes are collections of components — standalone pages for screen shake, hit-stop and the rest are not available yet.</p>
       </div>
       <div class="feel-domains">
-      <section class="feel-domain" id="support" aria-labelledby="feel-d1-h">
+      <section class="feel-domain feel-domain-live" id="support" aria-labelledby="feel-d1-h">
         <header class="feel-domain-head">
           <span class="feel-domain-num" aria-hidden="true">01</span>
           <div class="feel-domain-text">
             <h2 id="feel-d1-h"><span data-i18n="feel.d1t">Support</span> <span class="feel-domain-gloss" data-i18n="feel.d1g">input</span></h2>
             <p data-i18n="feel.d1d">The game catches what the player meant: latency windows, coyote time, input buffers, corner correction.</p>
           </div>
-          <span class="feel-badge feel-badge-soon" data-i18n="feel.soonBadge">Coming soon</span>
+          <span class="feel-badge feel-badge-live" data-i18n="feel.liveBadge">Live now</span>
         </header>
         <ul class="feel-leaves" data-i18n-html="feel.d1leaves">
           <li>Coyote time</li><li>Input buffer</li><li>Variable jump height</li><li>Corner correction</li>

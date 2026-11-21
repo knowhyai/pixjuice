@@ -1,0 +1,109 @@
+.jump-stage {
+  min-width: 0;
+  font-size: .82rem;
+}
+
+#jump-room {
+  display: block;
+  width: 100%;
+  max-width: min(100%, 48dvh);
+  height: auto;
+  justify-self: center;
+  background: #151726;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  image-rendering: pixelated;
+  cursor: pointer;
+}
+
+#jump-room:focus-visible {
+  outline: 2px solid var(--acc2);
+  outline-offset: 2px;
+}
+
+.jump-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr auto;
+  gap: 6px;
+}
+
+.jump-buttons .btn {
+  min-width: 0;
+  padding-inline: 8px;
+}
+
+.jump-buttons [data-jump-hold] {
+  touch-action: none;
+  user-select: none;
+}
+
+.jump-buttons [data-held="true"] {
+  border-color: var(--acc2);
+  color: var(--acc2);
+}
+
+.jump-telemetry {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0;
+  text-align: center;
+}
+
+.jump-telemetry div {
+  padding: 2px;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  overflow-wrap: anywhere;
+}
+
+.jump-telemetry dd {
+  margin: 0;
+  font: 700 .8rem/1.4 var(--mono);
+}
+
+.jump-result {
+  margin: 0;
+  color: var(--acc2);
+  font-weight: 700;
+}
+
+.jump-trial-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.jump-room-notes h2, .jump-room-notes p {
+  margin: 0;
+}
+
+.jump-room-notes h2 {
+  font-size: 1rem;
+}
+
+.jump-number {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.jump-number input {
+  width: 7rem;
+  max-width: 40%;
+}
+
+@media (max-width: 1020px) {
+  #jump-room {
+    max-width: min(100%, 52dvh);
+  }
+}
+
+@media (max-width: 1020px) and (max-height: 560px) {
+  #jump-room {
+    max-width: min(100%, 34dvh);
+  }
+}

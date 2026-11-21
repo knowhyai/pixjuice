@@ -52,12 +52,13 @@ export function mountToolsMenu(): void {
     const prefix = l === "en" ? "" : "/" + l;
     let path = location.pathname.replace(/^\/(zh|ja|ko|es)(?=\/|$)/, "") || "/";
     if (path !== "/" && !path.endsWith("/")) path += "/";
-    const home = path === "/";
+    const atRoot = path === "/";
+    const effects = atRoot && location.hash === "#effects";
     const inTools = TOOL_PATHS.some((p) => path === p);
     const link = (href: string, label: string, current: boolean): string =>
       `<a href="${prefix}${href}"${current ? ' aria-current="page" class="cur"' : ""}>${label}</a>`;
 
-    header.innerHTML = `<div class="head-in"><a class="brand" href="${prefix}/" aria-label="PixJuice home">${MARK}<div><h1>Pix<em>Juice</em></h1><p class="sub">${t("nav.tagline")}</p></div></a><nav class="nav" aria-label="Main">${link("/#effects", t("nav.effects"), home)}${link("/feel/", t("nav.feel"), path.startsWith("/feel/"))}${link("/templates/", t("nav.templates"), path.startsWith("/templates/"))}${link("/free-assets/", t("nav.assets"), path.startsWith("/free-assets/"))}<details class="tools"><summary${inTools ? ' class="cur" aria-current="true"' : ""}>${t("nav.tools")}</summary><div class="tools-menu">${TOOL_PATHS.map((p, i) => link(p, t(TOOL_KEYS[i]), path === p)).join("")}</div></details>${link("/credits/", t("nav.credits"), path === "/credits/")}<select data-shared-lang="true" id="lang" class="lang" aria-label="${t("lang.aria")}">${LOCALES.map((x) => `<option value="${x.code}"${x.code === l ? " selected" : ""}>${x.native}</option>`).join("")}</select><button class="btn theme-toggle" type="button" aria-label="${t("nav.theme")}" title="${t("nav.theme")}"><svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5 7 7 0 1 0 19 14.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button></nav></div>`;
+    header.innerHTML = `<div class="head-in"><a class="brand" href="${prefix}/" aria-label="PixJuice home">${MARK}<div><h1>Pix<em>Juice</em></h1><p class="sub">${t("nav.tagline")}</p></div></a><nav class="nav" aria-label="Main">${link("/", t("nav.home"), atRoot && !effects)}${link("/#effects", t("nav.effects"), effects)}${link("/feel/", t("nav.feel"), path.startsWith("/feel/"))}${link("/templates/", t("nav.templates"), path.startsWith("/templates/"))}${link("/free-assets/", t("nav.assets"), path.startsWith("/free-assets/"))}<details class="tools"><summary${inTools ? ' class="cur" aria-current="true"' : ""}>${t("nav.tools")}</summary><div class="tools-menu">${TOOL_PATHS.map((p, i) => link(p, t(TOOL_KEYS[i]), path === p)).join("")}</div></details>${link("/credits/", t("nav.credits"), path === "/credits/")}<select data-shared-lang="true" id="lang" class="lang" aria-label="${t("lang.aria")}">${LOCALES.map((x) => `<option value="${x.code}"${x.code === l ? " selected" : ""}>${x.native}</option>`).join("")}</select><button class="btn theme-toggle" type="button" aria-label="${t("nav.theme")}" title="${t("nav.theme")}"><svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5 7 7 0 1 0 19 14.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button></nav></div>`;
 
     header.querySelector<HTMLButtonElement>(".theme-toggle")!.addEventListener("click", () => {
       const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
@@ -78,6 +79,8 @@ export function mountToolsMenu(): void {
 
   render();
   onLocaleChange(render);
+  window.addEventListener("hashchange", render);
+  window.addEventListener("popstate", render);
   document.addEventListener("click", (e) => {
     const menu = header.querySelector("details");
     if (menu && !menu.contains(e.target as Node)) menu.open = false;

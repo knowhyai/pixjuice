@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Jump forgiveness lab — coyote time, jump buffer and variable height – PixJuice</title>
+  <meta name="description" content="Play a 2D room and compare coyote time, jump buffering, variable jump height and gravity. Export your tune and a Godot 4 reference.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Jump forgiveness lab">
+  <meta property="og:description" content="Test two independent jump timers in a playable room.">
+  <meta property="og:image" content="https://pixjuice.pages.dev/previews/jump.png">
+</head>
+<body>
+  <header class="head">
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="PixJuice home">
+        <svg class="mark" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-hidden="true">
+          <rect width="16" height="16" fill="#0b0a10"/>
+          <rect x="7" y="1" width="2" height="2" fill="#ff4d6d"/>
+          <rect x="6" y="3" width="4" height="2" fill="#ff4d6d"/>
+          <rect x="5" y="5" width="6" height="1" fill="#ff4d6d"/>
+          <rect x="4" y="6" width="8" height="3" fill="#ff4d6d"/>
+          <rect x="5" y="9" width="6" height="1" fill="#d63a58"/>
+          <rect x="6" y="10" width="4" height="1" fill="#d63a58"/>
+          <rect x="7" y="11" width="2" height="1" fill="#d63a58"/>
+          <rect x="6" y="5" width="2" height="2" fill="#ffd9e0"/>
+          <rect x="12" y="2" width="2" height="2" fill="#4cd7ff"/>
+          <rect x="11" y="1" width="1" height="1" fill="#4cd7ff"/>
+          <rect x="14" y="4" width="1" height="1" fill="#4cd7ff"/>
+        </svg>
+        <div>
+          <h1>Pix<em>Juice</em></h1>
+          <p class="sub" data-i18n="fa.sub">free game assets</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <select id="lang" class="lang">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+        <a href="/templates/" data-i18n="nav.templates">game templates</a>
+        <a href="/free-assets/" data-i18n="nav.assets">free assets</a>
+        <a href="/#effects" data-i18n="nav.effects">effects</a>
+        <a href="/feel/" class="cur" aria-current="page" data-i18n="nav.feel">Game Feel</a>
+        <details class="tools">
+          <summary data-i18n="nav.tools">tools ▾</summary>
+          <div class="tools-menu">
+            <a href="/image-to-pixel-art/" data-i18n="nav.pixel">image → pixel art</a>
+            <a href="/normal-map/" data-i18n="nav.normal">normal map</a>
+            <a href="/pixel-art-upscaler/" data-i18n="nav.upscale">upscaler</a>
+            <a href="/sprite-sheet/" data-i18n="nav.sheet">sprite sheet</a>
+            <a href="/editor/" data-i18n="nav.editor">effects editor</a>
+            <a href="/free-resources/" data-i18n="fr.h1">More free game assets</a>
+          </div>
+        </details>
+        <a href="/credits/" data-i18n="nav.credits">credits</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tpl-page feel-jump">
+    <section class="tpl-hero">
+      <p class="tpl-crumbs"><a href="/feel/" data-i18n="nav.feel">Game Feel Lab</a> / <span data-i18n="jump.domain">Character control</span></p>
+      <h1 data-i18n="jump.h1">Jump forgiveness lab</h1>
+      <p class="lede" data-i18n="jump.lede">Play a 2D room and compare coyote time, jump buffering, variable jump height and gravity. Export your tune and a Godot 4 reference.</p>
+    </section>
+
+    <div class="feel-main">
+      <aside class="feel-side">
+        <section class="feel-demo-card" aria-labelledby="jump-room-title">
+          <div class="feel-stage jump-stage">
+            <canvas id="jump-room" tabindex="0" width="480" height="256" aria-labelledby="jump-room-title" aria-describedby="jump-help"></canvas>
+            <div class="jump-buttons">
+              <button class="btn" type="button" data-jump-hold="left" data-i18n-aria="jump.left">←</button>
+              <button class="btn" type="button" data-jump-hold="right" data-i18n-aria="jump.right">→</button>
+              <button class="btn primary" type="button" data-jump-hold="jump" data-i18n="jump.jump">Jump</button>
+              <button class="btn" type="button" id="jump-reset" data-i18n="jump.reset">Reset room</button>
+            </div>
+            <dl class="jump-telemetry">
+              <div><dt data-i18n="jump.sinceEdge">Since edge</dt><dd id="jump-since">—</dd></div>
+              <div><dt data-i18n="jump.coyoteLeft">Coyote left</dt><dd id="jump-coyote-left">0 ms</dd></div>
+              <div><dt data-i18n="jump.bufferLeft">Buffer left</dt><dd id="jump-buffer-left">0 ms</dd></div>
+            </dl>
+            <p class="jump-result" role="status" id="jump-result"></p>
+          </div>
+          <div class="feel-demo-controls jump-room-notes">
+            <h2 id="jump-room-title" data-i18n="jump.room">Practice room</h2>
+            <p id="jump-help" data-i18n="jump.help">Focus the room. Move with ←/→ or A/D and jump with Space or ↑. On touch, hold the on-screen buttons. Tap Jump for a short hop or hold it for a higher jump.</p>
+          </div>
+        </section>
+      </aside>
+
+      <div class="feel-layers">
+        <section class="feel-layer" aria-labelledby="jump-trials">
+          <h2 id="jump-trials" data-i18n="jump.trials">Repeatable trials</h2>
+          <p data-i18n="jump.trialHelp">Run a trial with Timers off, then replay with Page default. The edge trial presses Jump 75 ms after walking off. The landing trial presses Jump shortly before touching down. Both use the same room and movement rules as manual play.</p>
+          <div class="feel-compare" role="group" data-i18n-aria="jump.compare">
+            <button class="btn" type="button" data-jump-mode="mine" aria-pressed="true" data-i18n="feel.compareMine">My tune</button>
+            <button class="btn" type="button" data-jump-mode="default" aria-pressed="false" data-i18n="feel.compareBase">Page default</button>
+            <button class="btn" type="button" data-jump-mode="off" aria-pressed="false" data-i18n="jump.off">Timers off</button>
+          </div>
+          <p class="cap" data-i18n="jump.modeHelp">The selected mode drives the room and downloads. The fields edit My tune. Reset room restarts play and keeps your settings.</p>
+          <div class="jump-trial-buttons">
+            <button class="btn" type="button" data-jump-trial="edge" data-i18n="jump.edgeTrial">Replay edge</button>
+            <button class="btn" type="button" data-jump-trial="landing" data-i18n="jump.landingTrial">Replay landing</button>
+          </div>
+        </section>
+
+        <section class="feel-layer" aria-labelledby="jump-coyote">
+          <h2 id="jump-coyote" data-i18n="jump.coyote">Coyote time</h2>
+          <p data-i18n="jump.coyoteHelp">An unused jump stays available briefly after walking off a ledge. The platform collision stays the same.</p>
+          <label class="feel-sub"><input type="checkbox" data-jump-param="coyoteEnabled" checked> <span data-i18n="jump.enableCoyote">Enable coyote time</span></label>
+          <label class="jump-number"><span data-i18n="jump.window">Window (ms)</span> <input type="number" data-jump-param="coyoteMs"></label>
+        </section>
+        <section class="feel-layer" aria-labelledby="jump-buffer">
+          <h2 id="jump-buffer" data-i18n="jump.buffer">Jump buffer</h2>
+          <p data-i18n="jump.bufferHelp">Press just before landing. If the press is still fresh when you land, it becomes one jump.</p>
+          <label class="feel-sub"><input type="checkbox" data-jump-param="bufferEnabled" checked> <span data-i18n="jump.enableBuffer">Enable jump buffer</span></label>
+          <label class="jump-number"><span data-i18n="jump.window">Window (ms)</span> <input type="number" data-jump-param="bufferMs"></label>
+        </section>
+        <section class="feel-layer" aria-labelledby="jump-height">
+          <h2 id="jump-height" data-i18n="jump.height">Jump height and gravity</h2>
+          <p data-i18n="jump.heightHelp">Releasing Jump caps upward speed when variable height is on. Gravity applies independently. These values are starting points for this room.</p>
+          <label class="feel-sub"><input type="checkbox" data-jump-param="variableHeight" checked> <span data-i18n="jump.enableHeight">Enable variable height</span></label>
+          <label class="jump-number"><span data-i18n="jump.releaseSpeed">Release speed (px/s)</span> <input type="number" data-jump-param="releaseSpeed"></label>
+          <label class="jump-number"><span data-i18n="jump.jumpSpeed">Launch speed (px/s)</span> <input type="number" data-jump-param="jumpSpeed"></label>
+          <label class="jump-number"><span data-i18n="jump.gravity">Gravity (px/s²)</span> <input type="number" data-jump-param="gravity"></label>
+        </section>
+      </div>
+    </div>
+
+    <section class="feel-code feel-code-wide" aria-labelledby="jump-export">
+      <h2 id="jump-export" data-i18n="jump.export">Export and hookup</h2>
+      <p data-i18n="jump.exportHelp">JSON and GDScript use the active comparison values. A share link always keeps your editable tune.</p>
+      <div class="jump-trial-buttons">
+        <button class="btn" type="button" id="jump-share" data-i18n="feel.share">Share this tune</button>
+        <button class="btn" type="button" id="jump-json" data-i18n="jump.json">Download JSON</button>
+        <button class="btn" type="button" id="jump-godot" data-i18n="jump.godot">Download Godot 4 script</button>
+      </div>
+      <input id="jump-share-link" class="feel-share-url" type="text" readonly hidden data-i18n-aria="feel.shareUrlAria">
+      <div class="codebox"><pre class="codebox-pre feel-code-pre" tabindex="0"><code id="jump-code"></code></pre></div>
+      <details class="feel-hookup">
+        <summary data-i18n="feel.hookupH">Hookup &amp; limits</summary>
+        <p data-i18n="jump.hookup">Attach the reference to a CharacterBody2D with a collision shape and a jump input action. Supply horizontal velocity in your own controller. The sample uses floor contact from move_and_slide() and is_on_floor(). Correct floor detection is a prerequisite. For similar timing, use a 120 Hz physics tick. The web demo advances in fixed steps and processes at most 100 ms per displayed frame.</p>
+        <ul>
+          <li><a href="https://indienova.com/indie-game-development/input-buffering-and-coyote-time/">Fe · indienova · 2021-09-20</a> <span data-i18n="jump.fe">— Separate timers for input buffering and coyote time.</span></li>
+          <li><a href="https://docs.godotengine.org/en/stable/tutorials/physics/using_character_body_2d.html">Godot · CharacterBody2D/3D</a> <span data-i18n="jump.docs">— The starter jumps on a press while grounded. Coyote time is an extension.</span></li>
+        </ul>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-i18n-html="foot.templates">
+<a href="/templates/">game templates</a> · <a href="/free-assets/">free assets</a> · part of the PixJuice free library for indie devs</span>
+      <span data-i18n-html="foot.home2">
+<a href="/credits/">credits &amp; licenses</a> · made for indie game devs</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/pages/feel-jump.ts"></script>
+</body>
+</html>

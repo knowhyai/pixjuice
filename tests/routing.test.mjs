@@ -15,6 +15,7 @@ const pages = new Set([
   '/feel/',
   '/feel/hit/',
   '/feel/boss-hp/',
+  '/feel/jump/',
   '/templates/',
   '/templates/gacha/',
   '/free-assets/chest-wood/',
@@ -23,6 +24,7 @@ const pages = new Set([
   '/zh/feel/hit/',
   '/zh/feel/boss-hp/',
   '/ja/feel/hit/',
+  ...['zh', 'ja', 'ko', 'es'].map((locale) => `/${locale}/feel/jump/`),
 ]);
 const exists = (dir) => pages.has(dir);
 const resolves = (pathname) => resolveRoute(pathname, exists);
@@ -33,6 +35,14 @@ test('routing: English pages live at unprefixed URLs and pass through', () => {
   assert.deepEqual(resolves('/feel/hit/'), { type: 'next' });
   assert.deepEqual(resolves('/feel/boss-hp/'), { type: 'next' });
   assert.deepEqual(resolves('/zh/feel/hit/'), { type: 'next' });
+});
+
+test('routing: jump lab uses canonical paths in all five locales', () => {
+  for (const prefix of ['', '/zh', '/ja', '/ko', '/es']) {
+    assert.deepEqual(resolves(`${prefix}/feel/jump/`), { type: 'next' });
+    assert.deepEqual(resolves(`${prefix}/feel/jump`), { type: 'redirect', location: `${prefix}/feel/jump/` });
+  }
+  assert.deepEqual(resolves('/en/feel/jump/'), { type: 'redirect', location: '/feel/jump/' });
 });
 
 test('routing: directory pages without the slash 301 to the canonical URL', () => {
