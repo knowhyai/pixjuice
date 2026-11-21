@@ -30,11 +30,11 @@ const web = (path) => webBossHp(path);
 
 const inRange = (v, meta) => v >= meta.min && v <= meta.max && Math.abs(v / meta.step - Math.round(v / meta.step)) < 1e-6;
 
-test('boss: five layers with the documented heuristic defaults', () => {
+test('boss: five layers with the documented tunable defaults', () => {
   assert.equal(BOSS_LAYER_IDS.length, 5);
   assert.deepEqual([...BOSS_LAYER_IDS], ['lag-bar', 'hit-react', 'scale-ticks', 'hp-layers', 'low-alarm']);
   const d = BOSS_DEFAULT_PARAMS;
-  // the page boots on the full recipe with the heuristic starting values
+  // the page boots on the full recipe with the tunable default values
   assert.equal(d.lag.wait, 0.35);
   assert.equal(d.lag.catch, 0.45);
   assert.equal(d.react.shakeDecay, 0.27);

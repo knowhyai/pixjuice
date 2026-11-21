@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Game Feel Lab — hit stop, screen shake &amp; impact recipes – PixJuice</title>
-  <meta name="description" content="A lab for game feel in four domains — support, physicality, amplification, context — with live recipes you can toggle and retune, plus ready-to-paste Godot 4 and Unity code. First recipe: hit feel.">
+  <title>Game Feel Lab — hit stop, screen shake &amp; boss HP bar recipes – PixJuice</title>
+  <meta name="description" content="Arrive with a problem — soft hits, an unreadable boss bar — and tune it live: layered feel recipes with demos, baseline compare, shareable tunes and ready-to-paste Godot 4 and Unity code.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PixJuice">
-  <meta property="og:title" content="Game Feel Lab — hit stop, screen shake &amp; impact recipes">
-  <meta property="og:description" content="Game feel in four domains — support, physicality, amplification, context. Live recipes with demos and ready-to-paste Godot 4 and Unity code. First recipe: hit feel.">
+  <meta property="og:title" content="Game Feel Lab — hit stop, screen shake &amp; boss HP bar recipes">
+  <meta property="og:description" content="Arrive with a problem and tune it live: layered feel recipes with demos, baseline compare, shareable tunes and Godot 4 / Unity code.">
   <meta property="og:image" content="https://pixjuice.pages.dev/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#0b0a10">
@@ -69,7 +69,36 @@
     <section class="tpl-hero">
       <p class="resources-eyebrow">PIXJUICE / GAME FEEL LAB</p>
       <h1 data-i18n="feel.h1">Game Feel Lab</h1>
-      <p class="lede" data-i18n="feel.lede">Game feel is how your game behaves in the player's hands. The lab splits it into four domains — support (response &amp; forgiveness), physicality, amplification and context — and ships one live recipe at a time: a demo you can toggle, retune and compare, with engine code that follows the sliders.</p>
+      <p class="lede" data-i18n="feel.lede">Game feel is how your game behaves in the player's hands. The lab splits it into four domains — support (response &amp; forgiveness), physicality, amplification and context — and ships live recipes one at a time: arrive with a problem, retune a real demo, compare it against its own default, and leave with engine code that follows the sliders.</p>
+    </section>
+
+    <section class="feel-problems" aria-labelledby="feel-prob-h">
+      <h2 id="feel-prob-h" data-i18n="feel.probH">Start from a problem</h2>
+      <p class="feel-prob-lede" data-i18n="feel.probLede">Land on the complaint you actually have. Each live recipe is a demo you can retune, compare against its page default and share as a link — problems without a live recipe stay unlinked until one ships.</p>
+      <div class="feel-prob-grid">
+        <a class="feel-prob-card" href="/feel/hit/">
+          <span class="feel-prob-tag feel-prob-live" data-i18n="feel.probLive">Live recipe</span>
+          <h3 data-i18n="feel.probHitQ">My hits feel soft or mushy</h3>
+          <p data-i18n="feel.probHitA">The hit lands but carries no weight. Stack six amplification layers — hit stop, screen shake, flash/squash/numbers, knockback, directional sparks, three-band audio — until it reads.</p>
+          <span class="feel-prob-cta" data-i18n="feel.recipe.hit.cta">Open the hit feel recipe →</span>
+        </a>
+        <a class="feel-prob-card" href="/feel/boss-hp/">
+          <span class="feel-prob-tag feel-prob-live" data-i18n="feel.probLive">Live recipe</span>
+          <h3 data-i18n="feel.probBossQ">Boss HP or damage is hard to read</h3>
+          <p data-i18n="feel.probBossA">Players can't tell how big a hit was or how close the boss is to dying. A delayed white damage bar, hit shake and flash, scale ticks, layered HP with a ×N counter and a low-health alarm fix exactly that.</p>
+          <span class="feel-prob-cta" data-i18n="feel.recipe.boss.cta">Open the boss HP bar recipe →</span>
+        </a>
+        <div class="feel-prob-card feel-prob-none">
+          <span class="feel-prob-tag feel-prob-soon" data-i18n="feel.probSoonTag">No live recipe yet</span>
+          <h3 data-i18n="feel.probSoonTitle">Something else feels off</h3>
+          <ul aria-label="not live yet">
+            <li data-i18n="feel.probSoon1">Movement feels floaty</li>
+            <li data-i18n="feel.probSoon2">Jumps don't commit</li>
+            <li data-i18n="feel.probSoon3">The camera lags behind the action</li>
+          </ul>
+          <p class="feel-prob-note" data-i18n="feel.probSoonNote">These need the support and physicality recipes, which are not live. Nothing to click yet — when a recipe ships, it appears here with a real demo.</p>
+        </div>
+      </div>
     </section>
 
     <div class="feel-domains">
@@ -178,7 +207,7 @@
 
     <section class="feel-sources" aria-labelledby="feel-sources-h">
       <h2 id="feel-sources-h" data-i18n="feel.sourcesH">Sources &amp; method</h2>
-      <p class="feel-sources-note" data-i18n="feel.sourcesNote">Numbers on this site carry one of two labels: a published source, or 经验值 (heuristic) — the industry's oral tradition. Heuristics are fine slider defaults; they are not findings. Retune everything.</p>
+      <p class="feel-sources-note" data-i18n="feel.sourcesNote">Slider numbers are tunable defaults — starting points to retune for your project, not universal rules. Published sources are cited separately below; unlabeled numbers come from action-game practice (the industry's oral tradition), not research. Retune for your game.</p>
       <div data-i18n-html="feel.sourcesHome">
         <ul>
           <li>Steve Swink, <i>Game Feel</i> (2008) — the lab's working definition and its six dimensions. <a href="https://www.gamedeveloper.com/design/game-feel-the-secret-ingredient" target="_blank" rel="noopener">Precursor article ↗</a></li>

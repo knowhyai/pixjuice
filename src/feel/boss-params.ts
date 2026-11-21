@@ -23,7 +23,7 @@ export const BOSS_LAYER_IDS = ["lag-bar", "hit-react", "scale-ticks", "hp-layers
 /** Layer colors, first (outermost) to last. Purple → orange → red by default. */
 export const BOSS_LAYER_COLORS = ["#9d7bff", "#ff9a3d", "#ff4d5e"] as const;
 
-/** Slider metadata: range, step and the heuristic default shown next to it. */
+/** Slider metadata: range, step and the tunable default shown next to it. */
 export const BOSS_SLIDERS = {
   wait: { min: 0.1, max: 0.8, step: 0.01, rec: 0.35, heavyRec: 0.35 },
   catch: { min: 0.1, max: 1, step: 0.01, rec: 0.45, heavyRec: 0.45 },
@@ -48,7 +48,7 @@ export const BOSS_PRESETS: Record<BossPresetId, BossHpParams> = {
     alarm: { on: true, threshold: 25, pulseHz: 1.5, edge: false },
     reducedMotion: "auto",
   },
-  /** 全开（即页面默认配方）：五层全在，数值为经验值起点。 */
+  /** 全开（即页面默认配方）：五层全在，数值为可调默认值起点。 */
   heavy: {
     lag: { on: true, wait: 0.35, catch: 0.45 },
     react: { on: true, shakeDecay: 0.27, shakeMax: 14, flash: 0.08 },

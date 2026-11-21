@@ -8,6 +8,7 @@ import "../templates/templates.css";
 import "./feel.css";
 import { applyStaticText, mountLangSwitcher, onLocaleChange, t } from "../lib/i18n";
 import { mountToolsMenu } from "../lib/navmenu";
+import { syncHeaderOffset } from "../lib/header-offset";
 import { el } from "../lib/el";
 import {
   cloneParams,
@@ -21,14 +22,26 @@ import {
 import { buildCodeTabs } from "../feel/codegen";
 import type { FeelDemo } from "../feel/demo";
 import { ImpactAudio } from "../feel/sfx";
+import { buildShareUrl, parseFeelState, readTuneParam, serializeFeel } from "../feel/share";
 
 mountToolsMenu();
 mountLangSwitcher();
+syncHeaderOffset();
 
-const params: FeelParams = DEFAULT_PARAMS;
+const params: FeelParams = cloneParams(DEFAULT_PARAMS);
 let zone: HitZone = "chest";
 let demo: FeelDemo | null = null;
 const audio = new ImpactAudio();
+
+// ---- shared tune from the URL (?tune=) ------------------------------------------
+
+// Parsed before anything mounts so the sliders, demo and code all boot on the
+// shared values. A garbage token is ignored silently — the page default stands.
+const sharedState = (() => {
+  const raw = readTuneParam(location.search);
+  return raw ? parseFeelState(raw) : null;
+})();
+if (sharedState) Object.assign(params, sharedState.params);
 
 // ---- layer controls -----------------------------------------------------------
 
@@ -211,19 +224,21 @@ function applyPreset(id: PresetId): void {
   refreshControlValues();
   // setParams + code only — do not go through onParamsChanged, which clears the
   // active-preset highlight (that path is for manual slider tweaks).
-  demo?.setParams(params);
+  pushDemo();
   renderCodebox();
   presetButtons.forEach((b) => {
     const on = b.dataset.preset === id;
     b.classList.toggle("on", on);
     b.setAttribute("aria-pressed", String(on));
   });
+  scheduleShareSync();
   if (demo) demo.attack();
 }
 
 presetButtons.forEach((b) =>
   b.addEventListener("click", () => {
     audio.resume();
+    setCompareUi("mine"); // picking a tune ends any baseline preview
     applyPreset(b.dataset.preset as PresetId);
   }),
 );
@@ -244,6 +259,89 @@ document.querySelector<HTMLButtonElement>(".feel-attack")?.addEventListener("cli
   demo?.attack();
 });
 
+// ---- baseline compare + shareable link -------------------------------------------
+
+// The demo can play the page default while the sliders keep the user's tune —
+// comparing never destroys the dialled-in state. The generated code follows the
+// demo side (the panel is labeled with whichever tune it is exporting), so a
+// baseline preview never ships numbers that differ from what is on screen.
+const baselineParams = (): FeelParams => cloneParams(DEFAULT_PARAMS);
+let compareMode: "mine" | "base" = "mine";
+const compareButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".feel-compare-btn"));
+const compareNote = document.querySelector<HTMLElement>(".feel-compare-note");
+const exportLabel = document.querySelector<HTMLElement>(".feel-export");
+
+/** What the demo (and impact audio, and the generated code) should play right now. */
+const activeParams = (): FeelParams => (compareMode === "base" ? baselineParams() : params);
+
+function pushDemo(): void {
+  demo?.setParams(activeParams());
+}
+
+function setCompareUi(mode: "mine" | "base"): void {
+  compareMode = mode;
+  compareButtons.forEach((b) => {
+    const on = b.dataset.compare === mode;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", String(on));
+  });
+  if (compareNote) compareNote.hidden = mode !== "base";
+  if (exportLabel) {
+    exportLabel.dataset.export = mode;
+    const what = exportLabel.querySelector("b");
+    if (what) what.textContent = t(mode === "base" ? "feel.exportBase" : "feel.exportMine");
+  }
+}
+
+compareButtons.forEach((b) =>
+  b.addEventListener("click", () => {
+    audio.resume();
+    const wasBase = compareMode === "base";
+    setCompareUi(b.dataset.compare === "base" ? "base" : "mine");
+    pushDemo();
+    // code follows the demo side: re-render so the export matches what plays
+    renderCodebox();
+    // same one-click evidence as the preset buttons: switching sides replays
+    // the hit under the newly active tune
+    if (demo && (compareMode === "base" || wasBase)) demo.attack();
+  }),
+);
+
+// ?tune= follows every change via replaceState (no history spam); the share
+// button flushes it first so the copied URL always carries the current sliders.
+let shareTimer = 0;
+function syncShareUrl(): void {
+  const url = buildShareUrl(location.origin, location.pathname, location.search, location.hash, serializeFeel(params));
+  history.replaceState(null, "", url);
+}
+function scheduleShareSync(): void {
+  clearTimeout(shareTimer);
+  shareTimer = window.setTimeout(syncShareUrl, 250);
+}
+
+const shareBtn = document.querySelector<HTMLButtonElement>(".feel-share");
+const shareUrlBox = document.querySelector<HTMLInputElement>(".feel-share-url");
+shareBtn?.addEventListener("click", async () => {
+  clearTimeout(shareTimer);
+  syncShareUrl();
+  const url = location.href;
+  try {
+    await navigator.clipboard.writeText(url);
+    shareBtn.textContent = t("feel.shareDone");
+    setTimeout(() => {
+      shareBtn.textContent = t("feel.share");
+    }, 1400);
+  } catch {
+    // clipboard blocked — surface the URL itself so it can be copied by hand
+    if (shareUrlBox) {
+      shareUrlBox.value = url;
+      shareUrlBox.hidden = false;
+      shareUrlBox.focus();
+      shareUrlBox.select();
+    }
+  }
+});
+
 // ---- engine code panel -----------------------------------------------------------
 
 const codebox = document.querySelector<HTMLElement>("#feel-codebox")!;
@@ -252,7 +350,10 @@ let activeFile = "hit_feel.gd";
 let currentCode = "";
 
 function renderCodebox(): void {
-  const tabs = buildCodeTabs(params);
+  // built from activeParams() — the code panel always matches the demo (and its
+  // Exporting label), so a baseline preview exports the page default, not a
+  // silently different user tune
+  const tabs = buildCodeTabs(activeParams());
   const mine = tabs.filter((x) => x.engine === engine);
   if (!mine.some((x) => x.id === activeFile)) activeFile = mine[0].id;
   const active = mine.find((x) => x.id === activeFile) ?? mine[0];
@@ -318,12 +419,15 @@ function renderCodebox(): void {
 // ---- param change fan-out ----------------------------------------------------------
 
 function onParamsChanged(): void {
-  demo?.setParams(params);
+  // a manual tweak means the user is tuning again — stop previewing the baseline
+  setCompareUi("mine");
+  pushDemo();
   presetButtons.forEach((b) => {
     b.classList.remove("on");
     b.setAttribute("aria-pressed", "false");
   });
   renderCodebox();
+  scheduleShareSync();
 }
 
 // ---- demo mount ----------------------------------------------------------------------
@@ -337,7 +441,7 @@ void import("../feel/demo")
     demo = d;
     d.setZone(zone);
     d.onZonePick((z) => setZone(z));
-    d.onImpact(() => audio.play(params));
+    d.onImpact(() => audio.play(activeParams()));
     status?.remove();
   })
   .catch(() => {
@@ -352,9 +456,20 @@ void import("../feel/demo")
 buildControls();
 renderCodebox();
 setZone("chest");
+if (sharedState?.preset) {
+  applyPreset(sharedState.preset);
+} else if (sharedState) {
+  // a custom tune from a link: no preset owns these numbers — say where they came from
+  presetButtons.forEach((b) => {
+    b.classList.remove("on");
+    b.setAttribute("aria-pressed", "false");
+  });
+  document.querySelector<HTMLElement>(".feel-shared-note")?.removeAttribute("hidden");
+}
 applyStaticText(document);
 onLocaleChange(() => {
   applyStaticText(document);
+  setCompareUi(compareMode); // the static pass resets the Exporting label's text
   buildControls();
   renderCodebox();
   document.title = `${t("feelHit.h1")} – PixJuice`;

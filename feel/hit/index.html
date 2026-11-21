@@ -69,7 +69,7 @@
     <section class="tpl-hero">
       <p class="tpl-crumbs"><a href="/feel/" data-i18n="nav.feel">game feel</a> / <span data-i18n="feel.recipe.hit.t">Hit feel</span></p>
       <h1 data-i18n="feel.hitH1">Hit feel — six layers you can stack</h1>
-      <p class="lede" data-i18n="feelHit.lede">Two rigged knights in an arena: strike the head, chest or belly and tune what the hit feels like — hit stop, screen shake, flash/squash/numbers, knockback, directional sparks and synthesized three-band audio. Every switch and slider rewrites the Godot 4 and Unity code below.</p>
+      <p class="lede" data-i18n="feelHit.lede">Tune a hit until it lands: six toggleable layers on two rigged knights — hit stop, screen shake, flash/squash/numbers, knockback, directional sparks and three-band audio — with Godot 4 and Unity code that follows every slider.</p>
     </section>
 
     <div class="feel-main">
@@ -84,7 +84,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="hitStop"></div>
-          <p class="feel-rec" data-i18n="feel.l1rec">Published anchors: action games freeze “a few frames” (Song 2005); Guilty Gear Xrd ≈7 light / ≈10 heavy (Lin et al. 2022); Smash Ultimate ≈15 frames at 15% damage, 30-frame cap (SmashWiki). The 3–4 / 10+ starting points below are heuristics.</p>
+          <p class="feel-rec" data-i18n="feel.l1rec">Published anchors: action games freeze “a few frames” (Song 2005); Guilty Gear Xrd ≈7 light / ≈10 heavy (Lin et al. 2022); Smash Ultimate ≈15 frames at 15% damage, 30-frame cap (SmashWiki). The 3–4 / 10+ starting points below are tunable defaults.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l1p">Past ~10 frames it starts reading as a stutter rather than weight — the player thinks the game dropped frames.</span></p>
         </section>
 
@@ -96,7 +96,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="shake"></div>
-          <p class="feel-rec" data-i18n="feel.l2rec">Directional, short and fast with quick decay — practice from Nijman (2013) and Song (2005); Lin et al. (2022) count camera control among the three make-or-break factors. Amplitudes have no published standard: heuristic.</p>
+          <p class="feel-rec" data-i18n="feel.l2rec">Directional, short and fast with quick decay — practice from Nijman (2013) and Song (2005); Lin et al. (2022) count camera control among the three make-or-break factors. Amplitudes have no published standard: tunable defaults.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l2p">Fresh random jitter every frame reads as a glitch. During hit stop, decay trauma with unscaled time — or the shake freezes with the world.</span></p>
         </section>
 
@@ -108,7 +108,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="feedback"></div>
-          <p class="feel-rec" data-i18n="feel.l3rec">A 1–2 frame flash matches the range Jonasson &amp; Purho demo (2012); exact counts are heuristics. Damage numbers come from Chinese studio practice (2014), not from a paper.</p>
+          <p class="feel-rec" data-i18n="feel.l3rec">A 1–2 frame flash matches the range Jonasson &amp; Purho demo (2012); exact counts are tunable defaults. Damage numbers come from Chinese studio practice (2014), not from a paper.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l3p">Flash + squash + a wall of numbers on one hit is noise, not feedback — the overdone preset shows exactly how bad it gets.</span></p>
         </section>
 
@@ -120,7 +120,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="knockback"></div>
-          <p class="feel-rec" data-i18n="feel.l4rec">Direction follows the attack line (Song 2005; Nijman 2013). No published distance/duration table — the slider values are heuristics; compare with the presets.</p>
+          <p class="feel-rec" data-i18n="feel.l4rec">Direction follows the attack line (Song 2005; Nijman 2013). No published distance/duration table — the slider values are tunable defaults; compare with the presets.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l4p">A uniform slide feels weightless. Fast out, sudden stop — never a constant-velocity glide.</span></p>
         </section>
 
@@ -132,7 +132,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="vfx"></div>
-          <p class="feel-rec" data-i18n="feel.l5rec">Particles and hit light appear in the Juice It or Lose It demo and Song (2005); counts have no standard — start restrained (heuristic), pile on only in the overdone preset, per Kao (2020).</p>
+          <p class="feel-rec" data-i18n="feel.l5rec">Particles and hit light appear in the Juice It or Lose It demo and Song (2005); counts have no standard — start restrained with the tunable defaults, pile on only in the overdone preset, per Kao (2020).</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l5p">An isotropic burst at the impact point reads as confetti. Aim the cone along the hit direction.</span></p>
         </section>
 
@@ -144,16 +144,16 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="sfx"></div>
-          <p class="feel-rec" data-i18n="feel.l6rec">The layer structure (whoosh / effort / impact / reaction) is from Song (2005); “low = weight, mid = texture, high = crisp” is a common heuristic, not a published model. Lin et al. (2022) list sound consistency as a make-or-break factor.</p>
+          <p class="feel-rec" data-i18n="feel.l6rec">The layer structure (whoosh / effort / impact / reaction) is from Song (2005); “low = weight, mid = texture, high = crisp” is a common frequency split, not a published model. Lin et al. (2022) list sound consistency as a make-or-break factor.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="feel.l6p">Stacking all three bands on every single hit washes the sound out — mix per attack weight instead.</span></p>
         </section>
       </div>
 
       <aside class="feel-side">
         <section class="feel-demo-card" aria-label="hit feel demo">
-          <div id="feel-demo" class="feel-demo"><p class="feel-status" role="status" data-i18n="feel.loading">Loading the knights…</p></div>
-          <p class="cap feel-hint" data-i18n="feel.demoHint">Click the arena to attack · click the victim to pick a zone · drag to orbit</p>
-          <div class="feel-demo-controls">
+          <div class="feel-stage">
+            <p class="cap feel-hint" data-i18n="feel.demoHint">Click the arena to attack · click the victim to pick a zone · drag to orbit</p>
+            <div id="feel-demo" class="feel-demo"><p class="feel-status" role="status" data-i18n="feel.loading">Loading the knights…</p></div>
             <div class="feel-zone" role="group" aria-label="hit zone">
               <span class="feel-ctl-label" data-i18n="feel.zone">Hit zone</span>
               <button type="button" class="btn feel-zone-btn" data-zone="head" data-i18n="feel.zHead">Head</button>
@@ -161,12 +161,23 @@
               <button type="button" class="btn feel-zone-btn" data-zone="belly" data-i18n="feel.zBelly">Belly</button>
               <button type="button" class="btn primary feel-attack" data-i18n="feel.attack">Attack</button>
             </div>
+          </div>
+          <div class="feel-demo-controls">
             <div class="feel-presets" role="group" aria-label="presets">
               <span class="feel-ctl-label" data-i18n="feel.presets">Presets</span>
               <button type="button" class="btn feel-preset on" data-preset="light" data-i18n="feel.preset.light">Light punch</button>
               <button type="button" class="btn feel-preset" data-preset="heavy" data-i18n="feel.preset.heavy">Heavy hammer</button>
               <button type="button" class="btn feel-preset" data-preset="overdone" data-i18n="feel.preset.overdone">Everything maxed</button>
             </div>
+            <div class="feel-compare" role="group" aria-label="compare tune">
+              <span class="feel-ctl-label" data-i18n="feel.compareLabel">Compare on the demo</span>
+              <button type="button" class="btn feel-compare-btn on" data-compare="mine" aria-pressed="true" data-i18n="feel.compareMine">My tune</button>
+              <button type="button" class="btn feel-compare-btn" data-compare="base" aria-pressed="false" data-i18n="feel.compareBase">Page default</button>
+              <button type="button" class="btn feel-share" data-i18n="feel.share">⧉ Share this tune</button>
+            </div>
+            <p class="cap feel-compare-note" hidden data-i18n="feel.compareNote">The demo is now playing the page default — your sliders are untouched. Attack to feel the difference, then switch back to your tune.</p>
+            <p class="cap feel-shared-note" hidden data-i18n="feel.sharedNote">Opened from a shared link — these are that tune’s numbers, not a recommendation.</p>
+            <input class="feel-share-url" type="text" readonly hidden aria-label="share link" data-i18n-aria="feel.shareUrlAria">
             <p class="cap" data-i18n="feel.presetHint">Switch, then attack to compare. Basis: light ≈ Song’s fast-attack observation + GGXRD’s light/heavy split; heavy ≈ Song’s heavy-weapon camera shift + Sakurai’s “higher damage, longer stop”; maxed = Kao (2020): extreme juiciness scores worse than moderate.</p>
           </div>
         </section>
@@ -174,14 +185,24 @@
         <section class="feel-code" aria-labelledby="feel-code-h">
           <h2 id="feel-code-h" data-i18n="feel.code">Engine code</h2>
           <p class="cap" data-i18n="feel.codeNote">These snippets rebuild from the switches and sliders above — copy them straight into your project. The two smaller files cover the attacker's arm IK and the victim's local bone reactions.</p>
+          <p class="cap feel-export" data-export="mine"><span data-i18n="feel.exportPrefix">Exporting:</span> <b data-i18n="feel.exportMine">my tune</b></p>
           <div class="codebox feel-codebox" id="feel-codebox"></div>
+          <details class="feel-hookup">
+            <summary data-i18n="feel.hookupH">Hookup &amp; limits</summary>
+            <ul>
+              <li data-i18n-html="feel.hk1">Targets Godot 4.x GDScript and Unity C# (Unity 6+: on older Unity versions rename <code>linearVelocity</code> back to <code>velocity</code>).</li>
+              <li data-i18n-html="feel.hk2">Hookup: attach the script to a node in your combat scene and call <code>impact(direction, hit_point, damage, bone)</code> from your own hit detection. Each snippet’s header lists the nodes it expects (%Victim, %Sparks, %Camera3D, the impact audio players).</li>
+              <li data-i18n-html="feel.hk3">Every number is a tunable default exported from the lab — retune it for your project; it is a starting point, not a rule.</li>
+              <li data-i18n-html="feel.hk4">This demo’s knights play authored Mixamo clips (idle / slash / body-hit); the demo itself runs no live IK and no ragdoll. <code>arm_ik.gd</code> / <code>TwoBoneIK.cs</code> and <code>local_bones.gd</code> are optional next steps for a real project.</li>
+            </ul>
+          </details>
           <p class="cap feel-license" data-i18n="feel.cc0">Snippets and demo models are CC0 — use them without attribution.</p>
         </section>
       </aside>
     </div>
     <section class="feel-sources" aria-labelledby="feel-hitsources-h">
       <h2 id="feel-hitsources-h" data-i18n="feel.sourcesH">Sources &amp; method</h2>
-      <p class="feel-sources-note" data-i18n="feel.sourcesNote">Numbers on this page carry one of two labels: a published source, or 经验值 (heuristic) — the industry's oral tradition. Heuristics are fine slider defaults; they are not findings. Retune everything.</p>
+      <p class="feel-sources-note" data-i18n="feel.sourcesNote">Slider numbers are tunable defaults — starting points to retune for your project, not universal rules. Published sources are cited separately below; unlabeled numbers come from action-game practice (the industry's oral tradition), not research. Retune for your game.</p>
       <div data-i18n-html="feel.sourcesHit">
         <ul>
           <li>Song, “Improving the Combat ‘Impact’ of Action Games” (2005) — frame freezing, directional camera shift, hit light, layered audio. <a href="https://www.gamedeveloper.com/audio/improving-the-combat-impact-of-action-games" target="_blank" rel="noopener">Article ↗</a></li>

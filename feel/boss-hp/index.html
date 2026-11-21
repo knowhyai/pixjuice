@@ -69,7 +69,7 @@
     <section class="tpl-hero">
       <p class="tpl-crumbs"><a href="/feel/" data-i18n="nav.feel">game feel</a> / <span data-i18n="feel.recipe.boss.t">Boss HP bar</span></p>
       <h1 data-i18n="feel.bossH1">Boss HP bar — five layers you can stack</h1>
-      <p class="lede" data-i18n="feelBoss.lede">One boss health bar, five juice layers: a white bar that lingers behind the damage, a shake and flash on every hit, scale ticks, layered HP colors with a remaining-layer counter, and a low-health alarm with a red screen edge. Every switch and slider rewrites the Godot 4 and web code below. All numbers are heuristics — retune them for your game.</p>
+      <p class="lede" data-i18n="feelBoss.lede">Tune a boss health bar live: a delayed white damage bar, hit shake and flash, scale ticks, layered HP colors with a remaining-layer counter, and a low-health alarm with a screen-edge warning — with Godot 4 and web code that follows every slider.</p>
     </section>
 
     <div class="feel-main">
@@ -84,7 +84,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="lag"></div>
-          <p class="feel-rec" data-i18n="boss.bl1rec">The wait-then-catch rhythm is long-standing boss-bar practice; the 0.35 s wait / 0.45 s catch defaults are heuristics, not measured standards.</p>
+          <p class="feel-rec" data-i18n="boss.bl1rec">The wait-then-catch rhythm is long-standing boss-bar practice; the 0.35 s wait / 0.45 s catch values are tunable defaults, not measured standards.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="boss.bl1p">A ghost that never catches up lies to the player. Restart the hold on rapid hits if you like, but the chase must always finish.</span></p>
         </section>
 
@@ -96,7 +96,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="react"></div>
-          <p class="feel-rec" data-i18n="boss.bl2rec">Shake that decays within a fraction of a second follows the screenshake practice on the hit-feel page (Nijman 2013; Song 2005); 0.27 s / 14 px / 0.08 s here are heuristics.</p>
+          <p class="feel-rec" data-i18n="boss.bl2rec">Shake that decays within a fraction of a second follows the screenshake practice on the hit-feel page (Nijman 2013; Song 2005); 0.27 s / 14 px / 0.08 s here are tunable defaults.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="boss.bl2p">Shaking the whole HUD makes the interface feel broken. Shake the bar, not the screen — and skip the shake entirely under reduced motion.</span></p>
         </section>
 
@@ -108,7 +108,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="ticks"></div>
-          <p class="feel-rec" data-i18n="boss.bl3rec">Quarter marks usually match phase changes rather than any published rule — the 10% step and the quarter markers are heuristics.</p>
+          <p class="feel-rec" data-i18n="boss.bl3rec">Quarter marks usually match phase changes rather than any published rule — the 10% step and the quarter markers are tunable defaults.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="boss.bl3p">Ticks every 5% turn the bar into a ruler you read instead of a bar you feel. Keep them quiet.</span></p>
         </section>
 
@@ -120,7 +120,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="layers"></div>
-          <p class="feel-rec" data-i18n="boss.bl4rec">Color order and the ×N badge are genre convention (fighting-game boss bars), not a measured finding — heuristics. Keep the count small; three reads, seven doesn't.</p>
+          <p class="feel-rec" data-i18n="boss.bl4rec">Color order and the ×N badge are genre convention (fighting-game boss bars), not a measured finding — tunable defaults. Keep the count small; three reads, seven doesn't.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="boss.bl4p">If the layer break has no reaction of its own (flash, sound), players read it as a bug — the bar jumped, not the fight.</span></p>
         </section>
 
@@ -132,7 +132,7 @@
             </div>
           </header>
           <div class="feel-layer-controls" data-controls="alarm"></div>
-          <p class="feel-rec" data-i18n="boss.bl5rec">The 25% threshold and 2.5 Hz pulse are heuristics. A pulse fast enough to feel urgent is also fast enough to annoy — offer reduced motion.</p>
+          <p class="feel-rec" data-i18n="boss.bl5rec">The 25% threshold and 2.5 Hz pulse are tunable defaults. A pulse fast enough to feel urgent is also fast enough to annoy — offer reduced motion.</p>
           <p class="feel-pit"><b data-i18n="feel.pitTag">Pitfall</b> <span data-i18n="boss.bl5p">A full-screen red vignette that ignores the player's reduced-motion setting is a motion-sickness trap. Respect prefers-reduced-motion from day one.</span></p>
         </section>
 
@@ -149,9 +149,9 @@
 
       <aside class="feel-side">
         <section class="feel-demo-card" aria-label="boss hp demo">
-          <div id="boss-demo" class="feel-boss-host" data-i18n-aria="boss.barAria"></div>
-          <p class="cap feel-hint" data-i18n="boss.demoHint">Click the stage for a light hit · buttons for heavier play · heal crosses layers back up</p>
-          <div class="feel-demo-controls">
+          <div class="feel-stage">
+            <p class="cap feel-hint" data-i18n="boss.demoHint">Click the stage for a light hit · buttons for heavier play · heal crosses layers back up</p>
+            <div id="boss-demo" class="feel-boss-host" data-i18n-aria="boss.barAria"></div>
             <div class="feel-zone boss-actions" role="group" aria-label="damage controls">
               <span class="feel-ctl-label" data-i18n="boss.actions">Boss actions</span>
               <button type="button" class="btn boss-hit" data-i18n="boss.hitBtn">Hit −12</button>
@@ -159,29 +159,50 @@
               <button type="button" class="btn boss-heal" data-i18n="boss.healBtn">Heal +18</button>
               <button type="button" class="btn primary boss-reset" data-i18n="boss.resetBtn">Reset</button>
             </div>
+          </div>
+          <div class="feel-demo-controls">
             <div class="feel-presets" role="group" aria-label="presets">
               <span class="feel-ctl-label" data-i18n="feel.presets">Presets</span>
               <button type="button" class="btn boss-preset" data-preset="light" data-i18n="boss.preset.light">Restrained</button>
               <button type="button" class="btn boss-preset on" data-preset="heavy" data-i18n="boss.preset.heavy">Full recipe</button>
             </div>
-            <p class="cap" data-i18n="boss.presetHint">Restrained trims every layer to its quietest readable version — single bar, no screen edge. Full recipe is the default you landed on: all five layers with the heuristic starting values.</p>
+            <div class="feel-compare" role="group" aria-label="compare tune">
+              <span class="feel-ctl-label" data-i18n="feel.compareLabel">Compare on the demo</span>
+              <button type="button" class="btn feel-compare-btn on" data-compare="mine" aria-pressed="true" data-i18n="feel.compareMine">My tune</button>
+              <button type="button" class="btn feel-compare-btn" data-compare="base" aria-pressed="false" data-i18n="feel.compareBase">Page default</button>
+              <button type="button" class="btn feel-share" data-i18n="feel.share">⧉ Share this tune</button>
+            </div>
+            <p class="cap feel-compare-note" hidden data-i18n="feel.compareNote">The demo is now playing the page default — your sliders are untouched. Attack or hit it to feel the difference, then switch back to your tune.</p>
+            <p class="cap feel-shared-note" hidden data-i18n="feel.sharedNote">Opened from a shared link — these are that tune’s numbers, not a recommendation.</p>
+            <input class="feel-share-url" type="text" readonly hidden aria-label="share link" data-i18n-aria="feel.shareUrlAria">
+            <p class="cap" data-i18n="boss.presetHint">Restrained trims every layer to its quietest readable version — single bar, no screen edge. Full recipe is the default you landed on: all five layers with the tunable default values.</p>
           </div>
         </section>
 
         <section class="feel-code" aria-labelledby="boss-code-h">
           <h2 id="boss-code-h" data-i18n="feel.code">Engine code</h2>
           <p class="cap" data-i18n="boss.codeNote">The Godot tab exports a Control script with the whole recipe; the web tab is one self-contained HTML file (CSS + JS) you can open as-is. Both rebuild from the switches and sliders above.</p>
+          <p class="cap feel-export" data-export="mine"><span data-i18n="feel.exportPrefix">Exporting:</span> <b data-i18n="feel.exportMine">my tune</b></p>
           <div class="codebox feel-codebox" id="boss-codebox"></div>
+          <details class="feel-hookup">
+            <summary data-i18n="feel.hookupH">Hookup &amp; limits</summary>
+            <ul>
+              <li data-i18n-html="boss.hk1">Targets Godot 4.x (a Control script — the header comment lists the node tree to build: Track, LagFill, Fill, Ticks, labels, optional edge vignette) and any browser for the web tab (one self-contained HTML file).</li>
+              <li data-i18n-html="boss.hk2">Hookup: feed damage through <code>take_damage(units)</code> / <code>heal(units)</code>; <code>setup(fraction)</code> starts a fight. The low-HP threshold compares against the boss’s <b>total</b> HP across all layers, not the active layer.</li>
+              <li data-i18n-html="feel.hk3">Every number is a tunable default exported from the lab — retune it for your project; it is a starting point, not a rule.</li>
+              <li data-i18n-html="boss.hk4">The screen-edge warning belongs in your HUD layer, never on the window root; the exported snippets honor <code>prefers-reduced-motion</code> / the <code>reduce_motion</code> flag on their own.</li>
+            </ul>
+          </details>
           <p class="cap feel-license" data-i18n="feel.cc0">Snippets and demo models are CC0 — use them without attribution.</p>
         </section>
       </aside>
     </div>
     <section class="feel-sources" aria-labelledby="boss-sources-h">
       <h2 id="boss-sources-h" data-i18n="feel.sourcesH">Sources &amp; method</h2>
-      <p class="feel-sources-note" data-i18n="feel.sourcesNote">Numbers on this page carry one of two labels: a published source, or 经验值 (heuristic) — the industry's oral tradition. Heuristics are fine slider defaults; they are not findings. Retune everything.</p>
+      <p class="feel-sources-note" data-i18n="feel.sourcesNote">Slider numbers are tunable defaults — starting points to retune for your project, not universal rules. Published sources are cited separately below; unlabeled numbers come from action-game practice (the industry's oral tradition), not research. Retune for your game.</p>
       <div data-i18n-html="boss.sources">
         <ul>
-          <li>Every timing on this page (0.35 s lag, 0.27 s shake, 2.5 Hz pulse…) is a heuristic from action-game practice — no published standard exists for boss bars.</li>
+          <li>Every timing on this page (0.35 s lag, 0.27 s shake, 2.5 Hz pulse…) is a tunable default from action-game practice — no published standard exists for boss bars.</li>
           <li>The toggle-and-compare method comes from Jonasson &amp; Purho, “Juice It or Lose It” (2012). <a href="https://github.com/grapefrukt/juicy-breakout" target="_blank" rel="noopener">Demo ↗</a></li>
           <li>Short, fast-decaying shake over constant jitter: Nijman, “The Art of Screenshake” (2013); Song (2005).</li>
           <li>Kao (2020) — moderate juice beats none and extreme; the restrained preset is the same lesson applied to a HUD. <a href="https://doi.org/10.1016/j.entcom.2020.100359" target="_blank" rel="noopener">DOI ↗</a></li>

@@ -74,6 +74,12 @@ export function godotHitFeel(p: FeelParams): string {
   return `extends Node
 # Hit-impact recipe — exported from the PixJuice Game Feel Lab.
 # Six layers, each optional, all firing from one impact call.
+#
+# Hookup (Godot 4.x): attach to a Node in your combat scene and call
+# impact(...) from your own hit detection. Expected unique-name nodes:
+# %Victim (CharacterBody3D), %Sparks (GPUParticles3D), %Camera3D,
+# %ImpactLow / %ImpactMid / %ImpactHigh (AudioStreamPlayer).
+# Every exported number is a tunable default from the lab — retune it for your project.
 
 @export var hit_stop_enabled := ${gdBool(p.hitStop.on)}
 @export var hit_stop_seconds := ${stop}        # ${p.hitStop.frames} frames at 60 fps
@@ -168,6 +174,8 @@ export function godotArmIK(p: FeelParams): string {
 # Attacker arm IK with SkeletonIK3D — the arm reaches for the real target
 # bone instead of playing a canned swing into empty air, and takes a small
 # recoil push at the moment of contact.
+# Optional add-on for your project: the lab demo plays authored Mixamo clips
+# (idle / slash / body-hit) and does not run this IK.
 
 @export var ik_weight := 1.0
 @export var recoil_meters := ${recoil}   # how far the hand is pushed back on impact
@@ -209,6 +217,8 @@ export function godotLocalBones(p: FeelParams): string {
 # Local hit reaction with PhysicalBone3D — only the bones near the impact go
 # physical for a moment; the rest of the body keeps animating. This is the
 # "belly caves in, head tips forward" layer, not a full ragdoll.
+# Optional add-on for your project: the lab demo plays authored Mixamo clips
+# (idle / slash / body-hit) and simulates no bones.
 
 @export var impulse_strength := ${impulse}
 @export var recover_seconds := ${recover}
@@ -245,6 +255,10 @@ using UnityEngine;
 
 // Hit-impact recipe — exported from the PixJuice Game Feel Lab.
 // Six layers, each optional, all firing from one Impact() call.
+// Hookup (Unity 6+; on older versions rename linearVelocity to velocity):
+// add HitFeel to a scene object and call Impact(...) from your hit detection;
+// assign victim, sparks and the three impact AudioSources in the inspector.
+// Every serialized number is a tunable default from the lab — retune it for your project.
 public sealed class HitFeel : MonoBehaviour {
     [SerializeField] bool hitStopEnabled = ${csBool(p.hitStop.on)};
     [SerializeField] float hitStopSeconds = ${stop}f;   // ${p.hitStop.frames} frames at 60 fps
@@ -356,6 +370,8 @@ export function unityArmIK(p: FeelParams): string {
 // The arm tracks the real target point and takes a small recoil push at
 // contact, so a hit feels like it met something. Unity's Animation Rigging
 // package (TwoBoneIKConstraint) does the same job if you prefer components.
+// Optional add-on for your project: the lab demo plays authored Mixamo clips
+// (idle / slash / body-hit) and does not run this IK.
 public static class TwoBoneIK {
     public static void Solve(Transform upper, Transform fore, Transform hand,
                              Transform target, Vector3 pole, float weight, float recoil) {

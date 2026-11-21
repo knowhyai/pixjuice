@@ -814,6 +814,7 @@ footer {
 /* Site-wide theme and fixed navigation geometry. */
 :root { --dim:#aaa4bc; --faint:#aaa4bc; }
 :root[data-theme="light"] { color-scheme:light; --bg:#f4f0e8; --bg2:#ebe6dc; --panel:#fffcf6; --panel2:#e7e0d4; --line:#b4ab9d; --text:#28251f; --dim:#5e574d; --faint:#62594f; --acc:#ad2844; --acc2:#096178; --good:#26713a; }
+:root { --head-h: 88px; } /* real header height; feel pages refine it via header-offset.ts */
 .head { position:sticky; top:0; z-index:1000; background:var(--bg2); border-bottom:1px solid var(--line); }
 .head .head-in { height:88px; padding:12px 20px; flex-wrap:nowrap; }
 .head .nav { flex-wrap:nowrap; align-items:center; gap:18px; }
@@ -826,7 +827,19 @@ footer {
 :root[data-theme="light"] .head .theme-toggle .icon-sun { display:none; }
 :root[data-theme="light"] .head .theme-toggle .icon-moon { display:block; }
 :root[data-theme="light"] .tools-menu a:hover {color:var(--text)}
-@media(max-width:900px){.head .head-in{height:130px;display:block;overflow-x:auto}.head .brand h1{font-size:22px}.head .brand .sub{font-size:12px}.head .nav{gap:16px;width:max-content}.head .nav a{font-size:13px}.head .lang{max-width:95px}}
+/* ≤900px: stack the brand over a wrapping nav. No overflow-x:auto on .head-in
+   and no max-content nav — together they forced a sideways scrollbar on ~390px
+   phones. No overflow on .head itself either: the tools dropdown hangs below it. */
+@media(max-width:900px){
+  html{overflow-x:clip}
+  :root{--head-h:152px} /* fallback until header-offset.ts measures the wrapped rows */
+  .head .head-in{height:auto;display:block;padding:10px 14px}
+  .head .brand h1{font-size:22px}
+  .head .brand .sub{font-size:12px}
+  .head .nav{flex-wrap:wrap;width:100%;gap:4px 14px}
+  .head .nav a{font-size:13px}
+  .head .lang{max-width:95px}
+}
 .home-entries {max-width:1180px;margin:30px auto; padding:0 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
 .home-entry {border:1px solid var(--line);background:var(--panel);border-radius:10px;overflow:hidden;color:var(--text);box-shadow:0 5px 18px #0000000c;}
 .home-entry img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;}

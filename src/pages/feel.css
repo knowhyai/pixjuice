@@ -7,6 +7,115 @@
   font-size: clamp(30px, 4.4vw, 46px);
 }
 
+/* problem entry — the advisor door: live cards link out, the rest stays put */
+
+.feel-problems {
+  display: grid;
+  gap: 12px;
+  margin: 10px 20px 34px;
+}
+
+.feel-problems h2 {
+  margin: 0;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+}
+
+.feel-prob-lede {
+  margin: 0;
+  color: var(--dim);
+  font-size: 13.5px;
+  line-height: 1.55;
+  max-width: 72ch;
+}
+
+.feel-prob-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.feel-prob-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 16px 18px 14px;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+
+a.feel-prob-card:hover {
+  border-color: color-mix(in srgb, var(--acc) 55%, var(--line));
+}
+
+.feel-prob-card h3 {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
+.feel-prob-card p {
+  margin: 0;
+  color: var(--dim);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.feel-prob-tag {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.feel-prob-live {
+  color: var(--good);
+  border: 1px solid color-mix(in srgb, var(--good) 50%, var(--line));
+}
+
+.feel-prob-soon {
+  color: var(--faint);
+  border: 1px dashed var(--line);
+}
+
+.feel-prob-cta {
+  margin-top: auto;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--acc);
+}
+
+.feel-prob-none ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.feel-prob-none li {
+  font-size: 12.5px;
+  font-weight: 650;
+  padding: 5px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 999px;
+  color: var(--faint);
+}
+
+.feel-prob-note {
+  font-size: 12.5px;
+}
+
 .feel-recipes {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -296,7 +405,7 @@
   background: var(--panel);
   padding: 16px 18px 14px;
   margin-bottom: 16px;
-  scroll-margin-top: 84px;
+  scroll-margin-top: calc(var(--head-h, 88px) + 12px);
 }
 
 .feel-layer:target {
@@ -459,11 +568,26 @@
   margin-right: 6px;
 }
 
+/* demo stage: the canvas/bar and its attack row travel as one unit so narrow
+   screens can pin the pair under the sticky header (see the ≤1020px block) */
+
+.feel-stage {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.feel-stage .feel-hint {
+  margin: 0;
+}
+
 /* ---- side column: demo + code ---- */
 
 .feel-side {
   position: sticky;
-  top: 14px;
+  /* below the sticky site header — top:14px alone tucked the column under it */
+  top: calc(var(--head-h, 88px) + 14px);
   display: grid;
   gap: 18px;
   min-width: 0; /* let the grid track win over the canvas's intrinsic width */
@@ -566,7 +690,8 @@
 }
 
 .feel-zone,
-.feel-presets {
+.feel-presets,
+.feel-compare {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -574,9 +699,61 @@
 }
 
 .feel-zone .feel-ctl-label,
-.feel-presets .feel-ctl-label {
+.feel-presets .feel-ctl-label,
+.feel-compare .feel-ctl-label {
   flex: 1 0 100%;
   margin-bottom: 0;
+}
+
+.feel-compare .btn {
+  flex: none;
+}
+
+.feel-compare-note {
+  color: var(--acc);
+}
+
+.feel-shared-note {
+  color: var(--good);
+}
+
+.feel-share-url {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel2);
+  color: var(--text);
+}
+
+.feel-hookup {
+  margin-top: 8px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.feel-hookup summary {
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--dim);
+}
+
+.feel-hookup ul {
+  margin: 8px 0 2px;
+  padding: 0 0 0 1.1em;
+  color: var(--dim);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.feel-hookup li {
+  margin: 0 0 6px;
 }
 
 .feel-attack {
@@ -599,6 +776,20 @@
 
 .feel-codebox {
   margin-top: 6px;
+}
+
+/* which tune the code panel is exporting right now — follows the demo side */
+.feel-export {
+  margin: 0 0 8px;
+  color: var(--dim);
+}
+
+.feel-export b {
+  color: var(--text);
+}
+
+.feel-export[data-export="base"] b {
+  color: var(--acc);
 }
 
 .feel-engine-tabs {
@@ -835,6 +1026,22 @@
     position: static;
     order: -1;
   }
+  /* pin just the demo stage (canvas/bar + attack row) under the sticky header
+     so the hit stays confirmable on the same screen; presets / compare / share
+     scroll on below it and stay reachable. Solid background + border so the
+     page content slides cleanly under the pinned stage. */
+  .feel-stage {
+    position: sticky;
+    top: var(--head-h, 88px);
+    z-index: 30;
+    background: var(--panel);
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--line);
+    border-radius: 8px;
+  }
+  .feel-boss-stage {
+    min-height: min(300px, 42dvh);
+  }
 }
 
 @media (max-width: 620px) {
@@ -856,6 +1063,7 @@
   .feel-soon,
   .feel-domains,
   .feel-sources,
+  .feel-problems,
   .feel-main {
     margin-left: 0;
     margin-right: 0;

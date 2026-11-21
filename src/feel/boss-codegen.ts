@@ -67,7 +67,11 @@ export function godotBossHp(p: BossHpParams): string {
   return `extends Control
 # Boss HP bar recipe — exported from the PixJuice Game Feel Lab.
 # Five independent layers: delayed white bar, hit shake + flash, scale ticks,
-# layered HP colors, low-HP alarm. All timings are heuristics — retune them.
+# layered HP colors, low-HP alarm. All timings are tunable defaults — retune them for your project.
+#
+# Hookup (Godot 4.x): call setup(fraction) when the fight starts, then feed
+# combat through take_damage(units) / heal(units). The alarm threshold is a
+# fraction of the boss's TOTAL hp across all layers, not the active layer.
 #
 # Scene setup: this Control (the bar zone) with children:
 #   Track (Control) -> LagFill (ColorRect), Fill (ColorRect), Ticks (Control)
@@ -82,12 +86,12 @@ export function godotBossHp(p: BossHpParams): string {
 @export var layer_colors: Array[Color] = [${colors.join(", ")}]   # outermost first
 
 @export var delayed_bar_on := ${gdBool(p.lag.on)}
-@export var lag_wait := ${n(p.lag.wait)}            # seconds the ghost holds (heuristic)
+@export var lag_wait := ${n(p.lag.wait)}            # seconds the ghost holds
 @export var lag_catch := ${n(p.lag.catch)}            # seconds the ghost needs to catch up
 
 @export var hit_react_on := ${gdBool(p.react.on)}
-@export var shake_decay := ${n(p.react.shakeDecay)}           # seconds until the shake settles (heuristic)
-@export var shake_max_px := ${Math.round(p.react.shakeMax)}            # worst-case offset (heuristic)
+@export var shake_decay := ${n(p.react.shakeDecay)}           # seconds until the shake settles
+@export var shake_max_px := ${Math.round(p.react.shakeMax)}            # worst-case offset
 @export var flash_seconds := ${n(p.react.flash)}
 
 @export var ticks_on := ${gdBool(p.ticks.on)}
@@ -95,8 +99,8 @@ export function godotBossHp(p: BossHpParams): string {
 @export var tick_markers := ${gdBool(p.ticks.markers)}          # small flags at 25 / 50 / 75
 
 @export var low_alarm_on := ${gdBool(p.alarm.on)}
-@export var alarm_threshold := ${Math.round(p.alarm.threshold)}          # percent of TOTAL hp (heuristic)
-@export var alarm_hz := ${n(p.alarm.pulseHz, 1)}             # glow pulse frequency (heuristic)
+@export var alarm_threshold := ${Math.round(p.alarm.threshold)}          # percent of TOTAL hp
+@export var alarm_hz := ${n(p.alarm.pulseHz, 1)}             # glow pulse frequency
 @export var alarm_screen_edge := ${gdBool(p.alarm.edge)}
 @export var reduce_motion := false:   # wire to your accessibility settings; the web export reads prefers-reduced-motion
 	set(value):
@@ -260,7 +264,9 @@ export function webBossHp(p: BossHpParams): string {
 <!-- Boss HP bar recipe — exported from the PixJuice Game Feel Lab.
      One self-contained file: CSS custom properties carry the live recipe
      values; the script runs the same state machine as the demo page.
-     All timings are heuristics — retune them. CC0. -->
+     Hookup: open as-is, or lift the BossBar class and drive it with
+     damage() / heal() / reset(). Honors prefers-reduced-motion by itself.
+     All timings are tunable defaults — retune them for your project. CC0. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -269,7 +275,7 @@ export function webBossHp(p: BossHpParams): string {
 <style>
   :root {
     --layer-colors: ${colors.join(", ")};
-    --alarm-hz: ${n(p.alarm.pulseHz, 1)};              /* heuristic */
+    --alarm-hz: ${n(p.alarm.pulseHz, 1)};
     --alarm-glow: #ff2d3f;
   }
   .boss-hp { --pulse: calc(1s / var(--alarm-hz)); width: min(640px, 92vw); font: 14px system-ui, sans-serif; }
@@ -316,7 +322,7 @@ ${markers}
   </p>
 </div>
 <script>
-// Recipe values baked in from the lab (all heuristics):
+// Recipe values baked in from the lab — tunable defaults:
 const CFG = {
   unitsPerLayer: 100,
   layers: ${p.layers.on ? Math.max(1, Math.round(p.layers.count)) : 1},

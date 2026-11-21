@@ -468,7 +468,9 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   // --- resize -------------------------------------------------------------------------
   const resize = new ResizeObserver(() => {
     const w = Math.max(1, hostWrap.clientWidth);
-    const h = Math.max(1, Math.round(w * 0.66));
+    // 46% viewport cap so the sticky mobile stage (canvas + attack row, see
+    // feel.css ≤1020px) still fits below the wrapped site header on a phone.
+    const h = Math.max(1, Math.round(Math.min(w * 0.66, Math.max(180, window.innerHeight * 0.46))));
     renderer.setSize(w, h, false);
     canvas.style.height = `${h}px`;
     camera.aspect = w / h;

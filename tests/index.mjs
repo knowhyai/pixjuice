@@ -9,4 +9,5 @@ import './parts.test.mjs';
 import './feel.test.mjs';
 import './boss.test.mjs';
 import './boss-demo.test.mjs';
+import './advisor.test.mjs';
 import './routing.test.mjs';

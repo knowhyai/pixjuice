@@ -8,6 +8,7 @@ import "../templates/templates.css";
 import "./feel.css";
 import { applyStaticText, mountLangSwitcher, onLocaleChange, t } from "../lib/i18n";
 import { mountToolsMenu } from "../lib/navmenu";
+import { syncHeaderOffset } from "../lib/header-offset";
 import { el } from "../lib/el";
 import {
   BOSS_DEFAULT_PARAMS,
@@ -20,12 +21,25 @@ import {
 import { buildBossCodeTabs } from "../feel/boss-codegen";
 import type { BossBarDemo } from "../feel/boss-demo";
 import { createBossBar } from "../feel/boss-demo";
+import { buildShareUrl, parseBossState, readTuneParam, serializeBoss } from "../feel/share";
 
 mountToolsMenu();
 mountLangSwitcher();
+syncHeaderOffset();
 
-const params: BossHpParams = BOSS_DEFAULT_PARAMS;
+const params: BossHpParams = cloneBossParams(BOSS_DEFAULT_PARAMS);
 let demo: BossBarDemo | null = null;
+
+// ---- shared tune from the URL (?tune=) ------------------------------------------
+
+// Parsed before the bar mounts so sliders, demo and code all boot on the shared
+// values. A garbage token is ignored silently — the page default stands. The
+// reduced-motion preference is local, so it never travels through the URL.
+const sharedState = (() => {
+  const raw = readTuneParam(location.search);
+  return raw ? parseBossState(raw) : null;
+})();
+if (sharedState) Object.assign(params, sharedState.params);
 
 // ---- layer controls -----------------------------------------------------------
 
@@ -207,21 +221,105 @@ function applyPreset(id: BossPresetId): void {
   refreshControlValues();
   // setParams + code only — manual slider tweaks clear the highlight, preset
   // switches must not (same rule as the hit-feel page).
-  demo?.setParams(params);
+  pushDemo();
   renderCodebox();
   presetButtons.forEach((b) => {
     const on = b.dataset.preset === id;
     b.classList.toggle("on", on);
     b.setAttribute("aria-pressed", String(on));
   });
+  scheduleShareSync();
 }
 
-presetButtons.forEach((b) => b.addEventListener("click", () => applyPreset(b.dataset.preset as BossPresetId)));
+presetButtons.forEach((b) =>
+  b.addEventListener("click", () => {
+    setCompareUi("mine"); // picking a tune ends any baseline preview
+    applyPreset(b.dataset.preset as BossPresetId);
+  }),
+);
 
 document.querySelector<HTMLButtonElement>(".boss-hit")?.addEventListener("click", () => demo?.damage(12));
 document.querySelector<HTMLButtonElement>(".boss-heavy")?.addEventListener("click", () => demo?.damage(30));
 document.querySelector<HTMLButtonElement>(".boss-heal")?.addEventListener("click", () => demo?.heal(18));
 document.querySelector<HTMLButtonElement>(".boss-reset")?.addEventListener("click", () => demo?.reset());
+
+// ---- baseline compare + shareable link -------------------------------------------
+
+// The bar can play the page default while the sliders keep the user's tune —
+// comparing never destroys the dialled-in state. The generated code follows the
+// demo side (the panel is labeled with whichever tune it is exporting), so a
+// baseline preview never ships numbers that differ from what is on screen.
+const baselineParams = (): BossHpParams => cloneBossParams(BOSS_DEFAULT_PARAMS);
+let compareMode: "mine" | "base" = "mine";
+const compareButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".feel-compare-btn"));
+const compareNote = document.querySelector<HTMLElement>(".feel-compare-note");
+const exportLabel = document.querySelector<HTMLElement>(".feel-export");
+
+/** What the demo bar (and the generated code) should run right now. */
+const activeParams = (): BossHpParams => (compareMode === "base" ? baselineParams() : params);
+
+function pushDemo(): void {
+  demo?.setParams(activeParams());
+}
+
+function setCompareUi(mode: "mine" | "base"): void {
+  compareMode = mode;
+  compareButtons.forEach((b) => {
+    const on = b.dataset.compare === mode;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", String(on));
+  });
+  if (compareNote) compareNote.hidden = mode !== "base";
+  if (exportLabel) {
+    exportLabel.dataset.export = mode;
+    const what = exportLabel.querySelector("b");
+    if (what) what.textContent = t(mode === "base" ? "feel.exportBase" : "feel.exportMine");
+  }
+}
+
+compareButtons.forEach((b) =>
+  b.addEventListener("click", () => {
+    setCompareUi(b.dataset.compare === "base" ? "base" : "mine");
+    pushDemo();
+    // code follows the demo side: re-render so the export matches what plays
+    renderCodebox();
+  }),
+);
+
+// ?tune= follows every change via replaceState (no history spam); the share
+// button flushes it first so the copied URL always carries the current sliders.
+let shareTimer = 0;
+function syncShareUrl(): void {
+  const url = buildShareUrl(location.origin, location.pathname, location.search, location.hash, serializeBoss(params));
+  history.replaceState(null, "", url);
+}
+function scheduleShareSync(): void {
+  clearTimeout(shareTimer);
+  shareTimer = window.setTimeout(syncShareUrl, 250);
+}
+
+const shareBtn = document.querySelector<HTMLButtonElement>(".feel-share");
+const shareUrlBox = document.querySelector<HTMLInputElement>(".feel-share-url");
+shareBtn?.addEventListener("click", async () => {
+  clearTimeout(shareTimer);
+  syncShareUrl();
+  const url = location.href;
+  try {
+    await navigator.clipboard.writeText(url);
+    shareBtn.textContent = t("feel.shareDone");
+    setTimeout(() => {
+      shareBtn.textContent = t("feel.share");
+    }, 1400);
+  } catch {
+    // clipboard blocked — surface the URL itself so it can be copied by hand
+    if (shareUrlBox) {
+      shareUrlBox.value = url;
+      shareUrlBox.hidden = false;
+      shareUrlBox.focus();
+      shareUrlBox.select();
+    }
+  }
+});
 
 // ---- engine code panel -----------------------------------------------------------
 
@@ -231,7 +329,10 @@ let activeFile = "boss_hp_bar.gd";
 let currentCode = "";
 
 function renderCodebox(): void {
-  const tabs = buildBossCodeTabs(params);
+  // built from activeParams() — the code panel always matches the demo (and its
+  // Exporting label), so a baseline preview exports the page default, not a
+  // silently different user tune
+  const tabs = buildBossCodeTabs(activeParams());
   const mine = tabs.filter((x) => x.engine === engine);
   if (!mine.some((x) => x.id === activeFile)) activeFile = mine[0].id;
   const active = mine.find((x) => x.id === activeFile) ?? mine[0];
@@ -297,12 +398,15 @@ function renderCodebox(): void {
 // ---- param change fan-out ----------------------------------------------------------
 
 function onParamsChanged(): void {
-  demo?.setParams(params);
+  // a manual tweak means the user is tuning again — stop previewing the baseline
+  setCompareUi("mine");
+  pushDemo();
   presetButtons.forEach((b) => {
     b.classList.remove("on");
     b.setAttribute("aria-pressed", "false");
   });
   renderCodebox();
+  scheduleShareSync();
 }
 
 // ---- demo mount ----------------------------------------------------------------------
@@ -313,10 +417,24 @@ demo = createBossBar(demoHost, params);
 // ---- boot -----------------------------------------------------------------------------
 
 buildControls();
-applyPreset("heavy"); // the page boots on the full default recipe, highlight it
+if (sharedState?.preset) {
+  applyPreset(sharedState.preset);
+} else if (sharedState) {
+  // a custom tune from a link: no preset owns these numbers — say where they came from
+  presetButtons.forEach((b) => {
+    b.classList.remove("on");
+    b.setAttribute("aria-pressed", "false");
+  });
+  pushDemo();
+  renderCodebox();
+  document.querySelector<HTMLElement>(".feel-shared-note")?.removeAttribute("hidden");
+} else {
+  applyPreset("heavy"); // the page boots on the full default recipe, highlight it
+}
 applyStaticText(document);
 onLocaleChange(() => {
   applyStaticText(document);
+  setCompareUi(compareMode); // the static pass resets the Exporting label's text
   buildControls();
   renderCodebox();
   document.title = `${t("feelBoss.h1")} – PixJuice`;
