@@ -5,7 +5,7 @@ export const MAX_PEAK = 0.35;
 // 0.35 rounds down in float32. WAV encoding applies its own integer bound.
 export const PCM_CEILING = Math.fround(MAX_PEAK);
 export const MAX_DURATION_MS = 5000;
-export const MAX_GAIN = 0.45;
+export const MAX_GAIN = MAX_PEAK;
 
 export const LIMITS = {
   attack: [2, 1500, 1],

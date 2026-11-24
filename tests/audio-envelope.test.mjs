@@ -20,7 +20,7 @@ const { DEFAULT_PATCH, LIMITS, MAX_GAIN, MAX_PEAK, SAMPLE_RATE, clampPatch, para
   await import(moduleUrl('params'));
 const { createEnvelope, envelopePoints, scheduleGain, valueAt } = await import(moduleUrl('envelope'));
 const { playWithWebAudio, renderPcm } = await import(moduleUrl('synth'));
-const { encodeWavPcm } = await import(moduleUrl('wav'));
+const { encodeWavPcm, wavBlob } = await import(moduleUrl('wav'));
 const { patchJson } = await import(moduleUrl('export'));
 const { PRESETS, patchForPreset } = await import(moduleUrl('presets'));
 const { WAVEFORMS } = await import(moduleUrl('types'));
@@ -62,6 +62,31 @@ test('clamps unbounded stages and frequency, then normalizes peak and duration',
   const minimum = renderPcm({ attack: 0, decay: -1, sustainTime: -1, release: -Infinity, gain: NaN });
   assertSafe(minimum);
   assert.equal(minimum.duration, 0.005);
+});
+
+test('gain tops out at the peak ceiling and default sine peaks increase across the range', () => {
+  assert.equal(MAX_GAIN, MAX_PEAK);
+  assert.deepEqual(LIMITS.gain, [0, MAX_GAIN, 0.01]);
+  assert.equal(DEFAULT_PATCH.gain, 0.16);
+  let previousPeak = -1;
+  for (const gain of [0, 0.08, DEFAULT_PATCH.gain, 0.24, MAX_GAIN]) {
+    const result = renderPcm({ ...DEFAULT_PATCH, gain });
+    assertSafe(result);
+    assert.ok(result.peak > previousPeak, `gain ${gain}`);
+    previousPeak = result.peak;
+  }
+});
+
+test('legacy gain 0.45 exports the same patch and audio as max gain', async () => {
+  const legacy = { waveform: 'square', gain: 0.45 };
+  const capped = { ...legacy, gain: MAX_GAIN };
+  assert.equal(clampPatch(legacy).gain, MAX_GAIN);
+  assert.equal(JSON.parse(patchJson('custom', legacy)).params.gain, MAX_GAIN);
+  const legacyPcm = renderPcm(legacy);
+  const cappedPcm = renderPcm(capped);
+  assert.deepEqual(legacyPcm, cappedPcm);
+  assert.deepEqual(await wavBlob(legacyPcm.samples, legacyPcm.sampleRate).arrayBuffer(),
+    await wavBlob(cappedPcm.samples, cappedPcm.sampleRate).arrayBuffer());
 });
 
 test('envelope math, canvas knees, and gain automation agree', () => {
@@ -120,11 +145,20 @@ test('page default mode keeps the stored tune intact', () => {
   assert.notEqual(paramsForMode(tune, DEFAULT_PATCH, 'mine'), tune);
 });
 
-test('presets are distinct, peak-safe short one-shots', () => {
+test('presets are distinct, peak-safe short one-shots with matching JSON and WAV', async () => {
   assert.equal(PRESETS.length, 6);
   const captures = new Set();
   for (const preset of PRESETS) {
-    const result = renderPcm(patchForPreset(preset));
+    const input = patchForPreset(preset);
+    const params = clampPatch(input);
+    const result = renderPcm(params);
+    const { duration, peak, sampleRate, samples } = result;
+    assert.deepEqual(JSON.parse(patchJson(preset.id, input)), {
+      name: preset.id, version: 1, sampleRate, duration, peak, params,
+    });
+    const pcm = renderPcm(input);
+    const wav = await wavBlob(pcm.samples, pcm.sampleRate).arrayBuffer();
+    assert.deepEqual(new Uint8Array(wav), encodeWavPcm(samples, sampleRate));
     assertSafe(result);
     assert.ok(result.duration < 0.6 && result.peak > 0);
     captures.add(Buffer.from(result.samples.buffer).toString('base64'));
@@ -156,43 +190,68 @@ test('downward sweep slows across the rendered buffer', () => {
   assert.ok(crossings(0.025, 0.075) > 2 * crossings(0.30, 0.35));
 });
 
-test('Web Audio schedules finite voices, replaces prior playback, and cleans up', async () => {
+function stubAudioContext() {
   const sources = [];
-  const automate = () => ({
-    cancelScheduledValues() {},
-    setValueAtTime() {},
-    linearRampToValueAtTime() {},
-  });
-  const node = () => ({
-    disconnected: false,
-    connect(next) { return next; },
-    disconnect() { this.disconnected = true; },
-  });
   const context = {
     currentTime: 3,
-    destination: node(),
-    createGain: () => ({ ...node(), gain: automate() }),
-    createWaveShaper: node,
-    createOscillator() {
+    destination: {},
+    createBuffer(channels, length, sampleRate) {
+      assert.equal(channels, 1);
+      const samples = new Float32Array(length);
+      return {
+        samples, sampleRate,
+        duration: length / sampleRate,
+        copyToChannel(data, channel) {
+          assert.equal(channel, 0);
+          samples.set(data);
+        },
+      };
+    },
+    createBufferSource() {
       const source = {
-        ...node(), frequency: automate(), stops: [],
+        disconnected: false,
+        stops: 0,
+        connect(destination) { this.destination = destination; },
+        disconnect() { this.disconnected = true; },
         start(time) { this.startTime = time; },
-        stop(time) { this.stops.push(time); },
+        stop() { this.stops++; },
       };
       sources.push(source);
       return source;
     },
   };
+  return { context, sources };
+}
+
+test('Web Audio plays the exact renderPcm buffer, including at zero gain', () => {
+  for (const input of [DEFAULT_PATCH, { waveform: 'noise', gain: 0.45 }, { gain: 0 }]) {
+    const pcm = renderPcm(input);
+    if (input.gain === 0) {
+      assert.equal(pcm.peak, 0);
+      assert.ok(pcm.samples.every((sample) => sample === 0));
+    }
+    const { context, sources } = stubAudioContext();
+    const voice = playWithWebAudio(context, input);
+    const [source] = sources;
+    assert.equal(source.buffer.sampleRate, pcm.sampleRate);
+    assert.deepEqual(source.buffer.samples, pcm.samples);
+    assert.equal(source.destination, context.destination);
+    voice.stop();
+  }
+});
+
+test('Web Audio schedules finite voices, replaces prior playback, and cleans up', async () => {
+  const { context, sources } = stubAudioContext();
   const first = playWithWebAudio(context, DEFAULT_PATCH);
-  assert.equal(sources[0].stops[0] - sources[0].startTime > 0, true);
-  assert.ok(sources[0].stops[0] - sources[0].startTime <= 5);
+  assert.equal(sources[0].startTime, context.currentTime + 0.005);
+  assert.ok(sources[0].buffer.duration > 0 && sources[0].buffer.duration <= 5);
   const next = playWithWebAudio(context, DEFAULT_PATCH);
   await first.ended;
   assert.equal(sources[0].disconnected, true);
-  assert.equal(sources[0].stops.length, 2);
+  assert.equal(sources[0].stops, 1);
   sources[1].onended();
   await next.ended;
   next.stop();
   assert.equal(sources[1].disconnected, true);
-  assert.equal(sources[1].stops.length, 1);
+  assert.equal(sources[1].stops, 0);
 });

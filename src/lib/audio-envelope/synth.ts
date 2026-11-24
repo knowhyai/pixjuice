@@ -1,4 +1,4 @@
-import { createEnvelope, scheduleGain } from "./envelope.ts";
+import { createEnvelope } from "./envelope.ts";
 import { clampPatch, PCM_CEILING, SAMPLE_RATE } from "./params.ts";
 import type { Patch, Waveform } from "./types.ts";
 
@@ -80,38 +80,12 @@ const voices = new WeakMap<AudioContext, Voice>();
 /** Start one finite voice on a context already resumed by a Play gesture. */
 export function playWithWebAudio(ctx: AudioContext, input: Partial<Patch>): Voice {
   voices.get(ctx)?.stop();
-  const patch = clampPatch(input);
-  const { duration } = createEnvelope(patch);
-  const envelope = ctx.createGain();
-  const master = ctx.createGain();
-  const limiter = ctx.createWaveShaper();
-  // An identity section with flat ends bounds native oscillator and resampling overshoot.
-  limiter.curve = Float32Array.from({ length: 2049 }, (_, i) =>
-    Math.max(-PCM_CEILING, Math.min(PCM_CEILING, i / 1024 - 1)));
-  master.gain.value = Math.min(patch.gain, PCM_CEILING);
-  let source: AudioBufferSourceNode | OscillatorNode;
-  if (patch.waveform === "noise") {
-    const noise = whiteNoise(Math.round(duration * SAMPLE_RATE));
-    const buffer = ctx.createBuffer(1, noise.length, SAMPLE_RATE);
-    buffer.copyToChannel(noise, 0);
-    const node = ctx.createBufferSource();
-    node.buffer = buffer;
-    source = node;
-  } else {
-    const node = ctx.createOscillator();
-    node.type = patch.waveform;
-    source = node;
-  }
-
-  const start = ctx.currentTime + 0.005;
-  if ("frequency" in source) {
-    source.frequency.setValueAtTime(patch.frequency, start);
-    if (patch.endFrequency !== null) {
-      source.frequency.linearRampToValueAtTime(patch.endFrequency, start + duration);
-    }
-  }
-  scheduleGain(envelope.gain, start, patch);
-  source.connect(envelope).connect(master).connect(limiter).connect(ctx.destination);
+  const { samples, sampleRate } = renderPcm(input);
+  const buffer = ctx.createBuffer(1, samples.length, sampleRate);
+  buffer.copyToChannel(samples, 0);
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(ctx.destination);
 
   let resolveEnded!: () => void;
   const ended = new Promise<void>((resolve) => { resolveEnded = resolve; });
@@ -120,9 +94,7 @@ export function playWithWebAudio(ctx: AudioContext, input: Partial<Patch>): Voic
     if (!active) return;
     active = false;
     source.disconnect();
-    envelope.disconnect();
-    master.disconnect();
-    limiter.disconnect();
+    source.onended = null;
     if (voices.get(ctx) === voice) voices.delete(ctx);
     resolveEnded();
   }
@@ -136,8 +108,7 @@ export function playWithWebAudio(ctx: AudioContext, input: Partial<Patch>): Voic
   };
   source.onended = finish;
   try {
-    source.start(start);
-    source.stop(start + duration);
+    source.start(ctx.currentTime + 0.005);
   } catch (error) {
     finish();
     throw error;
