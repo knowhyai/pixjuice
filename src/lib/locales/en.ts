@@ -55,6 +55,7 @@ const en = {
     textFit: "UI text fit",
     uiSounds: "UI sounds",
     cameraShake: "Camera shake",
+    audioScenes: "Game sound effects by scene",
     home: "Home",
     credits: "credits",
     backCatalog: "← catalog",
@@ -78,9 +79,11 @@ const en = {
     textFit: "Will translated UI text still fit? — PixJuice",
     uiSounds: "Tune short game UI sounds — PixJuice",
     cameraShake: "How hard and how long should the camera shake on a hit? — PixJuice",
+    audioScenes: "Game sound effects by scene",
     textFitDesc: "Check whether button labels, captions and HUD text still fit after translation in five languages. Copy a starting CSS or JSON config.",
     uiSoundsDesc: "Preview click, coin and notification sounds in your browser, then download WAV or JSON.",
     cameraShakeDesc: "Trigger and tune camera shake in a browser-local preview. Results may differ in your game engine.",
+    audioScenesDesc: "Choose a scene, preview recorded game sound effects, and download the original OGG files.",
     home: "PixJuice — pixel effects, feel recipes, assets and tools for game devs",
     editor: "Editor — PixJuice",
     credits: "Credits & licenses — PixJuice",
@@ -100,6 +103,7 @@ const en = {
     toolTextFitD: "Check translated UI text and copy a CSS or JSON config.",
     toolUiSoundsD: "Tune UI sounds and download WAV or JSON.",
     toolCameraShakeD: "Tune how hard and how long the camera shakes on a hit.",
+    toolAudioScenesD: "Browse recorded game sound effects by scene and download the original OGG files.",
     subtitle: "<b>Pixel Art VFX Maker</b> — recolor, preview &amp; export sprite sheets for 244 game effects. Free, in your browser.",
     searchPh: "search 244 effects…  ( / )",
     searchAria: "Search effects",
@@ -142,7 +146,7 @@ const en = {
 <li><b>Camera</b> — Live labs for camera follow, deadzone, and bounds, and for tuning the strength and duration of event-triggered camera shake. The hit recipe also has its own screen shake.</li>
 <li><b>Combat feedback</b> — live: hit feel and boss HP bar recipes.</li>
 <li><b>UI &amp; interaction</b> — Live: the boss bar, UI templates, and a UI text-fit lab with copyable CSS or JSON settings.</li>
-<li><b>Audio</b> — Live: layered hit sounds, effect-editor SFX, and a game UI sound lab for previewing and tuning short cues.</li>
+<li><b>Audio</b> — Live: layered hit sounds, effect-editor SFX, a game UI sound lab for tuning short cues, and a scene library with original OGG downloads.</li>
 <li><b>Visuals &amp; assets</b> — live: 244 effects, the CC0 library, and four image tools.</li>
 <li><b>Performance &amp; shipping</b> — planned advisor loops; not live, and not in the nav.</li>
 </ul>`,

@@ -56,6 +56,7 @@ export default defineConfig({
         textfit: "text-fit/index.html",
         envelope: "audio-envelope/index.html",
         camerashake: "camera-shake/index.html",
+        audioscenes: "audio-scenes/index.html",
         sheet: "sprite-sheet/index.html",
         pixelart: "image-to-pixel-art/index.html",
         normalmap: "normal-map/index.html",

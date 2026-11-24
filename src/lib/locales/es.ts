@@ -55,6 +55,7 @@ const es: Partial<Dict> = {
     textFit: "Ajuste de texto de UI",
     uiSounds: "Sonidos de interfaz",
     cameraShake: "Sacudida de cámara",
+    audioScenes: "Efectos de sonido para juegos por escena",
     home: "Inicio",
     credits: "créditos",
     backCatalog: "← catálogo",
@@ -78,9 +79,11 @@ const es: Partial<Dict> = {
     textFit: "¿Cabrán los textos de la interfaz después de traducirlos? — PixJuice",
     uiSounds: "Ajusta sonidos breves para la interfaz de tu juego — PixJuice",
     cameraShake: "¿Con qué intensidad y durante cuánto tiempo debe sacudirse la cámara al acertar un golpe? — PixJuice",
+    audioScenes: "Efectos de sonido para juegos por escena",
     textFitDesc: "Comprueba en cinco idiomas si las etiquetas de botones, los pies de texto y los textos del HUD siguen cabiendo tras traducirlos. Copia una configuración inicial en CSS o JSON.",
     uiSoundsDesc: "Escucha clics, sonidos de monedas y avisos en el navegador. Descarga el resultado en WAV o JSON.",
     cameraShakeDesc: "Activa y ajusta sacudidas de cámara en una vista previa local en el navegador. El resultado puede variar en tu motor de juego.",
+    audioScenesDesc: "Elige una escena, escucha los efectos grabados y descarga los archivos OGG originales.",
     home: "PixJuice — efectos de píxel, recetas de feel, recursos y herramientas",
     editor: "Editor — PixJuice",
     credits: "Créditos y licencias — PixJuice",
@@ -100,6 +103,7 @@ const es: Partial<Dict> = {
     toolTextFitD: "Comprueba los textos traducidos y copia los ajustes en CSS o JSON.",
     toolUiSoundsD: "Ajusta sonidos de interfaz y descarga WAV o JSON.",
     toolCameraShakeD: "Ajusta la intensidad y la duración de la sacudida de cámara al acertar un golpe.",
+    toolAudioScenesD: "Explora efectos de sonido grabados por escena y descarga los archivos OGG originales.",
     subtitle: "<b>Creador de VFX en pixel art</b> — recolorea, previsualiza y exporta hojas de sprites de 244 efectos para videojuegos. Gratis, en tu navegador.",
     searchPh: "buscar 244 efectos…  ( / )",
     searchAria: "Buscar efectos",
@@ -142,7 +146,7 @@ const es: Partial<Dict> = {
 <li><b>Cámara</b> — Disponibles: el laboratorio de seguimiento, zona muerta y límites de cámara, y otro laboratorio para ajustar la intensidad y duración de las sacudidas de cámara activadas por eventos. La receta de impacto también tiene su propia sacudida de pantalla.</li>
 <li><b>Feedback de combate</b> — en vivo: recetas de hit feel y barra de jefe.</li>
 <li><b>UI e interacción</b> — Disponibles: la barra de jefe, las plantillas de UI y el laboratorio de ajuste de texto, que permite copiar la configuración en CSS o JSON.</li>
-<li><b>Audio</b> — Disponibles: los sonidos de impacto por capas, los efectos sonoros del editor y el laboratorio de audio para interfaces de juego, donde puedes escuchar y ajustar avisos breves.</li>
+<li><b>Audio</b> — Disponibles: sonidos de impacto por capas, efectos sonoros del editor, un laboratorio de audio para interfaces de juego donde puedes ajustar avisos breves y una biblioteca de sonidos por escena con descargas en OGG original.</li>
 <li><b>Visuales y recursos</b> — en vivo: 244 efectos, la biblioteca CC0 y cuatro herramientas de imagen.</li>
 <li><b>Rendimiento y publicación</b> — bucles previstos; no están en vivo ni en la navegación.</li>
 </ul>`,

@@ -22,3 +22,4 @@ import './site-shell.test.mjs';
 import './text-fit.test.mjs';
 import './audio-envelope.test.mjs';
 import './camera-shake.test.mjs';
+import './audio-scenes.test.mjs';

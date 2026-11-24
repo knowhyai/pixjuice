@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Game sound effects by scene — PixJuice</title>
+  <meta name="description" content="Choose a scene, preview recorded game sound effects, and download the original OGG files.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="head"><div class="head-in"><a href="/">PixJuice</a></div></header>
+  <main class="audio-scenes">
+    <h1 id="audio-title" data-scenes="title">Game sound effects by scene</h1>
+    <p id="audio-lede" class="audio-lede" data-scenes="lede">Choose a scene, preview recorded game sound effects, and download the original OGG files.</p>
+    <div id="audio-filters" class="audio-filters" role="group" hidden></div>
+    <p id="audio-results" class="audio-results" role="status"></p>
+    <div id="audio-library"></div>
+    <footer id="audio-footer"></footer>
+  </main>
+  <script type="module" src="/src/pages/audio-scenes.ts"></script>
+</body>
+</html>
