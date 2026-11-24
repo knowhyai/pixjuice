@@ -36,11 +36,12 @@ const FX: Partial<Record<Locale, Record<string, FxEntry>>> = {
 };
 
 const STORAGE_KEY = "pixjuice-lang";
+const PREFIXED_PAGES = /^\/(templates|free-assets|free-resources|feel|effects|editor)(\/|$)/;
 
 function detect(): Locale {
   const prefix = location.pathname.split("/")[1];
   if (["zh", "ja", "ko", "es"].includes(prefix)) return prefix as Locale;
-  if (/^\/(templates|free-assets|free-resources|feel|effects)(\/|$)/.test(location.pathname)) return "en";
+  if (PREFIXED_PAGES.test(location.pathname)) return "en";
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved && saved in DICTS) return saved as Locale;
@@ -102,11 +103,11 @@ export function onLocaleChange(fn: Listener): void {
   listeners.add(fn);
 }
 
-/** Swap the session language in place — no reload, so ?fx= and scroll position survive. */
+/** Navigate localized pages, preserving the query and hash, or translate in place. */
 export function setLocale(next: Locale): void {
   if (!(next in DICTS) || next === locale) return;
   const path = location.pathname.replace(/^\/(zh|ja|ko|es)(?=\/)/, "");
-  if (/^\/(templates|free-assets|free-resources|feel|effects)(\/|$)/.test(path)) {
+  if (PREFIXED_PAGES.test(path)) {
     location.assign((next === "en" ? "" : "/" + next) + path + location.search + location.hash);
     return;
   }

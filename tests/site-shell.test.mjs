@@ -50,14 +50,24 @@ runInNewContext(ts.transpileModule(fs.readFileSync("src/lib/effects-routes.ts", 
 function mountHeader(pathname, hash, locale, dict) {
   const window = new EventTarget();
   const location = { pathname, hash, search: "" };
-  const header = { innerHTML: "", querySelector: () => new EventTarget() };
+  let html = "";
+  let crumb = null;
+  const header = {
+    get innerHTML() { return html; },
+    set innerHTML(value) {
+      html = value;
+      const match = value.match(/<p([^>]*id="ed-crumb"[^>]*)>([^<]*)<\/p>/);
+      crumb = match ? { textContent: match[2], hidden: /\bhidden\b/.test(match[1]) } : null;
+    },
+    querySelector: (selector) => selector === "#ed-crumb" ? crumb : new EventTarget(),
+  };
   const exports = {};
   runInNewContext(navScript, {
     exports, window, location,
     document: {
       documentElement: { dataset: {} },
       querySelector: () => header,
-      querySelectorAll: () => [],
+      querySelectorAll: (selector) => selector.includes(", #ed-crumb") && crumb ? [crumb] : [],
       addEventListener() {},
     },
     localStorage: { getItem: () => null },
@@ -89,8 +99,76 @@ function mountHeader(pathname, hash, locale, dict) {
       }
     },
     get html() { return header.innerHTML; },
+    get crumb() { return crumb; },
   };
 }
+
+test("shell: editor header keeps the effect crumb writable and visible across renders", () => {
+  for (const [path, locale] of [["/editor/", "en"], ["/zh/editor/", "zh"]]) {
+    const header = mountHeader(path, "#fire", locale, {});
+    assert.equal(header.crumb?.hidden, false);
+    header.crumb.textContent = "Fireball";
+    header.changeHash("#ice", "hashchange");
+    assert.equal(header.crumb?.hidden, false);
+    assert.equal(header.crumb.textContent, "Fireball");
+  }
+  assert.equal(mountHeader("/feel/", "", "en", {}).crumb, null);
+});
+
+const editorSource = fs.readFileSync("src/editor.ts", "utf8");
+
+function editorFunction(name) {
+  const start = editorSource.indexOf(`function ${name}(`);
+  const end = editorSource.indexOf("\n}", start) + 2;
+  return ts.transpileModule(editorSource.slice(start, end), {
+    compilerOptions: { target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+}
+
+test("shell: a missing editor crumb does not interrupt boot before export bindings", () => {
+  const boot = editorSource.slice(editorSource.indexOf("function runEditor("));
+  assert.match(boot, /syncEditorHeading\(entry\);[\s\S]*expBtns\[0\]\.addEventListener/);
+  assert.match(boot, /onLocaleChange\(\(\) => \{\s*syncEditorHeading\(entry\)/);
+  assert.doesNotMatch(boot, /\$\("#ed-crumb"\)\.textContent/);
+  const document = { title: "", querySelector: () => null };
+  runInNewContext(editorFunction("syncEditorHeading") + '\nsyncEditorHeading({ name: "Fireball" });', {
+    document,
+    fxName: (entry) => entry.name,
+    t: (key, { name }) => `${key}: ${name}`,
+  });
+  assert.equal(document.title, "title.fx: Fireball");
+});
+
+test("shell: editor locale follows its URL and returns to the same library and category", () => {
+  const i18n = ts.transpileModule(fs.readFileSync("src/lib/i18n.ts", "utf8"), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  for (const [pathname, expected, library, next, nextPath] of [
+    ["/editor/", "en", "/effects/", "ja", "/ja/editor/"],
+    ["/zh/editor/", "zh", "/zh/effects/", "en", "/editor/"],
+  ]) {
+    const assignments = [];
+    const location = { pathname, search: "?fx=fire/fireball", hash: "#fire", assign: (url) => assignments.push(url) };
+    const exports = {};
+    runInNewContext(i18n, {
+      exports, location,
+      navigator: { languages: ["ja"], language: "ja" },
+      localStorage: { getItem: () => null },
+      document: { documentElement: { lang: expected } },
+      require: () => ({ default: {} }),
+    });
+    assert.equal(exports.getLocale(), expected);
+    const returnUrl = () => runInNewContext(editorFunction("libraryReturnUrl") + "\nlibraryReturnUrl();", {
+      location, getLocale: exports.getLocale, effectCategory: routes.effectCategory,
+    });
+    assert.equal(returnUrl(), library + "#fire");
+    location.hash = "";
+    assert.equal(returnUrl(), library);
+    location.hash = "#fire";
+    exports.setLocale(next);
+    assert.deepEqual(assignments, [nextPath + "?fx=fire/fireball#fire"]);
+  }
+});
 
 test("shell: localized Home, Effects and brand links preserve locale roots and select one item", async () => {
   for (const [locale, label] of Object.entries({ en: "Home", zh: "首页", ja: "ホーム", ko: "홈", es: "Inicio" })) {

@@ -100,6 +100,13 @@ function hashSeed(s: string): number {
   return h >>> 0;
 }
 
+function syncEditorHeading(entry: CatalogEntry): void {
+  const name = fxName(entry);
+  document.title = t("title.fx", { name });
+  const crumb = document.querySelector("#ed-crumb");
+  if (crumb) crumb.textContent = t("ed.crumbFx", { name });
+}
+
 function runEditor(entry: CatalogEntry): void {
   const meta = entry.meta;
   const base = exportBase(entry);
@@ -108,8 +115,7 @@ function runEditor(entry: CatalogEntry): void {
   const ASPECT = wide ? 16 / 9 : 6 / 5;
   const PAD = wide ? 1 : 1.25;
 
-  document.title = t("title.fx", { name: fxName(entry) });
-  $("#ed-crumb").textContent = t("ed.crumbFx", { name: fxName(entry) });
+  syncEditorHeading(entry);
 
   // ---- meta strip (kept compact so the pinned stage never outgrows the viewport)
 
@@ -758,8 +764,7 @@ function runEditor(entry: CatalogEntry): void {
   // ---- i18n: relabel every dynamic control in place (the static chrome is data-i18n)
 
   onLocaleChange(() => {
-    document.title = t("title.fx", { name: fxName(entry) });
-    $("#ed-crumb").textContent = t("ed.crumbFx", { name: fxName(entry) });
+    syncEditorHeading(entry);
     desc.textContent = fxDesc(entry);
     renderFacts();
     more.textContent = desc.classList.contains("open") ? t("ed.less") : t("ed.more");
