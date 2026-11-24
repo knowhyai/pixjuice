@@ -134,8 +134,8 @@ const en = {
     scopeLede: "The cards above link to available tools and demos.",
     scopeList: `<ul>
 <li><b>Gameplay &amp; systems</b> — live: gacha and save/load templates. Later: inventory, dialogue, quests — not pages yet.</li>
-<li><b>Character control &amp; movement</b> — live: jump forgiveness lab.</li>
-<li><b>Camera</b> — planned follow and shake-language labs; shake today only lives inside the hit recipe.</li>
+<li><b>Character control &amp; movement</b> — Live jump forgiveness and movement labs (acceleration, braking, and air control).</li>
+<li><b>Camera</b> — Live camera lab for follow, deadzone, and bounds. Screen shake is available only in the hit recipe.</li>
 <li><b>Combat feedback</b> — live: hit feel and boss HP bar recipes.</li>
 <li><b>UI &amp; interaction</b> — Live: the boss bar, UI templates, and a UI text-fit lab with copyable CSS or JSON settings.</li>
 <li><b>Audio</b> — Live: layered hit sounds, effect-editor SFX, and a game UI sound lab for previewing and tuning short cues.</li>

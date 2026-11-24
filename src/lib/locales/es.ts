@@ -134,8 +134,8 @@ const es: Partial<Dict> = {
     scopeLede: "Las tarjetas anteriores llevan a herramientas y demos disponibles.",
     scopeList: `<ul>
 <li><b>Jugabilidad y sistemas</b> — en vivo: gacha y guardar/cargar. Después: inventario, diálogo, misiones — aún no hay páginas.</li>
-<li><b>Control y movimiento</b> — disponible: laboratorio de tolerancia del salto.</li>
-<li><b>Cámara</b> — laboratorios de seguimiento y lenguaje de shake, no publicados; el shake de hoy solo vive en la receta de golpe.</li>
+<li><b>Control y movimiento</b> — Disponibles: el laboratorio de tolerancia del salto y el de movimiento (aceleración, frenado y control en el aire).</li>
+<li><b>Cámara</b> — Disponible: el laboratorio de cámara con seguimiento, zona muerta y límites. La sacudida de pantalla solo está disponible en la receta de impacto.</li>
 <li><b>Feedback de combate</b> — en vivo: recetas de hit feel y barra de jefe.</li>
 <li><b>UI e interacción</b> — Disponibles: la barra de jefe, las plantillas de UI y el laboratorio de ajuste de texto, que permite copiar la configuración en CSS o JSON.</li>
 <li><b>Audio</b> — Disponibles: los sonidos de impacto por capas, los efectos sonoros del editor y el laboratorio de audio para interfaces de juego, donde puedes escuchar y ajustar avisos breves.</li>
