@@ -20,7 +20,7 @@ const strip=s=>s.replace(/<[^>]*>/g,'');
 const manifest=JSON.parse(await readFile('public/free-assets/manifest.json','utf8'));
 const isPublicListing=a=>a&&a.style_tier==='realistic'&&!a.hidden&&!a.product_hidden&&!a.placeholder;
 const products=[...new Set(manifest.assets.map(a=>a.product_id).filter(Boolean))];
-const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
+const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','camera-shake/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
 const listedPaths=paths.filter(path=>{
   if(!path.startsWith('free-assets/')||path==='free-assets/')return true;
   const id=path.slice('free-assets/'.length).replace(/\/$/,'');
@@ -35,6 +35,8 @@ const TOOL_SEO = {
     copyAttr: 'data-copy', copy: (await readDictionary('src/text-fit/strings.ts')).COPY },
   'audio-envelope/': { title: 'title.uiSounds', desc: 'title.uiSoundsDesc',
     copyAttr: 'data-envelope', copy: (await readDictionary('src/lib/audio-envelope/strings.ts')).STRINGS },
+  'camera-shake/': { title: 'title.cameraShake', desc: 'title.cameraShakeDesc',
+    copyAttr: 'data-shake', copy: (await readDictionary('src/lib/camera-shake/strings.ts')).STRINGS },
   'image-to-pixel-art/': { title: 'title.pa', desc: 'pa.lede' },
   'normal-map/': { title: 'title.nm', desc: 'nm.lede' },
   'pixel-art-upscaler/': { title: 'title.up', desc: 'up.lede' },

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>How hard and how long should the camera shake on a hit? — PixJuice</title>
+  <meta name="description" content="Trigger and tune camera shake in a browser-local preview. Results may differ in your game engine.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="head"><div class="head-in"><a href="/">PixJuice</a></div></header>
+  <main class="shake-lab">
+    <h1 data-shake="title">How hard and how long should the camera shake on a hit?</h1>
+    <p class="shake-lede" data-shake="lede">Trigger and tune event-driven shake for a game camera, separate from the follow/deadzone lab and video-editor effects.</p>
+    <div class="shake-workspace">
+      <section class="shake-panel" aria-labelledby="shake-preview">
+        <div class="shake-toolbar">
+          <h2 id="shake-preview" data-shake="comparison">Compare shakes</h2>
+          <label><span data-shake="reduceMotion">Reduce motion</span>
+            <select id="lab-motion">
+              <option value="auto" data-shake="auto">Auto</option>
+              <option value="reduce" data-shake="on">On</option>
+              <option value="allow" data-shake="off">Off</option>
+            </select>
+          </label>
+        </div>
+        <div class="shake-scenes">
+          <figure>
+            <figcaption id="shake-default" data-shake="pageDefault">Page default</figcaption>
+            <div class="shake-stage"><canvas id="lab-scene-default" role="img" aria-labelledby="shake-default"></canvas></div>
+          </figure>
+          <figure>
+            <figcaption id="shake-mine" data-shake="mine">My tune</figcaption>
+            <div class="shake-stage"><canvas id="lab-scene-mine" role="img" aria-labelledby="shake-mine"></canvas></div>
+          </figure>
+        </div>
+        <div class="shake-buttons">
+          <button type="button" class="shake-primary" id="lab-trigger" data-shake="trigger">Trigger both</button>
+          <button type="button" id="lab-stop" data-shake="stop">Stop</button>
+          <button type="button" id="lab-reset" data-shake="reset">Reset</button>
+        </div>
+        <p id="lab-status" class="shake-status" role="status"></p>
+      </section>
+      <section class="shake-panel shake-patch" aria-labelledby="shake-patch">
+        <h2 id="shake-patch" data-shake="patch">Active patch</h2>
+        <div class="shake-buttons shake-modes" role="group" aria-labelledby="shake-patch">
+          <button type="button" id="lab-mine" aria-pressed="true" data-shake="mine">My tune</button>
+          <button type="button" id="lab-default" aria-pressed="false" data-shake="pageDefault">Page default</button>
+        </div>
+        <h3 class="shake-slider-heading" id="shake-sliders-heading" data-shake="sliders">My tune sliders</h3>
+        <div id="lab-sliders" role="group" aria-labelledby="shake-sliders-heading"></div>
+        <div class="shake-buttons">
+          <button type="button" id="lab-json" data-shake="download">Download JSON</button>
+          <button type="button" id="lab-share" data-shake="share">Share</button>
+        </div>
+        <p class="shake-note" data-shake="limits">Browser-local preview. Results can differ in Cinemachine Impulse, Godot Camera2D, and Unreal CameraShake.</p>
+        <div id="lab-share-result" hidden>
+          <label for="lab-share-url" data-shake="shareUrl">Share URL</label>
+          <input id="lab-share-url" type="url" readonly>
+          <a id="lab-open-share" target="_blank" rel="noopener" data-shake="openShare">Open in a new tab</a>
+          <span id="lab-share-status" role="status"></span>
+        </div>
+      </section>
+      <figure class="shake-panel shake-trace">
+        <figcaption id="shake-trace-label" data-shake="trace">Horizontal offset over time</figcaption>
+        <canvas id="lab-trace" role="img" aria-labelledby="shake-trace-label" aria-describedby="lab-trace-summary"></canvas>
+        <div class="shake-axis"><span>0</span><span id="lab-trace-duration"></span></div>
+        <div class="shake-legend" id="lab-trace-summary">
+          <span><span data-shake="pageDefault">Page default</span> <span id="lab-peak-default"></span></span>
+          <span><span data-shake="mine">My tune</span> <span id="lab-peak-mine"></span></span>
+        </div>
+      </figure>
+    </div>
+  </main>
+  <script type="module" src="/src/pages/camera-shake.ts"></script>
+</body>
+</html>

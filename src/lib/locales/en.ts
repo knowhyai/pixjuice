@@ -54,6 +54,7 @@ const en = {
   nav: {
     textFit: "UI text fit",
     uiSounds: "UI sounds",
+    cameraShake: "Camera shake",
     home: "Home",
     credits: "credits",
     backCatalog: "← catalog",
@@ -76,8 +77,10 @@ const en = {
   title: {
     textFit: "Will translated UI text still fit? — PixJuice",
     uiSounds: "Tune short game UI sounds — PixJuice",
+    cameraShake: "How hard and how long should the camera shake on a hit? — PixJuice",
     textFitDesc: "Check whether button labels, captions and HUD text still fit after translation in five languages. Copy a starting CSS or JSON config.",
     uiSoundsDesc: "Preview click, coin and notification sounds in your browser, then download WAV or JSON.",
+    cameraShakeDesc: "Trigger and tune camera shake in a browser-local preview. Results may differ in your game engine.",
     home: "PixJuice — pixel effects, feel recipes, assets and tools for game devs",
     editor: "Editor — PixJuice",
     credits: "Credits & licenses — PixJuice",
@@ -96,6 +99,7 @@ const en = {
   home: {
     toolTextFitD: "Check translated UI text and copy a CSS or JSON config.",
     toolUiSoundsD: "Tune UI sounds and download WAV or JSON.",
+    toolCameraShakeD: "Tune how hard and how long the camera shakes on a hit.",
     subtitle: "<b>Pixel Art VFX Maker</b> — recolor, preview &amp; export sprite sheets for 244 game effects. Free, in your browser.",
     searchPh: "search 244 effects…  ( / )",
     searchAria: "Search effects",
@@ -135,7 +139,7 @@ const en = {
     scopeList: `<ul>
 <li><b>Gameplay &amp; systems</b> — live: gacha and save/load templates. Later: inventory, dialogue, quests — not pages yet.</li>
 <li><b>Character control &amp; movement</b> — Live jump forgiveness and movement labs (acceleration, braking, and air control).</li>
-<li><b>Camera</b> — Live camera lab for follow, deadzone, and bounds. Screen shake is available only in the hit recipe.</li>
+<li><b>Camera</b> — Live labs for camera follow, deadzone, and bounds, and for tuning the strength and duration of event-triggered camera shake. The hit recipe also has its own screen shake.</li>
 <li><b>Combat feedback</b> — live: hit feel and boss HP bar recipes.</li>
 <li><b>UI &amp; interaction</b> — Live: the boss bar, UI templates, and a UI text-fit lab with copyable CSS or JSON settings.</li>
 <li><b>Audio</b> — Live: layered hit sounds, effect-editor SFX, and a game UI sound lab for previewing and tuning short cues.</li>

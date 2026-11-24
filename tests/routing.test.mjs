@@ -10,7 +10,7 @@ import { resolveRoute, createRoutingMiddleware } from '../scripts/preview-routin
 // with '' for en and /zh /ja /ko /es prefixes). These rules keep vite preview
 // and the generated dist/_redirects from ever serving the homepage at a wrong
 // URL: trailing-slash canonicalization, /en → unprefixed, unknown → 404.
-const newTools = ['text-fit', 'audio-envelope'];
+const newTools = ['text-fit', 'audio-envelope', 'camera-shake'];
 const pages = new Set([
   '/',
   '/feel/',
@@ -35,7 +35,7 @@ const pages = new Set([
 const exists = (dir) => pages.has(dir);
 const resolves = (pathname) => resolveRoute(pathname, exists);
 
-test('routing: text and sound tools are canonical in five locales', () => {
+test('routing: text fit, UI sounds, and camera shake are canonical in five locales', () => {
   for (const tool of newTools) {
     for (const prefix of ['', '/zh', '/ja', '/ko', '/es']) {
       const path = `${prefix}/${tool}/`;

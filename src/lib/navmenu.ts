@@ -27,9 +27,10 @@ const TOOL_PATHS = [
   "/free-resources/",
   "/text-fit/",
   "/audio-envelope/",
+  "/camera-shake/",
 ] as const;
 
-const TOOL_KEYS = ["nav.pixel", "nav.normal", "nav.upscale", "nav.sheet", "nav.editor", "fr.h1", "nav.textFit", "nav.uiSounds"] as const;
+const TOOL_KEYS = ["nav.pixel", "nav.normal", "nav.upscale", "nav.sheet", "nav.editor", "fr.h1", "nav.textFit", "nav.uiSounds", "nav.cameraShake"] as const;
 
 /** One site header, shared by every entry point. */
 export function mountToolsMenu(): void {

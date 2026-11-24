@@ -54,6 +54,7 @@ const ko: Partial<Dict> = {
   nav: {
     textFit: "UI 문구 맞춤",
     uiSounds: "UI 효과음",
+    cameraShake: "카메라 흔들림",
     home: "홈",
     credits: "크레딧",
     backCatalog: "← 카탈로그",
@@ -76,8 +77,10 @@ const ko: Partial<Dict> = {
   title: {
     textFit: "번역한 UI 문구가 상자 안에 들어갈까요? — PixJuice",
     uiSounds: "짧은 게임 UI 효과음 조정 — PixJuice",
+    cameraShake: "공격이 적중하면 카메라를 얼마나 세게, 얼마나 오래 흔들어야 할까요? — PixJuice",
     textFitDesc: "버튼 레이블, 캡션, HUD 문구가 다섯 언어로 번역한 뒤에도 상자에 들어가는지 확인하고 초기 CSS 또는 JSON 설정을 복사하세요.",
     uiSoundsDesc: "브라우저에서 클릭음, 코인 소리, 알림음을 들어보고 WAV 또는 JSON을 다운로드하세요.",
+    cameraShakeDesc: "게임 이벤트에 따른 카메라 흔들림을 브라우저에서 재생하고 조정할 수 있습니다. 게임 엔진에서는 결과가 다를 수 있습니다.",
     home: "PixJuice — 픽셀 이펙트, 필 레시피, 에셋과 도구",
     editor: "에디터 — PixJuice",
     credits: "크레딧 및 라이선스 — PixJuice",
@@ -96,6 +99,7 @@ const ko: Partial<Dict> = {
   home: {
     toolTextFitD: "번역한 UI 문구를 확인하고 CSS 또는 JSON 설정을 복사하세요.",
     toolUiSoundsD: "UI 효과음을 조정하고 WAV 또는 JSON을 다운로드하세요.",
+    toolCameraShakeD: "타격 시 카메라가 얼마나 세게, 얼마나 오래 흔들릴지 조정하세요.",
     subtitle: "<b>픽셀 아트 VFX 메이커</b> — 244종 게임 이펙트에 색을 입히고, 미리보고, 스프라이트 시트로 내보내세요. 무료, 브라우저에서 전부.",
     searchPh: "244개 이펙트 검색…  ( / )",
     searchAria: "이펙트 검색",
@@ -135,7 +139,7 @@ const ko: Partial<Dict> = {
     scopeList: `<ul>
 <li><b>플레이와 시스템</b> — 공개: 가챠와 세이브/로드. 이후: 인벤토리, 대화, 퀘스트 — 아직 페이지 없음.</li>
 <li><b>캐릭터 조작과 이동</b> — 공개: 점프 입력 유예 실험실과 이동 실험실(가속, 제동, 공중 조작).</li>
-<li><b>카메라</b> — 공개: 추적, 데드존, 이동 경계를 조절하는 카메라 실험실. 화면 흔들림은 타격감 레시피에서만 체험할 수 있습니다.</li>
+<li><b>카메라</b> — 추적·데드존·이동 경계를 조정하는 실험실과 이벤트에 따른 카메라 흔들림의 강도와 지속 시간을 조정하는 별도의 실험실이 공개되어 있습니다. 타격감 레시피에도 자체 화면 흔들림 효과가 있습니다.</li>
 <li><b>전투 피드백</b> — 공개: 히트 필과 보스 HP 바.</li>
 <li><b>UI와 상호작용</b> — 공개: 보스 HP 바, UI 템플릿, UI 문구 맞춤 실험실. CSS 또는 JSON 설정을 복사할 수 있습니다.</li>
 <li><b>오디오</b> — 공개: 히트 레이어 사운드, 이펙트 에디터 효과음, 게임 UI 사운드 실험실. 짧은 알림음을 들어 보고 조정할 수 있습니다.</li>

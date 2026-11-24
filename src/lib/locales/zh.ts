@@ -54,6 +54,7 @@ const zh: Partial<Dict> = {
   nav: {
     textFit: "界面文案适配",
     uiSounds: "界面音效",
+    cameraShake: "镜头震动",
     home: "首页",
     credits: "致谢",
     backCatalog: "← 特效库",
@@ -76,8 +77,10 @@ const zh: Partial<Dict> = {
   title: {
     textFit: "翻译后的界面文案还装得进框吗？ — PixJuice",
     uiSounds: "调试短促的游戏界面音和提示音 — PixJuice",
+    cameraShake: "一次命中，镜头该震多大、多久？ — PixJuice",
     textFitDesc: "检查按钮标签、说明文字和 HUD 文案翻译成五种语言后是否仍能放入原有空间，并复制 CSS 或 JSON 初始配置。",
     uiSoundsDesc: "在浏览器中试听点击、金币和通知音，再下载 WAV 或 JSON。",
+    cameraShakeDesc: "触发并调节游戏事件引发的镜头震动。预览仅在浏览器内运行，效果可能与游戏引擎中不同。",
     home: "PixJuice — 像素特效、手感配方、素材与工具",
     editor: "编辑器 — PixJuice",
     credits: "致谢与许可 — PixJuice",
@@ -96,6 +99,7 @@ const zh: Partial<Dict> = {
   home: {
     toolTextFitD: "检查翻译后的界面文案，并复制 CSS 或 JSON 配置。",
     toolUiSoundsD: "调试界面音效并下载 WAV 或 JSON。",
+    toolCameraShakeD: "调节命中时镜头震动的幅度和时长。",
     subtitle: "<b>像素艺术特效制作器</b> — 为 244 个游戏特效重新配色、预览并导出精灵图。免费，完全在浏览器中完成。",
     searchPh: "搜索 244 个特效…  ( / )",
     searchAria: "搜索特效",
@@ -135,7 +139,7 @@ const zh: Partial<Dict> = {
     scopeList: `<ul>
 <li><b>玩法与系统机制</b> — 已上线：扭蛋与存档模板。以后：背包、对话、任务——还没有页面。</li>
 <li><b>角色操作与运动</b> — 已上线：跳跃宽容实验室与移动手感实验室（加速、制动、空中控制）。</li>
-<li><b>镜头</b> — 已上线：镜头跟随实验室，可调整跟随、死区和边界。震屏仍只在打击感配方中提供。</li>
+<li><b>镜头</b> — 已上线：镜头跟随实验室可调整跟随、死区和边界，独立的镜头震动实验室可调整事件触发的震动幅度和时长。打击感配方也有自己的震屏效果。</li>
 <li><b>战斗反馈</b> — 已上线：打击感与 Boss 血条配方。</li>
 <li><b>UI 与交互</b> — 已上线：Boss 血条、UI 模板和界面文案适配实验室，可复制 CSS 或 JSON 配置。</li>
 <li><b>音频</b> — 已上线：打击分层音效、特效编辑器音效和游戏界面音效实验室，可试听并调整短提示音。</li>

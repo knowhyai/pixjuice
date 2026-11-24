@@ -54,6 +54,7 @@ const es: Partial<Dict> = {
   nav: {
     textFit: "Ajuste de texto de UI",
     uiSounds: "Sonidos de interfaz",
+    cameraShake: "Sacudida de cámara",
     home: "Inicio",
     credits: "créditos",
     backCatalog: "← catálogo",
@@ -76,8 +77,10 @@ const es: Partial<Dict> = {
   title: {
     textFit: "¿Cabrán los textos de la interfaz después de traducirlos? — PixJuice",
     uiSounds: "Ajusta sonidos breves para la interfaz de tu juego — PixJuice",
+    cameraShake: "¿Con qué intensidad y durante cuánto tiempo debe sacudirse la cámara al acertar un golpe? — PixJuice",
     textFitDesc: "Comprueba en cinco idiomas si las etiquetas de botones, los pies de texto y los textos del HUD siguen cabiendo tras traducirlos. Copia una configuración inicial en CSS o JSON.",
     uiSoundsDesc: "Escucha clics, sonidos de monedas y avisos en el navegador. Descarga el resultado en WAV o JSON.",
+    cameraShakeDesc: "Activa y ajusta sacudidas de cámara en una vista previa local en el navegador. El resultado puede variar en tu motor de juego.",
     home: "PixJuice — efectos de píxel, recetas de feel, recursos y herramientas",
     editor: "Editor — PixJuice",
     credits: "Créditos y licencias — PixJuice",
@@ -96,6 +99,7 @@ const es: Partial<Dict> = {
   home: {
     toolTextFitD: "Comprueba los textos traducidos y copia los ajustes en CSS o JSON.",
     toolUiSoundsD: "Ajusta sonidos de interfaz y descarga WAV o JSON.",
+    toolCameraShakeD: "Ajusta la intensidad y la duración de la sacudida de cámara al acertar un golpe.",
     subtitle: "<b>Creador de VFX en pixel art</b> — recolorea, previsualiza y exporta hojas de sprites de 244 efectos para videojuegos. Gratis, en tu navegador.",
     searchPh: "buscar 244 efectos…  ( / )",
     searchAria: "Buscar efectos",
@@ -135,7 +139,7 @@ const es: Partial<Dict> = {
     scopeList: `<ul>
 <li><b>Jugabilidad y sistemas</b> — en vivo: gacha y guardar/cargar. Después: inventario, diálogo, misiones — aún no hay páginas.</li>
 <li><b>Control y movimiento</b> — Disponibles: el laboratorio de tolerancia del salto y el de movimiento (aceleración, frenado y control en el aire).</li>
-<li><b>Cámara</b> — Disponible: el laboratorio de cámara con seguimiento, zona muerta y límites. La sacudida de pantalla solo está disponible en la receta de impacto.</li>
+<li><b>Cámara</b> — Disponibles: el laboratorio de seguimiento, zona muerta y límites de cámara, y otro laboratorio para ajustar la intensidad y duración de las sacudidas de cámara activadas por eventos. La receta de impacto también tiene su propia sacudida de pantalla.</li>
 <li><b>Feedback de combate</b> — en vivo: recetas de hit feel y barra de jefe.</li>
 <li><b>UI e interacción</b> — Disponibles: la barra de jefe, las plantillas de UI y el laboratorio de ajuste de texto, que permite copiar la configuración en CSS o JSON.</li>
 <li><b>Audio</b> — Disponibles: los sonidos de impacto por capas, los efectos sonoros del editor y el laboratorio de audio para interfaces de juego, donde puedes escuchar y ajustar avisos breves.</li>
