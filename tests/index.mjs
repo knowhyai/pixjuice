@@ -25,3 +25,4 @@ import './camera-shake.test.mjs';
 import './audio-scenes.test.mjs';
 import './weapon-switch.test.mjs';
 import './reload.test.mjs';
+import './typewriter.test.mjs';

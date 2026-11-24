@@ -58,6 +58,7 @@ const zh: Partial<Dict> = {
     audioScenes: "按场景分的游戏音效",
     weaponSwitch: "武器切换时序实验室",
     reload: "换弹检查点实验室",
+    typewriter: "对话打字机",
     home: "首页",
     credits: "致谢",
     backCatalog: "← 特效库",
@@ -90,6 +91,8 @@ const zh: Partial<Dict> = {
     weaponSwitchDesc: "这是武器槽时序实验室，可体验打断、取消窗口和输入缓冲，与跳跃缓冲实验和 3D 手臂预览无关。",
     reload: "取消换弹的规则：在哪个检查点装入弹药？",
     reloadDesc: "这是一个测试换弹中断时机的 2D 实验室。闭膛与独立膛内弹是本模型的假设，各游戏的规则可能不同。",
+    typewriter: "对话打字机实验室",
+    typewriterDesc: "将内置对话与你自己的对话进行比较。点击开始，同时播放两个预览。",
     home: "PixJuice — 像素特效、手感配方、素材与工具",
     editor: "编辑器 — PixJuice",
     credits: "致谢与许可 — PixJuice",
@@ -112,6 +115,7 @@ const zh: Partial<Dict> = {
     toolAudioScenesD: "按场景浏览录制的游戏音效，下载原始 OGG 文件。",
     toolWeaponSwitchD: "在武器槽切换时试验打断、取消窗口和单条输入缓冲。",
     toolReloadD: "在 2D 时序实验室里试换弹中断和装入检查点。本模型假设匣内余弹退回备弹，并采用闭膛与独立膛内弹。",
+    toolTypewriterD: "在浏览器预览里试对话逐字显示速度、标点停顿和跳过补全。排版和文案是否撑破框见界面文案适配实验室。",
     subtitle: "<b>像素艺术特效制作器</b> — 为 244 个游戏特效重新配色、预览并导出精灵图。免费，完全在浏览器中完成。",
     searchPh: "搜索 244 个特效…  ( / )",
     searchAria: "搜索特效",
@@ -151,6 +155,7 @@ const zh: Partial<Dict> = {
     scopeList: `<ul>
 <li><b>武器切换</b> — 已上线：武器切换时序实验室。</li>
 <li><b>换弹检查点</b> — 已上线：换弹检查点实验室。</li>
+<li><b>对话打字机</b> — 已上线：对话打字机实验室。</li>
 <li><b>玩法与系统机制</b> — 已上线：扭蛋与存档模板。以后：背包、对话、任务——还没有页面。</li>
 <li><b>角色操作与运动</b> — 已上线：跳跃宽容实验室与移动手感实验室（加速、制动、空中控制）。</li>
 <li><b>镜头</b> — 已上线：镜头跟随实验室可调整跟随、死区和边界，独立的镜头震动实验室可调整事件触发的震动幅度和时长。打击感配方也有自己的震屏效果。</li>

@@ -58,6 +58,7 @@ const en = {
     audioScenes: "Game sound effects by scene",
     weaponSwitch: "Weapon Switch Timing Lab",
     reload: "Reload Checkpoint Lab",
+    typewriter: "Dialogue typewriter",
     home: "Home",
     credits: "credits",
     backCatalog: "← catalog",
@@ -90,6 +91,8 @@ const en = {
     weaponSwitchDesc: "Try interrupts, cancel windows, and input buffering in a weapon-slot timing lab separate from jump buffering and 3D arms previews.",
     reload: "Reload cancel rules: when does a checkpoint commit the magazine?",
     reloadDesc: "A 2D timing laboratory for reload interrupts. Closed-bolt behavior and the separate chamber round are assumptions of this model. Games can use different rules.",
+    typewriter: "Dialogue Typewriter Lab",
+    typewriterDesc: "Compare the built-in dialogue with your own. Start plays both previews together.",
     home: "PixJuice — pixel effects, feel recipes, assets and tools for game devs",
     editor: "Editor — PixJuice",
     credits: "Credits & licenses — PixJuice",
@@ -112,6 +115,7 @@ const en = {
     toolAudioScenesD: "Browse recorded game sound effects by scene and download the original OGG files.",
     toolWeaponSwitchD: "Try interrupts, cancel windows, and a single input buffer as you switch weapon slots.",
     toolReloadD: "Try reload interrupts and attach checkpoints in a 2D timing lab. This model returns leftover magazine rounds to reserve and assumes closed-bolt operation with a separate chamber round.",
+    toolTypewriterD: "Try dialogue reveal timing, punctuation pauses, and skip-to-complete in a browser preview. Typography and overflow belong on the UI text-fit lab.",
     subtitle: "<b>Pixel Art VFX Maker</b> — recolor, preview &amp; export sprite sheets for 244 game effects. Free, in your browser.",
     searchPh: "search 244 effects…  ( / )",
     searchAria: "Search effects",
@@ -151,6 +155,7 @@ const en = {
     scopeList: `<ul>
 <li><b>Weapon switching</b> — Live: the Weapon Switch Timing Lab.</li>
 <li><b>Reload checkpoints</b> — Live: the Reload Checkpoint Lab.</li>
+<li><b>Dialogue typewriter</b> — Live: the Dialogue Typewriter Lab.</li>
 <li><b>Gameplay &amp; systems</b> — live: gacha and save/load templates. Later: inventory, dialogue, quests — not pages yet.</li>
 <li><b>Character control &amp; movement</b> — Live jump forgiveness and movement labs (acceleration, braking, and air control).</li>
 <li><b>Camera</b> — Live labs for camera follow, deadzone, and bounds, and for tuning the strength and duration of event-triggered camera shake. The hit recipe also has its own screen shake.</li>

@@ -58,6 +58,7 @@ const es: Partial<Dict> = {
     audioScenes: "Efectos de sonido para juegos por escena",
     weaponSwitch: "Laboratorio de cambio de arma",
     reload: "Laboratorio de recarga por puntos",
+    typewriter: "Efecto máquina de escribir",
     home: "Inicio",
     credits: "créditos",
     backCatalog: "← catálogo",
@@ -90,6 +91,8 @@ const es: Partial<Dict> = {
     weaponSwitchDesc: "Prueba interrupciones, ventanas de cancelación y el búfer de entrada en este laboratorio de ranuras de armas, independiente del búfer de salto y las vistas previas de brazos en 3D.",
     reload: "Reglas para cancelar la recarga: ¿en qué punto se confirma la munición?",
     reloadDesc: "Un laboratorio 2D para probar cuándo interrumpir una recarga. El cerrojo cerrado y el cartucho separado en la recámara son supuestos del modelo. Cada juego puede aplicar otras reglas.",
+    typewriter: "Laboratorio de efecto máquina de escribir",
+    typewriterDesc: "Compara el diálogo de ejemplo con el tuyo. Pulsa Iniciar para reproducir ambos a la vez.",
     home: "PixJuice — efectos de píxel, recetas de feel, recursos y herramientas",
     editor: "Editor — PixJuice",
     credits: "Créditos y licencias — PixJuice",
@@ -112,6 +115,7 @@ const es: Partial<Dict> = {
     toolAudioScenesD: "Explora efectos de sonido grabados por escena y descarga los archivos OGG originales.",
     toolWeaponSwitchD: "Prueba interrupciones, ventanas de cancelación y un búfer para una sola orden al cambiar de ranura de arma.",
     toolReloadD: "Prueba interrupciones de recarga y puntos de inserción en un laboratorio 2D. El modelo devuelve las balas sobrantes a la reserva y supone un cerrojo cerrado con un cartucho separado en la recámara.",
+    toolTypewriterD: "Prueba el ritmo de aparición del diálogo, las pausas de puntuación y el salto para completar el texto en una vista previa del navegador. La tipografía y el desbordamiento corresponden al laboratorio de ajuste de texto.",
     subtitle: "<b>Creador de VFX en pixel art</b> — recolorea, previsualiza y exporta hojas de sprites de 244 efectos para videojuegos. Gratis, en tu navegador.",
     searchPh: "buscar 244 efectos…  ( / )",
     searchAria: "Buscar efectos",
@@ -151,6 +155,7 @@ const es: Partial<Dict> = {
     scopeList: `<ul>
 <li><b>Cambio de arma</b> — Disponible: el Laboratorio de cambio de arma.</li>
 <li><b>Recarga por puntos de control</b> — Disponible: el Laboratorio de recarga por puntos.</li>
+<li><b>Efecto máquina de escribir</b> — Disponible: el Laboratorio de efecto máquina de escribir.</li>
 <li><b>Jugabilidad y sistemas</b> — en vivo: gacha y guardar/cargar. Después: inventario, diálogo, misiones — aún no hay páginas.</li>
 <li><b>Control y movimiento</b> — Disponibles: el laboratorio de tolerancia del salto y el de movimiento (aceleración, frenado y control en el aire).</li>
 <li><b>Cámara</b> — Disponibles: el laboratorio de seguimiento, zona muerta y límites de cámara, y otro laboratorio para ajustar la intensidad y duración de las sacudidas de cámara activadas por eventos. La receta de impacto también tiene su propia sacudida de pantalla.</li>

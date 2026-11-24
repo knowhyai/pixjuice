@@ -10,7 +10,7 @@ import { resolveRoute, createRoutingMiddleware } from '../scripts/preview-routin
 // with '' for en and /zh /ja /ko /es prefixes). These rules keep vite preview
 // and the generated dist/_redirects from ever serving the homepage at a wrong
 // URL: trailing-slash canonicalization, /en → unprefixed, unknown → 404.
-const newTools = ['text-fit', 'audio-envelope', 'camera-shake', 'audio-scenes', 'weapon-switch', 'reload'];
+const newTools = ['text-fit', 'audio-envelope', 'camera-shake', 'audio-scenes', 'weapon-switch', 'reload', 'typewriter'];
 const pages = new Set([
   '/',
   '/feel/',
@@ -46,10 +46,10 @@ test('routing: standalone tools have canonical paths in five locales', () => {
   }
 });
 
-test('routing: weapon-switch and reload redirects preserve their share queries', (t) => {
+test('routing: weapon-switch, reload, and typewriter redirects preserve their share queries', (t) => {
   const dist = mkdtempSync(join(tmpdir(), 'pixjuice-share-routing-'));
   t.after(() => rmSync(dist, { recursive: true, force: true }));
-  for (const path of ['weapon-switch', 'zh/weapon-switch', 'reload', 'zh/reload']) {
+  for (const path of ['weapon-switch', 'zh/weapon-switch', 'reload', 'zh/reload', 'typewriter', 'zh/typewriter']) {
     mkdirSync(join(dist, path), { recursive: true });
     writeFileSync(join(dist, path, 'index.html'), '');
   }
@@ -59,6 +59,8 @@ test('routing: weapon-switch and reload redirects preserve their share queries',
     ['/zh/weapon-switch?swap=shared', '/zh/weapon-switch/?swap=shared'],
     ['/en/reload/?reload=shared', '/reload/?reload=shared'],
     ['/zh/reload?reload=shared', '/zh/reload/?reload=shared'],
+    ['/en/typewriter/?typewriter=shared', '/typewriter/?typewriter=shared'],
+    ['/zh/typewriter?typewriter=shared', '/zh/typewriter/?typewriter=shared'],
   ]) {
     const headers = new Map();
     const end = t.mock.fn();
@@ -257,6 +259,15 @@ test('routing: built _redirects keep asset 301s and add locale/slash rules', asy
       assert.ok(page.includes(`rel="canonical" href="https://pixjuice.pages.dev${prefix}/effects/"`));
     }
     assert.ok(rules.includes('/en/effects/ /effects/ 301'));
+  }
+  if (existsSync('dist/typewriter/index.html')) {
+    const sitemap = readFileSync('dist/sitemap.xml', 'utf8');
+    for (const prefix of ['', '/zh', '/ja', '/ko', '/es']) {
+      assert.ok(rules.includes(`${prefix}/typewriter ${prefix}/typewriter/ 301`));
+      assert.ok(sitemap.includes(`https://pixjuice.pages.dev${prefix}/typewriter/`));
+    }
+    assert.ok(rules.includes('/en/typewriter /typewriter/ 301'));
+    assert.ok(rules.includes('/en/typewriter/ /typewriter/ 301'));
   }
   // explicit rules must win over the catch-all splat
   assert.ok(rules.indexOf('/en/feel/hit /feel/hit/ 301') < rules.indexOf('/en/* /:splat 301'));

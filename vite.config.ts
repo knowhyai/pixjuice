@@ -59,6 +59,7 @@ export default defineConfig({
         audioscenes: "audio-scenes/index.html",
         weaponswitch: "weapon-switch/index.html",
         reload: "reload/index.html",
+        typewriter: "typewriter/index.html",
         sheet: "sprite-sheet/index.html",
         pixelart: "image-to-pixel-art/index.html",
         normalmap: "normal-map/index.html",

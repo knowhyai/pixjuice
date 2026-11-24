@@ -20,7 +20,7 @@ const strip=s=>s.replace(/<[^>]*>/g,'');
 const manifest=JSON.parse(await readFile('public/free-assets/manifest.json','utf8'));
 const isPublicListing=a=>a&&a.style_tier==='realistic'&&!a.hidden&&!a.product_hidden&&!a.placeholder;
 const products=[...new Set(manifest.assets.map(a=>a.product_id).filter(Boolean))];
-const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','camera-shake/','audio-scenes/','weapon-switch/','reload/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
+const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','camera-shake/','audio-scenes/','weapon-switch/','reload/','typewriter/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
 const listedPaths=paths.filter(path=>{
   if(!path.startsWith('free-assets/')||path==='free-assets/')return true;
   const id=path.slice('free-assets/'.length).replace(/\/$/,'');
@@ -50,6 +50,12 @@ const TOOL_SEO = {
     copy: (await readDictionary('src/lib/reload/strings.ts')).STRINGS,
     title: 'title.reload',
     desc: 'title.reloadDesc',
+  },
+  'typewriter/': {
+    copyAttr: 'data-typewriter',
+    copy: (await readDictionary('src/lib/typewriter/strings.ts')).STRINGS,
+    title: 'title.typewriter',
+    desc: 'title.typewriterDesc',
   },
   'image-to-pixel-art/': { title: 'title.pa', desc: 'pa.lede' },
   'normal-map/': { title: 'title.nm', desc: 'nm.lede' },
@@ -90,6 +96,10 @@ for(const path of paths) {
       title=tool.copy[lang].title+' — PixJuice';
       desc=strip(tool.copy[lang].lede);
     }
+    if(path==='typewriter/') {
+      title=tool.copy[lang].title+' — PixJuice';
+      desc=strip(tool.copy[lang].lede);
+    }
   }
   let html=original.replace('<html lang="en">',`<html lang="${lang}">`);
   if(lang==='zh') html=html.replaceAll('/previews/en/','/previews/zh/');
@@ -98,7 +108,22 @@ for(const path of paths) {
   html=html.replace(/<([a-z][\w-]*)\b([^>]*\bdata-i18n(?:-html)?="([^"]+)"[^>]*)>[\s\S]*?<\/\1>/gi,(all,tag,attrs,k)=>`<${tag}${attrs}>${attrs.includes('data-i18n-html=')?translate(lang,k):esc(translate(lang,k))}</${tag}>`);
   if(tool?.copy){
     const marked=new RegExp(`<([a-z][\\w-]*)\\b([^>]*\\b${tool.copyAttr}="([^"]+)"[^>]*)>[^<]*<\\/\\1>`,'gi');
-    html=html.replace(marked,(all,tag,attrs,k)=>`<${tag}${attrs}>${esc(tool.copy[lang][k])}</${tag}>`);
+    if(path==='typewriter/'){
+      const { format }=new Intl.NumberFormat(lang);
+      const notes={
+        inputLimits: { graphemes: format(600), units: format(4096) },
+        timing: { short: ',;:，；：、', sentence: '.?!…。？！' },
+        shareLimits: { token: format(1800), url: format(2048) },
+      };
+      html=html.replace(marked,(all,tag,attrs,k)=>{
+        const copy=tool.copy[lang][k];
+        const values=notes[k];
+        const localized=values ? copy.replace(/\{(\w+)\}/g,(placeholder,key)=>values[key]??placeholder) : copy;
+        return `<${tag}${attrs}>${esc(localized)}</${tag}>`;
+      });
+    } else {
+      html=html.replace(marked,(all,tag,attrs,k)=>`<${tag}${attrs}>${esc(tool.copy[lang][k])}</${tag}>`);
+    }
   }
   html=html.replace(/<title>[\s\S]*?<\/title>/,`<title>${esc(title)}${(path===''||TOOL_SEO[path]||/PixJuice/i.test(title))?'':' – PixJuice'}</title>`)
    .replace(/(<meta name="description" content=")[^"]*(")/,`$1${esc(desc)}$2`)
@@ -106,7 +131,7 @@ for(const path of paths) {
    .replace(/(<meta property="og:description" content=")[^"]*(")/,`$1${esc(desc)}$2`)
    .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'');
   const questions=key==='lab'||path===''||key==='jump'||key==='move'||key==='camera'||key==='spring'||key==='effects'?[]:asset?[[`${name} — ${translate(lang,'v3.license')}`,d.assetA]]:key==='fr'?[[translate(lang,'fr.q'),translate(lang,'fr.a')]]:key==='feelIndex'||key==='feelHit'?[[translate(lang,'feel.faq1q'),translate(lang,'feel.faq1a')],[translate(lang,'feel.faq2q'),translate(lang,'feel.faq2a')],[translate(lang,'feel.faq3q'),translate(lang,'feel.faq3a')]]:key==='feelBoss'?[[translate(lang,'boss.faq1q'),translate(lang,'boss.faq1a')],[translate(lang,'boss.faq2q'),translate(lang,'boss.faq2a')],[translate(lang,'boss.faq3q'),translate(lang,'boss.faq3a')]]:TOOL_SEO[path]?[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
-  const json=[{'@context':'https://schema.org','@type':path===''||key==='fr'?'CollectionPage':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:path===''||key==='fr'?undefined:key==='fa'?(asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined):'https://creativecommons.org/publicdomain/zero/1.0/'}];
+  const json=[{'@context':'https://schema.org','@type':path===''||key==='fr'?'CollectionPage':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:path===''||path==='typewriter/'||key==='fr'?undefined:key==='fa'?(asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined):'https://creativecommons.org/publicdomain/zero/1.0/'}];
   if(questions.length) json.push({'@context':'https://schema.org','@type':'FAQPage',inLanguage:lang,mainEntity:questions.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))});
   const unpublished=asset? !isPublicListing(asset) && !(path===`free-assets/${asset.product_id}/` && manifest.assets.some(a=>a.product_id===asset.product_id&&isPublicListing(a))) : path.startsWith('free-assets/') && path!=='free-assets/' && !listedPaths.includes(path);
   const head=`${unpublished?'<meta name="robots" content="noindex, nofollow">\n':''}<link rel="canonical" href="${url(lang,path)}">\n${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url(l,path)}">`).join('\n')}\n<link rel="alternate" hreflang="x-default" href="${url('en',path)}">\n<script type="application/ld+json">${JSON.stringify(json).replaceAll('<','\\u003c')}</script>`;

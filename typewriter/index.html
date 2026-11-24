@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dialogue Typewriter Lab — PixJuice</title>
+  <meta name="description" content="Compare dialogue reveal speeds and punctuation pauses with your own text in a browser-local preview.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="head"><div class="head-in"><a href="/">PixJuice</a></div></header>
+  <main class="typewriter-lab">
+    <h1 data-typewriter="title">Dialogue Typewriter Lab</h1>
+    <p class="tw-lede" data-typewriter="lede">Try your dialogue beside the built-in sample and compare reveal timing.</p>
+    <div class="tw-workspace">
+      <section class="tw-panel" aria-labelledby="tw-comparison">
+        <div class="tw-toolbar">
+          <h2 id="tw-comparison" data-typewriter="comparison">Dialogue preview</h2>
+          <label class="tw-motion"><span data-typewriter="motion">Reduce motion</span>
+            <select id="tw-motion">
+              <option value="auto" data-typewriter="auto">Auto</option>
+              <option value="on" data-typewriter="on">On</option>
+              <option value="off" data-typewriter="off">Off</option>
+            </select>
+          </label>
+        </div>
+        <div class="tw-scenes">
+          <figure>
+            <figcaption id="tw-default-caption" data-typewriter="pageDefault">Page default</figcaption>
+            <div id="tw-default-text" class="tw-dialogue" tabindex="0" role="region" aria-labelledby="tw-default-caption" dir="auto"></div>
+            <p id="tw-default-count" class="tw-count"></p>
+          </figure>
+          <figure>
+            <figcaption id="tw-mine-caption" data-typewriter="mine">My tune</figcaption>
+            <div id="tw-mine-text" class="tw-dialogue" tabindex="0" role="region" aria-labelledby="tw-mine-caption" dir="auto"></div>
+            <p id="tw-mine-count" class="tw-count"></p>
+          </figure>
+        </div>
+        <div class="tw-buttons">
+          <button id="tw-start" class="tw-primary" type="button" data-typewriter="start">Start</button>
+          <button id="tw-pause" type="button" data-typewriter="pause">Pause</button>
+          <button id="tw-resume" type="button" data-typewriter="resume">Resume</button>
+          <button id="tw-skip" type="button" data-typewriter="skip">Skip</button>
+          <button id="tw-reset" type="button" data-typewriter="reset">Reset</button>
+        </div>
+        <p id="tw-status" class="tw-status" role="status"></p>
+      </section>
+      <section class="tw-panel" aria-labelledby="tw-tune">
+        <h2 id="tw-tune" data-typewriter="tune">Tune your dialogue</h2>
+        <label class="tw-editor" for="tw-input" data-typewriter="dialogue">My dialogue</label>
+        <textarea id="tw-input" rows="4" aria-describedby="tw-input-limits tw-input-status"></textarea>
+        <p id="tw-input-limits" class="tw-note" data-typewriter="inputLimits"></p>
+        <p id="tw-input-status" class="tw-status" role="status" hidden></p>
+        <div class="tw-sliders">
+          <label><span data-typewriter="speed">Reveal speed</span><output id="tw-speed-value" for="tw-speed" aria-hidden="true"></output><input id="tw-speed" type="range"></label>
+          <label><span data-typewriter="shortPause">Short pause</span><output id="tw-shortPause-value" for="tw-shortPause" aria-hidden="true"></output><input id="tw-shortPause" type="range"></label>
+          <label><span data-typewriter="sentencePause">Sentence pause</span><output id="tw-sentencePause-value" for="tw-sentencePause" aria-hidden="true"></output><input id="tw-sentencePause" type="range"></label>
+        </div>
+        <p class="tw-note" data-typewriter="timing"></p>
+        <div class="tw-transfer">
+          <h3 id="tw-active" data-typewriter="active">Active configuration for export</h3>
+          <div class="tw-buttons" role="group" aria-labelledby="tw-active">
+            <button id="tw-default" type="button" aria-pressed="false" data-typewriter="pageDefault">Page default</button>
+            <button id="tw-mine" type="button" aria-pressed="true" data-typewriter="mine">My tune</button>
+          </div>
+          <div class="tw-buttons">
+            <button id="tw-json" type="button" data-typewriter="download">Download JSON</button>
+            <button id="tw-share" type="button" data-typewriter="share">Create share link</button>
+          </div>
+          <p class="tw-note" data-typewriter="shareLimits"></p>
+          <p id="tw-share-status" class="tw-status" role="status" hidden></p>
+          <div id="tw-share-result" hidden>
+            <label for="tw-share-url" data-typewriter="shareUrl">Share URL</label>
+            <input id="tw-share-url" type="url" readonly>
+            <a id="tw-share-open" target="_blank" rel="noopener" data-typewriter="openShare">Open in a new tab</a>
+          </div>
+        </div>
+      </section>
+    </div>
+    <aside class="tw-limits">
+      <p data-typewriter="limits"></p>
+      <a href="https://www.unicode.org/reports/tr29/">Unicode UAX #29</a>
+      <a href="https://docs.godotengine.org/en/stable/classes/class_richtextlabel.html">Godot RichTextLabel</a>
+      <a href="/text-fit/" data-typewriter="textFit">The UI text-fit lab checks typography and overflow, not per-character reveal timing.</a>
+    </aside>
+  </main>
+  <script type="module" src="/src/pages/typewriter.ts"></script>
+</body>
+</html>
