@@ -10,6 +10,7 @@ import { resolveRoute, createRoutingMiddleware } from '../scripts/preview-routin
 // with '' for en and /zh /ja /ko /es prefixes). These rules keep vite preview
 // and the generated dist/_redirects from ever serving the homepage at a wrong
 // URL: trailing-slash canonicalization, /en → unprefixed, unknown → 404.
+const newTools = ['text-fit', 'audio-envelope'];
 const pages = new Set([
   '/',
   '/feel/',
@@ -28,10 +29,22 @@ const pages = new Set([
   '/zh/feel/hit/',
   '/zh/feel/boss-hp/',
   '/ja/feel/hit/',
+  ...['', '/zh', '/ja', '/ko', '/es'].flatMap((prefix) => newTools.map((tool) => `${prefix}/${tool}/`)),
   ...['zh', 'ja', 'ko', 'es'].flatMap((locale) => [`/${locale}/feel/jump/`, `/${locale}/feel/move/`, `/${locale}/feel/camera/`, `/${locale}/feel/spring/`, `/${locale}/effects/`]),
 ]);
 const exists = (dir) => pages.has(dir);
 const resolves = (pathname) => resolveRoute(pathname, exists);
+
+test('routing: text and sound tools are canonical in five locales', () => {
+  for (const tool of newTools) {
+    for (const prefix of ['', '/zh', '/ja', '/ko', '/es']) {
+      const path = `${prefix}/${tool}/`;
+      assert.deepEqual(resolves(path), { type: 'next' });
+      assert.deepEqual(resolves(path.slice(0, -1)), { type: 'redirect', location: path });
+    }
+    assert.deepEqual(resolves(`/en/${tool}/`), { type: 'redirect', location: `/${tool}/` });
+  }
+});
 
 test('routing: English pages live at unprefixed URLs and pass through', () => {
   assert.deepEqual(resolves('/'), { type: 'next' });

@@ -18,3 +18,6 @@ import './boss-demo.test.mjs';
 import './advisor.test.mjs';
 import './routing.test.mjs';
 import './site-shell.test.mjs';
+
+import './text-fit.test.mjs';
+import './audio-envelope.test.mjs';

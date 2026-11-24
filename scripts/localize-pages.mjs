@@ -1,15 +1,18 @@
 // Produce crawlable static pages in five languages after Vite, without runtime SSR.
 import {readFile,writeFile,mkdir,readdir} from 'node:fs/promises';
+import {join} from 'node:path';
 import ts from 'typescript';
 await import('../src/templates/gacha/strings.js');
 const SITE='https://pixjuice.pages.dev';
+const outDir=process.env.PIXJUICE_OUTDIR || 'dist';
 const langs=['en','zh','ja','ko','es'];
 const seo=JSON.parse(await readFile('src/templates/seo.json','utf8'));
 const dicts={};
-for(const lang of langs) {
- const src=ts.transpileModule(await readFile(`src/lib/locales/${lang}.ts`,'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext}}).outputText;
- dicts[lang]=(await import('data:text/javascript;base64,'+Buffer.from(src).toString('base64'))).default;
+async function readDictionary(path) {
+ const src=ts.transpileModule(await readFile(path,'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext}}).outputText;
+ return import('data:text/javascript;base64,'+Buffer.from(src).toString('base64'));
 }
+for(const lang of langs) dicts[lang]=(await readDictionary(`src/lib/locales/${lang}.ts`)).default;
 const lookup=(d,k)=>k.split('.').reduce((v,k)=>v?.[k],d);
 const translate=(l,k)=>globalThis.PixStrings[l]?.[k]??lookup(dicts[l],k)??lookup(dicts.en,k)??k;
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -17,7 +20,7 @@ const strip=s=>s.replace(/<[^>]*>/g,'');
 const manifest=JSON.parse(await readFile('public/free-assets/manifest.json','utf8'));
 const isPublicListing=a=>a&&a.style_tier==='realistic'&&!a.hidden&&!a.product_hidden&&!a.placeholder;
 const products=[...new Set(manifest.assets.map(a=>a.product_id).filter(Boolean))];
-const paths=['','effects/','credits/','editor/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
+const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
 const listedPaths=paths.filter(path=>{
   if(!path.startsWith('free-assets/')||path==='free-assets/')return true;
   const id=path.slice('free-assets/'.length).replace(/\/$/,'');
@@ -28,6 +31,10 @@ const listedPaths=paths.filter(path=>{
 const url=(l,p)=>`${SITE}/${l==='en'?'':l+'/'}${p}`;
 
 const TOOL_SEO = {
+  'text-fit/': { title: 'title.textFit', desc: 'title.textFitDesc',
+    copyAttr: 'data-copy', copy: (await readDictionary('src/text-fit/strings.ts')).COPY },
+  'audio-envelope/': { title: 'title.uiSounds', desc: 'title.uiSoundsDesc',
+    copyAttr: 'data-envelope', copy: (await readDictionary('src/lib/audio-envelope/strings.ts')).STRINGS },
   'image-to-pixel-art/': { title: 'title.pa', desc: 'pa.lede' },
   'normal-map/': { title: 'title.nm', desc: 'nm.lede' },
   'pixel-art-upscaler/': { title: 'title.up', desc: 'up.lede' },
@@ -47,9 +54,10 @@ function prefixLocalizedHrefs(html, lang) {
 }
 
 for(const path of paths) {
- const original=await readFile(`dist/${path}index.html`,'utf8');
+ const original=await readFile(join(outDir,path,'index.html'),'utf8');
+ const tool=TOOL_SEO[path];
  for(const lang of langs) {
-  const d=seo[lang],key=path==='templates/gacha/'?'gx':path==='templates/save-load/'?'sv':path==='templates/'?'tplIndex':path==='free-resources/'?'fr':path==='feel/'?'feelIndex':path==='feel/hit/'?'feelHit':path==='feel/boss-hp/'?'feelBoss':path==='feel/jump/'?'jump':path==='feel/move/'?'move':path==='feel/camera/'?'camera':path==='feel/spring/'?'spring':path==='effects/'?'effects':'fa';
+  const d=seo[lang],key=path==='templates/gacha/'?'gx':path==='templates/save-load/'?'sv':path==='templates/'?'tplIndex':path==='free-resources/'?'fr':path==='feel/'?'feelIndex':path==='feel/hit/'?'feelHit':path==='feel/boss-hp/'?'feelBoss':path==='feel/jump/'?'jump':path==='feel/move/'?'move':path==='feel/camera/'?'camera':path==='feel/spring/'?'spring':path==='effects/'?'effects':tool?.copy?'lab':'fa';
   const asset=manifest.assets.find(a=>path===`free-assets/${a.id}/`) || manifest.assets.find(a=>path===`free-assets/${a.product_id}/`);
   const styleKey={realistic:'tpl.skin.realistic',stylized:'tpl.skin.stylized','clean-low-poly':'tpl.skin.lowpoly','pixel-art':'tpl.skin.pixel'};
   const name=asset?(asset.product_id === "chest-wood"?[translate(lang,'v3.product'),...(path===`free-assets/${asset.product_id}/`?[]:[translate(lang,styleKey[asset.style_tier]),translate(lang,'v3.'+asset.palette),translate(lang,'v3.'+asset.state)])].join(' · '):(lang==='zh'?asset.name.zh||asset.name.en:asset.name.en)):null;
@@ -67,12 +75,16 @@ for(const path of paths) {
   else html=html.replaceAll('/previews/zh/','/previews/en/');
   // Translate static text and rich text (the same data keys the browser uses).
   html=html.replace(/<([a-z][\w-]*)\b([^>]*\bdata-i18n(?:-html)?="([^"]+)"[^>]*)>[\s\S]*?<\/\1>/gi,(all,tag,attrs,k)=>`<${tag}${attrs}>${attrs.includes('data-i18n-html=')?translate(lang,k):esc(translate(lang,k))}</${tag}>`);
+  if(tool?.copy){
+    const marked=new RegExp(`<([a-z][\\w-]*)\\b([^>]*\\b${tool.copyAttr}="([^"]+)"[^>]*)>[^<]*<\\/\\1>`,'gi');
+    html=html.replace(marked,(all,tag,attrs,k)=>`<${tag}${attrs}>${esc(tool.copy[lang][k])}</${tag}>`);
+  }
   html=html.replace(/<title>[\s\S]*?<\/title>/,`<title>${esc(title)}${(path===''||TOOL_SEO[path]||/PixJuice/i.test(title))?'':' – PixJuice'}</title>`)
    .replace(/(<meta name="description" content=")[^"]*(")/,`$1${esc(desc)}$2`)
    .replace(/(<meta property="og:title" content=")[^"]*(")/,`$1${esc(title)}$2`)
    .replace(/(<meta property="og:description" content=")[^"]*(")/,`$1${esc(desc)}$2`)
    .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'');
-  const questions=path===''||key==='jump'||key==='move'||key==='camera'||key==='spring'||key==='effects'?[]:asset?[[`${name} — ${translate(lang,'v3.license')}`,d.assetA]]:key==='fr'?[[translate(lang,'fr.q'),translate(lang,'fr.a')]]:key==='feelIndex'||key==='feelHit'?[[translate(lang,'feel.faq1q'),translate(lang,'feel.faq1a')],[translate(lang,'feel.faq2q'),translate(lang,'feel.faq2a')],[translate(lang,'feel.faq3q'),translate(lang,'feel.faq3a')]]:key==='feelBoss'?[[translate(lang,'boss.faq1q'),translate(lang,'boss.faq1a')],[translate(lang,'boss.faq2q'),translate(lang,'boss.faq2a')],[translate(lang,'boss.faq3q'),translate(lang,'boss.faq3a')]]:TOOL_SEO[path]?[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
+  const questions=key==='lab'||path===''||key==='jump'||key==='move'||key==='camera'||key==='spring'||key==='effects'?[]:asset?[[`${name} — ${translate(lang,'v3.license')}`,d.assetA]]:key==='fr'?[[translate(lang,'fr.q'),translate(lang,'fr.a')]]:key==='feelIndex'||key==='feelHit'?[[translate(lang,'feel.faq1q'),translate(lang,'feel.faq1a')],[translate(lang,'feel.faq2q'),translate(lang,'feel.faq2a')],[translate(lang,'feel.faq3q'),translate(lang,'feel.faq3a')]]:key==='feelBoss'?[[translate(lang,'boss.faq1q'),translate(lang,'boss.faq1a')],[translate(lang,'boss.faq2q'),translate(lang,'boss.faq2a')],[translate(lang,'boss.faq3q'),translate(lang,'boss.faq3a')]]:TOOL_SEO[path]?[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
   const json=[{'@context':'https://schema.org','@type':path===''||key==='fr'?'CollectionPage':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:path===''||key==='fr'?undefined:key==='fa'?(asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined):'https://creativecommons.org/publicdomain/zero/1.0/'}];
   if(questions.length) json.push({'@context':'https://schema.org','@type':'FAQPage',inLanguage:lang,mainEntity:questions.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))});
   const unpublished=asset? !isPublicListing(asset) && !(path===`free-assets/${asset.product_id}/` && manifest.assets.some(a=>a.product_id===asset.product_id&&isPublicListing(a))) : path.startsWith('free-assets/') && path!=='free-assets/' && !listedPaths.includes(path);
@@ -81,14 +93,14 @@ for(const path of paths) {
   const faq=questions.length?`<section class="tpl-faq"><h2>${esc(d.faq)}</h2>${questions.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</section>\n`:'';
   html=html.replace(/\s*<footer>/,faq+'<footer>');
   if(lang!=='en') html=prefixLocalizedHrefs(html, lang);
-  const folder=`dist/${lang==='en'?'':lang+'/'}${path}`;
-  await mkdir(folder,{recursive:true});await writeFile(folder+'index.html',html);
+  const folder=join(outDir,lang==='en'?'':lang,path);
+  await mkdir(folder,{recursive:true});await writeFile(join(folder,'index.html'),html);
  }
 }
 // Keep existing tool URLs and add all language alternatives for the library.
 let sitemap=await readFile('public/sitemap.xml','utf8');
 sitemap=sitemap.replace('</urlset>',listedPaths.flatMap(p=>langs.filter(l=>l!=='en'||!sitemap.includes(url(l,p))).map(l=>`  <url><loc>${url(l,p)}</loc></url>`)).join('\n')+'\n</urlset>');
-await writeFile('dist/sitemap.xml',sitemap);
+await writeFile(join(outDir,'sitemap.xml'),sitemap);
 console.log(`Localized ${paths.length} library pages × ${langs.length} languages, with canonical/hreflang, FAQ and sitemap.`);
 
 // Pages redirects run before static files; retain old source assets on disk.
@@ -108,4 +120,4 @@ for(const p of paths){
  redirects.push(`/en/${noSlash} /${p} 301`,`/en/${p} /${p} 301`);
 }
 redirects.push('/en / 301','/en/* /:splat 301');
-await writeFile('dist/_redirects',redirects.join('\n')+'\n');
+await writeFile(join(outDir,'_redirects'),redirects.join('\n')+'\n');

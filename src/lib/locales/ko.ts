@@ -52,6 +52,8 @@ const ko: Partial<Dict> = {
     aria: "언어",
   },
   nav: {
+    textFit: "UI 문구 맞춤",
+    uiSounds: "UI 효과음",
     home: "홈",
     credits: "크레딧",
     backCatalog: "← 카탈로그",
@@ -72,6 +74,10 @@ const ko: Partial<Dict> = {
     moreH: "PixJuice의 다른 도구",
   },
   title: {
+    textFit: "번역한 UI 문구가 상자 안에 들어갈까요? — PixJuice",
+    uiSounds: "짧은 게임 UI 효과음 조정 — PixJuice",
+    textFitDesc: "버튼 레이블, 캡션, HUD 문구가 다섯 언어로 번역한 뒤에도 상자에 들어가는지 확인하고 초기 CSS 또는 JSON 설정을 복사하세요.",
+    uiSoundsDesc: "브라우저에서 클릭음, 코인 소리, 알림음을 들어보고 WAV 또는 JSON을 다운로드하세요.",
     home: "PixJuice — 픽셀 이펙트, 필 레시피, 에셋과 도구",
     editor: "에디터 — PixJuice",
     credits: "크레딧 및 라이선스 — PixJuice",
@@ -88,6 +94,8 @@ const ko: Partial<Dict> = {
     asset: "{name} — 무료 게임 에셋 – PixJuice",
   },
   home: {
+    toolTextFitD: "번역한 UI 문구를 확인하고 CSS 또는 JSON 설정을 복사하세요.",
+    toolUiSoundsD: "UI 효과음을 조정하고 WAV 또는 JSON을 다운로드하세요.",
     subtitle: "<b>픽셀 아트 VFX 메이커</b> — 244종 게임 이펙트에 색을 입히고, 미리보고, 스프라이트 시트로 내보내세요. 무료, 브라우저에서 전부.",
     searchPh: "244개 이펙트 검색…  ( / )",
     searchAria: "이펙트 검색",
@@ -129,8 +137,8 @@ const ko: Partial<Dict> = {
 <li><b>캐릭터 조작과 이동</b> — 공개: 점프 입력 유예 실험실.</li>
 <li><b>카메라</b> — 계획 중인 추적·셰이크 언어 랩. 오늘날 셰이크는 히트 레시피 안에만 있습니다.</li>
 <li><b>전투 피드백</b> — 공개: 히트 필과 보스 HP 바.</li>
-<li><b>UI와 상호작용</b> — 보스 바와 UI 템플릿으로 일부 공개.</li>
-<li><b>오디오</b> — 히트 레이어 사운드와 이펙트 에디터 SFX로 일부 공개. 독립 랩은 아직 없음.</li>
+<li><b>UI와 상호작용</b> — 공개: 보스 HP 바, UI 템플릿, UI 문구 맞춤 실험실. CSS 또는 JSON 설정을 복사할 수 있습니다.</li>
+<li><b>오디오</b> — 공개: 히트 레이어 사운드, 이펙트 에디터 효과음, 게임 UI 사운드 실험실. 짧은 알림음을 들어 보고 조정할 수 있습니다.</li>
 <li><b>비주얼과 에셋</b> — 공개: 이펙트 244종, CC0 라이브러리, 이미지 도구 4개.</li>
 <li><b>성능과 출시</b> — 계획 중. 미공개이며 내비게이션에도 넣지 않습니다.</li>
 </ul>`,

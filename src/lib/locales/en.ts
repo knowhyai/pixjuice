@@ -52,6 +52,8 @@ const en = {
     aria: "Language",
   },
   nav: {
+    textFit: "UI text fit",
+    uiSounds: "UI sounds",
     home: "Home",
     credits: "credits",
     backCatalog: "← catalog",
@@ -72,6 +74,10 @@ const en = {
     moreH: "More PixJuice tools",
   },
   title: {
+    textFit: "Will translated UI text still fit? — PixJuice",
+    uiSounds: "Tune short game UI sounds — PixJuice",
+    textFitDesc: "Check whether button labels, captions and HUD text still fit after translation in five languages. Copy a starting CSS or JSON config.",
+    uiSoundsDesc: "Preview click, coin and notification sounds in your browser, then download WAV or JSON.",
     home: "PixJuice — pixel effects, feel recipes, assets and tools for game devs",
     editor: "Editor — PixJuice",
     credits: "Credits & licenses — PixJuice",
@@ -88,6 +94,8 @@ const en = {
     asset: "{name} — Free Game Asset – PixJuice",
   },
   home: {
+    toolTextFitD: "Check translated UI text and copy a CSS or JSON config.",
+    toolUiSoundsD: "Tune UI sounds and download WAV or JSON.",
     subtitle: "<b>Pixel Art VFX Maker</b> — recolor, preview &amp; export sprite sheets for 244 game effects. Free, in your browser.",
     searchPh: "search 244 effects…  ( / )",
     searchAria: "Search effects",
@@ -129,8 +137,8 @@ const en = {
 <li><b>Character control &amp; movement</b> — live: jump forgiveness lab.</li>
 <li><b>Camera</b> — planned follow and shake-language labs; shake today only lives inside the hit recipe.</li>
 <li><b>Combat feedback</b> — live: hit feel and boss HP bar recipes.</li>
-<li><b>UI &amp; interaction</b> — partly live via the boss bar and the UI templates.</li>
-<li><b>Audio</b> — partly live as layered hit sound and effect-editor SFX; no standalone audio lab yet.</li>
+<li><b>UI &amp; interaction</b> — Live: the boss bar, UI templates, and a UI text-fit lab with copyable CSS or JSON settings.</li>
+<li><b>Audio</b> — Live: layered hit sounds, effect-editor SFX, and a game UI sound lab for previewing and tuning short cues.</li>
 <li><b>Visuals &amp; assets</b> — live: 244 effects, the CC0 library, and four image tools.</li>
 <li><b>Performance &amp; shipping</b> — planned advisor loops; not live, and not in the nav.</li>
 </ul>`,

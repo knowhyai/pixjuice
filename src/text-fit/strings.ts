@@ -1,0 +1,95 @@
+import type { Locale } from "../lib/i18n";
+import type { Mode } from "./model";
+
+export const SAMPLES = [
+  { id: "en", label: "English", lang: "en", text: "Return to the checkpoint and recover your equipment." },
+  { id: "zh", label: "简体中文", lang: "zh-Hans", text: "返回最近的存档点，找回你遗失的装备。" },
+  { id: "ja", label: "日本語", lang: "ja", text: "最後のチェックポイントに戻り、失った装備を回収してください。" },
+  { id: "ko", label: "한국어", lang: "ko", text: "마지막 체크포인트로 돌아가 잃어버린 장비를 되찾으세요." },
+  { id: "es", label: "Español", lang: "es", text: "Vuelve al último punto de control y recupera el equipo que perdiste." },
+  { id: "compound", lang: "mul", text: "Inventargegenstandswiederherstellungsbenachrichtigung\n超长物品名称测试：返回存档点并恢复装备" },
+] as const;
+
+const en = {
+  title: "Will translated UI text still fit?",
+  lede: "Check whether button labels, captions and HUD text still fit after translation in five languages. Copy a starting CSS or JSON config.",
+  disclaimer: "Browser-local preview only. Unity TextMeshPro, Godot TextServer, Unreal and consoles can differ in font rasterization, glyph coverage, fallback, hinting, wrapping and overflow. Treat the copied CSS and JSON as a starting config and verify typography in your target engine.",
+  sample: "Load a sample", compound: "Stress test · German compound + Chinese", custom: "Edited text",
+  text: "Preview text", width: "Box width", height: "Box height", fontSize: "Font size",
+  lineHeight: "Line height (unitless)", compare: "Compare overflow modes",
+  fits: "Fits", wraps: "Wraps / multiple lines", clips: "Clips", overflows: "Overflows",
+  x: "horizontal", y: "vertical", export: "Copy config", mode: "Mode to copy",
+  copyCss: "Copy CSS", copyJson: "Copy JSON", copied: "Copied.",
+  copyFailed: "Clipboard unavailable. Select the snippet below and copy it manually.",
+  hookup: "Engine hookup and limits",
+  engine: "Transfer the box dimensions and text into your engine’s UI component. Choose a native wrap and overflow setting, then check the actual font assets and fallback chain on your target platform.",
+  playgrounds: "Live editing and copyable CSS",
+  css: "Browser wrapping, clipping and unitless line height",
+  expansion: "Translation expansion and long words",
+  engines: "Engine text controls and localization tests",
+};
+
+type Copy = Record<keyof typeof en, string> & { modes: Record<Mode, string> };
+
+export const COPY: Record<Locale, Copy> = {
+  en: { ...en, modes: {
+    visible: "Overflow visible", hidden: "Overflow hidden (clip)", "overflow-wrap": "Wrap + break-word",
+    "break-all": "Word break: break-all", ellipsis: "Single-line ellipsis",
+  } },
+  zh: {
+    title: "翻译后的界面文案还装得进框吗？",
+    lede: "检查按钮标签、说明文字和 HUD 文案翻译成五种语言后是否仍能放入原有空间，并复制 CSS 或 JSON 初始配置。",
+    disclaimer: "仅供本地浏览器预览。Unity TextMeshPro、Godot TextServer、Unreal 和游戏主机的字体栅格化、字形覆盖、回退、微调、换行和溢出行为可能不同。复制的 CSS 和 JSON 仅是初始配置，请在目标引擎中验证排版。",
+    sample: "加载示例", compound: "压力测试 · 德语复合词和中文", custom: "已编辑的文本",
+    text: "预览文本", width: "容器宽度", height: "容器高度", fontSize: "字号", lineHeight: "行高（无单位）",
+    compare: "对比溢出模式", fits: "适合容器", wraps: "换行／多行", clips: "裁切", overflows: "溢出",
+    x: "水平方向", y: "垂直方向", export: "复制配置", mode: "选择要复制的模式", copyCss: "复制 CSS", copyJson: "复制 JSON",
+    copied: "已复制。", copyFailed: "无法访问剪贴板，请选择下方代码并手动复制。",
+    hookup: "引擎接入与限制",
+    engine: "将容器尺寸和文本移入引擎的界面组件。选择引擎的换行和溢出设置，并在目标平台检查实际字体资源和回退顺序。",
+    playgrounds: "实时编辑和可复制的 CSS", css: "浏览器换行、裁切和无单位行高", expansion: "翻译文本扩展和长词", engines: "引擎文本设置和本地化测试",
+    modes: { visible: "显示溢出", hidden: "隐藏溢出（裁切）", "overflow-wrap": "换行 + break-word", "break-all": "强制断词（break-all）", ellipsis: "单行省略号" },
+  },
+  ja: {
+    title: "翻訳した UI テキストは枠に収まりますか？",
+    lede: "ボタンのラベル、キャプション、HUD の文言が翻訳後も収まるかを5言語で確認し、初期設定用の CSS や JSON をコピーできます。",
+    disclaimer: "ブラウザー内だけのプレビューです。Unity TextMeshPro、Godot TextServer、Unreal、ゲーム機では、フォントのラスタライズ、字形の収録範囲、フォールバック、ヒンティング、折り返し、はみ出し処理が異なる場合があります。コピーした CSS と JSON を初期設定として使い、対象エンジンで組版を確認してください。",
+    sample: "サンプルを読み込む", compound: "負荷テスト · ドイツ語の複合語と中国語", custom: "編集中のテキスト",
+    text: "プレビューテキスト", width: "ボックスの幅", height: "ボックスの高さ", fontSize: "文字サイズ", lineHeight: "行の高さ（単位なし）",
+    compare: "はみ出し処理を比較", fits: "収まる", wraps: "折り返し・複数行", clips: "切り取る", overflows: "はみ出す",
+    x: "横方向", y: "縦方向", export: "設定をコピー", mode: "コピーするモード", copyCss: "CSS をコピー", copyJson: "JSON をコピー",
+    copied: "コピーしました。", copyFailed: "クリップボードを利用できません。下のコードを選択してコピーしてください。",
+    hookup: "エンジンへの適用と制約",
+    engine: "ボックスの寸法とテキストをエンジンの UI コンポーネントに移し、折り返しとはみ出しの設定を選びます。実際のフォントとフォールバックの順序を対象機器で確認してください。",
+    playgrounds: "リアルタイム編集とコピーできる CSS", css: "ブラウザーの折り返し、切り取り、単位なしの行高", expansion: "翻訳による文字列の伸びと長い単語", engines: "エンジンのテキスト設定とローカライズテスト",
+    modes: { visible: "はみ出しを表示", hidden: "はみ出しを切り取る", "overflow-wrap": "折り返し + break-word", "break-all": "強制改行（break-all）", ellipsis: "1 行の末尾を省略" },
+  },
+  ko: {
+    title: "번역한 UI 문구가 상자 안에 들어갈까요?",
+    lede: "버튼 레이블, 캡션, HUD 문구가 다섯 언어로 번역한 뒤에도 상자에 들어가는지 확인하고 초기 CSS 또는 JSON 설정을 복사하세요.",
+    disclaimer: "브라우저에서만 재현되는 미리보기입니다. Unity TextMeshPro, Godot TextServer, Unreal 및 콘솔에서는 글꼴 래스터화, 글리프 지원 범위, 대체 글꼴, 힌팅, 줄바꿈 및 넘침 처리가 다를 수 있습니다. 복사한 CSS와 JSON을 초기 설정으로 사용하고 대상 엔진에서 조판 결과를 확인하세요.",
+    sample: "예제 불러오기", compound: "부하 테스트 · 독일어 합성어와 중국어", custom: "편집한 텍스트",
+    text: "미리보기 텍스트", width: "상자 너비", height: "상자 높이", fontSize: "글자 크기", lineHeight: "줄 높이(단위 없음)",
+    compare: "넘침 처리 비교", fits: "상자 안에 들어감", wraps: "줄바꿈 / 여러 줄", clips: "잘림", overflows: "넘침",
+    x: "가로", y: "세로", export: "설정 복사", mode: "복사할 모드", copyCss: "CSS 복사", copyJson: "JSON 복사",
+    copied: "복사했습니다.", copyFailed: "클립보드를 사용할 수 없습니다. 아래 코드를 선택해 직접 복사하세요.",
+    hookup: "엔진 적용과 한계",
+    engine: "상자 크기와 텍스트를 엔진의 UI 구성 요소에 옮기고 줄바꿈과 넘침 설정을 선택하세요. 대상 플랫폼에서 실제 글꼴과 대체 글꼴 순서를 확인하세요.",
+    playgrounds: "실시간 편집과 복사 가능한 CSS", css: "브라우저 줄바꿈, 잘림, 단위 없는 줄 높이", expansion: "번역에 따른 길이 변화와 긴 단어", engines: "엔진 텍스트 설정과 현지화 테스트",
+    modes: { visible: "넘친 텍스트 표시", hidden: "넘친 텍스트 숨김(잘림)", "overflow-wrap": "줄바꿈 + break-word", "break-all": "강제 줄바꿈(break-all)", ellipsis: "한 줄 말줄임표" },
+  },
+  es: {
+    title: "¿Cabrán los textos de la interfaz después de traducirlos?",
+    lede: "Comprueba en cinco idiomas si las etiquetas de botones, los pies de texto y los textos del HUD siguen cabiendo tras traducirlos. Copia una configuración inicial en CSS o JSON.",
+    disclaimer: "Vista previa local en el navegador. Unity TextMeshPro, Godot TextServer, Unreal y las consolas pueden diferir en la rasterización, la cobertura de glifos, las fuentes de respaldo, el hinting, los saltos de línea y el desbordamiento. Usa el CSS y el JSON copiados como configuración inicial y comprueba la tipografía en el motor de destino.",
+    sample: "Cargar una muestra", compound: "Prueba de estrés · compuesto alemán y chino", custom: "Texto editado",
+    text: "Texto de vista previa", width: "Ancho de la caja", height: "Alto de la caja", fontSize: "Tamaño de letra", lineHeight: "Altura de línea (sin unidad)",
+    compare: "Comparar modos de desbordamiento", fits: "Cabe", wraps: "Ajuste / varias líneas", clips: "Se recorta", overflows: "Se desborda",
+    x: "horizontal", y: "vertical", export: "Copiar configuración", mode: "Modo que se copiará", copyCss: "Copiar CSS", copyJson: "Copiar JSON",
+    copied: "Copiado.", copyFailed: "Portapapeles no disponible. Selecciona el fragmento de abajo y cópialo manualmente.",
+    hookup: "Integración con motores y límites",
+    engine: "Transfiere el texto y las dimensiones de la caja al componente de UI del motor. Elige los ajustes nativos de salto de línea y desbordamiento y revisa las fuentes y sus sustituciones en la plataforma de destino.",
+    playgrounds: "Edición en directo y CSS listo para copiar", css: "Saltos de línea, recorte y altura de línea sin unidad", expansion: "Expansión al traducir y palabras largas", engines: "Controles tipográficos y pruebas de localización en motores",
+    modes: { visible: "Desbordamiento visible", hidden: "Desbordamiento oculto (recorte)", "overflow-wrap": "Ajuste + break-word", "break-all": "Corte de palabras (break-all)", ellipsis: "Puntos suspensivos en una línea" },
+  },
+};

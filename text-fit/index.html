@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Will translated UI text still fit? — PixJuice</title>
+  <meta name="description" content="Check whether button labels, captions and HUD text still fit after translation in five languages. Copy a starting CSS or JSON config.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <header class="head"></header>
+  <main class="wrap text-fit">
+    <h1 data-copy="title">Will translated UI text still fit?</h1>
+    <p class="lede" data-copy="lede">Check whether button labels, captions and HUD text still fit after translation in five languages. Copy a starting CSS or JSON config.</p>
+    <p class="tf-disclaimer" data-copy="disclaimer">Browser-local preview only. Unity TextMeshPro, Godot TextServer, Unreal and consoles can differ in font rasterization, glyph coverage, fallback, hinting, wrapping and overflow. Treat the copied CSS and JSON as a starting config and verify typography in your target engine.</p>
+
+    <div class="tf-inputs tf-panel">
+      <div class="tf-editor">
+        <strong id="tf-sample-label" data-copy="sample"></strong>
+        <div class="tf-samples" role="group" aria-labelledby="tf-sample-label"></div>
+        <label for="tf-text" data-copy="text"></label>
+        <textarea id="tf-text" rows="4" dir="auto" spellcheck="false"></textarea>
+        <small id="tf-edited" data-copy="custom" hidden></small>
+      </div>
+      <div class="tf-controls"></div>
+    </div>
+
+    <section aria-labelledby="tf-compare">
+      <h2 id="tf-compare" data-copy="compare"></h2>
+      <div class="tf-comparison"></div>
+      <div class="tf-probes" aria-hidden="true"></div>
+    </section>
+
+    <section aria-labelledby="tf-export">
+      <div class="tf-export-header">
+        <h2 id="tf-export" data-copy="export">Copy config</h2>
+        <label>
+          <span data-copy="mode">Mode to copy</span>
+          <select id="tf-mode"></select>
+        </label>
+      </div>
+      <div class="tf-exports">
+        <div class="tf-panel">
+          <button type="button" class="btn" data-format="css" data-copy="copyCss">Copy CSS</button>
+          <p class="tf-copy-status" role="status"></p>
+          <pre id="tf-css" tabindex="0" aria-label="CSS"></pre>
+        </div>
+        <div class="tf-panel">
+          <button type="button" class="btn" data-format="json" data-copy="copyJson">Copy JSON</button>
+          <p class="tf-copy-status" role="status"></p>
+          <pre id="tf-json" tabindex="0" aria-label="JSON"></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="tf-hookup" aria-labelledby="tf-hookup">
+      <h2 id="tf-hookup" data-copy="hookup"></h2>
+      <p data-copy="engine"></p>
+      <ul>
+        <li><span data-copy="playgrounds"></span> ·
+          <a href="https://www.typetester.org/">Typetester</a> ·
+          <a href="https://wakamaifondue.com/">Wakamai Fondue</a> ·
+          <a href="https://www.axis-praxis.org/">Axis-Praxis</a>
+        </li>
+        <li><span data-copy="css"></span> ·
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Text/Wrapping_breaking_text">MDN</a> ·
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overflow">overflow</a> ·
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overflow-wrap">overflow-wrap</a> ·
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/word-break">word-break</a> ·
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-overflow">text-overflow</a> ·
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/line-height">line-height</a>
+        </li>
+        <li><span data-copy="expansion"></span> ·
+          <a href="https://www.w3.org/International/articles/article-text-size/index.en">W3C I18n</a>
+        </li>
+        <li><span data-copy="engines"></span> ·
+          <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.2/manual/TMPObjectUIText.html">Unity TextMeshPro</a> ·
+          <a href="https://docs.godotengine.org/en/stable/classes/class_label.html">Godot Label</a> ·
+          <a href="https://docs.godotengine.org/en/stable/tutorials/i18n/internationalizing_games.html">Godot I18n</a> ·
+          <a href="https://docs.godotengine.org/en/stable/tutorials/i18n/pseudolocalization.html">Godot Pseudolocalization</a>
+        </li>
+      </ul>
+    </section>
+  </main>
+  <script type="module" src="/src/pages/text-fit.ts"></script>
+</body>
+</html>

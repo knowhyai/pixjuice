@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tune short game UI sounds — PixJuice</title>
+  <meta name="description" content="Preview click, coin and notification sounds in your browser, then download WAV or JSON.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="head"><div class="head-in"><a href="/">PixJuice</a></div></header>
+  <main class="envelope-lab">
+    <div class="envelope-intro">
+      <h1 data-envelope="title">Tune short game UI sounds</h1>
+      <p data-envelope="lede">Preview click, coin and notification sounds in your browser, then download WAV or JSON.</p>
+    </div>
+    <div class="envelope-workspace">
+      <section class="envelope-panel envelope-preview" aria-labelledby="envelope-heading">
+        <div class="envelope-toolbar">
+          <h2 id="envelope-heading" data-envelope="envelope">Amplitude envelope</h2>
+          <div class="envelope-mode" role="group" aria-labelledby="envelope-mode-label">
+            <span class="envelope-visually-hidden" id="envelope-mode-label" data-envelope="mode">Preview mode</span>
+            <button type="button" id="lab-mine" data-envelope="mine" aria-pressed="true">My tune</button>
+            <button type="button" id="lab-default" data-envelope="pageDefault" aria-pressed="false">Page default</button>
+          </div>
+        </div>
+        <canvas id="lab-envelope" role="img" aria-labelledby="envelope-heading" aria-describedby="envelope-key"></canvas>
+        <div class="envelope-legend" id="envelope-key">
+          <span data-envelope="current">Current envelope</span>
+          <span data-envelope="pageDefault">Page default</span>
+          <span id="lab-duration"></span>
+        </div>
+        <div class="envelope-buttons">
+          <button class="envelope-primary" type="button" id="lab-play" data-envelope="play">Play</button>
+          <button type="button" id="lab-stop" data-envelope="stop" disabled>Stop</button>
+          <button type="button" id="lab-reset" data-envelope="reset">Reset</button>
+        </div>
+        <p class="envelope-status" id="lab-status" role="status"></p>
+        <div class="envelope-buttons envelope-downloads">
+          <button type="button" id="lab-wav" data-envelope="wav">Download WAV</button>
+          <button type="button" id="lab-json" data-envelope="json">Download JSON</button>
+        </div>
+      </section>
+      <section class="envelope-panel envelope-patch" aria-labelledby="patch-heading">
+        <h2 id="patch-heading" data-envelope="patch">Sound patch</h2>
+        <label class="envelope-choice"><span data-envelope="preset">Preset</span><select id="lab-preset"></select></label>
+        <div id="lab-adsr" class="envelope-controls"></div>
+        <label class="envelope-choice"><span data-envelope="waveform">Waveform</span><select id="lab-waveform"></select></label>
+        <div id="lab-pitch" class="envelope-controls"></div>
+        <label class="envelope-slide">
+          <input type="checkbox" id="lab-slide">
+          <span data-envelope="slide">Enable frequency slide</span>
+        </label>
+        <div id="lab-end" class="envelope-controls"></div>
+        <div id="lab-gain" class="envelope-controls"></div>
+      </section>
+    </div>
+    <footer class="envelope-footer" data-envelope="footer">PixJuice · Sound generated in your browser with the Web Audio API.</footer>
+  </main>
+  <script type="module" src="/src/pages/audio-envelope.ts"></script>
+</body>
+</html>

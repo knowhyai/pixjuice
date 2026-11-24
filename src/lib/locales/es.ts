@@ -52,6 +52,8 @@ const es: Partial<Dict> = {
     aria: "Idioma",
   },
   nav: {
+    textFit: "Ajuste de texto de UI",
+    uiSounds: "Sonidos de interfaz",
     home: "Inicio",
     credits: "créditos",
     backCatalog: "← catálogo",
@@ -72,6 +74,10 @@ const es: Partial<Dict> = {
     moreH: "Más herramientas de PixJuice",
   },
   title: {
+    textFit: "¿Cabrán los textos de la interfaz después de traducirlos? — PixJuice",
+    uiSounds: "Ajusta sonidos breves para la interfaz de tu juego — PixJuice",
+    textFitDesc: "Comprueba en cinco idiomas si las etiquetas de botones, los pies de texto y los textos del HUD siguen cabiendo tras traducirlos. Copia una configuración inicial en CSS o JSON.",
+    uiSoundsDesc: "Escucha clics, sonidos de monedas y avisos en el navegador. Descarga el resultado en WAV o JSON.",
     home: "PixJuice — efectos de píxel, recetas de feel, recursos y herramientas",
     editor: "Editor — PixJuice",
     credits: "Créditos y licencias — PixJuice",
@@ -88,6 +94,8 @@ const es: Partial<Dict> = {
     asset: "{name} — Recurso de juego gratis – PixJuice",
   },
   home: {
+    toolTextFitD: "Comprueba los textos traducidos y copia los ajustes en CSS o JSON.",
+    toolUiSoundsD: "Ajusta sonidos de interfaz y descarga WAV o JSON.",
     subtitle: "<b>Creador de VFX en pixel art</b> — recolorea, previsualiza y exporta hojas de sprites de 244 efectos para videojuegos. Gratis, en tu navegador.",
     searchPh: "buscar 244 efectos…  ( / )",
     searchAria: "Buscar efectos",
@@ -129,8 +137,8 @@ const es: Partial<Dict> = {
 <li><b>Control y movimiento</b> — disponible: laboratorio de tolerancia del salto.</li>
 <li><b>Cámara</b> — laboratorios de seguimiento y lenguaje de shake, no publicados; el shake de hoy solo vive en la receta de golpe.</li>
 <li><b>Feedback de combate</b> — en vivo: recetas de hit feel y barra de jefe.</li>
-<li><b>UI e interacción</b> — en parte en vivo: la barra de jefe y las plantillas de UI.</li>
-<li><b>Audio</b> — en parte en vivo: capas de impacto y SFX del editor; aún no hay un laboratorio de audio.</li>
+<li><b>UI e interacción</b> — Disponibles: la barra de jefe, las plantillas de UI y el laboratorio de ajuste de texto, que permite copiar la configuración en CSS o JSON.</li>
+<li><b>Audio</b> — Disponibles: los sonidos de impacto por capas, los efectos sonoros del editor y el laboratorio de audio para interfaces de juego, donde puedes escuchar y ajustar avisos breves.</li>
 <li><b>Visuales y recursos</b> — en vivo: 244 efectos, la biblioteca CC0 y cuatro herramientas de imagen.</li>
 <li><b>Rendimiento y publicación</b> — bucles previstos; no están en vivo ni en la navegación.</li>
 </ul>`,

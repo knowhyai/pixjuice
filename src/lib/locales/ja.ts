@@ -52,6 +52,8 @@ const ja: Partial<Dict> = {
     aria: "言語",
   },
   nav: {
+    textFit: "UI テキストの収まり",
+    uiSounds: "UI 効果音",
     home: "ホーム",
     credits: "クレジット",
     backCatalog: "← カタログ",
@@ -72,6 +74,10 @@ const ja: Partial<Dict> = {
     moreH: "PixJuice の他のツール",
   },
   title: {
+    textFit: "翻訳した UI テキストは枠に収まりますか？ — PixJuice",
+    uiSounds: "ゲーム UI の短い効果音を調整 — PixJuice",
+    textFitDesc: "ボタンのラベル、キャプション、HUD の文言が翻訳後も収まるかを5言語で確認し、初期設定用の CSS や JSON をコピーできます。",
+    uiSoundsDesc: "クリック音、コイン音、通知音をブラウザーで試聴し、WAV や JSON をダウンロードできます。",
     home: "PixJuice — ピクセルエフェクト、フィールレシピ、素材とツール",
     editor: "エディター — PixJuice",
     credits: "クレジットとライセンス — PixJuice",
@@ -88,6 +94,8 @@ const ja: Partial<Dict> = {
     asset: "{name} — 無料ゲームアセット – PixJuice",
   },
   home: {
+    toolTextFitD: "翻訳後の UI テキストを確認し、CSS や JSON の設定をコピーできます。",
+    toolUiSoundsD: "UI 効果音を調整し、WAV や JSON を保存できます。",
     subtitle: "<b>ピクセルアートVFXメーカー</b> — 244種類のゲームエフェクトに配色し、プレビューしてスプライトシートを書き出し。無料、ブラウザだけで完結。",
     searchPh: "244エフェクトを検索…  ( / )",
     searchAria: "エフェクトを検索",
@@ -129,8 +137,8 @@ const ja: Partial<Dict> = {
 <li><b>キャラ操作と移動</b> — 公開中：ジャンプ入力の猶予ラボ。</li>
 <li><b>カメラ</b> — 計画中の追従とシェイク言語ラボ。今日のシェイクはヒットレシピの中だけです。</li>
 <li><b>戦闘フィードバック</b> — 公開中：ヒットフィールとボスHPバー。</li>
-<li><b>UI と操作</b> — ボスバーとUIテンプレートで部分的に公開。</li>
-<li><b>オーディオ</b> — ヒットのレイヤー音とエフェクトエディタのSFXで部分的に公開。独立ラボはまだありません。</li>
+<li><b>UI と操作</b> — 公開中：ボスHPバー、UIテンプレート、UIテキストの収まりを確認するラボ。CSSやJSONの設定をコピーできます。</li>
+<li><b>オーディオ</b> — 公開中：ヒットのレイヤー音、エフェクトエディタの効果音、ゲームUI効果音ラボ。短い通知音を試聴して調整できます。</li>
 <li><b>ビジュアルと素材</b> — 公開中：エフェクト244種、CC0ライブラリ、画像ツール4つ。</li>
 <li><b>パフォーマンスと出荷</b> — 計画中。未公開で、ナビにも出しません。</li>
 </ul>`,

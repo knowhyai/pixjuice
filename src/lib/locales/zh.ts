@@ -52,6 +52,8 @@ const zh: Partial<Dict> = {
     aria: "语言",
   },
   nav: {
+    textFit: "界面文案适配",
+    uiSounds: "界面音效",
     home: "首页",
     credits: "致谢",
     backCatalog: "← 特效库",
@@ -72,6 +74,10 @@ const zh: Partial<Dict> = {
     moreH: "更多 PixJuice 工具",
   },
   title: {
+    textFit: "翻译后的界面文案还装得进框吗？ — PixJuice",
+    uiSounds: "调试短促的游戏界面音和提示音 — PixJuice",
+    textFitDesc: "检查按钮标签、说明文字和 HUD 文案翻译成五种语言后是否仍能放入原有空间，并复制 CSS 或 JSON 初始配置。",
+    uiSoundsDesc: "在浏览器中试听点击、金币和通知音，再下载 WAV 或 JSON。",
     home: "PixJuice — 像素特效、手感配方、素材与工具",
     editor: "编辑器 — PixJuice",
     credits: "致谢与许可 — PixJuice",
@@ -88,6 +94,8 @@ const zh: Partial<Dict> = {
     asset: "{name} — 免费游戏素材 – PixJuice",
   },
   home: {
+    toolTextFitD: "检查翻译后的界面文案，并复制 CSS 或 JSON 配置。",
+    toolUiSoundsD: "调试界面音效并下载 WAV 或 JSON。",
     subtitle: "<b>像素艺术特效制作器</b> — 为 244 个游戏特效重新配色、预览并导出精灵图。免费，完全在浏览器中完成。",
     searchPh: "搜索 244 个特效…  ( / )",
     searchAria: "搜索特效",
@@ -129,8 +137,8 @@ const zh: Partial<Dict> = {
 <li><b>角色操作与运动</b> — 已上线：跳跃宽容实验室。</li>
 <li><b>镜头</b> — 规划中的跟随与抖动语言实验室；目前震屏只活在打击配方里。</li>
 <li><b>战斗反馈</b> — 已上线：打击感与 Boss 血条配方。</li>
-<li><b>UI 与交互</b> — 部分已上线：Boss 条与 UI 模板。</li>
-<li><b>音频</b> — 部分已上线：打击分层音效与特效编辑器音效；还没有独立音频实验室。</li>
+<li><b>UI 与交互</b> — 已上线：Boss 血条、UI 模板和界面文案适配实验室，可复制 CSS 或 JSON 配置。</li>
+<li><b>音频</b> — 已上线：打击分层音效、特效编辑器音效和游戏界面音效实验室，可试听并调整短提示音。</li>
 <li><b>视觉与素材</b> — 已上线：244 个特效、CC0 素材库、四件图像工具。</li>
 <li><b>性能与发布</b> — 规划中的参谋闭环；未上线，也不进导航。</li>
 </ul>`,
