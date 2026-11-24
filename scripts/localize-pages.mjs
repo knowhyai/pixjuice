@@ -20,7 +20,7 @@ const strip=s=>s.replace(/<[^>]*>/g,'');
 const manifest=JSON.parse(await readFile('public/free-assets/manifest.json','utf8'));
 const isPublicListing=a=>a&&a.style_tier==='realistic'&&!a.hidden&&!a.product_hidden&&!a.placeholder;
 const products=[...new Set(manifest.assets.map(a=>a.product_id).filter(Boolean))];
-const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','camera-shake/','audio-scenes/','weapon-switch/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
+const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','camera-shake/','audio-scenes/','weapon-switch/','reload/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
 const listedPaths=paths.filter(path=>{
   if(!path.startsWith('free-assets/')||path==='free-assets/')return true;
   const id=path.slice('free-assets/'.length).replace(/\/$/,'');
@@ -44,6 +44,12 @@ const TOOL_SEO = {
     copy: (await readDictionary('src/lib/weapon-switch/strings.ts')).COPY,
     title: 'title.weaponSwitch',
     desc: 'title.weaponSwitchDesc',
+  },
+  'reload/': {
+    copyAttr: 'data-reload',
+    copy: (await readDictionary('src/lib/reload/strings.ts')).STRINGS,
+    title: 'title.reload',
+    desc: 'title.reloadDesc',
   },
   'image-to-pixel-art/': { title: 'title.pa', desc: 'pa.lede' },
   'normal-map/': { title: 'title.nm', desc: 'nm.lede' },
@@ -80,7 +86,7 @@ for(const path of paths) {
     title=translate(lang,TOOL_SEO[path].title);
     if(path==='audio-scenes/') title+=' — PixJuice';
     if(TOOL_SEO[path].desc) desc=strip(translate(lang,TOOL_SEO[path].desc));
-    if(path==='weapon-switch/') {
+    if(path==='weapon-switch/' || path==='reload/') {
       title=tool.copy[lang].title+' — PixJuice';
       desc=strip(tool.copy[lang].lede);
     }

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Reload cancel rules: when does a checkpoint commit the magazine? — PixJuice</title>
+  <meta name="description" content="A playable 2D timing laboratory for reload interrupts. Track magazine, reserve and chamber rounds as the playhead crosses the attach checkpoint.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="head"><div class="head-in"><a href="/">PixJuice</a></div></header>
+  <main class="reload-lab">
+    <h1 data-reload="title">Reload cancel rules: when does a checkpoint commit the magazine?</h1>
+    <p class="reload-lede" data-reload="lede">A 2D timing laboratory for reload interrupts. Closed-bolt behavior and the separate chamber round are assumptions of this model. Games can use different rules.</p>
+
+    <div class="reload-layout">
+      <section class="reload-panel reload-demo" aria-labelledby="reload-timeline-title">
+        <div class="reload-readout">
+          <div>
+            <span data-reload="magazine">Magazine</span>
+            <strong id="reload-mag-count"></strong>
+            <div id="reload-cells" aria-hidden="true"></div>
+          </div>
+          <div><span data-reload="reserve">Reserve</span><strong id="reload-reserve"></strong></div>
+          <div id="reload-chamber-box">
+            <span data-reload="chamber">Chamber</span>
+            <strong id="reload-chamber"></strong>
+            <span class="reload-cell" id="reload-chamber-cell" aria-hidden="true"></span>
+          </div>
+        </div>
+        <p class="reload-note" data-reload="model"></p>
+
+        <div class="reload-timeline-heading">
+          <h2 id="reload-timeline-title" data-reload="timeline">Reload timeline</h2>
+          <div role="status"><span data-reload="phase">Phase</span> · <strong id="reload-phase"></strong></div>
+        </div>
+        <div class="reload-track" aria-hidden="true">
+          <div class="reload-segment reload-removal"></div>
+          <div class="reload-segment reload-wait"></div>
+          <div class="reload-segment reload-finish"></div>
+          <span class="reload-commit"></span>
+          <span class="reload-now"></span>
+        </div>
+        <ul class="reload-timing">
+          <li><span data-reload="toOut"></span> <strong id="reload-out-range"></strong></li>
+          <li><span data-reload="toCommit"></span> <strong id="reload-attach-range"></strong></li>
+          <li><span data-reload="toFinish"></span> <strong id="reload-finish-range"></strong></li>
+          <li class="reload-marker-label"><span data-reload="commitMarker"></span> <strong id="reload-marker-time"></strong></li>
+          <li class="reload-now-label"><span data-reload="now"></span> <strong id="reload-clock"></strong></li>
+        </ul>
+
+        <div class="reload-actions">
+          <button class="btn primary" type="button" data-command="reload" aria-keyshortcuts="R"><span data-reload="reload">Reload</span> <kbd>R</kbd></button>
+          <button class="btn" type="button" data-command="cancel" aria-keyshortcuts="C Escape"><span data-reload="cancel">Cancel</span> <kbd>C</kbd></button>
+          <button class="btn" type="button" data-command="fire" aria-keyshortcuts="F"><span data-reload="fire">Fire</span> <kbd>F</kbd></button>
+          <button class="btn" type="button" id="reload-reset" data-reload="reset">Reset demo</button>
+        </div>
+
+        <h2 id="reload-log-title" data-reload="log">Event log</h2>
+        <p id="reload-no-events" data-reload="noEvents">No events yet.</p>
+        <ol id="reload-log" aria-labelledby="reload-log-title"></ol>
+      </section>
+
+      <section class="reload-panel" aria-labelledby="reload-recipe">
+        <h2 id="reload-recipe" data-reload="recipe">Active recipe</h2>
+        <div class="reload-actions reload-modes" role="group" aria-labelledby="reload-recipe">
+          <button class="btn" type="button" id="reload-default" data-reload="pageDefault">Page default</button>
+          <button class="btn" type="button" id="reload-mine" data-reload="mine">My tune</button>
+        </div>
+        <h3 id="reload-controls-title" data-reload="mineControls">My tune controls</h3>
+        <div class="reload-controls" id="reload-controls" role="group" aria-labelledby="reload-controls-title">
+          <label class="reload-toggle">
+            <input id="reload-keep" type="checkbox">
+            <span data-reload="keepChamberRound">Keep a chambered round</span>
+          </label>
+        </div>
+        <div class="reload-actions">
+          <a class="btn" id="reload-download" download="pixjuice-reload.json" data-reload="download">Download JSON</a>
+          <a class="btn" id="reload-share" target="_blank" rel="noopener" data-reload="share">Open share in new tab</a>
+        </div>
+      </section>
+    </div>
+
+    <section class="reload-references" aria-labelledby="reload-sources">
+      <h2 id="reload-sources" data-reload="sources">Model references</h2>
+      <ul>
+        <li><a data-reload="siege" href="https://www.ubisoft.com/en-us/game/rainbow-six/siege/news-updates/2fOZy6mrCdlSuGhNFSYrK9/y8s1-designers-notes"></a></li>
+        <li><a data-reload="godot" href="https://docs.godotengine.org/en/3.3/tutorials/3d/fps_tutorial/part_three.html"></a></li>
+        <li><a data-reload="unity" href="https://docs.unity3d.com/Manual/script-AnimationWindowEvent.html"></a></li>
+      </ul>
+    </section>
+  </main>
+  <script type="module" src="/src/pages/reload.ts"></script>
+</body>
+</html>

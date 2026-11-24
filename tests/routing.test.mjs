@@ -10,7 +10,7 @@ import { resolveRoute, createRoutingMiddleware } from '../scripts/preview-routin
 // with '' for en and /zh /ja /ko /es prefixes). These rules keep vite preview
 // and the generated dist/_redirects from ever serving the homepage at a wrong
 // URL: trailing-slash canonicalization, /en → unprefixed, unknown → 404.
-const newTools = ['text-fit', 'audio-envelope', 'camera-shake', 'audio-scenes', 'weapon-switch'];
+const newTools = ['text-fit', 'audio-envelope', 'camera-shake', 'audio-scenes', 'weapon-switch', 'reload'];
 const pages = new Set([
   '/',
   '/feel/',
@@ -46,10 +46,10 @@ test('routing: standalone tools have canonical paths in five locales', () => {
   }
 });
 
-test('routing: weapon switch redirects preserve the swap query', (t) => {
-  const dist = mkdtempSync(join(tmpdir(), 'pixjuice-swap-routing-'));
+test('routing: weapon-switch and reload redirects preserve their share queries', (t) => {
+  const dist = mkdtempSync(join(tmpdir(), 'pixjuice-share-routing-'));
   t.after(() => rmSync(dist, { recursive: true, force: true }));
-  for (const path of ['weapon-switch', 'zh/weapon-switch']) {
+  for (const path of ['weapon-switch', 'zh/weapon-switch', 'reload', 'zh/reload']) {
     mkdirSync(join(dist, path), { recursive: true });
     writeFileSync(join(dist, path, 'index.html'), '');
   }
@@ -57,6 +57,8 @@ test('routing: weapon switch redirects preserve the swap query', (t) => {
   for (const [from, to] of [
     ['/en/weapon-switch/?swap=shared', '/weapon-switch/?swap=shared'],
     ['/zh/weapon-switch?swap=shared', '/zh/weapon-switch/?swap=shared'],
+    ['/en/reload/?reload=shared', '/reload/?reload=shared'],
+    ['/zh/reload?reload=shared', '/zh/reload/?reload=shared'],
   ]) {
     const headers = new Map();
     const end = t.mock.fn();
