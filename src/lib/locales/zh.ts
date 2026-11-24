@@ -42,7 +42,7 @@ const zh: Partial<Dict> = {
     "types": "素材类型",
     "source": "授权详情 ↗",
     "h1": "更多免费游戏素材",
-    "lede": "发现更多游戏素材来源。PixJuice 自有素材同样采用 CC0 1.0，可商用、无需署名。",
+    "lede": "发现更多游戏素材来源。PixJuice CC0 目录中的素材采用 CC0 1.0，可商用、无需署名。",
     "own": "查看 PixJuice CC0 素材 →",
     "q": "这些网站的素材都是 CC0 吗？",
     "a": "不是。请逐个检查资源包或条目的许可。部分来源混合多种授权，QAL 限制独立素材再分发和转售。CC0 目录中的游戏素材采用 CC0 1.0。"
@@ -583,7 +583,7 @@ const zh: Partial<Dict> = {
     fallback: "兜底哔声",
   },
   credits: {
-    assets: "PixJuice 自有游戏素材（含木宝箱美术）及模板代码均采用 CC0 1.0 Universal，可商用、修改、分发和转售，无需署名。规划中的素材暂无下载。 <a href=\"/free-assets/\">CC0</a> · <a href=\"/free-resources/\">更多免费游戏素材</a>",
+    assets: "CC0 目录中的游戏素材（含木宝箱美术）及模板代码均采用 CC0 1.0 Universal，可商用、修改、分发和转售，无需署名。规划中的素材暂无下载。 <a href=\"/free-assets/\">CC0</a> · <a href=\"/free-resources/\">更多免费游戏素材</a>",
 
     sub: "致谢与许可",
     h1: "致谢与许可",

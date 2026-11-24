@@ -45,7 +45,7 @@ const es: Partial<Dict> = {
     "lede": "Descubre más sitios para crear tu juego. Los recursos del catálogo CC0 también son CC0 1.0: uso comercial sin atribución.",
     "own": "Explorar recursos CC0 de PixJuice →",
     "q": "¿Todos estos sitios son CC0?",
-    "a": "Consulta cada paquete. Algunas fuentes mezclan licencias; QAL restringe la redistribución y reventa de recursos independientes. Los recursos propios de PixJuice son CC0 1.0."
+    "a": "Consulta cada paquete. Algunas fuentes mezclan licencias; QAL restringe la redistribución y reventa de recursos independientes. Los recursos del catálogo CC0 de PixJuice usan CC0 1.0."
   },
 
   lang: {
@@ -583,7 +583,7 @@ const es: Partial<Dict> = {
     fallback: "blip de reserva",
   },
   credits: {
-    assets: "Los recursos propios de PixJuice, incluido el cofre de madera, y el código de plantillas usan CC0 1.0 Universal: uso comercial, modificación, redistribución y reventa sin atribución. Los recursos previstos aún no tienen descarga. <a href=\"/free-assets/\">CC0</a> · <a href=\"/free-resources/\">Más recursos gratuitos para juegos</a>",
+    assets: "Los recursos del catálogo CC0, incluido el cofre de madera, y el código de plantillas usan CC0 1.0 Universal: uso comercial, modificación, redistribución y reventa sin atribución. Los recursos previstos aún no tienen descarga. <a href=\"/free-assets/\">CC0</a> · <a href=\"/free-resources/\">Más recursos gratuitos para juegos</a>",
 
     sub: "créditos y licencias",
     h1: "Créditos y licencias",

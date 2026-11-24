@@ -42,10 +42,10 @@ const en = {
     "types": "Asset types",
     "source": "License details ↗",
     "h1": "More free game assets",
-    "lede": "Discover more places to build your game. PixJuice’s own assets are also CC0 1.0 — commercial use, no attribution required.",
+    "lede": "Discover more places to build your game. Assets in the PixJuice CC0 catalog use CC0 1.0 — commercial use, no attribution required.",
     "own": "Explore PixJuice CC0 assets →",
     "q": "Are all these sites CC0?",
-    "a": "No. Check each pack or listing. Some sources mix licenses; QAL restricts standalone asset redistribution and resale. PixJuice’s own game assets are CC0 1.0."
+    "a": "No. Check each pack or listing. Some sources mix licenses; QAL restricts standalone asset redistribution and resale. Assets in the PixJuice CC0 catalog use CC0 1.0."
   },
 
   lang: {
