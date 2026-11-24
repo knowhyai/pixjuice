@@ -1,7 +1,13 @@
-CC0 1.0 Universal
+PixJuice Feel lab notices
 
-This work is dedicated to the public domain under CC0 1.0 Universal.
+The Feel lab code snippets are available under CC0 1.0 Universal.
 https://creativecommons.org/publicdomain/zero/1.0/
 
-To the extent possible under law, the author has waived all copyright and
-related or neighboring rights to this work.
+knight.glb is provided for playback in the on-page demo. No download or
+reuse license for the packaged GLB is granted by this notice. It contains
+Mixamo animations (idle, slash, and hit_to_body_01) outside the CC0 grant.
+
+Adobe's Mixamo FAQ describes royalty-free use of Mixamo characters and
+animations in projects such as games and films. The FAQ provides no
+public-domain dedication or asset-pack redistribution grant.
+https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html

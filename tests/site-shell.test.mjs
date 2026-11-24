@@ -19,7 +19,7 @@ const loadTs = (file) => {
   return import("data:text/javascript;base64," + Buffer.from(src).toString("base64")).then((m) => m.default ?? m);
 };
 
-test("localized JSON-LD only declares licenses for assets with license files", async (t) => {
+test("localized pages have accurate license metadata, canonical links, and sitemap entries", async (t) => {
   const unlicensedPages = [
     "effects", "credits", "editor", "text-fit", "audio-envelope", "camera-shake",
     "audio-scenes", "weapon-switch", "reload", "typewriter", "image-to-pixel-art",
@@ -36,10 +36,14 @@ test("localized JSON-LD only declares licenses for assets with license files", a
     "", "free-resources", ...unlicensedPages, ...assets.map(({ id }) => `free-assets/${id}`),
     ...assets.filter(({ product_id }) => product_id).map(({ product_id }) => `free-assets/${product_id}`),
   ]);
+  const imageTools = ["image-to-pixel-art", "normal-map", "pixel-art-upscaler", "sprite-sheet"];
+  const sourceFixtures = new Set(["credits", ...imageTools]);
   for (const page of sourcePages) {
     const dir = join(outDir, page);
     fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(join(dir, "index.html"), '<html lang="en"><head></head><body></body></html>');
+    const destination = join(dir, "index.html");
+    if (sourceFixtures.has(page)) fs.copyFileSync(join(page, "index.html"), destination);
+    else fs.writeFileSync(destination, '<html lang="en"><head></head><body></body></html>');
   }
 
   const previousOutDir = process.env.PIXJUICE_OUTDIR;
@@ -52,12 +56,28 @@ test("localized JSON-LD only declares licenses for assets with license files", a
   }
 
   const site = "https://pixjuice.pages.dev";
-  for (const lang of ["en", "zh", "ja", "ko", "es"]) {
+  const langs = ["en", "zh", "ja", "ko", "es"];
+  const pageUrlFor = (lang, page) => `${site}/${lang === "en" ? "" : `${lang}/`}${page}/`;
+  const sitemap = fs.readFileSync(join(outDir, "sitemap.xml"), "utf8");
+  const sitemapUrls = new Set([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, loc]) => loc));
+  for (const lang of langs) {
     const prefix = lang === "en" ? "" : lang;
     for (const page of [...unlicensedPages, "free-assets/wall-stone", assetPage]) {
       const html = fs.readFileSync(join(outDir, prefix, page, "index.html"), "utf8");
       const [, json] = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
-      const pageUrl = `${site}/${prefix ? `${prefix}/` : ""}${page}/`;
+      const pageUrl = pageUrlFor(lang, page);
+      const canonical = [...html.matchAll(/<link rel="canonical" href="([^"]+)">/g)];
+      assert.deepEqual(canonical.map(([, href]) => href), [pageUrl], pageUrl);
+      const alternates = [...html.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">/g)];
+      assert.deepEqual(alternates.map(([, code, href]) => [code, href]), [
+        ...langs.map((code) => [code, pageUrlFor(code, page)]),
+        ["x-default", pageUrlFor("en", page)],
+      ], pageUrl);
+      if (imageTools.includes(page)) assert.ok(sitemapUrls.has(pageUrl), pageUrl);
+      if (page === "credits") {
+        assert.match(html, /<meta name="robots" content="noindex">/, pageUrl);
+        assert.ok(!sitemapUrls.has(pageUrl), pageUrl);
+      }
       const work = JSON.parse(json).find((node) => node["@type"] === "CreativeWork" && node.url === pageUrl);
       assert.ok(work, `Missing CreativeWork for ${pageUrl}`);
       if (page === assetPage) {

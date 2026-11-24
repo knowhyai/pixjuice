@@ -45,7 +45,7 @@ const zh: Partial<Dict> = {
     "lede": "发现更多游戏素材来源。PixJuice 自有素材同样采用 CC0 1.0，可商用、无需署名。",
     "own": "查看 PixJuice CC0 素材 →",
     "q": "这些网站的素材都是 CC0 吗？",
-    "a": "不是。请逐个检查资源包或条目的许可。部分来源混合多种授权，QAL 限制独立素材再分发和转售。PixJuice 自有游戏素材采用 CC0 1.0。"
+    "a": "不是。请逐个检查资源包或条目的许可。部分来源混合多种授权，QAL 限制独立素材再分发和转售。CC0 目录中的游戏素材采用 CC0 1.0。"
   },
 
   lang: {
@@ -914,7 +914,7 @@ const zh: Partial<Dict> = {
     resetView: "重置视角",
     squashReference: "仅引擎代码参考，网页暂不预览",
     squashReferenceNote: "调整这些数值不会影响画面上的角色。请在 Godot 或 Unity 项目中接入负责显示的节点或变换。",
-    cc0: "代码与演示模型均为 CC0——可任意使用，无需署名。",
+    cc0: "代码片段采用 CC0。骑士 GLB 用于页面内播放。",
     d1t: "响应与宽容",
     d1g: "输入",
     d1d: "玩家想做的操作，游戏要接住：延迟窗口、土狼时间、输入缓冲、边角修正。",
@@ -937,9 +937,9 @@ const zh: Partial<Dict> = {
     sourcesHome: "<ul><li>Steve Swink《Game Feel》（2008）——本栏目的工作定义与六个维度。<a href=\"https://www.gamedeveloper.com/design/game-feel-the-secret-ingredient\" target=\"_blank\" rel=\"noopener\">先导文章 ↗</a></li><li>Pichlmair &amp; Johansen《Designing Game Feel: A Survey》（IEEE Transactions on Games，2022；arXiv 2020）——栏目分域所依据的三大设计域。<a href=\"https://arxiv.org/abs/2011.09201\" target=\"_blank\" rel=\"noopener\">arXiv ↗</a></li><li>Jonasson &amp; Purho《Juice It or Lose It》（2012）——「逐层开关、前后对照」的演示方法即源于此。<a href=\"https://github.com/grapefrukt/juicy-breakout\" target=\"_blank\" rel=\"noopener\">演示源码 ↗</a></li><li>Nijman《The Art of Screenshake》（2013）——震屏、击退、命中反馈逐个叠加的实践。</li><li>Song《Improving the Combat “Impact” of Action Games》（2005）——动画、帧冻结、镜头、特效、震动、分层音效。<a href=\"https://www.gamedeveloper.com/audio/improving-the-combat-impact-of-action-games\" target=\"_blank\" rel=\"noopener\">原文 ↗</a></li><li>樱井政博《周刊 Famitsu》专栏 Vol. 490–491——格斗游戏命中静止的设计说明。<a href=\"https://sourcegaming.info/2015/11/11/thoughts-on-hitstop-sakurais-famitsu-column-vol-490-1/\" target=\"_blank\" rel=\"noopener\">英译 ↗</a></li><li>SmashWiki「Hitlag」——各作 hitlag 公式与上限。<a href=\"https://www.ssbwiki.com/Hitlag\" target=\"_blank\" rel=\"noopener\">Wiki ↗</a></li><li>Lin 等《What Features Influence Impact Feel?》（2022）——44 款动作游戏打击感排序；命中静止、声音一致性、镜头控制为三大关键。<a href=\"https://arxiv.org/abs/2208.06155\" target=\"_blank\" rel=\"noopener\">arXiv ↗</a></li><li>Kao《The Effects of Juiciness in an Action RPG》（2020）——中等剂量 Juice 优于没有与极端。<a href=\"https://doi.org/10.1016/j.entcom.2020.100359\" target=\"_blank\" rel=\"noopener\">DOI ↗</a></li><li>Thorson「Celeste 的宽容」（2020）与 Fasterholdt 等（2016）——为即将上线的响应/物理配方准备的实测窗口与跳跃参数。<a href=\"https://maddythorson.medium.com/celeste-forgiveness-31e4a40399f1\" target=\"_blank\" rel=\"noopener\">原文 ↗</a></li></ul>",
     sourcesHit: "<ul><li>Song（2005）——帧冻结、方向性镜头平移、命中光、分层音效。<a href=\"https://www.gamedeveloper.com/audio/improving-the-combat-impact-of-action-games\" target=\"_blank\" rel=\"noopener\">原文 ↗</a></li><li>樱井政博，Famitsu Vol. 490–491——顿帧随伤害增长，攻守同停。<a href=\"https://sourcegaming.info/2015/11/11/thoughts-on-hitstop-sakurais-famitsu-column-vol-490-1/\" target=\"_blank\" rel=\"noopener\">英译 ↗</a></li><li>SmashWiki「Hitlag」——各作公式：Ultimate 15% 伤害约 15 帧、上限 30。<a href=\"https://www.ssbwiki.com/Hitlag\" target=\"_blank\" rel=\"noopener\">Wiki ↗</a></li><li>Lin 等（2022）——GGXRD 轻约 7 帧 / 重约 10 帧；命中静止、声音一致性、镜头控制为三大关键。<a href=\"https://arxiv.org/abs/2208.06155\" target=\"_blank\" rel=\"noopener\">arXiv ↗</a></li><li>Jonasson &amp; Purho《Juice It or Lose It》（2012）——闪白、挤压、粒子与逐层开关的对照法。<a href=\"https://github.com/grapefrukt/juicy-breakout\" target=\"_blank\" rel=\"noopener\">演示 ↗</a></li><li>Nijman《The Art of Screenshake》（2013）——方向性、快衰减震屏；击退作为一层。</li><li>Kao（2020）——中等剂量优于没有与极端：全开过度档就是受控的反面案例。<a href=\"https://doi.org/10.1016/j.entcom.2020.100359\" target=\"_blank\" rel=\"noopener\">DOI ↗</a></li></ul>",
     faq1q: "演示是真 3D 吗？",
-    faq1a: "是。两具 CC0 骨骼骑士（蒙皮网格＋Mixamo 骨骼）在你的浏览器里用 WebGL 实时运行，没有任何预渲染。它们播放的是制作好的 Mixamo 动画片段（待机／挥砍／受击）；演示本身不做实时 IK，也没有布娃娃。代码面板里的手臂 IK 与局部骨骼片段是给你引擎用的可选扩展，并不是演示在跑的东西。",
-    faq2q: "代码和模型可以商用吗？",
-    faq2a: "可以。代码片段与本站其余内容一样采用 CC0；演示里的骑士模型同为 CC0 1.0，可商用、可修改，无需署名。",
+    faq1a: "是。两具 骨骼骑士（蒙皮网格＋Mixamo 骨骼）在你的浏览器里用 WebGL 实时运行，没有任何预渲染。它们播放的是制作好的 Mixamo 动画片段（待机／挥砍／受击）；演示本身不做实时 IK，也没有布娃娃。代码面板里的手臂 IK 与局部骨骼片段是给你引擎用的可选扩展，并不是演示在跑的东西。",
+    faq2q: "可以复用代码片段或演示模型吗？",
+    faq2a: "代码片段采用 CC0，复用无需署名。骑士 GLB 含有 Mixamo 动画，不作为授权下载提供。",
     faq3q: "面向哪些引擎？",
     faq3a: "Godot 4.x GDScript 和 Unity C#。片段用了不受 time scale 影响的计时（create_timer 的 ignore_time_scale／WaitForSecondsRealtime），保证顿帧、震屏和击退互不打架。",
   },

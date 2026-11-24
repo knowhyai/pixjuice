@@ -380,8 +380,18 @@ test('advisor: hit FAQ states clip playback honestly in every locale', async () 
     const a = dict.feel.faq1a;
     assert.ok(a, `${lang} feel.faq1a exists`);
     assert.match(a, /clip|クリップ|片段|클립/i, `${lang} FAQ names the clips`);
+    assert.doesNotMatch(a, /CC0/i, `${lang} FAQ makes no CC0 claim about the knights`);
     assert.match(a, /IK/, `${lang} FAQ mentions IK`);
     assert.match(a, /ragdoll|布娃娃|ラグドール|래그돌|ragdoll/i, `${lang} FAQ mentions ragdoll`);
+  }
+});
+
+test('advisor: Feel notices scope CC0 to code snippets in every locale', async () => {
+  for (const lang of ['en', 'zh', 'ja', 'ko', 'es']) {
+    const { feel } = await loadTs(`./src/lib/locales/${lang}.ts`);
+    assert.match(feel.cc0, /CC0[^.。]*[.。][^.。]*GLB/, lang);
+    assert.match(feel.faq2a, /CC0[^.。]*[.。][^.。]*GLB[^.。]*Mixamo/, lang);
+    assert.doesNotMatch(feel.cc0 + feel.faq2a, /GLB[^.。]*CC0/, lang);
   }
 });
 
