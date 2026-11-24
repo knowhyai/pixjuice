@@ -6,6 +6,8 @@ import fs from "node:fs";
 import test from "node:test";
 import ts from "typescript";
 import { execFileSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { runInNewContext } from "node:vm";
 import { categories } from "pixelfx/fx/categories";
 
@@ -16,6 +18,56 @@ const loadTs = (file) => {
   }).outputText;
   return import("data:text/javascript;base64," + Buffer.from(src).toString("base64")).then((m) => m.default ?? m);
 };
+
+test("localized JSON-LD only declares licenses for assets with license files", async (t) => {
+  const unlicensedPages = [
+    "effects", "credits", "editor", "text-fit", "audio-envelope", "camera-shake",
+    "audio-scenes", "weapon-switch", "reload", "typewriter", "image-to-pixel-art",
+    "normal-map", "pixel-art-upscaler", "sprite-sheet", "templates", "templates/gacha",
+    "templates/save-load", "free-assets", "feel", "feel/hit", "feel/boss-hp",
+    "feel/jump", "feel/move", "feel/camera", "feel/spring",
+  ];
+  const { assets } = JSON.parse(fs.readFileSync("public/free-assets/manifest.json", "utf8"));
+  const asset = assets.find(({ id }) => id === "chest-wood-realistic-wood-intact");
+  const assetPage = `free-assets/${asset.id}`;
+  const outDir = fs.mkdtempSync(join(tmpdir(), "pixjuice-json-ld-"));
+  t.after(() => fs.rmSync(outDir, { recursive: true, force: true }));
+  const sourcePages = new Set([
+    "", "free-resources", ...unlicensedPages, ...assets.map(({ id }) => `free-assets/${id}`),
+    ...assets.filter(({ product_id }) => product_id).map(({ product_id }) => `free-assets/${product_id}`),
+  ]);
+  for (const page of sourcePages) {
+    const dir = join(outDir, page);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(join(dir, "index.html"), '<html lang="en"><head></head><body></body></html>');
+  }
+
+  const previousOutDir = process.env.PIXJUICE_OUTDIR;
+  process.env.PIXJUICE_OUTDIR = outDir;
+  try {
+    await import("../scripts/localize-pages.mjs");
+  } finally {
+    if (previousOutDir === undefined) delete process.env.PIXJUICE_OUTDIR;
+    else process.env.PIXJUICE_OUTDIR = previousOutDir;
+  }
+
+  const site = "https://pixjuice.pages.dev";
+  for (const lang of ["en", "zh", "ja", "ko", "es"]) {
+    const prefix = lang === "en" ? "" : lang;
+    for (const page of [...unlicensedPages, "free-assets/wall-stone", assetPage]) {
+      const html = fs.readFileSync(join(outDir, prefix, page, "index.html"), "utf8");
+      const [, json] = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+      const pageUrl = `${site}/${prefix ? `${prefix}/` : ""}${page}/`;
+      const work = JSON.parse(json).find((node) => node["@type"] === "CreativeWork" && node.url === pageUrl);
+      assert.ok(work, `Missing CreativeWork for ${pageUrl}`);
+      if (page === assetPage) {
+        assert.equal(work.license, `${site}/free-assets/${asset.license.file}`, pageUrl);
+      } else {
+        assert.equal(Object.hasOwn(work, "license"), false, pageUrl);
+      }
+    }
+  }
+});
 
 test("shell: shared header lists real sections and a site tagline, not the assets-only subtitle", () => {
   const src = fs.readFileSync("src/lib/navmenu.ts", "utf8");
