@@ -57,6 +57,7 @@ export default defineConfig({
         envelope: "audio-envelope/index.html",
         camerashake: "camera-shake/index.html",
         audioscenes: "audio-scenes/index.html",
+        weaponswitch: "weapon-switch/index.html",
         sheet: "sprite-sheet/index.html",
         pixelart: "image-to-pixel-art/index.html",
         normalmap: "normal-map/index.html",

@@ -56,6 +56,7 @@ const es: Partial<Dict> = {
     uiSounds: "Sonidos de interfaz",
     cameraShake: "Sacudida de cámara",
     audioScenes: "Efectos de sonido para juegos por escena",
+    weaponSwitch: "Laboratorio de cambio de arma",
     home: "Inicio",
     credits: "créditos",
     backCatalog: "← catálogo",
@@ -84,6 +85,8 @@ const es: Partial<Dict> = {
     uiSoundsDesc: "Escucha clics, sonidos de monedas y avisos en el navegador. Descarga el resultado en WAV o JSON.",
     cameraShakeDesc: "Activa y ajusta sacudidas de cámara en una vista previa local en el navegador. El resultado puede variar en tu motor de juego.",
     audioScenesDesc: "Elige una escena, escucha los efectos grabados y descarga los archivos OGG originales.",
+    weaponSwitch: "Al cambiar de arma, ¿cuándo se aplica la orden?",
+    weaponSwitchDesc: "Prueba interrupciones, ventanas de cancelación y el búfer de entrada en este laboratorio de ranuras de armas, independiente del búfer de salto y las vistas previas de brazos en 3D.",
     home: "PixJuice — efectos de píxel, recetas de feel, recursos y herramientas",
     editor: "Editor — PixJuice",
     credits: "Créditos y licencias — PixJuice",
@@ -104,6 +107,7 @@ const es: Partial<Dict> = {
     toolUiSoundsD: "Ajusta sonidos de interfaz y descarga WAV o JSON.",
     toolCameraShakeD: "Ajusta la intensidad y la duración de la sacudida de cámara al acertar un golpe.",
     toolAudioScenesD: "Explora efectos de sonido grabados por escena y descarga los archivos OGG originales.",
+    toolWeaponSwitchD: "Prueba interrupciones, ventanas de cancelación y un búfer para una sola orden al cambiar de ranura de arma.",
     subtitle: "<b>Creador de VFX en pixel art</b> — recolorea, previsualiza y exporta hojas de sprites de 244 efectos para videojuegos. Gratis, en tu navegador.",
     searchPh: "buscar 244 efectos…  ( / )",
     searchAria: "Buscar efectos",
@@ -141,6 +145,7 @@ const es: Partial<Dict> = {
     scopeH: "Qué más cubre esta estación",
     scopeLede: "Las tarjetas anteriores llevan a herramientas y demos disponibles.",
     scopeList: `<ul>
+<li><b>Cambio de arma</b> — Disponible: el Laboratorio de cambio de arma.</li>
 <li><b>Jugabilidad y sistemas</b> — en vivo: gacha y guardar/cargar. Después: inventario, diálogo, misiones — aún no hay páginas.</li>
 <li><b>Control y movimiento</b> — Disponibles: el laboratorio de tolerancia del salto y el de movimiento (aceleración, frenado y control en el aire).</li>
 <li><b>Cámara</b> — Disponibles: el laboratorio de seguimiento, zona muerta y límites de cámara, y otro laboratorio para ajustar la intensidad y duración de las sacudidas de cámara activadas por eventos. La receta de impacto también tiene su propia sacudida de pantalla.</li>

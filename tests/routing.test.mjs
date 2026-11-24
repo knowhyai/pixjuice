@@ -10,7 +10,7 @@ import { resolveRoute, createRoutingMiddleware } from '../scripts/preview-routin
 // with '' for en and /zh /ja /ko /es prefixes). These rules keep vite preview
 // and the generated dist/_redirects from ever serving the homepage at a wrong
 // URL: trailing-slash canonicalization, /en → unprefixed, unknown → 404.
-const newTools = ['text-fit', 'audio-envelope', 'camera-shake', 'audio-scenes'];
+const newTools = ['text-fit', 'audio-envelope', 'camera-shake', 'audio-scenes', 'weapon-switch'];
 const pages = new Set([
   '/',
   '/feel/',
@@ -35,7 +35,7 @@ const pages = new Set([
 const exists = (dir) => pages.has(dir);
 const resolves = (pathname) => resolveRoute(pathname, exists);
 
-test('routing: text fit, UI sounds, camera shake, and audio scenes are canonical in five locales', () => {
+test('routing: standalone tools have canonical paths in five locales', () => {
   for (const tool of newTools) {
     for (const prefix of ['', '/zh', '/ja', '/ko', '/es']) {
       const path = `${prefix}/${tool}/`;
@@ -43,6 +43,28 @@ test('routing: text fit, UI sounds, camera shake, and audio scenes are canonical
       assert.deepEqual(resolves(path.slice(0, -1)), { type: 'redirect', location: path });
     }
     assert.deepEqual(resolves(`/en/${tool}/`), { type: 'redirect', location: `/${tool}/` });
+  }
+});
+
+test('routing: weapon switch redirects preserve the swap query', (t) => {
+  const dist = mkdtempSync(join(tmpdir(), 'pixjuice-swap-routing-'));
+  t.after(() => rmSync(dist, { recursive: true, force: true }));
+  for (const path of ['weapon-switch', 'zh/weapon-switch']) {
+    mkdirSync(join(dist, path), { recursive: true });
+    writeFileSync(join(dist, path, 'index.html'), '');
+  }
+  const routing = createRoutingMiddleware(dist);
+  for (const [from, to] of [
+    ['/en/weapon-switch/?swap=shared', '/weapon-switch/?swap=shared'],
+    ['/zh/weapon-switch?swap=shared', '/zh/weapon-switch/?swap=shared'],
+  ]) {
+    const headers = new Map();
+    const end = t.mock.fn();
+    const res = { setHeader: (name, value) => headers.set(name, value), end };
+    routing({ method: 'GET', url: from }, res, () => assert.fail('Expected a redirect'));
+    assert.equal(res.statusCode, 301);
+    assert.equal(headers.get('Location'), to);
+    assert.equal(end.mock.callCount(), 1);
   }
 });
 

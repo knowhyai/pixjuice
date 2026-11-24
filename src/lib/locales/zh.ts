@@ -56,6 +56,7 @@ const zh: Partial<Dict> = {
     uiSounds: "界面音效",
     cameraShake: "镜头震动",
     audioScenes: "按场景分的游戏音效",
+    weaponSwitch: "武器切换时序实验室",
     home: "首页",
     credits: "致谢",
     backCatalog: "← 特效库",
@@ -84,6 +85,8 @@ const zh: Partial<Dict> = {
     uiSoundsDesc: "在浏览器中试听点击、金币和通知音，再下载 WAV 或 JSON。",
     cameraShakeDesc: "触发并调节游戏事件引发的镜头震动。预览仅在浏览器内运行，效果可能与游戏引擎中不同。",
     audioScenesDesc: "选择场景，试听录制的游戏音效，并下载原始 OGG 文件。",
+    weaponSwitch: "切换武器时，输入什么时候生效？",
+    weaponSwitchDesc: "这是武器槽时序实验室，可体验打断、取消窗口和输入缓冲，与跳跃缓冲实验和 3D 手臂预览无关。",
     home: "PixJuice — 像素特效、手感配方、素材与工具",
     editor: "编辑器 — PixJuice",
     credits: "致谢与许可 — PixJuice",
@@ -104,6 +107,7 @@ const zh: Partial<Dict> = {
     toolUiSoundsD: "调试界面音效并下载 WAV 或 JSON。",
     toolCameraShakeD: "调节命中时镜头震动的幅度和时长。",
     toolAudioScenesD: "按场景浏览录制的游戏音效，下载原始 OGG 文件。",
+    toolWeaponSwitchD: "在武器槽切换时试验打断、取消窗口和单条输入缓冲。",
     subtitle: "<b>像素艺术特效制作器</b> — 为 244 个游戏特效重新配色、预览并导出精灵图。免费，完全在浏览器中完成。",
     searchPh: "搜索 244 个特效…  ( / )",
     searchAria: "搜索特效",
@@ -141,6 +145,7 @@ const zh: Partial<Dict> = {
     scopeH: "参谋站还覆盖哪些问题",
     scopeLede: "上面的卡片通往已上线的工具和演示。",
     scopeList: `<ul>
+<li><b>武器切换</b> — 已上线：武器切换时序实验室。</li>
 <li><b>玩法与系统机制</b> — 已上线：扭蛋与存档模板。以后：背包、对话、任务——还没有页面。</li>
 <li><b>角色操作与运动</b> — 已上线：跳跃宽容实验室与移动手感实验室（加速、制动、空中控制）。</li>
 <li><b>镜头</b> — 已上线：镜头跟随实验室可调整跟随、死区和边界，独立的镜头震动实验室可调整事件触发的震动幅度和时长。打击感配方也有自己的震屏效果。</li>

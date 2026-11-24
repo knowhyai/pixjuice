@@ -56,6 +56,7 @@ const ko: Partial<Dict> = {
     uiSounds: "UI 효과음",
     cameraShake: "카메라 흔들림",
     audioScenes: "장면별 게임 효과음",
+    weaponSwitch: "무기 전환 타이밍 실험실",
     home: "홈",
     credits: "크레딧",
     backCatalog: "← 카탈로그",
@@ -84,6 +85,8 @@ const ko: Partial<Dict> = {
     uiSoundsDesc: "브라우저에서 클릭음, 코인 소리, 알림음을 들어보고 WAV 또는 JSON을 다운로드하세요.",
     cameraShakeDesc: "게임 이벤트에 따른 카메라 흔들림을 브라우저에서 재생하고 조정할 수 있습니다. 게임 엔진에서는 결과가 다를 수 있습니다.",
     audioScenesDesc: "장면을 골라 녹음된 게임 효과음을 미리 듣고 원본 OGG 파일을 다운로드하세요.",
+    weaponSwitch: "무기 전환 입력은 언제 적용되나요?",
+    weaponSwitchDesc: "무기 슬롯 타이밍 실험실에서 즉시 중단, 취소 구간, 입력 버퍼를 시험해 보세요. 점프 버퍼 실험실이나 3D 팔 미리보기와는 별개입니다.",
     home: "PixJuice — 픽셀 이펙트, 필 레시피, 에셋과 도구",
     editor: "에디터 — PixJuice",
     credits: "크레딧 및 라이선스 — PixJuice",
@@ -104,6 +107,7 @@ const ko: Partial<Dict> = {
     toolUiSoundsD: "UI 효과음을 조정하고 WAV 또는 JSON을 다운로드하세요.",
     toolCameraShakeD: "타격 시 카메라가 얼마나 세게, 얼마나 오래 흔들릴지 조정하세요.",
     toolAudioScenesD: "녹음된 게임 효과음을 장면별로 찾아보고 원본 OGG 파일을 다운로드할 수 있습니다.",
+    toolWeaponSwitchD: "무기 슬롯을 전환하며 중단, 취소 구간, 입력 하나를 저장하는 버퍼를 시험해 보세요.",
     subtitle: "<b>픽셀 아트 VFX 메이커</b> — 244종 게임 이펙트에 색을 입히고, 미리보고, 스프라이트 시트로 내보내세요. 무료, 브라우저에서 전부.",
     searchPh: "244개 이펙트 검색…  ( / )",
     searchAria: "이펙트 검색",
@@ -141,6 +145,7 @@ const ko: Partial<Dict> = {
     scopeH: "이 스테이션이 다루는 범위",
     scopeLede: "위 카드는 공개된 도구와 데모로 연결됩니다.",
     scopeList: `<ul>
+<li><b>무기 전환</b> — 공개: 무기 전환 타이밍 실험실.</li>
 <li><b>플레이와 시스템</b> — 공개: 가챠와 세이브/로드. 이후: 인벤토리, 대화, 퀘스트 — 아직 페이지 없음.</li>
 <li><b>캐릭터 조작과 이동</b> — 공개: 점프 입력 유예 실험실과 이동 실험실(가속, 제동, 공중 조작).</li>
 <li><b>카메라</b> — 추적·데드존·이동 경계를 조정하는 실험실과 이벤트에 따른 카메라 흔들림의 강도와 지속 시간을 조정하는 별도의 실험실이 공개되어 있습니다. 타격감 레시피에도 자체 화면 흔들림 효과가 있습니다.</li>

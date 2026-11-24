@@ -29,9 +29,10 @@ const TOOL_PATHS = [
   "/audio-envelope/",
   "/camera-shake/",
   "/audio-scenes/",
+  "/weapon-switch/",
 ] as const;
 
-const TOOL_KEYS = ["nav.pixel", "nav.normal", "nav.upscale", "nav.sheet", "nav.editor", "fr.h1", "nav.textFit", "nav.uiSounds", "nav.cameraShake", "nav.audioScenes"] as const;
+const TOOL_KEYS = ["nav.pixel", "nav.normal", "nav.upscale", "nav.sheet", "nav.editor", "fr.h1", "nav.textFit", "nav.uiSounds", "nav.cameraShake", "nav.audioScenes", "nav.weaponSwitch"] as const;
 
 /** One site header, shared by every entry point. */
 export function mountToolsMenu(): void {

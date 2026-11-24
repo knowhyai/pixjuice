@@ -56,6 +56,7 @@ const en = {
     uiSounds: "UI sounds",
     cameraShake: "Camera shake",
     audioScenes: "Game sound effects by scene",
+    weaponSwitch: "Weapon Switch Timing Lab",
     home: "Home",
     credits: "credits",
     backCatalog: "← catalog",
@@ -84,6 +85,8 @@ const en = {
     uiSoundsDesc: "Preview click, coin and notification sounds in your browser, then download WAV or JSON.",
     cameraShakeDesc: "Trigger and tune camera shake in a browser-local preview. Results may differ in your game engine.",
     audioScenesDesc: "Choose a scene, preview recorded game sound effects, and download the original OGG files.",
+    weaponSwitch: "When you switch weapons, when does the input take effect?",
+    weaponSwitchDesc: "Try interrupts, cancel windows, and input buffering in a weapon-slot timing lab separate from jump buffering and 3D arms previews.",
     home: "PixJuice — pixel effects, feel recipes, assets and tools for game devs",
     editor: "Editor — PixJuice",
     credits: "Credits & licenses — PixJuice",
@@ -104,6 +107,7 @@ const en = {
     toolUiSoundsD: "Tune UI sounds and download WAV or JSON.",
     toolCameraShakeD: "Tune how hard and how long the camera shakes on a hit.",
     toolAudioScenesD: "Browse recorded game sound effects by scene and download the original OGG files.",
+    toolWeaponSwitchD: "Try interrupts, cancel windows, and a single input buffer as you switch weapon slots.",
     subtitle: "<b>Pixel Art VFX Maker</b> — recolor, preview &amp; export sprite sheets for 244 game effects. Free, in your browser.",
     searchPh: "search 244 effects…  ( / )",
     searchAria: "Search effects",
@@ -141,6 +145,7 @@ const en = {
     scopeH: "What else this station covers",
     scopeLede: "The cards above link to available tools and demos.",
     scopeList: `<ul>
+<li><b>Weapon switching</b> — Live: the Weapon Switch Timing Lab.</li>
 <li><b>Gameplay &amp; systems</b> — live: gacha and save/load templates. Later: inventory, dialogue, quests — not pages yet.</li>
 <li><b>Character control &amp; movement</b> — Live jump forgiveness and movement labs (acceleration, braking, and air control).</li>
 <li><b>Camera</b> — Live labs for camera follow, deadzone, and bounds, and for tuning the strength and duration of event-triggered camera shake. The hit recipe also has its own screen shake.</li>

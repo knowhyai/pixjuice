@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>When you switch weapons, when does the input take effect? — PixJuice</title>
+  <meta name="description" content="Preview weapon-slot timing with interrupts, cancel windows, and a single input buffer.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="head"></header>
+  <main class="swap-lab">
+    <h1 data-copy="title">When you switch weapons, when does the input take effect?</h1>
+    <p class="swap-lede" data-copy="lede">Try interrupts, cancel windows, and input buffering in a weapon-slot timing lab separate from jump buffering and 3D arms previews.</p>
+    <div class="swap-grid">
+      <section class="swap-panel swap-demo" aria-labelledby="swap-slots-title">
+        <h2 id="swap-slots-title" data-copy="slots">Weapon slots</h2>
+        <div id="swap-slots" class="swap-slots"></div>
+        <div class="swap-actions swap-fire">
+          <button id="swap-fire" class="btn" type="button" aria-keyshortcuts="F"><span data-copy="fire">Fire</span> <kbd>F</kbd></button>
+          <strong id="swap-phase" role="status"></strong>
+          <progress id="swap-busy" hidden max="1" value="0"></progress>
+        </div>
+        <div class="swap-timeline">
+          <h2 id="swap-timeline-title" data-copy="timeline">State timeline</h2>
+          <div class="swap-legend" aria-hidden="true">
+            <span data-phase="idle"><i></i><span data-copy="idle">Idle</span></span>
+            <span data-phase="busy"><i></i><span data-copy="busy">Busy</span></span>
+            <span data-phase="holster"><i></i><span data-copy="holster">Holster</span></span>
+            <span data-phase="draw"><i></i><span data-copy="draw">Draw</span></span>
+            <span data-phase="window"><i></i><span data-copy="window">Cancel window</span></span>
+          </div>
+          <div id="swap-track" aria-hidden="true"></div>
+          <div class="swap-time" aria-hidden="true"><span id="swap-time-start"></span><span id="swap-time-now"></span><span id="swap-time-end"></span></div>
+        </div>
+        <h2 id="swap-log-title" data-copy="log">Input log</h2>
+        <div id="swap-log" class="swap-log" role="log" tabindex="0" aria-labelledby="swap-log-title" aria-relevant="additions"></div>
+      </section>
+      <section class="swap-panel swap-settings" aria-labelledby="swap-settings-title">
+        <h2 id="swap-settings-title" data-copy="settings">Demo and export mode</h2>
+        <div class="swap-actions" role="group" aria-labelledby="swap-settings-title">
+          <button class="btn" type="button" data-mode="default" data-copy="default">Page default</button>
+          <button class="btn" type="button" data-mode="mine" data-copy="mine">My tune</button>
+        </div>
+        <p class="swap-note" data-copy="tuneControls">These controls edit My tune and select it for the demo and export.</p>
+        <label class="swap-field">
+          <span data-copy="policy">Busy policy</span>
+          <select data-option="busyPolicy">
+            <option value="interrupt" data-copy="interrupt">Interrupt immediately</option>
+            <option value="buffer" data-copy="buffer">Buffer until the switchable window</option>
+          </select>
+        </label>
+        <div id="swap-main-fields" class="swap-fields"></div>
+        <div class="swap-actions">
+          <button id="lab-reset" class="btn" type="button" data-copy="reset">Reset</button>
+          <button id="swap-export" class="btn" type="button" data-copy="download">Download JSON</button>
+          <button id="swap-share" class="btn" type="button" data-copy="share" aria-expanded="false" aria-controls="swap-share-panel">Share</button>
+        </div>
+        <p class="swap-note" data-copy="actionsNote">Share restores My tune and the selected mode. In Page default mode, JSON uses the page defaults. Reset clears the demo and keeps your tune and mode.</p>
+        <div id="swap-share-panel" hidden>
+          <label class="swap-field"><span data-copy="shareUrl">Share URL</span><input id="swap-url" type="url" readonly></label>
+          <a id="swap-open" target="_blank" rel="noopener" data-copy="open">Open in a new tab</a>
+        </div>
+        <p class="swap-note" data-copy="limits"></p>
+      </section>
+    </div>
+    <p class="swap-rules"><span data-copy="cooldownRule"></span> <span data-copy="switchRule"></span></p>
+    <details class="swap-panel swap-advanced">
+      <summary data-copy="advanced">Advanced My tune controls</summary>
+      <label class="swap-field">
+        <span data-copy="busyKind">Busy visual</span>
+        <select data-option="busyKind">
+          <option value="fire" data-copy="recovery">Fire recovery</option>
+          <option value="reload" data-copy="reload">Simulated reload</option>
+        </select>
+      </label>
+      <div id="swap-advanced-fields" class="swap-fields"></div>
+    </details>
+  </main>
+  <script type="module" src="/src/pages/weapon-switch.ts"></script>
+</body>
+</html>
