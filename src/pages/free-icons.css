@@ -18,6 +18,59 @@
   display: none;
 }
 
+.fi-page .resource-card {
+  padding: 18px;
+}
+
+.fi-samples {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.fi-samples > span {
+  display: grid;
+  place-items: center;
+  min-height: 46px;
+  background: #f4f0e8;
+  border: 1px solid #36323f;
+  border-radius: 4px;
+}
+
+.fi-page :is([data-library="kubai"], [data-library="pixel-icons"]) .fi-samples > span {
+  background: #15131c;
+}
+
+.fi-samples img {
+  display: block;
+  max-width: 85%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+/* Standalone SVGs can render currentColor as either black or their embedded cream. */
+.fi-page .resource-card:not([data-library="kubai"], [data-library="pixel-icons"]) .fi-samples img {
+  filter: brightness(0.2);
+}
+
+.fi-card-meta {
+  margin: 14px 0 10px;
+}
+
+.fi-page .fi-card-meta h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.fi-page .resource-card :is(.fi-credit, .fi-unavailable) {
+  min-height: 0;
+  margin: 0 0 8px;
+}
+
+.fi-credit a {
+  color: inherit;
+}
+
 .fi-card-meta,
 .fi-card-links {
   display: flex;
@@ -26,7 +79,7 @@
   gap: 8px 12px;
 }
 
-.fi-category,
+.fi-license,
 .fi-repo {
   padding: 2px 7px;
   border: 1px solid #70634c;

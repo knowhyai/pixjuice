@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
 import ts from "typescript";
@@ -7,7 +7,7 @@ import ts from "typescript";
 const read = (path) => readFileSync(path, "utf8");
 const html = read("free-icons/index.html");
 const locales = ["en", "zh", "ja", "ko", "es"];
-const cards = [...html.matchAll(/<article class="resource-card" data-category="(\w+)">([\s\S]*?)<\/article>/g)];
+const cards = [...html.matchAll(/<article class="resource-card" data-category="(\w+)" data-library="([\w-]+)">([\s\S]*?)<\/article>/g)];
 const categories = { all: 12, animated: 4, game: 5, ui: 3 };
 
 function transpile(path, module = ts.ModuleKind.ESNext) {
@@ -31,14 +31,14 @@ test("icon directory ships 12 visible, categorized cards with official and licen
   for (const category of ["animated", "game", "ui"]) {
     assert.equal(cards.filter(([, value]) => value === category).length, categories[category]);
   }
-  for (const [index, [, category, card]] of cards.entries()) {
-    assert.match(card, new RegExp(`class="fi-category" data-i18n="fi\\.${category}"`));
-    assert.equal([...card.matchAll(/<dt /g)].length, 4);
-    assert.equal([...card.matchAll(/<dd /g)].length, 4);
+  for (const [index, [, , id, card]] of cards.entries()) {
+    const licenses = { "game-icons": "CC BY 3.0", nieobie: "CC0 1.0", kenney: "CC0 1.0", lucide: "ISC / MIT" };
+    assert.equal(card.match(/class="fi-license"[^>]*>([^<]+)</)[1], licenses[id] ?? "MIT", id);
+    assert.doesNotMatch(card, /<(dl|dt|dd)\b/);
     assert.equal(new URL(card.match(/<h2><a href="([^"]+)"/)[1]).hostname, officialHosts[index]);
-    for (const [, href, attrs] of card.matchAll(/<a href="([^"]+)"([^>]*)>/g)) {
+    for (const [, before, href, after] of card.matchAll(/<a\b([^>]*?)href="([^"]+)"([^>]*)>/g)) {
       assert.equal(new URL(href).protocol, "https:");
-      assert.match(attrs, /target="_blank" rel="noopener"/);
+      assert.match(before + after, /target="_blank" rel="noopener"/);
     }
     const license = card.match(/href="([^"]+)" class="resource-source"/)[1];
     const repo = repos[index] && `https://github.com/${repos[index]}`;
@@ -47,6 +47,7 @@ test("icon directory ships 12 visible, categorized cards with official and licen
       assert.ok(license.startsWith(`${repo}/blob/`));
       assert.match(license, /\/(?:LICENSE|LICENSING\.md|license\.txt)$/);
     } else {
+      assert.doesNotMatch(card, /href="https:\/\/github\.com/);
       assert.equal(license, "https://kenney.nl/support");
     }
   }
@@ -60,25 +61,55 @@ test("icon directory ships 12 visible, categorized cards with official and licen
   }
 });
 
-test("each icon directory locale has independent copy and accurate license labels", async () => {
-  const gameIconsTerms = {
-    en: /both commercial and noncommercial use and requires author attribution for both.*CC0, which requires no attribution/,
-    zh: /商用和非商用，两种用途都必须注明作者.*CC0，无需署名/,
-    ja: /商用・非商用.*いずれの場合も.*作者表記が必要.*CC0.*作者表記が不要/,
-    ko: /상업적·비상업적 이용.*두 경우 모두.*저작자를 표시해야.*CC0.*저작자 표시가 필요 없습니다/,
-    es: /uso comercial y no comercial y exige atribuir la autoría en ambos casos.*CC0, que no exige atribución/,
-  };
-  const requiredNotices = {
-    en: /retain the copyright and permission notices/,
-    zh: /保留版权声明和许可声明/,
-    ja: /著作権表示と許諾表示を保持/,
-    ko: /저작권 고지와 허가 고지를 유지/,
-    es: /conservar el aviso de copyright y el de permiso/,
-  };
+test("each tray leads with its own local, licensed samples", () => {
+  const sampleRoot = "public/free-icons/samples";
+  const notice = read(`${sampleRoot}/NOTICE.md`);
+  const folders = readdirSync(sampleRoot, { withFileTypes: true }).filter((entry) => entry.isDirectory());
+  assert.deepEqual(folders.map((entry) => entry.name).sort(), cards.map(([, , id]) => id).filter((id) => id !== "kenney").sort());
+  for (const [, , id, card] of cards) {
+    const images = [...card.matchAll(/<img src="([^"]+)" alt=""/g)].map(([, url]) => url);
+    if (id === "kenney") {
+      assert.equal(images.length, 0);
+      assert.match(card, /data-i18n="fi\.kenneyUnavailable"/);
+      assert.match(notice, /Kenney Game Icons[\s\S]*official signed-download endpoint returned a forbidden response/);
+      continue;
+    }
+    assert.ok(images.length >= 6 && images.length <= 8, id);
+    assert.equal(new Set(images).size, images.length, id);
+    assert.match(card, /^\s*<div class="fi-samples" aria-hidden="true">/);
+    const libraryNotice = notice.split(`## ${id}\n`)[1].split("\n## ")[0];
+    const repo = card.match(/href="https:\/\/github\.com\/([^"]+)" class="fi-repo"/)[1];
+    const sampleFiles = [];
+    for (const url of images) {
+      const filename = url.split("/").at(-1);
+      assert.equal(url, `/free-icons/samples/${id}/${filename}`);
+      const origin = libraryNotice.split(`[${filename}](https://raw.githubusercontent.com/${repo}/`)[1];
+      assert.match(origin ?? "", /^[a-f0-9]{40}\/[^\s)]+\)/, url);
+      const svg = read(`public${url}`);
+      assert.match(svg, /<svg\b/);
+      if (id === "line-md" && ["heart.svg", "star.svg"].includes(filename)) {
+        assert.match(svg, /prefers-reduced-motion/);
+        assert.match(svg, /@keyframes/);
+      } else {
+        assert.doesNotMatch(svg, /@keyframes|<animate\b/);
+      }
+      sampleFiles.push(filename);
+    }
+    assert.deepEqual(readdirSync(`${sampleRoot}/${id}`).filter((name) => name.endsWith(".svg")).sort(), sampleFiles.sort());
+  }
+  const gameIcons = cards.find(([, , id]) => id === "game-icons")[3];
+  assert.match(gameIcons, /<p class="fi-credit"><a href="https:\/\/lorcblog\.blogspot\.com\/"[^>]*>Icons made by Lorc<\/a>/);
+  assert.match(gameIcons, /href="https:\/\/creativecommons\.org\/licenses\/by\/3\.0\/"/);
+  assert.doesNotMatch(html, /\.zip\b|<a[^>]+\bdownload\b/i);
+  assert.doesNotMatch(readdirSync(sampleRoot, { recursive: true }).join("\n"), /\.zip\b/i);
+});
+
+test("each icon directory locale has every translation key used by the page", async () => {
   const requiredKeys = [
-    ...Array.from(html.matchAll(/data-i18n(?:-aria)?="(fi\.[^"]+)"/g), ([, key]) => key),
-    "fi.count", "fi.q", "fi.a", "nav.freeIcons", "title.freeIcons", "title.freeIconsDesc",
+    ...Array.from(html.matchAll(/data-i18n(?:-aria|-html)?="([^"]+)"/g), ([, key]) => key),
+    "fi.count", "fi.q", "fi.a", "title.freeIcons", "title.freeIconsDesc",
   ];
+  const ledes = new Set();
   for (const locale of locales) {
     const source = transpile(`src/lib/locales/${locale}.ts`);
     const { default: dictionary } = await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}`);
@@ -86,26 +117,14 @@ test("each icon directory locale has independent copy and accurate license label
       const value = key.split(".").reduce((entry, part) => entry?.[part], dictionary);
       assert.ok(typeof value === "string" && value.trim(), `${locale}: ${key}`);
     }
+    ledes.add(dictionary.fi.lede);
     assert.match(dictionary.fi.count, /\{count\}/);
     assert.match(dictionary.foot.templates, /href="\/free-icons\/"/);
-    for (const [key, { license }] of Object.entries(dictionary.fi.cards)) {
-      if (locale === "en") {
-        assert.ok(html.includes(`data-i18n="fi.cards.${key}.license">${license}</dd>`), key);
-      }
-      if (key === "gameIcons") {
-        assert.match(license, /CC BY 3\.0.*CC0/);
-        assert.match(license, gameIconsTerms[locale], locale);
-        assert.match(license, /Icons made by \{author\}/);
-      } else if (key === "nieobie" || key === "kenney") {
-        assert.match(license, /CC0 1\.0/);
-      } else {
-        assert.match(license, key === "lucide" ? /ISC.*MIT/ : /MIT/);
-        assert.doesNotMatch(license, /CC0|CC BY/);
-        assert.match(license, requiredNotices[locale], `${locale}: ${key}`);
-      }
+    for (const key of ["cards", "style", "formats", "license", "best"]) {
+      assert.equal(dictionary.fi[key], undefined, `${locale}: unused fi.${key}`);
     }
-    assert.equal(Object.keys(dictionary.fi.cards).length, categories.all);
   }
+  assert.equal(ledes.size, locales.length);
 });
 
 test("static translations preserve the Japanese footer links on free resources", () => {
@@ -185,6 +204,7 @@ test("icon filters change visible cards and announce the count in the current la
   });
   assert.equal(toolbar.hidden, false);
   assert.equal(count.hidden, false);
+  assert.match(html, /class="fi-count" role="status"/);
   assert.equal(count.textContent, "en fi.count 12");
   for (const filter of ["ui", "animated", "game", "all", "game"]) {
     buttons.find((button) => button.dataset.filter === filter).click();

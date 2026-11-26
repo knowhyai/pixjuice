@@ -95,10 +95,19 @@ test("localized pages have accurate license metadata, canonical links, and sitem
         assert.equal(work.name, dict.title.freeIcons);
         assert.equal(work.description, dict.title.freeIconsDesc);
         assert.equal(work.inLanguage, lang);
-        assert.equal([...html.matchAll(/<article class="resource-card" data-category="\w+">/g)].length, 12);
-        const licenseRows = [...html.matchAll(/<dd data-i18n="fi\.cards\.(\w+)\.license">([^<]+)<\/dd>/g)];
-        assert.equal(licenseRows.length, 12);
-        for (const [, key, text] of licenseRows) assert.equal(text, dict.fi.cards[key].license);
+        const cards = [...html.matchAll(/<article class="resource-card" data-category="(\w+)" data-library="([\w-]+)">([\s\S]*?)<\/article>/g)];
+        assert.equal(cards.length, 12);
+        assert.equal(new Set(cards.map(([, , library]) => library)).size, 12);
+        for (const [category, count] of Object.entries({ animated: 4, game: 5, ui: 3 })) {
+          assert.equal(cards.filter(([, value]) => value === category).length, count);
+        }
+        const licenses = { "game-icons": "CC BY 3.0", nieobie: "CC0 1.0", kenney: "CC0 1.0", lucide: "ISC / MIT" };
+        for (const [, , library, card] of cards) {
+          const badges = [...card.matchAll(/<(span|a) class="fi-license"([^>]*)>([^<]+)<\/\1>/g)];
+          assert.equal(badges.length, 1, library);
+          assert.doesNotMatch(badges[0][2], /\bhidden\b/);
+          assert.equal(badges[0][3], licenses[library] ?? "MIT", library);
+        }
         const faq = schema.find((node) => node["@type"] === "FAQPage");
         assert.equal(faq.inLanguage, lang);
         assert.equal(faq.mainEntity[0].name, dict.fi.q);
