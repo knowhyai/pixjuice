@@ -145,7 +145,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     var t = defaultText(key);
     if (vars) for (var k in vars) t = t.replace("{" + k + "}", String(vars[k]));
     var el = h("div", { class: "tpl-toast", role: "status", "data-i18n": key, "data-i18n-vars": JSON.stringify(vars || {}), text: t });
-    demo.appendChild(el);
+    stage.appendChild(el);
     refreshI18n();
     requestAnimationFrame(function () { el.classList.add("on"); });
     setTimeout(function () { el.classList.remove("on"); setTimeout(function () { el.remove(); }, 350); }, 2600);
@@ -375,6 +375,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     stage.scrollTop = 0;
     record.scrollTop = 0;
     refreshI18n();
+    if (m === "wheel") drawWheel(wheelWinner);
   }
 
   // ---- pool pane ---------------------------------------------------------------
@@ -553,72 +554,214 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   var wheelWrap = h("div", { class: "gx-wheel-wrap" });
   var wheelCv = h("canvas", { width: "340", height: "340", "aria-label": "Prize wheel" });
   wheelWrap.appendChild(wheelCv);
-  wheelWrap.appendChild(h("div", { class: "gx-pointer", "aria-hidden": "true" }));
   wheelPane.appendChild(wheelWrap);
-  var wheelBtn = h("button", { class: "tpl-btn tpl-btn-big tpl-btn-accent", type: "button", "data-i18n": "gx.spin", text: "Spin", onclick: spin });
-  wheelPane.appendChild(wheelBtn);
   var wheelOut = h("p", { class: "gx-wheel-out", "aria-live": "polite" });
   wheelPane.appendChild(wheelOut);
+  var wheelBtn = h("button", { class: "tpl-btn tpl-btn-big tpl-btn-accent", type: "button", "data-i18n": "gx.spin", text: "Spin", onclick: spin });
+  wheelPane.appendChild(wheelBtn);
 
-  var R = 160, CX = 170, CY = 170;
-  var angle = -Math.PI / 2, spinning = false;
+  var wheelSize = 340, wheelCenter = 170, wheelFace = 146;
+  var wheelIconRadius = 53, wheelLabelRadius = 106;
+  var angle = -Math.PI / 2, spinning = false, wheelWinner = null;
+  var wheelColors = {
+    N: ["#16383c", "#387b73", "#214b4e"],
+    R: ["#122c51", "#376ca9", "#1a3965"],
+    SR: ["#35204e", "#8b54a0", "#48265f"],
+    SSR: ["#754115", "#ffce70", "#be792f"]
+  };
+  var alternateCommon = ["#17332d", "#497d5d", "#284b3b"];
+  var wheelIcons = new Map();
+  var hubFacet = new Path2D("M0 -18 L6 -8 L15 -2 L6 3 L0 14 L-5 3 L-14 -2 L-5 -7Z");
+  var pointerEdge = new Path2D("M-17 10 Q-15 5 -9 5 H9 Q15 5 17 10 L14 21 L0 39 L-14 21Z");
+  var pointerFace = new Path2D("M-14 10 H14 L11 20 L0 34 L-11 20Z");
+
+  function wheelGradient(gradient, stops) {
+    stops.forEach(function (stop) { gradient.addColorStop(stop[0], stop[1]); });
+    return gradient;
+  }
+
+  function wheelDisc(ctx, x, y, radius, fill) {
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = fill;
+    ctx.fill();
+  }
+
+  function wheelSector(ctx, inner, outer, start, end) {
+    ctx.beginPath();
+    ctx.arc(0, 0, outer, start, end);
+    ctx.arc(0, 0, inner, end, start, true);
+    ctx.closePath();
+  }
 
   function drawWheel(highlight) {
+    wheelWinner = highlight;
+    var width = wheelCv.getBoundingClientRect().width;
+    if (!width) return;
+    var pixels = Math.round(width * (root.devicePixelRatio || 1));
+    if (wheelCv.width !== pixels || wheelCv.height !== pixels) {
+      wheelCv.width = wheelCv.height = pixels;
+    }
     var ctx = wheelCv.getContext("2d");
-    var segs = G.wheelSegments(cfg);
-    var seg = (Math.PI * 2) / segs.length;
-    ctx.clearRect(0, 0, 340, 340);
-    for (var i = 0; i < segs.length; i++) {
-      var a0 = angle + i * seg, a1 = a0 + seg;
-      ctx.beginPath();
-      ctx.moveTo(CX, CY);
-      ctx.arc(CX, CY, R, a0, a1);
-      ctx.closePath();
-      ctx.fillStyle = segColor(segs[i].item.rarity, i);
+    var scale = pixels / wheelSize;
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    ctx.clearRect(0, 0, wheelSize, wheelSize);
+    ctx.save();
+    ctx.translate(wheelCenter, wheelCenter);
+
+    var brass = wheelGradient(ctx.createLinearGradient(-100, -145, 60, 155), [
+      [0, "#88552d"], [.15, "#fff0bd"], [.35, "#b77c42"], [.51, "#624027"],
+      [.7, "#e3ab65"], [.86, "#b27a43"], [1, "#edc790"]
+    ]);
+    wheelDisc(ctx, 0, 4, 162, "#422919");
+    wheelDisc(ctx, 0, 0, 162, brass);
+    wheelDisc(ctx, 0, 0, 158, "#6d472a");
+    wheelDisc(ctx, 0, 0, 157, wheelGradient(ctx.createLinearGradient(0, -157, 0, 157), [
+      [0, "#483321"], [.42, "#7d5937"], [1, "#34251f"]
+    ]));
+    wheelDisc(ctx, 0, 0, 150, brass);
+    wheelDisc(ctx, 0, 0, 147, "#422821");
+
+    var items = cfg.items;
+    var seg = 2 * Math.PI / items.length;
+    var font = getComputedStyle(demo).getPropertyValue("--skin-font") || "system-ui, sans-serif";
+    var inset = Math.min(.02, seg * .14);
+    for (var i = 0; i < items.length; i++) {
+      var start = angle + i * seg;
+      var end = start + seg;
+      var middle = start + seg / 2;
+      var rarity = items[i].rarity;
+      var colors = rarity === "N" && i % 2 ? alternateCommon : wheelColors[rarity];
+
+      wheelSector(ctx, 25, wheelFace, start, end);
+      ctx.fillStyle = wheelGradient(ctx.createRadialGradient(0, 0, 27, 0, 0, wheelFace), [
+        [0, colors[0]], [.72, colors[1]], [.94, colors[2]], [1, colors[0]]
+      ]);
       ctx.fill();
-      ctx.strokeStyle = "rgba(0,0,0,0.35)";
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      ctx.fillStyle = brass;
+      wheelSector(ctx, 25, wheelFace, start, start + inset);
+      ctx.fill();
+      ctx.fillStyle = "#22130f88";
+      wheelSector(ctx, 25, wheelFace, end - inset, end);
+      ctx.fill();
+
+      if (i === highlight) {
+        wheelSector(ctx, 33, 142, start + inset * 2, end - inset * 2);
+        ctx.fillStyle = wheelGradient(ctx.createRadialGradient(0, 0, 33, 0, 0, 142), [
+          [0, "#ffcf7108"], [.65, "#ffe19a43"], [1, "#ffdc7d86"]
+        ]);
+        ctx.fill();
+        ctx.strokeStyle = "#fff1b4";
+        ctx.lineWidth = 2;
+        ctx.shadowColor = "#ffd270";
+        ctx.shadowBlur = 9;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
       ctx.save();
-      ctx.translate(CX, CY);
-      ctx.rotate(a0 + seg / 2);
-      ctx.textAlign = "right";
-      ctx.fillStyle = "rgba(255,255,255,0.96)";
-      ctx.font = "600 13px " + skinFont();
-      ctx.fillText(truncate(itemName(segs[i].item), 14), R - 14, 5);
+      ctx.rotate(middle);
+      wheelDisc(ctx, 154, 0, 2.5, "#24160f");
+      wheelDisc(ctx, 153.7, -.5, 1.7, i === highlight ? "#fff3c5" : "#c19663");
       ctx.restore();
+      drawWheelItem(ctx, items[i], middle, seg / 2 - inset, font);
     }
-    ctx.beginPath();
-    ctx.arc(CX, CY, 26, 0, Math.PI * 2);
-    ctx.fillStyle = "var(--skin-panel-2)";
-    ctx.fillStyle = getComputedStyle(demo).getPropertyValue("--skin-panel-2") || "#2a2537";
-    ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,0.5)";
-    ctx.stroke();
-    if (highlight != null) {
-      var ha = angle + highlight * seg + seg / 2;
-      ctx.save();
-      ctx.translate(CX, CY);
-      ctx.rotate(ha);
-      ctx.strokeStyle = "#fff";
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(R - 10, 0);
-      ctx.arc(0, 0, R - 10, 0, 0.01);
-      ctx.stroke();
-      ctx.restore();
+
+    // The hub and pointer stay fixed while the face turns underneath.
+    ctx.shadowColor = "#201108bd";
+    ctx.shadowBlur = 7;
+    ctx.shadowOffsetY = 4;
+    wheelDisc(ctx, 0, 0, 32, "#492b1c");
+    ctx.shadowBlur = ctx.shadowOffsetY = 0;
+    wheelDisc(ctx, 0, -1, 30, wheelGradient(ctx.createLinearGradient(-18, -27, 12, 28), [
+      [0, "#fff3cd"], [.33, "#b57a40"], [.53, "#58371e"], [.84, "#e7b473"], [1, "#9c6538"]
+    ]));
+    wheelDisc(ctx, 0, -1, 24, "#4a3225");
+    wheelDisc(ctx, 0, -2, 21, wheelGradient(ctx.createRadialGradient(-7, -12, 1, 0, -2, 22), [
+      [0, "#bcf3dd"], [.33, "#519d8e"], [.76, "#215653"], [1, "#153035"]
+    ]));
+    ctx.fillStyle = "#d0ffdf70";
+    ctx.fill(hubFacet);
+    ctx.restore();
+
+    ctx.save();
+    ctx.translate(wheelCenter, 0);
+    ctx.fillStyle = "#54321c";
+    ctx.shadowColor = "#170d09e0";
+    ctx.shadowBlur = 7;
+    ctx.shadowOffsetY = 4;
+    ctx.fill(pointerEdge);
+    ctx.shadowBlur = ctx.shadowOffsetY = 0;
+    ctx.strokeStyle = "#f1d091";
+    ctx.lineWidth = 1.2;
+    ctx.stroke(pointerEdge);
+    ctx.fillStyle = wheelGradient(ctx.createLinearGradient(-14, 14, 12, 27), [
+      [0, "#aa733e"], [.46, "#ffedb7"], [.53, "#d29b53"], [1, "#87532c"]
+    ]);
+    ctx.fill(pointerFace);
+    wheelDisc(ctx, 0, 15, 3.6, "#6d482c");
+    wheelDisc(ctx, 0, 14.5, 2.2, highlight == null ? "#eec785" : "#fffbe3");
+    ctx.restore();
+  }
+
+  function drawWheelItem(ctx, item, middle, halfAngle, font) {
+    var gold = item.rarity === "SSR";
+    var ink = gold ? "#321b0b" : "#fff7df";
+    var itemPath = iconPath(item);
+    var path = wheelIcons.get(itemPath);
+    if (!path) {
+      path = new Path2D(itemPath);
+      wheelIcons.set(itemPath, path);
     }
-  }
-  function segColor(rarity, i) {
-    var map = { N: ["#5a6070", "#4c5261"], R: ["#496577", "#3d5768"], SR: ["#665375", "#574663"], SSR: ["#a28b5b", "#88734e"] };
-    var pair = map[rarity] || ["#5a6070", "#4c5261"];
-    return pair[i % 2];
-  }
-  function skinFont() {
-    return getComputedStyle(demo).getPropertyValue("--skin-font") || "system-ui, sans-serif";
-  }
-  function truncate(s, n) {
-    return s.length > n ? s.slice(0, n - 1) + "…" : s;
+
+    var across = Math.sin(Math.min(halfAngle, Math.PI / 2));
+    var dx = Math.cos(middle);
+    var dy = Math.sin(middle);
+    var iconSize = Math.min(28, wheelIconRadius * across * Math.SQRT2);
+    ctx.save();
+    ctx.translate(wheelIconRadius * dx - iconSize / 2, wheelIconRadius * dy - iconSize / 2);
+    ctx.scale(iconSize / 84, iconSize / 84);
+    ctx.lineCap = ctx.lineJoin = "round";
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = gold ? "#ffdf91" : "#132023";
+    ctx.stroke(path);
+    ctx.lineWidth = 4.5;
+    ctx.strokeStyle = ink;
+    ctx.stroke(path);
+    ctx.restore();
+
+    // Fit the horizontal text box inside a circle that clears both dividers at any angle.
+    var room = Math.min(36, wheelLabelRadius * across);
+    var size = Math.min(13, room / 2);
+    var padding = Math.min(2, room / 8);
+    var maxWidth = 2 * (Math.sqrt(room * room - Math.pow(size / 2 + padding, 2)) - padding);
+    var name = itemName(item);
+    ctx.font = "700 " + size + "px " + font;
+    var lines = [name];
+    if (ctx.measureText(name).width > maxWidth) {
+      var chars = Array.from(name);
+      var split = Math.ceil(chars.length / 2);
+      var space = name.lastIndexOf(" ", split);
+      if (space > split * .65) split = Array.from(name.slice(0, space)).length;
+      lines = [chars.slice(0, split).join("").trim(), chars.slice(split).join("").trim()];
+      maxWidth = 2 * (Math.sqrt(room * room - Math.pow(size * 1.05 + padding, 2)) - padding);
+    }
+    var widest = Math.max.apply(null, lines.map(function (line) { return ctx.measureText(line).width; }));
+    size *= Math.min(1, maxWidth / widest);
+    ctx.font = "700 " + size + "px " + font;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = Math.min(2.6, size / 4);
+    ctx.strokeStyle = gold ? "#ffe7a0" : "#17232b";
+    ctx.fillStyle = ink;
+    var labelX = wheelLabelRadius * dx;
+    var labelY = wheelLabelRadius * dy;
+    lines.forEach(function (line, i) {
+      var y = labelY + (i - (lines.length - 1) / 2) * (size * 1.1);
+      ctx.strokeText(line, labelX, y);
+      ctx.fillText(line, labelX, y);
+    });
   }
 
   function spin() {
@@ -647,9 +790,10 @@ function formatGachaLabSummary(out, multiPulls, translate) {
       var t = DUR ? Math.min(1, (now - t0) / DUR) : 1;
       var e = 1 - Math.pow(1 - t, 3); // ease-out cubic
       angle = current + total * e;
-      drawWheel(null);
-      if (t < 1) requestAnimationFrame(frame);
-      else {
+      if (t < 1) {
+        drawWheel(null);
+        requestAnimationFrame(frame);
+      } else {
         angle = current + total;
         drawWheel(target);
         var won = cfg.items[target];
@@ -657,7 +801,6 @@ function formatGachaLabSummary(out, multiPulls, translate) {
         wheelOut.appendChild(h("span", { "data-i18n": "gx.won", "data-i18n-vars": JSON.stringify({item:itemName(won)}), text: defaultText("gx.won").replace("{item}", itemName(won)) }));
         history = G.record(history, [won], Date.now(), G.HISTORY_LIMIT);
         syncHistory(); persist();
-        say("gx.won", { item: itemName(won) });
         spinning = false;
         wheelBtn.disabled = false;
         refreshI18n();
@@ -705,18 +848,26 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   }
   sound.addEventListener('change',function(){if(sound.checked)tone(false);});
   function itemName(it){var key='item.'+it.id;return (root.PixStrings.en[key]?defaultText(key):it.name)||it.id;}
-  function icon(it){
+  function iconPath(it){
     var shapes={
       'wooden-sword':'M24 58L55 17 64 15 64 24 33 65M23 47L42 62M25 61L18 71',
       'health-potion':'M34 15H48M37 15V31L25 48Q16 69 41 70Q66 69 57 48L45 31V15M28 49H55',
+      'copper-coin':'M64 42A22 24 0 1 1 20 42A22 24 0 1 1 64 42ZM42 33L49 42 42 51 35 42Z',
+      'cloth-scrap':'M19 27L33 20 43 25 66 20 60 42 65 59 50 64 38 59 19 65 24 47ZM30 36L49 32M31 47L51 43',
+      'travelers-charm':'M36 23A6 6 0 1 1 48 23A6 6 0 1 1 36 23ZM42 29L60 46 42 66 24 46ZM42 39L49 46 42 54 35 46Z',
+      'enchanted-grimoire':'M23 22H59Q65 22 65 28V62H30Q23 62 23 68ZM23 68Q23 73 30 73H62M33 22V61M49 31L52 40 60 43 52 46 49 54 46 46 38 43 46 40Z',
       'steel-blade':'M24 58L55 17 64 15 64 24 33 65M23 47L42 62M25 61L18 71',
       cloak:'M32 24Q41 8 50 24L66 65Q43 76 17 65ZM32 25L41 39 50 25M41 39V66',
       lantern:'M29 30H55L60 65H24ZM35 30V21Q42 9 49 21V30M42 40V57M34 49H50',
       crown:'M20 31L31 40 42 22 53 40 65 31 59 63H26ZM27 55H59',
       excalibur:'M42 15L62 32 57 57 42 71 24 57 21 32ZM21 32H62M42 15V71M24 57L62 32M21 32L57 57'
     };
-    var path=shapes[it.id]||['M42 15L62 32 57 57 42 71 24 57 21 32ZM21 32H62M42 15V71','M26 22H59V65H26ZM33 22V65M39 34H52M39 43H52M39 52H49','M42 16C9 29 18 66 42 69C68 63 69 30 42 16ZM42 29V57M29 43H55'][C.rarities.indexOf(it.rarity)%3];
-    return '<svg viewBox="0 0 84 84" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+path+'"/></svg>';
+    var rarityIndex = C.rarities.indexOf(it.rarity);
+    if (rarityIndex < 0) rarityIndex = G.RARITIES.indexOf(it.rarity);
+    return (Object.hasOwn(shapes,it.id) && shapes[it.id])||['M42 15L62 32 57 57 42 71 24 57 21 32ZM21 32H62M42 15V71','M26 22H59V65H26ZM33 22V65M39 34H52M39 43H52M39 52H49','M42 16C9 29 18 66 42 69C68 63 69 30 42 16ZM42 29V57M29 43H55'][rarityIndex%3];
+  }
+  function icon(it){
+    return '<svg viewBox="0 0 84 84" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+iconPath(it)+'"/></svg>';
   }
   function caseCard(it){return h('div',{class:'cx-card','data-item':it.id,style:'--rarity:var(--case-'+it.rarity.toLowerCase()+')'},[h('div',{class:'cx-art',html:icon(it)}),h('b',{text:itemName(it)}),h('small',{text:defaultText('cx.'+it.rarity)})]);}
   function drawContents(){contentList.innerHTML='';crate.items.forEach(function(it){var card=caseCard(it);card.appendChild(h('em',{text:(it.probability*100).toFixed(1)+'%'}));contentList.appendChild(card);});refreshI18n();}
@@ -842,12 +993,12 @@ function formatGachaLabSummary(out, multiPulls, translate) {
       b.classList.toggle("on", b.getAttribute("data-skin-id") === s);
     });
     drawIdle();
-    drawWheel(null);
+    drawWheel(wheelWinner);
     persist();
   }
 
   mode("case");
-  root.addEventListener("pixjuice-locale",function(){syncOdds();syncHistory();syncWallet();drawContents();idleReel();drawWheel(null);});
+  root.addEventListener("pixjuice-locale",function(){syncOdds();syncHistory();syncWallet();drawContents();idleReel();drawWheel(wheelWinner);});
   if(location.protocol==='file:'){
     var language=h('select',{'aria-label':'Language',class:'cx-select'});
     ['en','zh','ja','ko','es'].forEach(function(code){language.appendChild(h('option',{value:code,text:{en:'English',zh:'简体中文',ja:'日本語',ko:'한국어',es:'Español'}[code]}));});
@@ -862,5 +1013,6 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   syncPity();
   syncHistory();
   setSkin(skin);
-  root.addEventListener("resize", function () { drawWheel(null); });
+  new ResizeObserver(function () { drawWheel(wheelWinner); }).observe(wheelCv);
+  root.addEventListener("resize", function () { drawWheel(wheelWinner); });
 })();

@@ -41,17 +41,27 @@
 }
 
 .tpl-stage {
+  position: relative;
   background: var(--skin-panel);
   border: 1px solid var(--skin-border);
   border-radius: var(--skin-radius);
   padding: 16px;
 }
 
+.gx-demo .tpl-stage > .tpl-toast {
+  position: absolute;
+  top: 16px;
+  bottom: auto;
+  max-width: min(calc(100% - 32px), 480px);
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
 /* --- tabs --- */
 .gx-tabs {
   display: flex;
   gap: 6px;
-  margin-bottom: 14px;
+  margin-bottom: 2px;
   background: var(--skin-panel-2);
   padding: 4px;
   border-radius: var(--skin-radius);
@@ -246,38 +256,31 @@
 
 /* --- wheel --- */
 .gx-wheel-wrap {
-  position: relative;
   width: min(340px, 100%);
   margin: 0 auto;
 }
 .gx-wheel-wrap canvas {
   width: 100%;
   height: auto;
+  aspect-ratio: 1;
   display: block;
-  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.4));
-}
-.gx-pointer {
-  position: absolute;
-  top: -6px;
-  left: 50%;
-  translate: -50% 0;
-  width: 0;
-  height: 0;
-  border: 12px solid transparent;
-  border-top: 20px solid var(--skin-accent);
-  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.5));
-  z-index: 1;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.45));
 }
 .gx-wheel-out {
+  height: 16px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   text-align: center;
   font-weight: 700;
-  min-height: 24px;
-  margin: 12px 0 0;
   color: var(--skin-accent);
 }
-.gx-wheel-wrap + .tpl-btn {
+.gx-wheel-out + .tpl-btn {
   display: block;
-  margin: 14px auto 0;
+  margin: 0 auto;
 }
 
 /* --- odds table --- */
@@ -442,7 +445,6 @@
 .gx-rate-details { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--skin-border); }
 .gx-rate-details[open] summary { margin-bottom: 8px; }
 .tpl-record > .gx-btnrow { margin-top: 8px; }
-.gx-wheel-wrap { margin-top: 10px; }
 
 @media (min-width: 900px) {
   .gx-demo > :is(.tpl-side, .tpl-record) { display: flex; flex-direction: column; }
