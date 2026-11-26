@@ -7,6 +7,7 @@ import './remesh.test.mjs';
 
 import './parts.test.mjs';
 import './feel.test.mjs';
+import './feel-damage-numbers.test.mjs';
 import './jump.test.mjs';
 import './move.test.mjs';
 import './camera-spring.test.mjs';

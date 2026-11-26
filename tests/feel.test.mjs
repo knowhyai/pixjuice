@@ -44,6 +44,8 @@ test('feel: presets stay inside slider ranges and are distinct', () => {
 
 test('feel: godot code reflects the live parameters', () => {
   const gd = godotHitFeel(PRESETS.heavy);
+  assert.ok(gd.includes('_spawn_number(hit_point, damage, direction)'));
+  assert.ok(gd.includes('reduce-motion flag'));
   assert.ok(gd.includes('extends Node'));
   assert.ok(gd.includes('extends'), 'gdscript header');
   assert.ok(gd.includes(`hit_stop_seconds := ${(PRESETS.heavy.hitStop.frames / 60).toFixed(3).replace(/0+$/, '').replace(/\.$/, '')}`), 'freeze seconds derive from frames');
@@ -78,6 +80,8 @@ test('feel: godot IK and PhysicalBone snippets use real APIs', () => {
 
 test('feel: unity code reflects the live parameters', () => {
   const cs = unityHitFeel(PRESETS.light);
+  assert.ok(cs.includes('SpawnNumber(hitPoint, damage, direction)'));
+  assert.ok(cs.includes('reduce-motion flag'));
   assert.ok(cs.includes('using UnityEngine;'));
   assert.ok(cs.includes('WaitForSecondsRealtime'), 'freeze uses realtime');
   assert.ok(cs.includes('Time.timeScale = 0f') && cs.includes('Time.timeScale = 1f'));

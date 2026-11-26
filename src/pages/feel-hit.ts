@@ -284,6 +284,11 @@ document.querySelector<HTMLButtonElement>(".feel-attack")?.addEventListener("cli
   demo?.attack();
 });
 
+document.querySelector<HTMLButtonElement>(".feel-combo")?.addEventListener("click", () => {
+  audio.resume();
+  demo?.combo();
+});
+
 // returns the camera to the staged flank default (controls.saveState snapshot)
 document.querySelector<HTMLButtonElement>(".feel-reset-view")?.addEventListener("click", () => demo?.resetView());
 

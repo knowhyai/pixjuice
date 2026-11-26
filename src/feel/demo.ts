@@ -13,11 +13,14 @@ import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import type { FeelParams, HitZone } from "./params";
 import { DEFAULT_CAMERA, placeDuelists } from "./staging";
 import { advanceClock } from "./clock";
+import { mergeDamage, MERGE_WINDOW, NUMBER_LIFE, numberAppearance, numberMotion, spreadAnchor } from "./damage-numbers";
+import type { DamageGrade, DamageStack } from "./damage-numbers";
 
 export interface FeelDemo {
   setParams(p: FeelParams): void;
   setZone(z: HitZone): void;
   attack(): void;
+  combo(): void;
   resetView(): void;
   onZonePick(cb: (z: HitZone) => void): void;
   onImpact(cb: () => void): void;
@@ -340,14 +343,22 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     anchor: THREE.Vector3;
     age: number;
     life: number;
+    tidy?: {
+      target: THREE.Object3D;
+      direction: THREE.Vector3;
+      stack: DamageStack;
+      halfWidth: number;
+      halfHeight: number;
+    };
   }
   const dmgNums: DmgNum[] = [];
-  const dmgValue = () => (params.overdoneExtras ? 999 : params.heavyFinisher ? 46 : 18);
-  function spawnNumber(point: THREE.Vector3, big: boolean, text?: string): void {
-    if (!(params.feedback.on && params.feedback.numbers)) return;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const extraTimers = new Set<ReturnType<typeof setTimeout>>();
+  function spawnChaoticNumber(point: THREE.Vector3, big: boolean, text: string): void {
+    if (!(params.feedback.on && params.feedback.numbers && params.overdoneExtras)) return;
     const el = document.createElement("div");
     el.className = "feel-dmg" + (big ? " feel-dmg-big" : "");
-    el.textContent = text ?? String(dmgValue());
+    el.textContent = text;
     el.style.fontSize = `${(big ? 21 : 13) * params.feedback.numberScale}px`;
     numberLayer.append(el);
     dmgNums.push({
@@ -360,8 +371,64 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     });
   }
 
+  function updateNumber(d: DmgNum, stack: DamageStack): void {
+    if (!d.tidy) return;
+    d.tidy.stack = stack;
+    const { size, color } = numberAppearance(stack.value, stack.grade, params.feedback.numberScale);
+    d.el.textContent = String(stack.value);
+    d.el.style.fontSize = `${size}px`;
+    d.el.style.color = color;
+    // Reserve room for the whole punch so neighboring digits don't chase its scale.
+    d.tidy.halfWidth = d.el.offsetWidth * 0.62;
+    d.tidy.halfHeight = d.el.offsetHeight * 0.62;
+  }
+
+  function showDamage(point: THREE.Vector3, direction: THREE.Vector3): void {
+    if (!(params.feedback.on && params.feedback.numbers)) return;
+    if (params.overdoneExtras) {
+      spawnChaoticNumber(point, true, "999");
+      const extras = ["+12.7", "CRIT!", "×3", "27.3", "MAX", "!!!"];
+      extras.forEach((label, i) => {
+        const timer = setTimeout(() => {
+          extraTimers.delete(timer);
+          spawnChaoticNumber(point, i % 2 === 0, label);
+        }, 60 + i * 55);
+        extraTimers.add(timer);
+      });
+      return;
+    }
+
+    const value = params.heavyFinisher ? 46 : 18;
+    const grade: DamageGrade = params.heavyFinisher ? "heavy" : "normal";
+    for (let i = dmgNums.length - 1; i >= 0; i--) {
+      const d = dmgNums[i];
+      if (d.tidy?.target !== victimRoot) continue;
+      const merged = mergeDamage(d.tidy.stack, value, grade, params.overdoneExtras);
+      if (!merged) continue;
+      updateNumber(d, merged);
+      return;
+    }
+
+    const el = document.createElement("div");
+    el.className = "feel-dmg feel-dmg-tidy";
+    numberLayer.append(el);
+    const stack = { value, grade, sinceHit: 0 };
+    const d: DmgNum = {
+      el,
+      anchor: point.clone().add(new THREE.Vector3(0, 0.35, 0)),
+      age: 0,
+      life: NUMBER_LIFE,
+      tidy: { target: victimRoot, direction, stack, halfWidth: 0, halfHeight: 0 },
+    };
+    updateNumber(d, stack);
+    dmgNums.push(d);
+  }
+
   // --- attack state ----------------------------------------------------------------
   let attacking = false;
+  let queuedAttack = false;
+  let comboSwings = 0;
+  let comboSwing = 0;
   let attackT = 0;
   let contactFired = false;
   let victimRecover = -1; // sim time when the victim blends back to idle
@@ -379,15 +446,38 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
   const SLASH_ANTICIPATION = 0.42;
   const slashStart = Math.max(0, contactDelay - SLASH_ANTICIPATION);
 
-  function attack(): void {
-    if (attacking) return;
+  const FOLLOW_UP_RECOVERY = 0.16;
+  // The third contact comes just after the merge window, while the stack is still visible.
+  const SPREAD_RECOVERY = MERGE_WINDOW + 0.16 - (contactDelay - slashStart);
+
+  function beginSwing(comboStep = 0): void {
+    comboSwing = comboStep;
+    const wasAttacking = attacking;
     attacking = true;
     attackT = slashStart;
     contactFired = false;
     slashA.reset();
     slashA.time = slashStart;
-    slashA.crossFadeFrom(idleA, 0.1, false);
+    if (!wasAttacking) slashA.crossFadeFrom(idleA, 0.1, false);
     slashA.play();
+  }
+
+  function attack(): void {
+    if (comboSwing || comboSwings) return;
+    if (attacking) queuedAttack = true;
+    else beginSwing();
+  }
+
+  function advanceCombo(): void {
+    beginSwing(4 - comboSwings);
+    comboSwings--;
+  }
+
+  function combo(): void {
+    if (comboSwing || comboSwings) return;
+    queuedAttack = false;
+    comboSwings = 3;
+    if (!attacking) advanceCombo();
   }
 
   function fireImpact(): void {
@@ -411,11 +501,7 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
     hitV.crossFadeFrom(idleV, 0.06, false);
     hitV.play();
     victimRecover = hit.duration + 0.1;
-    spawnNumber(impactPoint, true);
-    if (params.overdoneExtras) {
-      const extras = ["+12.7", "CRIT!", "×3", "27.3", "MAX", "!!!"];
-      extras.forEach((text, i) => setTimeout(() => spawnNumber(impactPoint, i % 2 === 0, text), 60 + i * 55));
-    }
+    showDamage(impactPoint, dir);
     // 4 — knockback: fast launch, constant deceleration, full stop
     if (params.knockback.on && params.knockback.distance > 0) {
       kbVel.copy(dir).setLength((2 * params.knockback.distance) / params.knockback.stopTime);
@@ -528,10 +614,22 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
         contactFired = true;
         fireImpact();
       }
-      if (attackT >= Math.min(slash.duration, contactDelay + 0.85)) {
-        attacking = false;
-        idleA.reset().fadeIn(0.18).play();
-        slashA.fadeOut(0.25);
+      const followingUp = queuedAttack || (comboSwings > 0 && comboSwing > 0);
+      const recovery = comboSwing === 2 ? SPREAD_RECOVERY : FOLLOW_UP_RECOVERY;
+      const recoverAt = followingUp
+        ? contactDelay + recovery
+        : Math.min(slash.duration, contactDelay + 0.85);
+      if (contactFired && timeScale > 0 && attackT >= recoverAt) {
+        if (comboSwings > 0) advanceCombo();
+        else if (queuedAttack) {
+          queuedAttack = false;
+          beginSwing();
+        } else {
+          comboSwing = 0;
+          attacking = false;
+          idleA.reset().fadeIn(0.18).play();
+          slashA.fadeOut(0.25);
+        }
       }
     }
     if (victimRecover > 0) {
@@ -619,24 +717,6 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
       if (t >= 1) shock.visible = false;
     }
 
-    // damage numbers ride the sim clock (they freeze with the world)
-    if (dmgNums.length) {
-      const rect = canvas.getBoundingClientRect();
-      for (let i = dmgNums.length - 1; i >= 0; i--) {
-        const d = dmgNums[i];
-        d.age += dt;
-        d.anchor.y += dt * 0.5;
-        scratch.v0.copy(d.anchor).project(camera);
-        d.el.style.left = `${((scratch.v0.x + 1) / 2) * rect.width}px`;
-        d.el.style.top = `${((1 - scratch.v0.y) / 2) * rect.height}px`;
-        d.el.style.opacity = scratch.v0.z < 1 ? String(Math.max(0, 1 - d.age / d.life)) : "0";
-        if (d.age >= d.life) {
-          d.el.remove();
-          dmgNums.splice(i, 1);
-        }
-      }
-    }
-
     // camera: orbit first, then shake on top — trauma² amplitude, smooth
     // layered sines (never per-frame random), biased along the attack line
     controls.update();
@@ -650,6 +730,53 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
       camera.position.y += s * 0.065 * Math.cos(t * 47);
       camera.rotateZ(s * 0.03 * Math.sin(t * 31));
     }
+    // Lifetimes and merge windows use sim time, so hit stop can't consume either.
+    if (dmgNums.length) {
+      const { width, height } = canvas.getBoundingClientRect();
+      const reduced = reducedMotion.matches;
+      const placed: Parameters<typeof spreadAnchor>[1] = [];
+      camera.updateMatrixWorld();
+      for (let i = 0; i < dmgNums.length;) {
+        const d = dmgNums[i];
+        d.age += dt;
+        scratch.v0.copy(d.anchor);
+        let elapsed = d.age;
+        let scale = 1;
+        if (d.tidy) {
+          d.tidy.stack.sinceHit += dt;
+          elapsed = d.tidy.stack.sinceHit;
+          const motion = numberMotion(d.age, elapsed, d.tidy.direction, reduced);
+          scratch.v0.x += motion.x;
+          scratch.v0.y += motion.y;
+          scratch.v0.z += motion.z;
+          scale = motion.scale;
+        } else if (!reduced) {
+          scratch.v0.y += d.age * 0.5;
+        }
+        if (elapsed >= d.life) {
+          d.el.remove();
+          dmgNums.splice(i, 1);
+          continue;
+        }
+        i++;
+        scratch.v0.project(camera);
+        let x = ((scratch.v0.x + 1) / 2) * width;
+        let y = ((1 - scratch.v0.y) / 2) * height;
+        const visible = scratch.v0.z >= -1 && scratch.v0.z < 1;
+        if (d.tidy && visible) {
+          const { halfWidth, halfHeight } = d.tidy;
+          const anchor = spreadAnchor({ x, y, halfWidth, halfHeight }, placed, width, height);
+          placed.push(anchor);
+          ({ x, y } = anchor);
+          d.el.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+        d.el.style.left = `${x}px`;
+        d.el.style.top = `${y}px`;
+        const opacity = d.tidy ? Math.min(1, (d.life - elapsed) / 0.4) : 1 - elapsed / d.life;
+        d.el.style.opacity = visible ? String(opacity) : "0";
+      }
+    }
+
     renderer.render(scene, camera);
     camera.position.copy(camBase);
   });
@@ -664,6 +791,7 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
       zone = z;
     },
     attack,
+    combo,
     resetView() {
       controls.reset();
     },
@@ -681,6 +809,7 @@ export async function createFeelDemo(host: HTMLElement, initialParams: FeelParam
       themeObserver.disconnect();
       renderer.setAnimationLoop(null);
       controls.dispose();
+      for (const timer of extraTimers) clearTimeout(timer);
       for (const d of dmgNums) d.el.remove();
       const geometries = new Set<THREE.BufferGeometry>();
       const materials = new Set<THREE.Material>();

@@ -40,13 +40,16 @@ export function godotHitFeel(p: FeelParams): string {
     : `	# Layer 2 — screen shake is switched off in the current preset.`;
 
   const feedbackBlock = p.feedback.on
-    ? `	# Layer 3 — flash, squash and one clean number. Separate flags, one layer.
+    ? `	# Layer 3 — flash, squash and damage numbers.
 	if flash_on:
 		_flash_victim()
 	if squash_on:
 		_squash_visual(${n(p.feedback.squashAmount)})
+	# The web demo shows the full number behavior. This hook is a starting point:
+	# size by damage, color by grade, pop and fly along direction, spread overlaps
+	# and merge quick same-grade hits per target. Honor a local reduce-motion flag.
 	if numbers_on:
-		_spawn_number(hit_point, damage)`
+		_spawn_number(hit_point, damage, direction)`
     : `	# Layer 3 — hit feedback is switched off in the current preset.`;
 
   const knockBlock = p.knockback.on
@@ -320,10 +323,13 @@ public sealed class HitFeel : MonoBehaviour {
         // starts a fresh one — timeScale can never be left at 0.
         if (hitStopEnabled) Freeze(hitStopSeconds);` : `// Layer 1 — hit stop is switched off in the current preset.`}
         ${p.shake.on ? `if (shakeEnabled) _trauma = Mathf.Min(_trauma + shakeAmount, 1f);` : `// Layer 2 — screen shake is switched off in the current preset.`}
-        ${p.feedback.on ? `// Layer 3 — flash, squash and one clean number, as three sub-flags.
+        ${p.feedback.on ? `// Layer 3 — flash, squash and damage numbers.
         if (flashOn) FlashVictim();
         if (squashOn) SquashVisual();
-        if (numbersOn) SpawnNumber(hitPoint, damage);` : `// Layer 3 — hit feedback is switched off in the current preset.`}
+        // The web demo shows the full number behavior. This hook is a starting point:
+        // size by damage, color by grade, pop and fly along direction, spread overlaps
+        // and merge quick same-grade hits per target. Honor a local reduce-motion flag.
+        if (numbersOn) SpawnNumber(hitPoint, damage, direction);` : `// Layer 3 — hit feedback is switched off in the current preset.`}
         ${p.knockback.on ? `// Layer 4 — fast launch, constant deceleration, full stop at the marked
         // time. A uniform slide reads as weightless.
         if (knockbackEnabled) Launch(victim, direction, ${launch}f, ${stopT}f);` : `// Layer 4 — knockback is switched off in the current preset.`}
