@@ -10,7 +10,7 @@ import { resolveRoute, createRoutingMiddleware } from '../scripts/preview-routin
 // with '' for en and /zh /ja /ko /es prefixes). These rules keep vite preview
 // and the generated dist/_redirects from ever serving the homepage at a wrong
 // URL: trailing-slash canonicalization, /en → unprefixed, unknown → 404.
-const newTools = ['text-fit', 'audio-envelope', 'camera-shake', 'audio-scenes', 'weapon-switch', 'reload', 'typewriter'];
+const newTools = ['text-fit', 'audio-envelope', 'camera-shake', 'audio-scenes', 'weapon-switch', 'reload', 'typewriter', 'free-icons'];
 const pages = new Set([
   '/',
   '/feel/',

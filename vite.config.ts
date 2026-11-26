@@ -70,6 +70,7 @@ export default defineConfig({
         save: "templates/save-load/index.html",
         assets: "free-assets/index.html",
         resources: "free-resources/index.html",
+        freeicons: "free-icons/index.html",
         feel: "feel/index.html",
         feelhit: "feel/hit/index.html",
         feelcamera: "feel/camera/index.html",

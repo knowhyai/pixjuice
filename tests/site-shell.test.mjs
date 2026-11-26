@@ -20,11 +20,12 @@ const loadTs = (file) => {
 };
 
 test("localized pages have accurate license metadata, canonical links, and sitemap entries", async (t) => {
+  const iconDirectory = "free-icons";
   const unlicensedPages = [
     "effects", "credits", "editor", "text-fit", "audio-envelope", "camera-shake",
     "audio-scenes", "weapon-switch", "reload", "typewriter", "image-to-pixel-art",
     "normal-map", "pixel-art-upscaler", "sprite-sheet", "templates", "templates/gacha",
-    "templates/save-load", "free-assets", "feel", "feel/hit", "feel/boss-hp",
+    "templates/save-load", "free-assets", iconDirectory, "feel", "feel/hit", "feel/boss-hp",
     "feel/jump", "feel/move", "feel/camera", "feel/spring",
   ];
   const { assets } = JSON.parse(fs.readFileSync("public/free-assets/manifest.json", "utf8"));
@@ -37,7 +38,7 @@ test("localized pages have accurate license metadata, canonical links, and sitem
     ...assets.filter(({ product_id }) => product_id).map(({ product_id }) => `free-assets/${product_id}`),
   ]);
   const imageTools = ["image-to-pixel-art", "normal-map", "pixel-art-upscaler", "sprite-sheet"];
-  const sourceFixtures = new Set(["credits", ...imageTools]);
+  const sourceFixtures = new Set(["credits", iconDirectory, "free-assets", "free-resources", ...imageTools]);
   for (const page of sourcePages) {
     const dir = join(outDir, page);
     fs.mkdirSync(dir, { recursive: true });
@@ -60,6 +61,9 @@ test("localized pages have accurate license metadata, canonical links, and sitem
   const pageUrlFor = (lang, page) => `${site}/${lang === "en" ? "" : `${lang}/`}${page}/`;
   const sitemap = fs.readFileSync(join(outDir, "sitemap.xml"), "utf8");
   const sitemapUrls = new Set([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, loc]) => loc));
+  const redirects = fs.readFileSync(join(outDir, "_redirects"), "utf8").split("\n");
+  assert.ok(redirects.includes("/en/free-icons /free-icons/ 301"));
+  assert.ok(redirects.includes("/en/free-icons/ /free-icons/ 301"));
   for (const lang of langs) {
     const prefix = lang === "en" ? "" : lang;
     for (const page of [...unlicensedPages, "free-assets/wall-stone", assetPage]) {
@@ -78,8 +82,35 @@ test("localized pages have accurate license metadata, canonical links, and sitem
         assert.match(html, /<meta name="robots" content="noindex">/, pageUrl);
         assert.ok(!sitemapUrls.has(pageUrl), pageUrl);
       }
-      const work = JSON.parse(json).find((node) => node["@type"] === "CreativeWork" && node.url === pageUrl);
-      assert.ok(work, `Missing CreativeWork for ${pageUrl}`);
+      const schema = JSON.parse(json);
+      const pageType = page === iconDirectory ? "CollectionPage" : "CreativeWork";
+      const work = schema.find((node) => node["@type"] === pageType && node.url === pageUrl);
+      assert.ok(work, `Missing ${pageType} for ${pageUrl}`);
+      if (page === iconDirectory) {
+        const dict = await loadTs(`src/lib/locales/${lang}.ts`);
+        const path = new URL(pageUrl).pathname;
+        assert.ok(redirects.includes(`${path.slice(0, -1)} ${path} 301`));
+        assert.ok(sitemapUrls.has(pageUrl));
+        assert.match(html, new RegExp(`<html lang="${lang}">`));
+        assert.equal(work.name, dict.title.freeIcons);
+        assert.equal(work.description, dict.title.freeIconsDesc);
+        assert.equal(work.inLanguage, lang);
+        assert.equal([...html.matchAll(/<article class="resource-card" data-category="\w+">/g)].length, 12);
+        const licenseRows = [...html.matchAll(/<dd data-i18n="fi\.cards\.(\w+)\.license">([^<]+)<\/dd>/g)];
+        assert.equal(licenseRows.length, 12);
+        for (const [, key, text] of licenseRows) assert.equal(text, dict.fi.cards[key].license);
+        const faq = schema.find((node) => node["@type"] === "FAQPage");
+        assert.equal(faq.inLanguage, lang);
+        assert.equal(faq.mainEntity[0].name, dict.fi.q);
+        assert.equal(faq.mainEntity[0].acceptedAnswer.text, dict.fi.a);
+        assert.ok(html.includes(`<summary>${dict.fi.q}</summary>`));
+        const localizedRoot = prefix ? `/${prefix}` : "";
+        for (const related of ["free-assets", "free-resources"]) {
+          assert.ok(html.includes(`href="${localizedRoot}/${related}/"`));
+          const relatedHtml = fs.readFileSync(join(outDir, prefix, related, "index.html"), "utf8");
+          assert.ok(relatedHtml.includes(`href="${path}" data-i18n="nav.freeIcons">${dict.nav.freeIcons}</a>`));
+        }
+      }
       if (page === assetPage) {
         assert.equal(work.license, `${site}/free-assets/${asset.license.file}`, pageUrl);
       } else {
@@ -119,7 +150,7 @@ runInNewContext(ts.transpileModule(fs.readFileSync("src/lib/effects-routes.ts", 
   },
 });
 
-function mountHeader(pathname, hash, locale, dict) {
+function mountHeader(pathname, hash, locale, dict, tools = null) {
   const window = new EventTarget();
   const location = { pathname, hash, search: "" };
   let html = "";
@@ -131,7 +162,11 @@ function mountHeader(pathname, hash, locale, dict) {
       const match = value.match(/<p([^>]*id="ed-crumb"[^>]*)>([^<]*)<\/p>/);
       crumb = match ? { textContent: match[2], hidden: /\bhidden\b/.test(match[1]) } : null;
     },
-    querySelector: (selector) => selector === "#ed-crumb" ? crumb : new EventTarget(),
+    querySelector(selector) {
+      if (selector === "#ed-crumb") return crumb;
+      if (selector === "details.tools") return tools;
+      return new EventTarget();
+    },
   };
   const exports = {};
   runInNewContext(navScript, {
@@ -157,6 +192,7 @@ function mountHeader(pathname, hash, locale, dict) {
   });
   exports.mountToolsMenu();
   return {
+    window,
     changeHash(hash, event) {
       location.hash = hash;
       window.dispatchEvent(new Event(event));
@@ -174,6 +210,34 @@ function mountHeader(pathname, hash, locale, dict) {
     get crumb() { return crumb; },
   };
 }
+
+test("shell: open tools menu fits below a wrapped header and updates on resize", () => {
+  let top = 140;
+  const menu = { style: { maxHeight: "" }, getBoundingClientRect: () => ({ top }) };
+  const tools = new EventTarget();
+  tools.querySelector = (selector) => selector === ".tools-menu" ? menu : null;
+  const { window } = mountHeader("/", "", "en", {}, tools);
+  window.innerHeight = 650;
+
+  tools.open = true;
+  tools.dispatchEvent(new Event("toggle"));
+  assert.equal(menu.style.maxHeight, "498px");
+
+  top = 80.5;
+  window.innerHeight = 600;
+  window.dispatchEvent(new Event("resize"));
+  assert.equal(menu.style.maxHeight, "507px");
+
+  top = 140;
+  window.innerHeight = 200;
+  window.dispatchEvent(new Event("resize"));
+  assert.equal(menu.style.maxHeight, "48px");
+
+  tools.open = false;
+  tools.dispatchEvent(new Event("toggle"));
+  window.dispatchEvent(new Event("resize"));
+  assert.equal(menu.style.maxHeight, "");
+});
 
 test("shell: editor header keeps the effect crumb writable and visible across renders", () => {
   for (const [path, locale] of [["/editor/", "en"], ["/zh/editor/", "zh"]]) {

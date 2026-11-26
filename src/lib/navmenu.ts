@@ -25,6 +25,7 @@ const TOOL_PATHS = [
   "/sprite-sheet/",
   "/editor/",
   "/free-resources/",
+  "/free-icons/",
   "/text-fit/",
   "/audio-envelope/",
   "/camera-shake/",
@@ -34,7 +35,7 @@ const TOOL_PATHS = [
   "/typewriter/",
 ] as const;
 
-const TOOL_KEYS = ["nav.pixel", "nav.normal", "nav.upscale", "nav.sheet", "nav.editor", "fr.h1", "nav.textFit", "nav.uiSounds", "nav.cameraShake", "nav.audioScenes", "nav.weaponSwitch", "nav.reload", "nav.typewriter"] as const;
+const TOOL_KEYS = ["nav.pixel", "nav.normal", "nav.upscale", "nav.sheet", "nav.editor", "fr.h1", "nav.freeIcons", "nav.textFit", "nav.uiSounds", "nav.cameraShake", "nav.audioScenes", "nav.weaponSwitch", "nav.reload", "nav.typewriter"] as const;
 
 /** One site header, shared by every entry point. */
 export function mountToolsMenu(): void {
@@ -55,6 +56,18 @@ export function mountToolsMenu(): void {
   applyTheme();
   matchMedia("(prefers-color-scheme: light)").addEventListener("change", applyTheme);
 
+  function updateToolsMenuHeight(details: HTMLDetailsElement): void {
+    const menu = details.querySelector<HTMLElement>(".tools-menu");
+    if (!menu) return;
+    if (!details.open) {
+      menu.style.maxHeight = "";
+      return;
+    }
+    if (typeof menu.getBoundingClientRect !== "function" || !Number.isFinite(window.innerHeight)) return;
+    const availableHeight = window.innerHeight - menu.getBoundingClientRect().top - 12;
+    menu.style.maxHeight = `${Math.max(0, Math.floor(availableHeight))}px`;
+  }
+
   function render(): void {
     const l = getLocale();
     const prefix = l === "en" ? "" : "/" + l;
@@ -73,6 +86,9 @@ export function mountToolsMenu(): void {
 
     const crumb = header.querySelector("#ed-crumb");
     if (crumb && crumbText != null) crumb.textContent = crumbText;
+
+    const details = header.querySelector<HTMLDetailsElement>("details.tools");
+    details?.addEventListener("toggle", () => updateToolsMenuHeight(details));
 
     header.querySelector<HTMLButtonElement>(".theme-toggle")!.addEventListener("click", () => {
       const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
@@ -95,6 +111,10 @@ export function mountToolsMenu(): void {
   onLocaleChange(render);
   window.addEventListener("hashchange", render);
   window.addEventListener("popstate", render);
+  window.addEventListener("resize", () => {
+    const details = header.querySelector<HTMLDetailsElement>("details.tools");
+    if (details?.open) updateToolsMenuHeight(details);
+  });
   document.addEventListener("click", (e) => {
     const menu = header.querySelector("details");
     if (menu && !menu.contains(e.target as Node)) menu.open = false;

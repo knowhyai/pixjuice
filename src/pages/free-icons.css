@@ -1,0 +1,61 @@
+.fi-filters {
+  margin-bottom: 8px;
+}
+
+.fi-page .fa-chip.on {
+  color: #14121b;
+  background: #dfc181;
+  border-color: #dfc181;
+}
+
+.fi-count {
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.fi-page .resource-card[hidden] {
+  display: none;
+}
+
+.fi-card-meta,
+.fi-card-links {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.fi-category,
+.fi-repo {
+  padding: 2px 7px;
+  border: 1px solid #70634c;
+  border-radius: 3px;
+  color: #cbbb94;
+  font-size: 11px;
+}
+
+.fi-repo {
+  font-size: 12px;
+}
+
+.fi-card-links {
+  margin-top: auto;
+}
+
+.fi-page .tpl-faq {
+  margin-top: 24px;
+}
+
+.fi-brand-name {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.05;
+  letter-spacing: 0.5px;
+  font-weight: 800;
+}
+
+.fi-brand-name em {
+  color: var(--acc);
+  font-style: normal;
+}

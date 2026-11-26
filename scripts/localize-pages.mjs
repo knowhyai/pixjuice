@@ -20,7 +20,7 @@ const strip=s=>s.replace(/<[^>]*>/g,'');
 const manifest=JSON.parse(await readFile('public/free-assets/manifest.json','utf8'));
 const isPublicListing=a=>a&&a.style_tier==='realistic'&&!a.hidden&&!a.product_hidden&&!a.placeholder;
 const products=[...new Set(manifest.assets.map(a=>a.product_id).filter(Boolean))];
-const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','camera-shake/','audio-scenes/','weapon-switch/','reload/','typewriter/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
+const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','camera-shake/','audio-scenes/','weapon-switch/','reload/','typewriter/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','free-icons/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
 const listedPaths=paths.filter(path=>{
   if(!path.startsWith('free-assets/')||path==='free-assets/')return true;
   const id=path.slice('free-assets/'.length).replace(/\/$/,'');
@@ -80,7 +80,7 @@ for(const path of paths) {
  const original=await readFile(join(outDir,path,'index.html'),'utf8');
  const tool=TOOL_SEO[path];
  for(const lang of langs) {
-  const d=seo[lang],key=path==='templates/gacha/'?'gx':path==='templates/save-load/'?'sv':path==='templates/'?'tplIndex':path==='free-resources/'?'fr':path==='feel/'?'feelIndex':path==='feel/hit/'?'feelHit':path==='feel/boss-hp/'?'feelBoss':path==='feel/jump/'?'jump':path==='feel/move/'?'move':path==='feel/camera/'?'camera':path==='feel/spring/'?'spring':path==='effects/'?'effects':tool?.copy?'lab':'fa';
+  const d=seo[lang],key=path==='templates/gacha/'?'gx':path==='templates/save-load/'?'sv':path==='templates/'?'tplIndex':path==='free-resources/'?'fr':path==='free-icons/'?'fi':path==='feel/'?'feelIndex':path==='feel/hit/'?'feelHit':path==='feel/boss-hp/'?'feelBoss':path==='feel/jump/'?'jump':path==='feel/move/'?'move':path==='feel/camera/'?'camera':path==='feel/spring/'?'spring':path==='effects/'?'effects':tool?.copy?'lab':'fa';
   const asset=manifest.assets.find(a=>path===`free-assets/${a.id}/`) || manifest.assets.find(a=>path===`free-assets/${a.product_id}/`);
   const styleKey={realistic:'tpl.skin.realistic',stylized:'tpl.skin.stylized','clean-low-poly':'tpl.skin.lowpoly','pixel-art':'tpl.skin.pixel'};
   const name=asset?(asset.product_id === "chest-wood"?[translate(lang,'v3.product'),...(path===`free-assets/${asset.product_id}/`?[]:[translate(lang,styleKey[asset.style_tier]),translate(lang,'v3.'+asset.palette),translate(lang,'v3.'+asset.state)])].join(' · '):(lang==='zh'?asset.name.zh||asset.name.en:asset.name.en)):null;
@@ -89,6 +89,7 @@ for(const path of paths) {
   if (lang === "en" && key === "sv") title = "Save Load System UI — Game Save Menu Template";
   let desc=asset?`${name} — ${d.assetDesc}`:strip(translate(lang,key==='gx'||key==='sv'?key+'.hero.lede':key+'.lede'));
   if(path===''){title=translate(lang,'title.home');desc=strip(translate(lang,'home.heroLede'));}
+  if(key==='fi'){title=translate(lang,'title.freeIcons');desc=translate(lang,'title.freeIconsDesc');}
   if(TOOL_SEO[path]){
     title=translate(lang,TOOL_SEO[path].title);
     if(path==='audio-scenes/') title+=' — PixJuice';
@@ -107,6 +108,7 @@ for(const path of paths) {
   else html=html.replaceAll('/previews/zh/','/previews/en/');
   // Translate static text and rich text (the same data keys the browser uses).
   html=html.replace(/<([a-z][\w-]*)\b([^>]*\bdata-i18n(?:-html)?="([^"]+)"[^>]*)>[\s\S]*?<\/\1>/gi,(all,tag,attrs,k)=>`<${tag}${attrs}>${attrs.includes('data-i18n-html=')?translate(lang,k):esc(translate(lang,k))}</${tag}>`);
+  html=html.replace(/aria-label="[^"]*" data-i18n-aria="([^"]+)"/g, (all,k)=>`aria-label="${esc(translate(lang,k))}" data-i18n-aria="${k}"`);
   if(tool?.copy){
     const marked=new RegExp(`<([a-z][\\w-]*)\\b([^>]*\\b${tool.copyAttr}="([^"]+)"[^>]*)>[^<]*<\\/\\1>`,'gi');
     if(path==='typewriter/'){
@@ -132,15 +134,16 @@ for(const path of paths) {
    .replace(/(<meta property="og:description" content=")[^"]*(")/,`$1${esc(desc)}$2`)
    .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'')
    .replace(/<link\b(?=[^>]*\srel="canonical")[^>]*>|<link\b(?=[^>]*\srel="alternate")(?=[^>]*\shreflang=")[^>]*>/gi,'');
-  const questions=key==='lab'||path===''||key==='jump'||key==='move'||key==='camera'||key==='spring'||key==='effects'?[]:asset?[[`${name} — ${translate(lang,'v3.license')}`,d.assetA]]:key==='fr'?[[translate(lang,'fr.q'),translate(lang,'fr.a')]]:key==='feelIndex'||key==='feelHit'?[[translate(lang,'feel.faq1q'),translate(lang,'feel.faq1a')],[translate(lang,'feel.faq2q'),translate(lang,'feel.faq2a')],[translate(lang,'feel.faq3q'),translate(lang,'feel.faq3a')]]:key==='feelBoss'?[[translate(lang,'boss.faq1q'),translate(lang,'boss.faq1a')],[translate(lang,'boss.faq2q'),translate(lang,'boss.faq2a')],[translate(lang,'boss.faq3q'),translate(lang,'boss.faq3a')]]:TOOL_SEO[path]?[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
-  const json=[{'@context':'https://schema.org','@type':path===''||key==='fr'?'CollectionPage':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined}];
+  const questions=key==='lab'||path===''||key==='jump'||key==='move'||key==='camera'||key==='spring'||key==='effects'?[]:asset?[[`${name} — ${translate(lang,'v3.license')}`,d.assetA]]:(key==='fr'||key==='fi')?[[translate(lang,key+'.q'),translate(lang,key+'.a')]]:key==='feelIndex'||key==='feelHit'?[[translate(lang,'feel.faq1q'),translate(lang,'feel.faq1a')],[translate(lang,'feel.faq2q'),translate(lang,'feel.faq2a')],[translate(lang,'feel.faq3q'),translate(lang,'feel.faq3a')]]:key==='feelBoss'?[[translate(lang,'boss.faq1q'),translate(lang,'boss.faq1a')],[translate(lang,'boss.faq2q'),translate(lang,'boss.faq2a')],[translate(lang,'boss.faq3q'),translate(lang,'boss.faq3a')]]:TOOL_SEO[path]?[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
+  const json=[{'@context':'https://schema.org','@type':path===''||key==='fr'||key==='fi'?'CollectionPage':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined}];
   if(questions.length) json.push({'@context':'https://schema.org','@type':'FAQPage',inLanguage:lang,mainEntity:questions.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))});
   const unpublished=asset? !isPublicListing(asset) && !(path===`free-assets/${asset.product_id}/` && manifest.assets.some(a=>a.product_id===asset.product_id&&isPublicListing(a))) : path.startsWith('free-assets/') && path!=='free-assets/' && !listedPaths.includes(path);
   const head=`${unpublished?'<meta name="robots" content="noindex, nofollow">\n':''}<link rel="canonical" href="${url(lang,path)}">\n${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url(l,path)}">`).join('\n')}\n<link rel="alternate" hreflang="x-default" href="${url('en',path)}">\n<script type="application/ld+json">${JSON.stringify(json).replaceAll('<','\\u003c')}</script>`;
   html=html.replace('</head>',head+'\n</head>');
   if(/<meta\b(?=[^>]*\sname="robots")(?=[^>]*\scontent="[^"]*\bnoindex\b)[^>]*>/i.test(html)) noindexUrls.add(url(lang,path));
   const faq=questions.length?`<section class="tpl-faq"><h2>${esc(d.faq)}</h2>${questions.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</section>\n`:'';
-  html=html.replace(/\s*<footer>/,faq+'<footer>');
+  if(key==='fi') html=html.replace('</main>',faq+'</main>');
+  else html=html.replace(/\s*<footer>/,faq+'<footer>');
   if(lang!=='en') html=prefixLocalizedHrefs(html, lang);
   const folder=join(outDir,lang==='en'?'':lang,path);
   await mkdir(folder,{recursive:true});await writeFile(join(folder,'index.html'),html);

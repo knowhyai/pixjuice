@@ -568,6 +568,9 @@ details.tools[open] > summary { color: var(--text); }
   right: 0;
   top: calc(100% + 8px);
   min-width: 200px;
+  max-height: calc(100vh - 80px);
+  max-height: calc(100dvh - 80px);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 2px;

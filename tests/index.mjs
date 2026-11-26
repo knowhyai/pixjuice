@@ -26,3 +26,4 @@ import './audio-scenes.test.mjs';
 import './weapon-switch.test.mjs';
 import './reload.test.mjs';
 import './typewriter.test.mjs';
+import './free-icons.test.mjs';

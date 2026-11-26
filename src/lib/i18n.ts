@@ -36,7 +36,7 @@ const FX: Partial<Record<Locale, Record<string, FxEntry>>> = {
 };
 
 const STORAGE_KEY = "pixjuice-lang";
-const PREFIXED_PAGES = /^\/(templates|free-assets|free-resources|feel|effects|editor|text-fit|audio-envelope|camera-shake|audio-scenes|weapon-switch|reload|typewriter)(\/|$)/;
+const PREFIXED_PAGES = /^\/(templates|free-assets|free-resources|free-icons|feel|effects|editor|text-fit|audio-envelope|camera-shake|audio-scenes|weapon-switch|reload|typewriter)(\/|$)/;
 
 function detect(): Locale {
   const prefix = location.pathname.split("/")[1];
@@ -139,6 +139,14 @@ export function applyStaticText(root: ParentNode = document): void {
   });
   root.querySelectorAll<HTMLElement>("[data-i18n-html]").forEach((e) => {
     e.innerHTML = t(e.dataset.i18nHtml!);
+    if (locale === "en") return;
+    for (const link of e.querySelectorAll<HTMLAnchorElement>('a[href^="/"]')) {
+      const href = link.getAttribute("href")!;
+      const path = href.split(/[?#]/, 1)[0];
+      if (path === "/" || PREFIXED_PAGES.test(path)) {
+        link.setAttribute("href", `/${locale}${href}`);
+      }
+    }
   });
   root.querySelectorAll<HTMLElement>("[data-i18n-ph]").forEach((e) => {
     e.setAttribute("placeholder", t(e.dataset.i18nPh!));

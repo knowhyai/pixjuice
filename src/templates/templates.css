@@ -462,7 +462,7 @@ a.fa-file:hover {
 .tpl-sec:has(#app) > .body { font-size:12px; }
 .tpl-hero-actions { display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap; }
 .tpl-hero-actions a { display:inline-flex;align-items:center;padding:10px 18px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-weight:650;color:var(--text);background:var(--panel); }
-.tpl-hero-actions a:first-child { background:var(--acc);border-color:var(--acc);color:white; }
+.tpl-hero-actions a:first-child:not(.tpl-action-secondary) { background:var(--acc);border-color:var(--acc);color:white; }
 .tpl-cards:has(.tpl-card:not(.soon)) { gap:22px; }
 .tpl-card:not(.soon) { padding:26px; background:radial-gradient(ellipse at 100% 0,#ff4d6d13,transparent 70%),var(--panel); }
 .tpl-card:not(.soon) b { font-size:22px;letter-spacing:-.02em; }
