@@ -255,6 +255,9 @@
 .gx-card.r-SSR .gx-front span { color: var(--r-ssr); opacity: 1; }
 
 /* --- wheel --- */
+.gx-demo > .tpl-stage:has(.gx-wheel-pane:not([hidden])) {
+  padding-top: 10px;
+}
 .gx-wheel-wrap {
   width: min(340px, 100%);
   margin: 0 auto;
@@ -271,16 +274,119 @@
   margin: 0;
   font-size: 12px;
   line-height: 16px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: auto hidden;
+  scrollbar-width: none;
   white-space: nowrap;
-  text-align: center;
+  text-align: start;
   font-weight: 700;
   color: var(--skin-accent);
+}
+.gx-wheel-out > span {
+  display: inline-block;
+  min-width: 100%;
+  text-align: center;
 }
 .gx-wheel-out + .tpl-btn {
   display: block;
   margin: 0 auto;
+}
+
+.gx-wheel-controls {
+  min-inline-size: 0;
+  margin: 12px 0 0;
+  padding: 8px 0 0;
+  border: 0;
+  border-top: 1px solid var(--skin-border);
+  font-size: 12px;
+}
+.tpl-record:has(.gx-wheel-controls:not([hidden])) > .gx-hist {
+  flex: 0 1 auto;
+  max-height: 96px;
+}
+.gx-wheel-controls legend {
+  padding-inline: 0 6px;
+  font-weight: 700;
+}
+.gx-wheel-field {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.gx-wheel-field input {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 0;
+  accent-color: var(--skin-accent);
+}
+.gx-wheel-value {
+  font-variant-numeric: tabular-nums;
+}
+.gx-wheel-controls .gx-odds td:first-child {
+  overflow-wrap: anywhere;
+}
+.gx-wheel-controls input[type="number"] {
+  box-sizing: border-box;
+  width: 5ch;
+  padding: 2px 3px;
+  appearance: textfield;
+  border: 1px solid var(--skin-border);
+  border-radius: 4px;
+  background: var(--skin-panel-2);
+  color: var(--skin-ink);
+  font: inherit;
+}
+.gx-wheel-controls input[type="number"]::-webkit-inner-spin-button {
+  appearance: none;
+}
+
+.gx-layer-editor {
+  margin-block: 8px;
+}
+
+.gx-layer {
+  min-inline-size: 0;
+  margin: 8px 0;
+  padding: 6px;
+  border: 1px solid var(--skin-border);
+}
+
+.gx-layer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.gx-layer-entry {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 8px;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--skin-border);
+}
+
+.gx-layer-entry > :first-child,
+.gx-layer-entry > :last-child {
+  grid-column: 1 / -1;
+}
+
+.gx-layer-entry label {
+  min-inline-size: 0;
+}
+
+.gx-layer-entry input[type="text"],
+.gx-layer-entry input[type="number"] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 2px 3px;
+  border: 1px solid var(--skin-border);
+  border-radius: 4px;
+  background: var(--skin-panel-2);
+  color: var(--skin-ink);
+  font: inherit;
 }
 
 /* --- odds table --- */
@@ -343,6 +449,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.gx-hist .gx-history-combo {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .gx-hist li.r-R span { color: var(--r-r); }
 .gx-hist li.r-SR span { color: var(--r-sr); }

@@ -86,6 +86,12 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     return h("span", { "data-i18n": key, text: text || defaultText(key) });
   }
   var EN = {
+    "gx.wheelShape": "Wheel setup",
+    "gx.wheelDiameter": "Diameter",
+    "gx.wheelAspect": "Width / height",
+    "gx.wheelHubX": "Hub X (left / right)",
+    "gx.wheelHubY": "Hub Y (up / down)",
+    "gx.wheelWeight": "Weight",
     "gx.tabPool": "Card pool", "gx.tabWheel": "Lucky wheel",
     "gx.pull1": "Pull ×1", "gx.pull10": "Pull ×10",
     "gx.pityGuarantee": "SSR guaranteed within {n} pulls",
@@ -285,7 +291,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   settings.appendChild(pityRow);
   pityInput.addEventListener("change", function () {
     if (busy || spinning) return;
-    var v = G.validateConfig({ rates: cfg.rates, pity: { ssr: Number(pityInput.value), sr: cfg.pity.sr }, items: cfg.items, currency: cfg.currency });
+    var v = G.validateConfig({ rates: cfg.rates, pity: { ssr: Number(pityInput.value), sr: cfg.pity.sr }, items: cfg.items, currency: cfg.currency, wheel: cfg.wheel });
     if (v.ok) { cfg = v.config; syncPanel(); syncOdds(); syncPity(); drawWheel(null); persist(); }
   });
 
@@ -296,8 +302,9 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     if (!f || busy || spinning) return;
     var fr = new FileReader();
     fr.onload = function () {
+      if (busy || spinning) return;
       var v = G.validateConfig(safeParse(String(fr.result)));
-      if (v.ok) { cfg = v.config; syncPanel(); syncOdds(); syncPity(); drawWheel(null); persist(); say("gx.cfgOk"); }
+      if (v.ok) { cfg = v.config; clearWheelResult(); syncPanel(); syncOdds(); syncPity(); drawWheel(null); persist(); say("gx.cfgOk"); }
       else say("gx.cfgBad", { e: v.error });
     };
     fr.readAsText(f);
@@ -321,7 +328,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     next[changed] = value;
     var left = Math.max(0, 1 - value);
     rest.forEach(function (r) { next[r] = restSum > 0 ? (cfg.rates[r] / restSum) * left : left / rest.length; });
-    var v = G.validateConfig({ rates: next, pity: cfg.pity, items: cfg.items, currency: cfg.currency });
+    var v = G.validateConfig({ rates: next, pity: cfg.pity, items: cfg.items, currency: cfg.currency, wheel: cfg.wheel });
     if (v.ok) { cfg = v.config; syncPanel(); syncOdds(); syncPity(); drawWheel(null); persist(); }
   }
   function syncPanel() {
@@ -331,13 +338,18 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     });
     pityInput.value = String(cfg.pity.ssr);
   }
+  function configJSON() { return JSON.stringify(cfg, null, 2); }
+  root.PixGachaConfigJSON = configJSON;
+
   function downloadConfig() {
-    saveBlob(new Blob([JSON.stringify(cfg, null, 2)], { type: "application/json" }), "config.json");
+    saveBlob(new Blob([configJSON()], { type: "application/json" }), "config.json");
   }
   function resetAll() {
     cfg = G.validateConfig(G.DEFAULT_CONFIG).config;
     pity = G.makeState(0, 0);
     history = [];
+    wheelPhases = [-Math.PI / 2];
+    clearWheelResult();
     gems = 6000;
     persist();
     syncPanel(); syncOdds(); syncWallet(); syncPity(); syncHistory(); drawIdle(); drawWheel(null);
@@ -356,7 +368,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   stage.appendChild(tabs);
 
   var poolPane = h("div", { class: "gx-pane", role: "tabpanel", hidden: "" });
-  var wheelPane = h("div", { class: "gx-pane", role: "tabpanel", hidden: "" });
+  var wheelPane = h("div", { class: "gx-pane gx-wheel-pane", role: "tabpanel", hidden: "" });
   var casePane=h("div",{class:"gx-pane cx-pane",role:"tabpanel"});
   stage.appendChild(casePane);
   stage.appendChild(poolPane);
@@ -368,14 +380,16 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     crateContents.hidden = crateInfo.hidden = m !== "case";
     poolInfo.hidden = m !== "pool";
     wheelInfo.hidden = m !== "wheel";
-    rates.hidden = m === "case";
-    poolOdds.hidden = guarantee.hidden = tenNote.hidden = m !== "pool";
+    rates.hidden = m !== "pool";
     wheelOdds.hidden = m !== "wheel";
     side.scrollTop = 0;
     stage.scrollTop = 0;
     record.scrollTop = 0;
     refreshI18n();
-    if (m === "wheel") drawWheel(wheelWinner);
+    if (m === "wheel") {
+      drawWheel(wheelWinner);
+      if (wheelResult) showWheelResult(wheelResult);
+    }
   }
 
   // ---- pool pane ---------------------------------------------------------------
@@ -562,7 +576,10 @@ function formatGachaLabSummary(out, multiPulls, translate) {
 
   var wheelSize = 340, wheelCenter = 170, wheelFace = 146;
   var wheelIconRadius = 53, wheelLabelRadius = 106;
-  var angle = -Math.PI / 2, spinning = false, wheelWinner = null;
+  var turn = 2 * Math.PI;
+  var pointerTipY = 39, layeredTipY = 32;
+  var wheelPhases = [-Math.PI / 2], spinning = false, wheelWinner = null;
+  var wheelEntries = [], wheelRings = [], wheelResult = null;
   var wheelColors = {
     N: ["#16383c", "#387b73", "#214b4e"],
     R: ["#122c51", "#376ca9", "#1a3965"],
@@ -572,7 +589,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   var alternateCommon = ["#17332d", "#497d5d", "#284b3b"];
   var wheelIcons = new Map();
   var hubFacet = new Path2D("M0 -18 L6 -8 L15 -2 L6 3 L0 14 L-5 3 L-14 -2 L-5 -7Z");
-  var pointerEdge = new Path2D("M-17 10 Q-15 5 -9 5 H9 Q15 5 17 10 L14 21 L0 39 L-14 21Z");
+  var pointerEdge = new Path2D("M-17 10 Q-15 5 -9 5 H9 Q15 5 17 10 L14 21 L0 " + pointerTipY + " L-14 21Z");
   var pointerFace = new Path2D("M-14 10 H14 L11 20 L0 34 L-11 20Z");
 
   function wheelGradient(gradient, stops) {
@@ -587,24 +604,49 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     ctx.fill();
   }
 
-  function wheelSector(ctx, inner, outer, start, end) {
+  // An affine stretch makes the ellipse and scales every wedge area equally.
+  // On the unit circle, twice the area swept from the hub is the integral
+  // of 1 - hubX*cos(theta) - hubY*sin(theta) along the rim.
+  function wheelArea(theta, hubX, hubY) {
+    return theta - hubX * Math.sin(theta) + hubY * Math.cos(theta);
+  }
+
+  function rimAngle(area, hubX, hubY) {
+    var offset = Math.hypot(hubX, hubY);
+    var low = area - offset;
+    var high = area + offset;
+    for (var i = 0; i < 48 && high > low; i++) {
+      var middle = (low + high) / 2;
+      if (wheelArea(middle, hubX, hubY) < area) low = middle;
+      else high = middle;
+    }
+    return (low + high) / 2;
+  }
+
+  function rimDistance(x, y, dx, dy) {
+    var along = x * dx + y * dy;
+    return Math.sqrt(along * along + 1 - x * x - y * y) - along;
+  }
+
+  function wheelSector(ctx, x, y, outer, start, end) {
     ctx.beginPath();
+    ctx.moveTo(x, y);
     ctx.arc(0, 0, outer, start, end);
-    ctx.arc(0, 0, inner, end, start, true);
     ctx.closePath();
   }
 
   function drawWheel(highlight) {
     wheelWinner = highlight;
-    var width = wheelCv.getBoundingClientRect().width;
-    if (!width) return;
-    var pixels = Math.round(width * (root.devicePixelRatio || 1));
-    if (wheelCv.width !== pixels || wheelCv.height !== pixels) {
-      wheelCv.width = wheelCv.height = pixels;
-    }
+    var visual = cfg.wheel;
+    var bounds = wheelCv.getBoundingClientRect();
+    if (!bounds.width) return;
+    var dpr = root.devicePixelRatio || 1;
+    var width = Math.round(bounds.width * dpr);
+    var height = Math.round(bounds.height * dpr);
+    if (wheelCv.width !== width) wheelCv.width = width;
+    if (wheelCv.height !== height) wheelCv.height = height;
     var ctx = wheelCv.getContext("2d");
-    var scale = pixels / wheelSize;
-    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    ctx.setTransform(width / wheelSize, 0, 0, height / wheelSize, 0, 0);
     ctx.clearRect(0, 0, wheelSize, wheelSize);
     ctx.save();
     ctx.translate(wheelCenter, wheelCenter);
@@ -622,52 +664,87 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     wheelDisc(ctx, 0, 0, 150, brass);
     wheelDisc(ctx, 0, 0, 147, "#422821");
 
-    var items = cfg.items;
-    var seg = 2 * Math.PI / items.length;
+    var hubX = visual.hubX;
+    var hubY = visual.hubY;
+    var x = hubX * wheelFace;
+    var y = hubY * wheelFace;
     var font = getComputedStyle(demo).getPropertyValue("--skin-font") || "system-ui, sans-serif";
-    var inset = Math.min(.02, seg * .14);
-    for (var i = 0; i < items.length; i++) {
-      var start = angle + i * seg;
-      var end = start + seg;
-      var middle = start + seg / 2;
-      var rarity = items[i].rarity;
-      var colors = rarity === "N" && i % 2 ? alternateCommon : wheelColors[rarity];
+    var rings = wheelRings.length > 1 ? wheelBands() : null;
+    if (rings) {
+      drawWheelBands(ctx, rings, x, y, brass, font, highlight);
+    } else {
+      var angle = wheelPhases[0];
+      var prizeHighlight = highlight && highlight[0];
+      var start = rimAngle(angle, hubX, hubY);
+      wheelEntries.forEach(function (entry, i) {
+        var end = rimAngle(angle + entry.end, hubX, hubY);
+        var span = end - start;
+        if (span <= 0) return;
+        var inset = Math.min(.02, span * .14);
+        var rarity = entry.item.rarity;
+        var colors = rarity === "N" && i % 2 ? alternateCommon : wheelColors[rarity];
 
-      wheelSector(ctx, 25, wheelFace, start, end);
-      ctx.fillStyle = wheelGradient(ctx.createRadialGradient(0, 0, 27, 0, 0, wheelFace), [
-        [0, colors[0]], [.72, colors[1]], [.94, colors[2]], [1, colors[0]]
-      ]);
-      ctx.fill();
-      ctx.fillStyle = brass;
-      wheelSector(ctx, 25, wheelFace, start, start + inset);
-      ctx.fill();
-      ctx.fillStyle = "#22130f88";
-      wheelSector(ctx, 25, wheelFace, end - inset, end);
-      ctx.fill();
-
-      if (i === highlight) {
-        wheelSector(ctx, 33, 142, start + inset * 2, end - inset * 2);
-        ctx.fillStyle = wheelGradient(ctx.createRadialGradient(0, 0, 33, 0, 0, 142), [
-          [0, "#ffcf7108"], [.65, "#ffe19a43"], [1, "#ffdc7d86"]
+        wheelSector(ctx, x, y, wheelFace, start, end);
+        ctx.fillStyle = wheelGradient(ctx.createRadialGradient(x, y, 27, 0, 0, wheelFace), [
+          [0, colors[0]], [.72, colors[1]], [.94, colors[2]], [1, colors[0]]
         ]);
         ctx.fill();
-        ctx.strokeStyle = "#fff1b4";
-        ctx.lineWidth = 2;
-        ctx.shadowColor = "#ffd270";
-        ctx.shadowBlur = 9;
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-      }
+        ctx.fillStyle = brass;
+        wheelSector(ctx, x, y, wheelFace, start, start + inset);
+        ctx.fill();
+        ctx.fillStyle = "#22130f88";
+        wheelSector(ctx, x, y, wheelFace, end - inset, end);
+        ctx.fill();
 
-      ctx.save();
-      ctx.rotate(middle);
-      wheelDisc(ctx, 154, 0, 2.5, "#24160f");
-      wheelDisc(ctx, 153.7, -.5, 1.7, i === highlight ? "#fff3c5" : "#c19663");
-      ctx.restore();
-      drawWheelItem(ctx, items[i], middle, seg / 2 - inset, font);
+        if (i === prizeHighlight) {
+          // Confine the highlight glow to this wedge, including at large hub offsets.
+          ctx.save();
+          wheelSector(ctx, x, y, wheelFace, start, end);
+          ctx.clip();
+          wheelSector(ctx, x, y, 142, start + inset * 2, end - inset * 2);
+          ctx.fillStyle = wheelGradient(ctx.createRadialGradient(x, y, 33, 0, 0, 142), [
+            [0, "#ffcf7108"], [.65, "#ffe19a43"], [1, "#ffdc7d86"]
+          ]);
+          ctx.fill();
+          ctx.strokeStyle = "#fff1b4";
+          ctx.lineWidth = 2;
+          ctx.shadowColor = "#ffd270";
+          ctx.shadowBlur = 9;
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        ctx.save();
+        ctx.rotate((start + end) / 2);
+        wheelDisc(ctx, 154, 0, 2.5, "#24160f");
+        wheelDisc(ctx, 153.7, -.5, 1.7, i === prizeHighlight ? "#fff3c5" : "#c19663");
+        ctx.restore();
+
+        var firstRay = Math.atan2(Math.sin(start + inset) - hubY, Math.cos(start + inset) - hubX);
+        var lastRay = Math.atan2(Math.sin(end - inset) - hubY, Math.cos(end - inset) - hubX);
+        var halfAngle = ((lastRay - firstRay + turn) % turn) / 2;
+        var middle = firstRay + halfAngle;
+        var dx = Math.cos(middle);
+        var dy = Math.sin(middle);
+        var reach = wheelFace * rimDistance(hubX, hubY, dx, dy);
+        var free = reach - 32;
+        var iconRadius = 32 + free * (wheelIconRadius - 32) / (wheelFace - 32);
+        var labelRadius = 32 + free * (wheelLabelRadius - 32) / (wheelFace - 32);
+        // The wedge clip also handles short rays and very narrow imported odds.
+        ctx.save();
+        wheelSector(ctx, x, y, wheelFace, start + inset, end - inset);
+        ctx.clip();
+        ctx.translate(x, y);
+        drawWheelItem(ctx, entry.item, dx, dy, halfAngle, reach, iconRadius, labelRadius, font);
+        ctx.restore();
+        start = end;
+      });
+
     }
 
     // The hub and pointer stay fixed while the face turns underneath.
+    ctx.translate(x, y);
+    if (rings) ctx.scale(.6, .6);
     ctx.shadowColor = "#201108bd";
     ctx.shadowBlur = 7;
     ctx.shadowOffsetY = 4;
@@ -686,6 +763,11 @@ function formatGachaLabSummary(out, multiPulls, translate) {
 
     ctx.save();
     ctx.translate(wheelCenter, 0);
+    if (rings) {
+      ctx.translate(0, 5);
+      ctx.scale(1, (layeredTipY - 5) / (pointerTipY - 5));
+      ctx.translate(0, -5);
+    }
     ctx.fillStyle = "#54321c";
     ctx.shadowColor = "#170d09e0";
     ctx.shadowBlur = 7;
@@ -704,7 +786,11 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     ctx.restore();
   }
 
-  function drawWheelItem(ctx, item, middle, halfAngle, font) {
+  function drawWheelItem(ctx, item, dx, dy, halfAngle, reach, iconRadius, labelRadius, font) {
+    var across = Math.sin(Math.min(halfAngle, Math.PI / 2));
+    var iconSize = Math.min(28, iconRadius * across * Math.SQRT2, (iconRadius - 32) * Math.SQRT2);
+    var room = Math.min(36, labelRadius * across, reach - labelRadius);
+    if (room < 3 && iconSize < 5) return;
     var gold = item.rarity === "SSR";
     var ink = gold ? "#321b0b" : "#fff7df";
     var itemPath = iconPath(item);
@@ -714,12 +800,8 @@ function formatGachaLabSummary(out, multiPulls, translate) {
       wheelIcons.set(itemPath, path);
     }
 
-    var across = Math.sin(Math.min(halfAngle, Math.PI / 2));
-    var dx = Math.cos(middle);
-    var dy = Math.sin(middle);
-    var iconSize = Math.min(28, wheelIconRadius * across * Math.SQRT2);
     ctx.save();
-    ctx.translate(wheelIconRadius * dx - iconSize / 2, wheelIconRadius * dy - iconSize / 2);
+    ctx.translate(iconRadius * dx - iconSize / 2, iconRadius * dy - iconSize / 2);
     ctx.scale(iconSize / 84, iconSize / 84);
     ctx.lineCap = ctx.lineJoin = "round";
     ctx.lineWidth = 8;
@@ -731,7 +813,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     ctx.restore();
 
     // Fit the horizontal text box inside a circle that clears both dividers at any angle.
-    var room = Math.min(36, wheelLabelRadius * across);
+    if (room < 3) return;
     var size = Math.min(13, room / 2);
     var padding = Math.min(2, room / 8);
     var maxWidth = 2 * (Math.sqrt(room * room - Math.pow(size / 2 + padding, 2)) - padding);
@@ -755,13 +837,183 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     ctx.lineWidth = Math.min(2.6, size / 4);
     ctx.strokeStyle = gold ? "#ffe7a0" : "#17232b";
     ctx.fillStyle = ink;
-    var labelX = wheelLabelRadius * dx;
-    var labelY = wheelLabelRadius * dy;
+    var labelX = labelRadius * dx;
+    var labelY = labelRadius * dy;
     lines.forEach(function (line, i) {
       var y = labelY + (i - (lines.length - 1) / 2) * (size * 1.1);
       ctx.strokeText(line, labelX, y);
       ctx.fillText(line, labelX, y);
     });
+  }
+
+  function wheelBands() {
+    var visual = cfg.wheel;
+    var offset = Math.hypot(visual.hubX, visual.hubY) * wheelFace;
+    // Keep every divider beyond the eccentric hub and its metal cap.
+    var base = Math.max(34, offset + 22);
+    var step = (wheelFace - base) / wheelRings.length;
+    return wheelRings.map(function (entries, i) {
+      return {
+        entries: entries,
+        outer: wheelFace - i * step - (i ? 1 : 0),
+        inner: i === wheelRings.length - 1 ? 0 : wheelFace - (i + 1) * step + 1
+      };
+    });
+  }
+
+  function rayHit(radius, x, y, ray) {
+    return radius * rimDistance(x / radius, y / radius, Math.cos(ray), Math.sin(ray));
+  }
+
+  function rayRimAngle(radius, x, y, ray) {
+    var reach = rayHit(radius, x, y, ray);
+    var theta = Math.atan2(y + reach * Math.sin(ray), x + reach * Math.cos(ray));
+    return theta + turn * Math.round((ray - theta) / turn);
+  }
+
+  // Subtract the area swept on the inner circle from the outer sweep.
+  // The innermost band subtracts the hub cap, which is centered on the ray origin.
+  function bandArea(band, x, y, ray) {
+    var outer = band.outer, inner = band.inner;
+    var outerArea = outer * outer * wheelArea(rayRimAngle(outer, x, y, ray), x / outer, y / outer);
+    var innerArea = inner
+      ? inner * inner * wheelArea(rayRimAngle(inner, x, y, ray), x / inner, y / inner)
+      : Math.pow(32 * .6, 2) * ray;
+    return (outerArea - innerArea) / (outer * outer - Math.pow(inner || 32 * .6, 2));
+  }
+
+  function bandRay(band, x, y, area) {
+    var low = area - turn, high = area + turn;
+    for (var i = 0; i < 32; i++) {
+      var middle = (low + high) / 2;
+      if (bandArea(band, x, y, middle) < area) low = middle;
+      else high = middle;
+    }
+    return (low + high) / 2;
+  }
+
+  function drawWheelBands(ctx, bands, x, y, brass, font, highlight) {
+    bands.forEach(function (band, ring) {
+      var phase = wheelPhases[ring];
+      if (ring) wheelDisc(ctx, 0, 0, band.outer + 2, brass);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(0, 0, band.outer, 0, turn);
+      if (band.inner) {
+        ctx.moveTo(band.inner, 0);
+        ctx.arc(0, 0, band.inner, 0, turn);
+      }
+      ctx.clip("evenodd");
+      var start = bandRay(band, x, y, phase);
+      band.entries.forEach(function (entry, i) {
+        var end = bandRay(band, x, y, phase + entry.end);
+        if (end <= start) return;
+        var first = rayRimAngle(band.outer, x, y, start);
+        var last = rayRimAngle(band.outer, x, y, end);
+        var selected = highlight && highlight[ring] === i;
+        var rarity = ring ? "R" : entry.item.rarity;
+        var colors = i % 2 && (ring || rarity === "N") ? alternateCommon : wheelColors[rarity];
+        wheelSector(ctx, x, y, band.outer, first, last);
+        ctx.fillStyle = wheelGradient(ctx.createRadialGradient(0, 0, 0, 0, 0, band.outer), [
+          [0, colors[0]], [.8, colors[1]], [1, colors[2]]
+        ]);
+        ctx.fill();
+        if (selected) {
+          ctx.fillStyle = "#ffdc7d65";
+          ctx.fill();
+        }
+        ctx.strokeStyle = selected ? "#fff1b4" : "#d4a86b";
+        ctx.lineWidth = selected ? 2 : .8;
+        ctx.stroke();
+
+        var ray = (start + end) / 2;
+        var near = band.inner ? rayHit(band.inner, x, y, ray) : 32 * .6;
+        var far = rayHit(band.outer, x, y, ray);
+        var radius = (near + far) / 2;
+        var lx = x + radius * Math.cos(ray), ly = y + radius * Math.sin(ray);
+        var room = band.outer - Math.hypot(lx, ly);
+        if (band.inner) room = Math.min(room, Math.hypot(lx, ly) - band.inner);
+        else room = Math.min(room, radius - near);
+        room = Math.min(room, radius * Math.sin(Math.min((end - start) / 2, Math.PI / 2)));
+        var size = Math.min(13, room * 1.4);
+        if (size >= 4) {
+          ctx.save();
+          wheelSector(ctx, x, y, band.outer, first, last);
+          ctx.clip();
+          ctx.font = "700 " + size + "px " + font;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = rarity === "SSR" ? "#321b0b" : "#fff7df";
+          var name = ring ? layerEntryLabel(entry.item) : itemName(entry.item);
+          var allowance = bandLabelWidth(band, lx, ly, x, y, start, end, size);
+          ctx.fillText(name, lx, ly, allowance);
+          ctx.restore();
+        }
+        start = end;
+      });
+      ctx.restore();
+    });
+    var outer = bands[0];
+    outer.entries.forEach(function (entry, i) {
+      var ray = bandRay(outer, x, y, wheelPhases[0] + (entry.start + entry.end) / 2);
+      ctx.save();
+      ctx.rotate(rayRimAngle(outer.outer, x, y, ray));
+      wheelDisc(ctx, 154, 0, 2.5, "#24160f");
+      wheelDisc(ctx, 153.7, -.5, 1.7, highlight && highlight[0] === i ? "#fff3c5" : "#c19663");
+      ctx.restore();
+    });
+    ctx.beginPath();
+    ctx.moveTo(0, layeredTipY - wheelCenter);
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = highlight ? "#fff1b4cc" : "#fff1b477";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  function bandLabelWidth(band, lx, ly, x, y, start, end, size) {
+    var halfHeight = size / 2 + 1;
+    var outerY = Math.abs(ly) + halfHeight;
+    var width = Math.sqrt(Math.max(0, band.outer * band.outer - outerY * outerY)) - Math.abs(lx);
+    var inner = band.inner || 32 * .6;
+    var innerX = lx - (band.inner ? 0 : x);
+    var innerY = Math.max(0, Math.abs(ly - (band.inner ? 0 : y)) - halfHeight);
+    if (innerY < inner) width = Math.min(width, Math.abs(innerX) - Math.sqrt(inner * inner - innerY * innerY));
+    if (end - start < Math.PI) {
+      [start, end].forEach(function (ray) {
+        var sin = Math.sin(ray), cos = Math.cos(ray);
+        var clearance = Math.abs(cos * (ly - y) - sin * (lx - x)) - Math.abs(cos) * halfHeight;
+        if (Math.abs(sin) > 1e-6) width = Math.min(width, clearance / Math.abs(sin));
+      });
+    }
+    return Math.max(1, 2 * (width - 1));
+  }
+
+  function layerEntryLabel(entry) {
+    if (entry.multiplier === undefined || entry.label === "×" + entry.multiplier) return entry.label;
+    return entry.label + " ×" + entry.multiplier;
+  }
+
+  function wheelResultName(item, extras) {
+    return (extras || []).reduce(function (name, entry) {
+      return name + (entry.multiplier === undefined ? " · " + entry.label : " × " + entry.multiplier);
+    }, itemName(item));
+  }
+
+  function showWheelResult(result) {
+    var name = wheelResultName(result.item, result.wheelExtras);
+    var message = defaultText("gx.won").replace("{item}", function () { return name; });
+    wheelOut.replaceChildren(h("span", { text: message }));
+    wheelOut.title = message;
+    wheelOut.scrollLeft = 0;
+    if (wheelOut.scrollWidth > wheelOut.clientWidth) wheelOut.tabIndex = 0;
+    else wheelOut.removeAttribute("tabindex");
+  }
+
+  function clearWheelResult() {
+    wheelResult = null;
+    wheelOut.textContent = "";
+    wheelOut.removeAttribute("title");
+    wheelOut.removeAttribute("tabindex");
   }
 
   function spin() {
@@ -772,39 +1024,48 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     gems -= price;
     syncWallet();
     wheelBtn.disabled = true;
-    var target = G.wheelPick(cfg);
-    var segs = G.wheelSegments(cfg);
-    var seg = (Math.PI * 2) / segs.length;
-    var jitter = (Math.random() - 0.5) * seg * 0.6;
-    var final = -Math.PI / 2 - ((target + 0.5) * seg) - jitter;
-    var TWO_PI = Math.PI * 2;
-    var current = angle;
-    var delta = (final - current) % TWO_PI;
-    if (delta < 0) delta += TWO_PI;
-    var total = delta + TWO_PI * (reduced ? 0 : 5);
+    wheelOdds.disabled = true;
+    clearWheelResult();
+    var targets = G.wheelTargets(cfg);
+    var visual = cfg.wheel;
+    var bands = wheelRings.length > 1 ? wheelBands() : null;
+    var x = visual.hubX * wheelFace, y = visual.hubY * wheelFace;
+    var ray = Math.atan2((bands ? layeredTipY : pointerTipY) - wheelCenter - y, -x);
+    var motion = targets.map(function (target, ring) {
+      var entry = wheelRings[ring][target];
+      var aim = bands ? bandArea(bands[ring], x, y, ray)
+        : wheelArea(rayRimAngle(wheelFace, x, y, ray), visual.hubX, visual.hubY);
+      var final = aim - (entry.start + entry.end) / 2;
+      var current = wheelPhases[ring];
+      var direction = ring % 2 ? -1 : 1;
+      var delta = ((direction * (final - current)) % turn + turn) % turn;
+      return { current: current, final: final, total: direction * (delta + turn * (5 - ring)) };
+    });
     var t0 = performance.now();
-    var DUR = reduced ? 0 : 4200;
-    wheelOut.textContent = "";
+    var duration = reduced ? 0 : 4200;
 
     (function frame(now) {
-      var t = DUR ? Math.min(1, (now - t0) / DUR) : 1;
-      var e = 1 - Math.pow(1 - t, 3); // ease-out cubic
-      angle = current + total * e;
+      var t = duration ? Math.min(1, (now - t0) / duration) : 1;
+      var ease = 1 - Math.pow(1 - t, 3);
+      wheelPhases = motion.map(function (track) {
+        return t === 1 ? track.final : track.current + track.total * ease;
+      });
       if (t < 1) {
         drawWheel(null);
         requestAnimationFrame(frame);
-      } else {
-        angle = current + total;
-        drawWheel(target);
-        var won = cfg.items[target];
-        while (wheelOut.firstChild) wheelOut.removeChild(wheelOut.firstChild);
-        wheelOut.appendChild(h("span", { "data-i18n": "gx.won", "data-i18n-vars": JSON.stringify({item:itemName(won)}), text: defaultText("gx.won").replace("{item}", itemName(won)) }));
-        history = G.record(history, [won], Date.now(), G.HISTORY_LIMIT);
-        syncHistory(); persist();
-        spinning = false;
-        wheelBtn.disabled = false;
-        refreshI18n();
+        return;
       }
+      drawWheel(targets);
+      history = G.record(history, [cfg.items[targets[0]]], Date.now(), G.HISTORY_LIMIT);
+      wheelResult = history[history.length - 1];
+      if (targets.length > 1) wheelResult.wheelExtras = targets.slice(1).map(function (target, i) {
+        return { ...cfg.wheel.layers[i].entries[target] };
+      });
+      showWheelResult(wheelResult);
+      syncHistory(); persist();
+      spinning = false;
+      wheelBtn.disabled = false;
+      wheelOdds.disabled = false;
     })(t0);
   }
 
@@ -908,12 +1169,44 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   clearRow.appendChild(h("button", { class: "tpl-btn tpl-btn-ghost", type: "button", "data-i18n": "gx.clear", text: "Clear", onclick: function () { history = []; persist(); syncHistory(); } }));
   record.appendChild(clearRow);
   var poolOdds = h("div", { class: "gx-odds" });
-  var wheelOdds = h("div", { class: "gx-odds" });
+  var wheelOdds = h("fieldset", { class: "gx-wheel-controls" }, [
+    h("legend", {}, [lbl("gx.wheelShape")])
+  ]);
+  var wheelFields = {};
+  [
+    ["diameter", "gx.wheelDiameter", G.WHEEL_LIMITS.diameter.min, G.WHEEL_LIMITS.diameter.max, "1", "px"],
+    ["aspect", "gx.wheelAspect", G.WHEEL_LIMITS.aspect.min, G.WHEEL_LIMITS.aspect.max, ".01", ""],
+    ["hubX", "gx.wheelHubX", -G.WHEEL_LIMITS.hubRadius, G.WHEEL_LIMITS.hubRadius, ".01", ""],
+    ["hubY", "gx.wheelHubY", -G.WHEEL_LIMITS.hubRadius, G.WHEEL_LIMITS.hubRadius, ".01", ""]
+  ].forEach(function (field) {
+    var key = field[0];
+    var input = h("input", { type: "range", min: field[2], max: field[3], step: field[4] });
+    var value = h("span", { class: "gx-wheel-value" });
+    wheelFields[key] = { input: input, value: value, unit: field[5] };
+    wheelOdds.appendChild(h("label", { class: "gx-wheel-field" }, [lbl(field[1]), value, input]));
+    input.addEventListener("input", function () {
+      var next = { ...cfg.wheel, [key]: Number(input.value) };
+      // Keep the other axis stable when dragging along the hub limit.
+      if (key === "hubX" || key === "hubY") {
+        var other = key === "hubX" ? "hubY" : "hubX";
+        var limit = Math.sqrt(Math.max(0, G.WHEEL_LIMITS.hubRadius ** 2 - next[other] ** 2));
+        next[key] = Math.max(-limit, Math.min(limit, next[key]));
+      }
+      cfg.wheel = G.normalizeWheel(next);
+      syncWheelFields();
+      applyWheelEdit();
+    });
+  });
+  var layerEditor = h("div", { class: "gx-layer-editor" });
+  wheelOdds.appendChild(layerEditor);
+  var wheelTable = h("div", { class: "gx-odds" });
+  wheelOdds.appendChild(wheelTable);
   var guarantee = h("p", { class: "gx-note" });
   var rates = h("details", { class: "gx-disclosure gx-rate-details" }, [
-    h("summary", {}, [lbl("gx.rates")]), poolOdds, wheelOdds, guarantee, tenNote
+    h("summary", {}, [lbl("gx.rates")]), poolOdds, guarantee, tenNote
   ]);
   record.appendChild(rates);
+  record.appendChild(wheelOdds);
 
   function syncGuarantee(node, key, n) {
     node.setAttribute("data-i18n", key);
@@ -928,25 +1221,174 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     renderOdds(poolOdds, cfg.items.map(function (item) {
       return { item: item, odds: G.itemOdds(cfg, item) };
     }));
-    renderOdds(wheelOdds, G.wheelSegments(cfg));
+    syncWheelFields();
+    renderOdds(wheelTable, updateWheelEntries(), true);
+    renderWheelLayers();
   }
 
-  function renderOdds(box, entries) {
+  function syncWheelFields() {
+    var visual = cfg.wheel;
+    Object.keys(wheelFields).forEach(function (key) {
+      var field = wheelFields[key];
+      field.input.value = String(visual[key]);
+      field.value.textContent = String(Number(visual[key].toFixed(2))) + field.unit;
+    });
+    wheelWrap.style.width = "min(" + visual.diameter * Math.min(1, visual.aspect) + "px, 100%)";
+    wheelCv.style.aspectRatio = String(visual.aspect);
+  }
+
+  function updateWheelEntries() {
+    var segments = [G.wheelSegments(cfg)].concat(cfg.wheel.layers.map(function (layer) {
+      return G.wheelLayerSegments(layer.entries);
+    }));
+    wheelRings = segments.map(function (entries, ring) {
+      var end = 0;
+      if (wheelPhases[ring] === undefined) wheelPhases[ring] = -Math.PI / 2;
+      return entries.map(function (entry, i) {
+        var start = end;
+        end = i === entries.length - 1 ? turn : Math.min(turn, start + entry.odds * turn);
+        return { item: entry.item, odds: entry.odds, start: start, end: end };
+      });
+    });
+    wheelPhases.length = wheelRings.length;
+    wheelEntries = wheelRings[0];
+    return wheelEntries;
+  }
+
+  function layerButton(key, action) {
+    return h("button", { class: "tpl-btn tpl-btn-ghost", type: "button", text: defaultText(key), onclick: action });
+  }
+
+  function renderWheelLayers(focusKey) {
+    var layers = cfg.wheel.layers;
+    layerEditor.replaceChildren();
+    var add = layerButton("gx.addLayer", function () {
+      layers.push({ entries: [
+        { label: "×1", weight: 7, multiplier: 1 },
+        { label: "×2", weight: 2, multiplier: 2 },
+        { label: "×5", weight: 1, multiplier: 5 }
+      ] });
+      changeWheelLayers("layer-" + (layers.length - 1));
+    });
+    add.dataset.layerFocus = "add";
+    add.disabled = layers.length >= G.WHEEL_LIMITS.extraLayers;
+    layerEditor.appendChild(add);
+    layers.forEach(function (layer, i) {
+      var group = h("fieldset", { class: "gx-layer" }, [
+        h("legend", { text: defaultText("gx.layer").replace("{n}", String(i + 2)) })
+      ]);
+      var actions = h("div", { class: "gx-layer-actions" });
+      var addEntry = layerButton("gx.addEntry", function () {
+        layer.entries.push({ label: defaultText("gx.entry"), weight: 1 });
+        changeWheelLayers("layer-" + i + "-entry-" + (layer.entries.length - 1));
+      });
+      addEntry.dataset.layerFocus = "layer-" + i;
+      actions.appendChild(addEntry);
+      actions.appendChild(layerButton("gx.removeLayer", function () {
+        layers.splice(i, 1);
+        wheelPhases.splice(i + 1, 1);
+        changeWheelLayers("add");
+      }));
+      group.appendChild(actions);
+      var percentages = [];
+      layer.entries.forEach(function (entry, j) {
+        var row = h("div", { class: "gx-layer-entry" });
+        ["label", "weight", "multiplier"].forEach(function (key) {
+          var label = defaultText({ label: "gx.entryLabel", weight: "gx.wheelWeight", multiplier: "gx.multiplier" }[key]);
+          var input = h("input", key === "label" ? { type: "text", maxlength: "60", required: "" }
+            : { type: "number", step: "any", min: "0" });
+          if (key === "label") input.dataset.layerFocus = "layer-" + i + "-entry-" + j;
+          input.value = entry[key] === undefined ? "" : String(entry[key]);
+          input.addEventListener("change", function () {
+            var value = key === "label" ? input.value.trim() : input.valueAsNumber;
+            if (key === "multiplier" && input.value === "" && !input.validity.badInput) delete entry.multiplier;
+            else if (key === "label" ? value : Number.isFinite(value) && value > 0) {
+              if (key === "multiplier" && entry.label === "×" + entry.multiplier) {
+                entry.label = "×" + value;
+                row.querySelector('input[type="text"]').value = entry.label;
+              }
+              entry[key] = value;
+            }
+            input.value = entry[key] === undefined ? "" : String(entry[key]);
+            updateWheelEntries();
+            wheelRings[i + 1].forEach(function (segment, index) {
+              percentages[index].textContent = oddsText(segment.odds);
+            });
+            applyWheelEdit();
+          });
+          row.appendChild(h("label", {}, [h("span", { text: label }), input]));
+        });
+        var odds = h("span", { text: oddsText(wheelRings[i + 1][j].odds) });
+        percentages.push(odds);
+        var remove = layerButton("gx.removeEntry", function () {
+          layer.entries.splice(j, 1);
+          changeWheelLayers("layer-" + i);
+        });
+        remove.disabled = layer.entries.length === 1;
+        row.appendChild(h("div", { class: "gx-layer-actions" }, [odds, remove]));
+        group.appendChild(row);
+      });
+      layerEditor.appendChild(group);
+    });
+    if (focusKey) layerEditor.querySelector('[data-layer-focus="' + focusKey + '"]')?.focus();
+  }
+
+  function changeWheelLayers(focusKey) {
+    updateWheelEntries();
+    renderWheelLayers(focusKey);
+    applyWheelEdit();
+  }
+
+  function applyWheelEdit() {
+    clearWheelResult();
+    drawWheel(null);
+    persist();
+  }
+
+  function oddsText(odds) {
+    return odds > 0 && odds < .0001 ? "<0.01%" : (odds * 100).toFixed(2) + "%";
+  }
+
+  function renderOdds(box, entries, editable) {
     var table = h("table", {});
     var thead = h("thead", {});
     var trh = h("tr", {});
-    ["gx.rarity", "gx.item", "gx.odds"].forEach(function (k) {
+    var columns = editable ? ["gx.item", "gx.wheelWeight", "gx.odds"] : ["gx.rarity", "gx.item", "gx.odds"];
+    columns.forEach(function (k) {
       trh.appendChild(h("th", { "data-i18n": k, text: defaultText(k), scope: "col" }));
     });
     thead.appendChild(trh);
     table.appendChild(thead);
     var tbody = h("tbody", {});
-    entries.forEach(function (entry) {
+    var percentages = [];
+    entries.forEach(function (entry, i) {
       var it = entry.item;
       var tr = h("tr", { class: "r-" + it.rarity });
-      tr.appendChild(h("td", { text: it.rarity }));
+      if (!editable) tr.appendChild(h("td", { text: it.rarity }));
       tr.appendChild(h("td", { text: itemName(it) }));
-      tr.appendChild(h("td", { text: (entry.odds * 100).toFixed(2) + "%" }));
+      if (editable) {
+        var input = h("input", {
+          type: "number", step: "any", value: it.weight,
+          "aria-label": itemName(it) + " · " + defaultText("gx.wheelWeight")
+        });
+        input.addEventListener("input", function () {
+          var weight = input.valueAsNumber;
+          if (!Number.isFinite(weight) || weight <= 0) return;
+          cfg.items[i].weight = weight;
+          updateWheelEntries().forEach(function (segment, j) {
+            percentages[j].textContent = oddsText(segment.odds);
+          });
+          renderOdds(poolOdds, cfg.items.map(function (item) {
+            return { item: item, odds: G.itemOdds(cfg, item) };
+          }));
+          applyWheelEdit();
+        });
+        input.addEventListener("change", function () { input.value = String(cfg.items[i].weight); });
+        tr.appendChild(h("td", {}, [input]));
+      }
+      var percent = h("td", { text: editable ? oddsText(entry.odds) : (entry.odds * 100).toFixed(2) + "%" });
+      percentages.push(percent);
+      tr.appendChild(percent);
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
@@ -963,7 +1405,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
       var e = history[i];
       var li = h("li", { class: "r-" + e.item.rarity });
       li.appendChild(h("time", { text: clock(e.at) }));
-      li.appendChild(h("b", { text: itemName(e.item) }));
+      li.appendChild(h("b", { class: e.wheelExtras ? "gx-history-combo" : "", text: wheelResultName(e.item, e.wheelExtras) }));
       li.appendChild(h("span", { text: e.item.rarity }));
       histList.appendChild(li);
     }
@@ -998,7 +1440,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   }
 
   mode("case");
-  root.addEventListener("pixjuice-locale",function(){syncOdds();syncHistory();syncWallet();drawContents();idleReel();drawWheel(wheelWinner);});
+  root.addEventListener("pixjuice-locale",function(){syncOdds();syncHistory();syncWallet();drawContents();idleReel();drawWheel(wheelWinner);if(wheelResult)showWheelResult(wheelResult);});
   if(location.protocol==='file:'){
     var language=h('select',{'aria-label':'Language',class:'cx-select'});
     ['en','zh','ja','ko','es'].forEach(function(code){language.appendChild(h('option',{value:code,text:{en:'English',zh:'简体中文',ja:'日本語',ko:'한국어',es:'Español'}[code]}));});

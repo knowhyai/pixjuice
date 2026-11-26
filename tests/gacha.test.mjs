@@ -354,3 +354,50 @@ test('rate-lab summaries distinguish individual pulls, batches and leftovers in 
     assert.equal(JSON.parse(line.slice(line.indexOf(':') + 1).trim().replace(/,$/, '')), sandbox.PixStrings.en[key]);
   }
 });
+
+test('wheel visuals default for old configs and survive validation and JSON round trips', () => {
+  assert.deepEqual(G.validateConfig({}).config.wheel, { diameter: 340, aspect: 1, hubX: 0, hubY: 0, layers: [] });
+  const wheel = { diameter: 286, aspect: 1.2, hubX: .3, hubY: -.5, layers: [] };
+  const config = G.validateConfig({ ...C, wheel }).config;
+  assert.deepEqual(G.validateConfig(JSON.parse(JSON.stringify(config))).config.wheel, wheel);
+
+  const clamped = G.validateConfig({
+    ...C, wheel: { diameter: 1000, aspect: 0, hubX: Number.MAX_VALUE, hubY: -Number.MAX_VALUE }
+  }).config.wheel;
+  assert.equal(clamped.diameter, 340);
+  assert.equal(clamped.aspect, .8);
+  assert.ok(Math.abs(Math.hypot(clamped.hubX, clamped.hubY) - .65) < 1e-12);
+  assert.equal(clamped.hubX, -clamped.hubY);
+});
+
+test('default and legacy wheels pick only the prize ring', () => {
+  for (const raw of [G.DEFAULT_CONFIG, { ...C, wheel: undefined }]) {
+    const { config } = G.validateConfig(raw);
+    assert.deepEqual(config.wheel.layers, []);
+    let draws = 0;
+    assert.deepEqual(G.wheelTargets(config, () => { draws++; return 0; }), [0]);
+    assert.equal(draws, 1);
+  }
+});
+
+test('each extra wheel layer uses its own weighted draw and survives config export', () => {
+  const layers = [
+    { entries: [{ label: '×1', weight: 7, multiplier: 1 }, { label: '×2', weight: 3, multiplier: 2 }] },
+    { entries: [{ label: 'Rare tag', weight: 1 }, { label: 'Common tag', weight: 9 }] }
+  ];
+  const { config } = G.validateConfig({ ...C, wheel: { layers } });
+  assert.deepEqual(G.validateConfig(JSON.parse(JSON.stringify(config))).config.wheel.layers, layers);
+  assert.deepEqual(G.wheelLayerSegments(config.wheel.layers[0].entries).map(({ odds }) => odds), [.7, .3]);
+  for (const [rolls, expected] of [
+    [[0, .71, .09], [0, 1, 0]],
+    [[0, .69, .11], [0, 0, 1]],
+    [[.99, .71, .09], [config.items.length - 1, 1, 0]]
+  ]) {
+    let draw = 0;
+    assert.deepEqual(G.wheelTargets(config, () => rolls[draw++]), expected);
+    assert.equal(draw, 3);
+  }
+  for (const invalid of [[...layers, layers[0]], [{ entries: [] }], [{ entries: [{ label: 'Bad', weight: 0 }] }]]) {
+    assert.equal(G.validateConfig({ ...C, wheel: { layers: invalid } }).ok, false);
+  }
+});

@@ -2,6 +2,7 @@
   "currency": { "name": "Gems", "single": 100, "multi": 1000 },
   "rates": { "N": 0.79, "R": 0.15, "SR": 0.05, "SSR": 0.01 },
   "pity": { "ssr": 90, "sr": 10 },
+  "wheel": { "diameter": 340, "aspect": 1, "hubX": 0, "hubY": 0, "layers": [] },
   "items": [
     { "id": "wooden-sword", "name": "Wooden Sword", "rarity": "N", "weight": 1 },
     { "id": "health-potion", "name": "Health Potion", "rarity": "N", "weight": 1 },

@@ -27,7 +27,15 @@
   var RARITIES = ["N", "R", "SR", "SSR"];
   var MULTI_PULLS = 10;
 
+  var WHEEL_LIMITS = {
+    diameter: { min: 220, max: 340 },
+    aspect: { min: 0.8, max: 1.25 },
+    hubRadius: 0.65,
+    extraLayers: 2
+  };
+
   var DEFAULT_CONFIG = {
+    wheel: { diameter: 340, aspect: 1, hubX: 0, hubY: 0, layers: [] },
     currency: { name: "Gems", single: 100, multi: 1000 },
     rates: { N: 0.79, R: 0.15, SR: 0.05, SSR: 0.01 },
     pity: { ssr: 90, sr: 10 },
@@ -42,6 +50,43 @@
       { id: "excalibur", name: "Dawn Relic", rarity: "SSR" },
     ],
   };
+
+  function normalizeWheel(raw) {
+    var wheel = { ...DEFAULT_CONFIG.wheel, layers: [] };
+    if (!raw || typeof raw !== "object") return wheel;
+    ["diameter", "aspect"].forEach(function (key) {
+      var limits = WHEEL_LIMITS[key];
+      if (Number.isFinite(raw[key])) wheel[key] = Math.max(limits.min, Math.min(limits.max, raw[key]));
+    });
+    var x = Number.isFinite(raw.hubX) ? raw.hubX : 0;
+    var y = Number.isFinite(raw.hubY) ? raw.hubY : 0;
+    // Scale before measuring so even very large finite imports retain their direction.
+    var scale = Math.max(1, Math.abs(x), Math.abs(y));
+    var length = Math.hypot(x / scale, y / scale);
+    var radius = WHEEL_LIMITS.hubRadius;
+    if (length > radius / scale) {
+      x = (x / scale) / length * radius;
+      y = (y / scale) / length * radius;
+    }
+    wheel.hubX = x;
+    wheel.hubY = y;
+    if (raw.layers === undefined) return wheel;
+    if (!Array.isArray(raw.layers) || raw.layers.length > WHEEL_LIMITS.extraLayers) return null;
+    for (var layer of raw.layers) {
+      if (!layer || !Array.isArray(layer.entries) || !layer.entries.length) return null;
+      var entries = [];
+      for (var entry of layer.entries) {
+        if (!entry || typeof entry.label !== "string" || !entry.label.trim() ||
+            !Number.isFinite(entry.weight) || entry.weight <= 0 ||
+            (entry.multiplier !== undefined && (!Number.isFinite(entry.multiplier) || entry.multiplier <= 0))) return null;
+        var clean = { label: entry.label.trim().slice(0, 60), weight: entry.weight };
+        if (entry.multiplier !== undefined) clean.multiplier = entry.multiplier;
+        entries.push(clean);
+      }
+      wheel.layers.push({ entries: entries });
+    }
+    return wheel;
+  }
 
   /** Validate + normalize a raw config (from JSON). Returns { ok:true, config } or
    *  { ok:false, error }. Rates are normalized to sum to 1; every rarity must keep
@@ -103,6 +148,8 @@
     var single = isFinite(cs) && cs >= 1 ? Math.min(cs, 1e9) : DEFAULT_CONFIG.currency.single;
     var multi = isFinite(cm) && cm >= 1 ? Math.min(cm, 1e9) : single * MULTI_PULLS;
 
+    var wheel = normalizeWheel(r.wheel);
+    if (!wheel) return { ok: false, error: "invalid wheel layers" };
     return {
       ok: true,
       config: {
@@ -110,6 +157,7 @@
         rates: rates,
         pity: pity,
         items: items,
+        wheel: wheel,
       },
     };
   }
@@ -244,8 +292,12 @@
 
   /** Wheel entries: one per item with weight-derived odds. */
   function wheelSegments(config) {
-    var table = weightTable(config.items, itemWeight);
-    return config.items.map(function (it, i) {
+    return wheelLayerSegments(config.items);
+  }
+
+  function wheelLayerSegments(entries) {
+    var table = weightTable(entries, itemWeight);
+    return entries.map(function (it, i) {
       return { item: it, odds: table.weights[i] / table.total };
     });
   }
@@ -257,6 +309,14 @@
     for (var i = 0; i < config.items.length; i++)
       if (config.items[i] === pick) { idx = i; break; }
     return idx;
+  }
+
+  function wheelTargets(config, rng) {
+    var targets = [wheelPick(config, rng)];
+    for (var layer of config.wheel.layers) {
+      targets.push(layer.entries.indexOf(pickWeighted(layer.entries, itemWeight, rng)));
+    }
+    return targets;
   }
 
   /**
@@ -362,6 +422,8 @@
     MULTI_PULLS: MULTI_PULLS,
     HISTORY_LIMIT: 50,
     validateConfig: validateConfig,
+    normalizeWheel: normalizeWheel,
+    WHEEL_LIMITS: WHEEL_LIMITS,
     pickWeighted: pickWeighted,
     makeState: makeState,
     rollOnce: rollOnce,
@@ -372,6 +434,8 @@
     simulate: simulate,
     wheelSegments: wheelSegments,
     wheelPick: wheelPick,
+    wheelLayerSegments: wheelLayerSegments,
+    wheelTargets: wheelTargets,
     record: record,
   };
 

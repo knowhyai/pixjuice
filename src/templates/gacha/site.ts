@@ -46,7 +46,7 @@ mountCodeBox(document.getElementById("codebox")!, [
   { name: "js/main.js", code: mainJs },
   { name: "js/case-core.js", code: caseJs },
   { name: "js/strings.js", code: stringsJs },
-  { name: "config.example.json", code: configExample },
+  { name: "config.example.json", code: configExample, zipCode: () => window.PixGachaConfigJSON?.() ?? configExample },
   { name: "README.md", code: readme },
   { name: "LICENSE", code: license },
   ...fontFiles,

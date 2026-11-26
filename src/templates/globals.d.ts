@@ -24,6 +24,7 @@ interface PixGachaConfig {
   rates: Record<string, number>;
   pity: { ssr: number; sr: number };
   items: PixGachaItem[];
+  wheel: { diameter: number; aspect: number; hubX: number; hubY: number; layers: { entries: { label: string; weight: number; multiplier?: number }[] }[] };
 }
 
 interface PixGacha {
@@ -96,6 +97,7 @@ interface PixSave {
 interface Window {
   PixStrings: Record<string, Record<string,string>>;
   PixSkins: PixSkins;
+  PixGachaConfigJSON?: () => string;
   PixGacha: PixGacha;
   PixSave: PixSave;
   PixTranslate?: (key: string, vars?: Record<string, string | number>) => string;
