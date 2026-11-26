@@ -650,7 +650,7 @@ const en = {
   tplIndex: {
     "sub": "game UI templates",
     "h1": "Free game UI templates",
-    "lede": "<b>Template-grade game modules</b> — mature, complete, ready to drop into your game. Playable demos with adjustable parameters, a Semi-Realistic design, and a standalone vanilla HTML/CSS/JS download (CC0) for every template. Templates are one category of the <a href=\"/free-assets/\">PixJuice free asset library</a>.",
+    "lede": "Try each template in your browser and download it to use in your own game. Find more in the <a href=\"/free-assets/\">PixJuice free asset library</a>.",
     "live": "Ready now",
     "soon": "Coming soon",
     "soonLede": "Same deal as the first two: playable demo, a Semi-Realistic design, standalone CC0 download. In the pipeline:",
@@ -673,15 +673,15 @@ const en = {
     "hero": {
       "crumb": "gacha & lucky wheel",
       "h1": "Gacha & Lucky Wheel — game UI template",
-      "lede": "A complete, ready-to-ship gacha panel: loot box card pool with N/R/SR/SSR drop rates, an SSR pity counter, the ten-pull guarantee, a lucky wheel, chest-opening animation and pull history. Play with it below — every number is live config."
+      "lede": "Open a treasure chest, draw a hand of cards, or give the wheel a spin. See what you find."
     },
     "card": {
       "h": "Gacha & Lucky Wheel",
-      "d": "Loot box card pool (single / ×10) with N/R/SR/SSR rates, SSR pity, ten-pull guarantee — plus a weighted lucky wheel, chest-opening animation and pull history. All rates & prizes are one JSON file."
+      "d": "Open treasure chests, draw cards one at a time or ten at once, and spin for prizes."
     },
     "feat": {
       "h": "What's inside",
-      "p": "<b>Rules engine</b> (rates → rarity → item, SSR pity, ten-pull guarantee, wheel odds) is one dependency-free file you can unit-test and drive headlessly; the <b>UI layer</b> (wheel, card flips, chest animation, history, settings) is plain DOM you can restyle. A shared dark gold interface uses one set of CSS variables."
+      "p": "You get three ways to play, animated rewards, and a history of what you found. Change the prizes and odds to suit your game."
     },
     "tabPool": "Card pool",
     "tabWheel": "Lucky wheel",
@@ -691,7 +691,7 @@ const en = {
     "pityGuarantee": "SSR guaranteed within {n} pulls",
     "tenNote": "This 10-pull guarantees at least one SR or better.",
     "pityNow": "SSR pity: {n}/{max}",
-    "rates": "Drop rates",
+    "rates": "View rates",
     "pool": "Prize pool",
     "odds": "Odds",
     "rarity": "Rarity",
@@ -699,17 +699,16 @@ const en = {
     "history": "Pull history",
     "historyEmpty": "No pulls yet — try your luck!",
     "clear": "Clear",
-    "spin": "SPIN",
+    "spin": "Spin",
     "spinning": "Spinning…",
     "won": "You got: {item}!",
     "opening": "Opening…",
-    "wheelNote": "Wheel odds = each prize's weight. Card-pool odds & pity live in the config JSON.",
-    "settings": "Settings",
+    "settings": "Adjust game settings",
     "skin": "Skin",
     "ratesCfg": "Rates (N / R / SR / SSR)",
     "pityCfg": "SSR pity (pulls)",
-    "loadCfg": "Load config.json",
-    "saveCfg": "Download config.json",
+    "loadCfg": "Import settings",
+    "saveCfg": "Export settings",
     "reset": "Reset demo",
     "resetDone": "Demo reset.",
     "cfgOk": "Config applied.",
@@ -726,15 +725,15 @@ const en = {
     "hero": {
       "crumb": "save / load",
       "h1": "Save / Load System — game UI template",
-      "lede": "A complete save menu: multiple slots with live thumbnails, timestamps, playtime and chapter; auto-save; overwrite & delete confirmations; JSON import/export. Drive it with the little game below — everything persists."
+      "lede": "Explore a little dungeon, save your progress, and pick up where you left off."
     },
     "card": {
       "h": "Save / Load System",
-      "d": "Multiple save slots with thumbnails, timestamps, playtime and chapter; auto-save slot; overwrite & delete confirmations; JSON import/export; localStorage persistence with validated reads."
+      "d": "Try saving and loading in a little dungeon, with snapshots and an autosave slot."
     },
     "feat": {
       "h": "What's inside",
-      "p": "<b>Save engine</b> (slots, validated reads, versioned export/import, injectable storage) is one dependency-free file that runs headless for unit tests; the <b>menu UI</b> (slot cards, thumbnails, modals, toasts) is plain DOM. The demo game is only there to produce honest save data — swap in your own state object."
+      "p": "Save your progress in several slots and recognize each one by its snapshot, chapter, and playtime. Automatic saves and portable backups are included."
     },
     "game": "Demo game",
     "hint": "Move with WASD / arrows or the pad, collect coins — then save, load, export and import.",

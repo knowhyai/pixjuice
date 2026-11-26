@@ -103,19 +103,14 @@
     </div>
   </header>
 
-  <section class="tpl-hero">
+  <section class="tpl-hero tpl-demo-hero">
     <p class="tpl-crumbs"><a href="/templates/" data-i18n="nav.templates">game templates</a> / <span data-i18n="sv.hero.crumb">save / load</span></p>
     <h1 data-i18n="sv.hero.h1">Save / Load System — game UI template</h1>
-    <p class="lede" data-i18n="sv.hero.lede">A complete save menu: multiple slots with live thumbnails, timestamps, playtime and chapter; auto-save; overwrite &amp; delete confirmations; JSON import/export. Drive it with the little game below — everything persists.</p>
-    <div class="fa-tags" style="margin:16px 0"><a href="/free-assets/?tag=save load">save load</a><a href="/free-assets/?tag=menu">menu</a><a href="/free-assets/?tag=ui">ui</a><a href="/free-assets/?tag=vanilla-js">vanilla-js</a></div>
-    <div class="tpl-hero-actions"><a href="#codebox" data-i18n="tpl.download">Download code (.zip)</a><a href="/free-assets/" data-i18n="nav.assets">free assets</a>
-            <a href="/free-resources/" data-i18n="fr.h1">More free game assets</a></div>
+    <p class="lede" data-i18n="sv.hero.lede">Explore a little dungeon, save your progress, and pick up where you left off.</p>
+    <div class="tpl-hero-actions"><a href="#codebox" data-i18n="tpl.download">Download code (.zip)</a><a href="/free-assets/" data-i18n="nav.assets">free assets</a></div>
     <div class="tpl-badges">
       <span class="hot">CC0</span>
-      <span>zero deps</span>
-      <span data-i18n="tpl.badgeSkins">4 skins</span>
-      <span data-i18n="tpl.badgeVanilla">vanilla JS</span>
-      <span data-i18n="tpl.badgeGodot">Godot: coming later</span>
+      <span data-i18n="tpl.badgeSkins">Semi-realistic dark gold</span>
     </div>
   </section>
 
@@ -125,7 +120,7 @@
 
   <section class="tpl-sec">
     <h2 data-i18n="sv.feat.h">What's inside</h2>
-    <p class="body" data-i18n-html="sv.feat.p"><b>Save engine</b> (slots, validated reads, versioned export/import, injectable storage) is one dependency-free file that runs headless for unit tests; the <b>menu UI</b> (slot cards, thumbnails, modals, toasts) is plain DOM. The demo game is only there to produce honest save data — swap in your own state object.</p>
+    <p class="body" data-i18n-html="sv.feat.p">Save your progress in several slots and recognize each one by its snapshot, chapter, and playtime. Automatic saves and portable backups are included.</p>
   </section>
 
   <section class="code-sec" id="source">

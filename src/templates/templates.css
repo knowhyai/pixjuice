@@ -509,3 +509,29 @@ a.fa-file:hover {
 .fa-empty-title { margin:0; font-size:22px; font-weight:650; color:var(--text); }
 .fa-empty-lede { margin:0; max-width:36em; color:var(--dim); font-size:15px; line-height:1.65; }
 .fa-toolbar[hidden], .fa-search[hidden], .fa-empty[hidden], .fa-empty-lede[hidden], .fa-empty-art[hidden] { display:none; }
+
+.tpl-demo-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 10px;
+  padding-block: 4px;
+}
+.tpl-demo-hero :is(.tpl-crumbs, h1, .lede) { flex-basis: 100%; max-width: none; margin: 0; }
+.tpl-demo-hero h1 { font-size: clamp(22px, 2.1vw, 26px); }
+.tpl-demo-hero .tpl-crumbs { line-height: 1.25; letter-spacing: normal; text-transform: none; }
+.tpl-demo-hero .lede { font-size: 13px; line-height: 1.35; }
+.tpl-demo-hero .tpl-hero-actions { margin: 0; }
+.tpl-demo-hero .tpl-hero-actions a { padding-block: 4px; line-height: 1.3; }
+.tpl-demo-hero .tpl-badges { margin: 0; }
+.tpl-demo-hero .tpl-badges span { padding-block: 2px; letter-spacing: 0; text-transform: none; }
+.tpl-demo-hero + .tpl-sec:has(#app) { padding-top: 0; }
+@media (min-width: 1080px) {
+  .tpl-demo-hero .lede { flex-basis: auto; }
+}
+.tpl-library-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#gx-developer { padding-block: 0; }
+#gx-developer .gx-lab { margin-top: 0; }
+@media (max-width: 600px) {
+  .tpl-library-cards { grid-template-columns: minmax(0, 1fr); }
+}

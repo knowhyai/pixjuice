@@ -93,14 +93,14 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     "gx.tenNoteOff": "SR+ requires a batch of at least {n}; the 10-pull has no SR+ guarantee.",
     "gx.ssrPityOff": "SSR hard pity is off.",
     "gx.pityNow": "SSR pity: {n}/{max}",
-    "gx.rates": "Drop rates", "gx.pool": "Prize pool", "gx.odds": "Odds",
+    "gx.rates": "View rates", "gx.pool": "Prize pool", "gx.odds": "Odds",
     "gx.rarity": "Rarity", "gx.item": "Item", "gx.pulls": "Pulls",
     "gx.history": "Pull history", "gx.historyEmpty": "No pulls yet — try your luck!",
-    "gx.clear": "Clear", "gx.spin": "SPIN", "gx.spinning": "Spinning…",
+    "gx.clear": "Clear", "gx.spin": "Spin", "gx.spinning": "Spinning…",
     "gx.won": "You got: {item}!", "gx.opening": "Opening…",
-    "gx.settings": "Settings", "gx.skin": "Skin",
+    "gx.settings": "Adjust game settings", "gx.skin": "Skin",
     "gx.ratesCfg": "Rates (N / R / SR / SSR)", "gx.pityCfg": "SSR pity (pulls)",
-    "gx.loadCfg": "Load config.json", "gx.saveCfg": "Download config.json",
+    "gx.loadCfg": "Import settings", "gx.saveCfg": "Export settings",
     "gx.reset": "Reset demo", "gx.cfgOk": "Config applied.",
     "gx.cfgBad": "Invalid config: {e}",
     "gx.noGems": "Out of gems — the demo currency is free, press Reset.",
@@ -108,8 +108,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     "gx.rar.SR": "Epic", "gx.rar.SSR": "Legendary",
     "tpl.skin": "Skin", "tpl.skin.realistic": "Semi-Realistic", "tpl.skin.stylized": "Stylized",
     "tpl.skin.lowpoly": "Clean Low Poly", "tpl.skin.pixel": "Pixel Art",
-    "gx.wheelNote": "Wheel odds = each prize's weight. Card-pool odds & pity live in the config JSON.",
-    "gx.lab.h": "Rate lab",
+    "gx.lab.h": "Developer rate experiment",
     "gx.lab.lede": "Advertised card-pool rates ignore pity. This lab runs the same engine as the card pool (not the crate reel, which has no pity). Tune the sliders above, then run a batch. The theoretical SSR column applies only to single pulls with hard pity enabled — it is not a model of the ten-pull SR+ guarantee.",
     "gx.lab.pulls": "Simulated pulls",
     "gx.lab.mode": "Pull mode",
@@ -155,8 +154,8 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   // ---- layout ----------------------------------------------------------------
 
   host.innerHTML = "";
-  var demo = h("div", { class: "tpl-demo", "data-skin": skin });
-  var side = h("aside", { class: "tpl-side", "aria-label": "Settings" });
+  var demo = h("div", { class: "tpl-demo gx-demo", "data-skin": skin });
+  var side = h("aside", { class: "tpl-side" });
   var stage = h("section", { class: "tpl-stage" });
   var record = h("aside", { class: "tpl-record" });
   demo.appendChild(side);
@@ -166,8 +165,8 @@ function formatGachaLabSummary(out, multiPulls, translate) {
 
   // ---- rate lab (same live config as the card-pool settings) -------------------
 
-  var lab = h("section", { class: "gx-lab", "aria-labelledby": "gx-lab-h" });
-  lab.appendChild(h("h2", { id: "gx-lab-h", text: "Rate lab", "data-i18n": "gx.lab.h" }));
+  var lab = h("details", { class: "gx-lab" });
+  lab.appendChild(h("summary", {}, [lbl("gx.lab.h")]));
   lab.appendChild(h("p", { class: "gx-lab-lede", text: EN["gx.lab.lede"], "data-i18n": "gx.lab.lede" }));
   var labRow = h("div", { class: "gx-lab-controls" });
   var pullsLabel = h("label", { class: "gx-lab-field" });
@@ -198,7 +197,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   lab.appendChild(labMeta);
   lab.appendChild(labTable);
   lab.appendChild(h("p", { class: "gx-lab-note", text: EN["gx.lab.note"], "data-i18n": "gx.lab.note" }));
-  host.appendChild(lab);
+  (document.getElementById("gx-developer") || host).appendChild(lab);
 
   function pct(x) { return (x * 100).toFixed(3) + "%"; }
   function forcedCell(r, out) {
@@ -252,14 +251,17 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   });
 
 
-  // ---- side panel: skins + params ---------------------------------------------
+  // ---- side panel: game settings ---------------------------------------------
 
-  side.appendChild(h("h3", { text: "Settings", "data-i18n": "gx.settings" }));
+  var settings = h("details", { class: "gx-disclosure" }, [h("summary", {}, [lbl("gx.settings")])]);
+  var railInfo = h("div", { class: "gx-rail-info" });
+  side.appendChild(railInfo);
+  side.appendChild(settings);
   var skinRow = h("div", { class: "gx-skins", role: "group" });
 
 
 
-  side.appendChild(h("h4", { text: "Rates (N / R / SR / SSR)", "data-i18n": "gx.ratesCfg" }));
+  settings.appendChild(h("h4", { text: "Rates (N / R / SR / SSR)", "data-i18n": "gx.ratesCfg" }));
   var sliders = {};
   ["N", "R", "SR", "SSR"].forEach(function (r) {
     var row = h("label", { class: "gx-slider" });
@@ -272,15 +274,15 @@ function formatGachaLabSummary(out, multiPulls, translate) {
       setRates(r, Number(input.value) / 100);
     });
     sliders[r] = { input: input, out: out };
-    side.appendChild(row);
+    settings.appendChild(row);
   });
 
-  var pityRow = h("label", { class: "gx-slider" });
+  var pityRow = h("label", { class: "gx-slider gx-pity-settings" });
   pityRow.appendChild(h("b", { text: "SSR pity", "data-i18n": "gx.pityCfg" }));
   var pityInput = h("input", { type: "number", min: "0", max: "1000", step: "1", "aria-label": "SSR hard pity (0 disables it)" });
   pityRow.appendChild(pityInput);
   pityRow.appendChild(h("span", { class: "gx-pityhint", "data-i18n": "gx.pityOff", text: defaultText("gx.pityOff") }));
-  side.appendChild(pityRow);
+  settings.appendChild(pityRow);
   pityInput.addEventListener("change", function () {
     if (busy || spinning) return;
     var v = G.validateConfig({ rates: cfg.rates, pity: { ssr: Number(pityInput.value), sr: cfg.pity.sr }, items: cfg.items, currency: cfg.currency });
@@ -288,7 +290,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   });
 
   var cfgRow = h("div", { class: "gx-btnrow" });
-  var file = h("input", { type: "file", accept: ".json,application/json", class: "gx-file", "aria-label": "Load config.json" });
+  var file = h("input", { type: "file", accept: ".json,application/json", class: "gx-file", "aria-label": "Import settings" });
   file.addEventListener("change", function () {
     var f = file.files && file.files[0];
     if (!f || busy || spinning) return;
@@ -302,10 +304,10 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     file.value = "";
   });
   cfgRow.appendChild(file);
-  cfgRow.appendChild(h("button", { class: "tpl-btn", type: "button", "data-i18n": "gx.loadCfg", text: "Load config.json", onclick: function () { file.click(); } }));
-  cfgRow.appendChild(h("button", { class: "tpl-btn", type: "button", "data-i18n": "gx.saveCfg", text: "Download config.json", onclick: downloadConfig }));
+  cfgRow.appendChild(h("button", { class: "tpl-btn", type: "button", "data-i18n": "gx.loadCfg", text: "Import settings", onclick: function () { file.click(); } }));
+  cfgRow.appendChild(h("button", { class: "tpl-btn", type: "button", "data-i18n": "gx.saveCfg", text: "Export settings", onclick: downloadConfig }));
   cfgRow.appendChild(h("button", { class: "tpl-btn tpl-btn-ghost", type: "button", "data-i18n": "gx.reset", text: "Reset demo", onclick: function () { if (!busy && !spinning) resetAll(); } }));
-  side.appendChild(cfgRow);
+  settings.appendChild(cfgRow);
 
   function safeParse(text) {
     try { return JSON.parse(text); } catch (e) { return null; }
@@ -353,7 +355,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   tabs.appendChild(tabWheel);
   stage.appendChild(tabs);
 
-  var poolPane = h("div", { class: "gx-pane", role: "tabpanel" });
+  var poolPane = h("div", { class: "gx-pane", role: "tabpanel", hidden: "" });
   var wheelPane = h("div", { class: "gx-pane", role: "tabpanel", hidden: "" });
   var casePane=h("div",{class:"gx-pane cx-pane",role:"tabpanel"});
   stage.appendChild(casePane);
@@ -363,7 +365,15 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   function mode(m) {
     if(busy||spinning)return;
     [[tabCase,casePane,'case'],[tabPool,poolPane,'pool'],[tabWheel,wheelPane,'wheel']].forEach(function(row){var active=row[2]===m;row[0].classList.toggle('on',active);row[0].setAttribute('aria-selected',String(active));row[1].hidden=!active;});
-    demo.classList.toggle('cx-active',m==='case');
+    crateContents.hidden = crateInfo.hidden = m !== "case";
+    poolInfo.hidden = m !== "pool";
+    wheelInfo.hidden = m !== "wheel";
+    rates.hidden = m === "case";
+    poolOdds.hidden = guarantee.hidden = tenNote.hidden = m !== "pool";
+    wheelOdds.hidden = m !== "wheel";
+    side.scrollTop = 0;
+    stage.scrollTop = 0;
+    record.scrollTop = 0;
     refreshI18n();
   }
 
@@ -374,7 +384,8 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   wallet.appendChild(h("span", { class: "gx-gem", "aria-hidden": "true" }));
   wallet.appendChild(gemsEl);
   wallet.appendChild(lbl("gx.gemsLeft", "gems"));
-  poolPane.appendChild(wallet);
+  var poolInfo = h("div", { class: "gx-mode-info" }, [wallet]);
+  railInfo.appendChild(poolInfo);
 
   var chestWrap = h("div", { class: "gx-chest" });
   var chestCv = h("canvas", { width: "128", height: "128", "aria-hidden": "true" });
@@ -388,7 +399,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   var pityText = h("span", {});
   pityBar.appendChild(pityFill);
   pityBar.appendChild(pityText);
-  poolPane.appendChild(pityBar);
+  poolInfo.appendChild(pityBar);
 
   var btnRow = h("div", { class: "gx-btnrow" });
   var b1 = h("button", { class: "tpl-btn tpl-btn-big", type: "button", "data-i18n": "gx.pull1", text: "Pull ×1", onclick: function () { doPull(1); } });
@@ -397,12 +408,11 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   btnRow.appendChild(b10);
   poolPane.appendChild(btnRow);
   var tenNote = h("p", { class: "gx-note" });
-  poolPane.appendChild(tenNote);
 
   var results = h("div", { class: "gx-results", "aria-live": "polite" });
   poolPane.appendChild(results);
 
-  function syncWallet() { gemsEl.textContent = String(gems); if(caseWallet)caseWallet.textContent=gems+" "+defaultText("cx.wallet"); }
+  function syncWallet() { gemsEl.textContent = String(gems); caseWallet.textContent = wheelGems.textContent = String(gems); }
   function syncPity() {
     var max = cfg.pity.ssr;
     var n = Math.min(pity.sinceSsr, max);
@@ -533,16 +543,22 @@ function formatGachaLabSummary(out, multiPulls, translate) {
 
   // ---- wheel pane ----------------------------------------------------------------
 
+  var wheelWallet = wallet.cloneNode(true);
+  var wheelGems = wheelWallet.querySelector("b");
+  var wheelCost = h("b", {});
+  var wheelInfo = h("div", { class: "gx-mode-info" }, [wheelWallet, h("p", { class: "gx-note" }, [
+    lbl("gx.spin"), h("span", { text: " · " }), wheelCost, h("span", { text: " " }), lbl("gx.gemsLeft")
+  ])]);
+  railInfo.appendChild(wheelInfo);
   var wheelWrap = h("div", { class: "gx-wheel-wrap" });
   var wheelCv = h("canvas", { width: "340", height: "340", "aria-label": "Prize wheel" });
   wheelWrap.appendChild(wheelCv);
   wheelWrap.appendChild(h("div", { class: "gx-pointer", "aria-hidden": "true" }));
   wheelPane.appendChild(wheelWrap);
-  var wheelBtn = h("button", { class: "tpl-btn tpl-btn-big tpl-btn-accent", type: "button", "data-i18n": "gx.spin", text: "SPIN", onclick: spin });
+  var wheelBtn = h("button", { class: "tpl-btn tpl-btn-big tpl-btn-accent", type: "button", "data-i18n": "gx.spin", text: "Spin", onclick: spin });
   wheelPane.appendChild(wheelBtn);
   var wheelOut = h("p", { class: "gx-wheel-out", "aria-live": "polite" });
   wheelPane.appendChild(wheelOut);
-  wheelPane.appendChild(h("p", { class: "gx-note", "data-i18n": "gx.wheelNote", text: "Wheel odds = each prize's weight. Card-pool odds & pity live in the config JSON." }));
 
   var R = 160, CX = 170, CY = 170;
   var angle = -Math.PI / 2, spinning = false;
@@ -651,24 +667,29 @@ function formatGachaLabSummary(out, multiPulls, translate) {
 
   // The winner is fixed before any visual movement or skip action.
   var C = root.PixCase, crate = C.cases[0], pendingCase = null, caseAnimation = null;
-  var caseHeader = h('div',{class:'cx-heading'},[h('span',{class:'cx-kicker',text:'PIXJUICE / TREASURY'}),lbl('cx.choose')]);
+  var caseHeader = h('div',{class:'cx-heading'},[lbl('cx.choose')]);
   casePane.appendChild(caseHeader);
   var crateSelect=h('select',{'aria-label':defaultText('cx.choose'),class:'cx-select'});
   C.cases.forEach(function(c){crateSelect.appendChild(h('option',{value:c.id,text:defaultText('cx.'+c.id),'data-i18n':'cx.'+c.id}));});
   casePane.appendChild(crateSelect);
   var viewport=h('div',{class:'cx-viewport'}),reel=h('div',{class:'cx-reel'});
-  viewport.appendChild(reel);viewport.appendChild(h('i',{class:'cx-line','aria-hidden':'true'}));
+  viewport.appendChild(h("div", { class: "cx-reel-window" }, [reel]));viewport.appendChild(h('i',{class:'cx-line','aria-hidden':'true'}));
   casePane.appendChild(viewport);
   var controls=h('div',{class:'cx-controls'}),quick=h('input',{type:'checkbox',id:'cx-quick'}),sound=h('input',{type:'checkbox',id:'cx-sound'});
   controls.appendChild(h('label',{},[quick,lbl('cx.quick')]));controls.appendChild(h('label',{},[sound,lbl('cx.sound')]));
-  casePane.appendChild(controls);
-  var caseWallet=h('p',{class:'cx-wallet'});casePane.appendChild(caseWallet);
+  var crateInfo = h("div", { class: "gx-mode-info" }, [controls, h("p", { class: "cx-note" }, [lbl("cx.note")])]);
+  railInfo.appendChild(crateInfo);
+  var crateWallet = wallet.cloneNode(true);
+  var caseWallet = crateWallet.querySelector('b');
+  casePane.appendChild(crateWallet);
   var openButton=h('button',{class:'tpl-btn tpl-btn-accent tpl-btn-big','data-i18n':'cx.open',text:defaultText('cx.open'),onclick:openCrate});
   var skipButton=h('button',{class:'tpl-btn',hidden:'','data-i18n':'cx.skip',text:defaultText('cx.skip'),onclick:function(){if(caseAnimation)caseAnimation.finish();}});
   casePane.appendChild(h('div',{class:'gx-btnrow'},[openButton,skipButton]));
-  casePane.appendChild(h('p',{class:'cx-note','data-i18n':'cx.note',text:defaultText('cx.note')}));
-  casePane.appendChild(h('h3',{'data-i18n':'cx.contents',text:defaultText('cx.contents')}));
-  var contentList=h('div',{class:'cx-contents'});casePane.appendChild(contentList);
+  var contentList = h("div", { class: "cx-contents" });
+  var crateContents = h("section", { class: "cx-inventory" }, [
+    h("h3", {}, [lbl("cx.contents")]), contentList
+  ]);
+  record.appendChild(crateContents);
   crateSelect.addEventListener('change',function(){crate=C.cases.find(function(c){return c.id===crateSelect.value;});drawContents();idleReel();});
   var audio=null;
   function tone(reveal,rarity){
@@ -729,17 +750,19 @@ function formatGachaLabSummary(out, multiPulls, translate) {
 
   // ---- record pane: disclosure + history ------------------------------------------
 
-  record.appendChild(h("h3", { text: "Drop rates", "data-i18n": "gx.rates" }));
-  var oddsBox = h("div", { class: "gx-odds" });
-  record.appendChild(oddsBox);
-  var guarantee = h("p", { class: "gx-note" });
-  record.appendChild(guarantee);
   record.appendChild(h("h3", { text: "Pull history", "data-i18n": "gx.history" }));
   var histList = h("ul", { class: "gx-hist" });
   record.appendChild(histList);
   var clearRow = h("div", { class: "gx-btnrow" });
   clearRow.appendChild(h("button", { class: "tpl-btn tpl-btn-ghost", type: "button", "data-i18n": "gx.clear", text: "Clear", onclick: function () { history = []; persist(); syncHistory(); } }));
   record.appendChild(clearRow);
+  var poolOdds = h("div", { class: "gx-odds" });
+  var wheelOdds = h("div", { class: "gx-odds" });
+  var guarantee = h("p", { class: "gx-note" });
+  var rates = h("details", { class: "gx-disclosure gx-rate-details" }, [
+    h("summary", {}, [lbl("gx.rates")]), poolOdds, wheelOdds, guarantee, tenNote
+  ]);
+  record.appendChild(rates);
 
   function syncGuarantee(node, key, n) {
     node.setAttribute("data-i18n", key);
@@ -748,9 +771,16 @@ function formatGachaLabSummary(out, multiPulls, translate) {
   }
 
   function syncOdds() {
+    wheelCost.textContent = String(cfg.currency.single);
     syncGuarantee(tenNote, cfg.pity.sr <= G.MULTI_PULLS ? "gx.tenNote" : "gx.tenNoteOff", cfg.pity.sr);
     syncGuarantee(guarantee, cfg.pity.ssr ? "gx.pityGuarantee" : "gx.ssrPityOff", cfg.pity.ssr);
-    oddsBox.innerHTML = "";
+    renderOdds(poolOdds, cfg.items.map(function (item) {
+      return { item: item, odds: G.itemOdds(cfg, item) };
+    }));
+    renderOdds(wheelOdds, G.wheelSegments(cfg));
+  }
+
+  function renderOdds(box, entries) {
     var table = h("table", {});
     var thead = h("thead", {});
     var trh = h("tr", {});
@@ -760,17 +790,16 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     thead.appendChild(trh);
     table.appendChild(thead);
     var tbody = h("tbody", {});
-    cfg.items.forEach(function (it) {
+    entries.forEach(function (entry) {
+      var it = entry.item;
       var tr = h("tr", { class: "r-" + it.rarity });
       tr.appendChild(h("td", { text: it.rarity }));
       tr.appendChild(h("td", { text: itemName(it) }));
-      tr.appendChild(h("td", { text: (G.itemOdds(cfg, it) * 100).toFixed(2) + "%" }));
+      tr.appendChild(h("td", { text: (entry.odds * 100).toFixed(2) + "%" }));
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
-    oddsBox.appendChild(table);
-    var wheelOdds = h("p", {class:"gx-note", text: "Wheel: " + G.wheelSegments(cfg).map(function (s) {return itemName(s.item) + " " + (s.odds * 100).toFixed(1) + "%";}).join(" · ")});
-    oddsBox.appendChild(wheelOdds);
+    box.replaceChildren(table);
   }
 
   function syncHistory() {
@@ -823,7 +852,7 @@ function formatGachaLabSummary(out, multiPulls, translate) {
     var language=h('select',{'aria-label':'Language',class:'cx-select'});
     ['en','zh','ja','ko','es'].forEach(function(code){language.appendChild(h('option',{value:code,text:{en:'English',zh:'简体中文',ja:'日本語',ko:'한국어',es:'Español'}[code]}));});
     side.prepend(language);
-    root.PixI18nRefresh=function(){demo.querySelectorAll('[data-i18n]').forEach(function(node){var key=node.getAttribute('data-i18n');node.textContent=defaultText(key);var vars=JSON.parse(node.getAttribute('data-i18n-vars')||'{}');for(var k in vars)node.textContent=node.textContent.replace('{'+k+'}',vars[k]);});};
+    root.PixI18nRefresh=function(){host.querySelectorAll('[data-i18n]').forEach(function(node){var key=node.getAttribute('data-i18n');node.textContent=defaultText(key);var vars=JSON.parse(node.getAttribute('data-i18n-vars')||'{}');for(var k in vars)node.textContent=node.textContent.replace('{'+k+'}',vars[k]);});};
     language.onchange=function(){document.documentElement.lang=language.value;refreshI18n();root.dispatchEvent(new Event('pixjuice-locale'));};
   }
   restore();

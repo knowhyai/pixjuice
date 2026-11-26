@@ -650,7 +650,7 @@ const es: Partial<Dict> = {
   tplIndex: {
     "sub": "plantillas de UI para juegos",
     "h1": "Plantillas de UI para juegos gratis",
-    "lede": "<b>Módulos de juego a nivel de plantilla</b> — maduros, completos, listos para integrar. Demos jugables con parámetros ajustables, cuatro pieles de arte unificadas y descarga standalone en HTML/CSS/JS vanilla (CC0) para cada plantilla. Las plantillas son una categoría de la <a href=\"/free-assets/\">biblioteca de recursos gratis de PixJuice</a>.",
+    "lede": "Prueba las plantillas en el navegador y descárgalas para tu propio juego. Encontrarás más recursos en la <a href=\"/free-assets/\">biblioteca gratuita de PixJuice</a>.",
     "live": "Listas ahora",
     "soon": "Próximamente",
     "soonLede": "Lo mismo que las dos primeras: demo jugable, cuatro pieles, descarga CC0 standalone. En el horno:",
@@ -673,15 +673,15 @@ const es: Partial<Dict> = {
     "hero": {
       "crumb": "gacha y ruleta",
       "h1": "Gacha y Ruleta — plantilla de UI para juegos",
-      "lede": "Un panel de gacha completo y listo para producción: pozo de cartas con tiradas simples y ×10, tasas N/R/SR/SSR, contador de lástima (pity) de SSR, garantía de tirada múltiple, ruleta, animación de cofre e historial. Pruébalo abajo — todos los números son configuración en vivo."
+      "lede": "Abre un cofre, saca unas cartas o gira la ruleta. ¿Qué premio te tocará?"
     },
     "card": {
       "h": "Gacha y Ruleta",
-      "d": "Pozo de cartas (simple / ×10) con tasas N/R/SR/SSR, pity de SSR, garantía de ×10; ruleta ponderada, animación de cofre e historial. Tasas y premios en un solo archivo JSON."
+      "d": "Abre cofres, saca cartas de una en una o de diez en diez y gira la ruleta para ganar premios."
     },
     "feat": {
       "h": "Qué incluye",
-      "p": "<b>El motor de reglas</b> (tasas → rareza → objeto, pity de SSR, garantía de ×10, pesos de la ruleta) es un único archivo sin dependencias, testeable y ejecutable sin navegador; la <b>capa de UI</b> (ruleta, volteo de cartas, animación de cofre, historial, ajustes) es DOM puro que puedes restilizar. La interfaz compartida de oro oscuro usa variables CSS."
+      "p": "Incluye tres formas de jugar, animaciones de premios y un historial de lo que has conseguido. Puedes adaptar los premios y las probabilidades a tu juego."
     },
     "tabPool": "Pozo de cartas",
     "tabWheel": "Ruleta",
@@ -691,7 +691,7 @@ const es: Partial<Dict> = {
     "pityGuarantee": "SSR garantizado en {n} tiradas",
     "tenNote": "Con este ajuste, las tiradas ×10 garantizan al menos un SR.",
     "pityNow": "Pity SSR: {n}/{max}",
-    "rates": "Tasas de drop",
+    "rates": "Ver probabilidades",
     "pool": "Pozo de premios",
     "odds": "Probabilidad",
     "rarity": "Rareza",
@@ -699,17 +699,16 @@ const es: Partial<Dict> = {
     "history": "Historial",
     "historyEmpty": "Aún no hay tiradas — ¡prueba tu suerte!",
     "clear": "Borrar",
-    "spin": "¡GIRAR!",
+    "spin": "Girar",
     "spinning": "Girando…",
     "won": "Obtuviste: {item}!",
     "opening": "Abriendo…",
-    "wheelNote": "Probabilidad de la ruleta = peso de cada premio. Tasas y pity del pozo viven en el JSON de configuración.",
-    "settings": "Ajustes",
+    "settings": "Ajustar el juego",
     "skin": "Piel",
     "ratesCfg": "Tasas (N / R / SR / SSR)",
     "pityCfg": "Pity de SSR (tiradas)",
-    "loadCfg": "Cargar config.json",
-    "saveCfg": "Descargar config.json",
+    "loadCfg": "Importar ajustes",
+    "saveCfg": "Exportar ajustes",
     "reset": "Reiniciar demo",
     "resetDone": "Demo reiniciada.",
     "cfgOk": "Configuración aplicada.",
@@ -726,15 +725,15 @@ const es: Partial<Dict> = {
     "hero": {
       "crumb": "guardar / cargar",
       "h1": "Sistema de Guardado/Carga — plantilla de UI para juegos",
-      "lede": "Un menú de guardado completo: múltiples ranuras con miniaturas en vivo, fecha, tiempo de juego y capítulo; autoguardado; confirmaciones de sobrescritura y borrado; importación/exportación JSON. Pruébalo con el mini juego de abajo — todo se guarda."
+      "lede": "Explora una pequeña mazmorra, guarda tu partida y retómala cuando quieras."
     },
     "card": {
       "h": "Sistema de Guardado/Carga",
-      "d": "Múltiples ranuras con miniaturas, fecha, tiempo de juego y capítulo; ranura de autoguardado; confirmaciones de sobrescritura y borrado; importación/exportación JSON; persistencia en localStorage con lecturas validadas."
+      "d": "Prueba a guardar y cargar en una pequeña mazmorra, con capturas y una ranura de guardado automático."
     },
     "feat": {
       "h": "Qué incluye",
-      "p": "<b>El motor de guardado</b> (ranuras, lecturas validadas, importación/exportación versionada, almacenamiento inyectable) es un único archivo sin dependencias, testeable sin navegador; la <b>UI del menú</b> (tarjetas de ranura, miniaturas, modales, avisos) es DOM puro. El mini juego solo existe para producir datos de guardado honestos — sustitúyelo por tu propio objeto de estado."
+      "p": "Guarda en varias ranuras e identifica cada partida por su captura, capítulo y tiempo de juego. Incluye guardado automático y copias de seguridad."
     },
     "game": "Juego de demo",
     "hint": "Muévete con WASD / flechas o el pad, recoge monedas — luego guarda, carga, exporta e importa.",
