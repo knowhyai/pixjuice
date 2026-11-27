@@ -11,6 +11,7 @@ test('settlement: defaults and example describe a victory with independent data'
   const { ok, config } = P.validateConfig();
   assert.equal(ok, true);
   assert.equal(config.outcome, 'victory');
+  assert.equal(config.look, 'rite');
   assert.equal(P.gradeFromScore(config.score), 'S');
   assert.equal(config.stars, 3);
   assert.ok(config.stats.length && config.rewards.length);
@@ -26,6 +27,7 @@ test('settlement: outcomes, grades, stars and score normalize', () => {
   }
   const { config } = P.validateConfig({ outcome: 'other', grade: 'a', stars: 20, starMax: 10, score: -12.4 });
   assert.equal(config.outcome, 'victory');
+  assert.equal(P.validateConfig({ look: 'unknown' }).config.look, 'rite');
   assert.equal(config.grade, 'A');
   assert.equal(config.starMax, 5);
   assert.equal(config.stars, 5);
@@ -51,9 +53,10 @@ test('settlement: switching from either success preset yields a failed result', 
 
 test('settlement: outcome switches preserve edits and update stock fields', () => {
   const victory = P.validateConfig().config;
-  const edited = { ...victory, title: '暮雨关卡', stars: 1 };
+  const edited = { ...victory, title: '暮雨关卡', stars: 1, look: 'honor' };
   const { config: defeat } = P.validateConfig(P.applyOutcome(edited, 'defeat'));
   assert.equal(defeat.title, '暮雨关卡');
+  assert.equal(defeat.look, 'honor');
   assert.equal(defeat.stars, 1);
   assert.equal(defeat.subtitle, 'Chapter 3 · Failed');
   assert.equal(defeat.score, P.outcomePreset('defeat').score);
@@ -63,6 +66,13 @@ test('settlement: outcome switches preserve edits and update stock fields', () =
   const { config: renamed } = P.validateConfig({ ...custom, title: 'Second attempt' });
   assert.equal(renamed.grade, 'S');
   assert.deepEqual(P.applyOutcome(renamed, 'clear'), { ...renamed, outcome: 'clear' });
+});
+
+test('settlement: a partial defeat config uses the defeat preset', () => {
+  const { config } = P.validateConfig({ outcome: 'defeat' });
+  assert.deepEqual(config, P.outcomePreset('defeat'));
+  assert.equal(config.stars, 0);
+  assert.equal(P.gradeFromScore(config.score), 'D');
 });
 
 test('settlement: legacy defeat correction updates stock fields independently', () => {
@@ -84,10 +94,11 @@ test('settlement: grade threshold boundaries and duration', () => {
 test('settlement: imports discard unknown fields, cap data and reject invalid counts', () => {
   assert.equal(P.validateConfig(null).ok, false);
   assert.equal(P.validateConfig([]).ok, false);
-  const imported = JSON.parse('{"unknown":true,"__proto__":{"custom":1},"rewards":[{"name":"Gold","count":1e309},{"name":"Relic","count":99999999999,"rarity":" SR ","unknown":0},{"name":"None","count":-2},{"name":"Text","count":"3"}]}');
+  const imported = JSON.parse('{"look":"report","unknown":true,"__proto__":{"custom":1},"rewards":[{"name":"Gold","count":1e309},{"name":"Relic","count":99999999999,"rarity":" SR ","unknown":0},{"name":"None","count":-2},{"name":"Text","count":"3"}]}');
   imported.title = 'X'.repeat(100);
   imported.stats = Array.from({ length: 30 }, () => ({ label: 'L'.repeat(100), value: '0', unknown: 'dropped' }));
   const { config } = P.validateConfig(imported);
+  assert.equal(config.look, 'report');
   assert.equal(config.title.length, 64);
   assert.equal(config.unknown, undefined);
   assert.equal(config.custom, undefined);

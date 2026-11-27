@@ -725,6 +725,8 @@ const es: Partial<Dict> = {
     }
   },
   se: {
+    look: "Estilo",
+    looks: { rite: "Rito", honor: "Honor", report: "Informe" },
     "hero": {
       "crumb": "Resultados de fase",
       "h1": "Resultados de fase — plantilla de interfaz para juegos",
@@ -789,6 +791,8 @@ const es: Partial<Dict> = {
     }
   },
   sv: {
+    look: "Estilo",
+    looks: { journal: "Diario", codex: "Códice", waystation: "Posada" },
     "hero": {
       "crumb": "guardar / cargar",
       "h1": "Sistema de Guardado/Carga — plantilla de UI para juegos",

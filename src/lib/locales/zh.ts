@@ -725,6 +725,8 @@ const zh: Partial<Dict> = {
     }
   },
   se: {
+    look: "外观",
+    looks: { rite: "典礼", honor: "授勋", report: "战报" },
     "hero": {
       "crumb": "关卡结算",
       "h1": "关卡结算 — 游戏 UI 模板",
@@ -789,6 +791,8 @@ const zh: Partial<Dict> = {
     }
   },
   sv: {
+    look: "外观",
+    looks: { journal: "手帐", codex: "典籍", waystation: "驿站" },
     "hero": {
       "crumb": "存档 / 读档",
       "h1": "存档 / 读档系统 — 游戏 UI 模板",

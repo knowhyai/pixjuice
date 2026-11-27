@@ -1,5 +1,5 @@
-.tpl-demo.se-demo[data-skin],
-:root[data-theme="light"] .tpl-demo.se-demo[data-skin] {
+.tpl-demo.se-demo[data-look="rite"],
+:root[data-theme="light"] .tpl-demo.se-demo[data-look="rite"] {
   --skin-bg: #101d25;
   --skin-panel: #1a2b35;
   --skin-panel-2: #233b45;
@@ -11,7 +11,9 @@
   --skin-btn-2: #294652;
   --skin-radius: 6px;
   --se-rank: #e9ca86;
-  color-scheme: dark;
+}
+.tpl-demo.se-demo[data-look] {
+  color-scheme: var(--se-scheme, dark);
   color: var(--skin-ink);
   background: var(--skin-bg);
   display: grid;
@@ -22,7 +24,7 @@
   border-radius: 14px !important;
   box-shadow: 0 12px 32px #10192355 !important;
 }
-.se-demo[data-skin] > :is(.tpl-stage, .tpl-side) {
+.se-demo[data-look] > :is(.tpl-stage, .tpl-side) {
   border: 1px solid var(--skin-border);
   border-image: none;
   border-radius: 9px;
@@ -31,23 +33,25 @@
   background: var(--skin-panel);
 }
 .se-demo > :is(.tpl-stage, .tpl-side)::after { content: none; }
-.se-demo[data-skin] > .tpl-stage {
+.se-demo[data-look="rite"] > .tpl-stage {
   background:
     radial-gradient(ellipse at 50% 0%, #27615e, transparent 58%),
     linear-gradient(145deg, #1c313d, #16242e 65%);
   padding: 14px 20px;
 }
-.se-demo[data-skin] > .tpl-stage[data-outcome="defeat"] {
+.se-demo[data-look="rite"] > .tpl-stage[data-outcome="defeat"] {
   --se-rank: #e8adac;
   background: radial-gradient(ellipse at 50% 0%, #603e4c, transparent 58%), #222b37;
 }
-.se-demo[data-skin] > .tpl-stage[data-outcome="clear"] {
+.se-demo[data-look="rite"] > .tpl-stage[data-outcome="clear"] {
   --se-rank: #b7dcf4;
   background: radial-gradient(ellipse at 50% 0%, #325672, transparent 58%), #182c39;
 }
 .se-banner {
   text-align: center;
   padding: 3px 8px 7px;
+}
+.se-demo[data-look="rite"] .se-banner {
   border-bottom: 1px solid #9ed3cb55;
   background:
     repeating-linear-gradient(130deg, #b1e8db0a 0 1px, transparent 1px 22px);
@@ -119,7 +123,7 @@
   min-width: 0;
   border: 1px solid var(--skin-border);
   border-radius: 4px;
-  background: #102430;
+  background: var(--se-field-bg, #102430);
   color: var(--skin-ink);
   font: inherit;
   padding: 5px;
@@ -145,10 +149,194 @@
   }
 }
 @media (width < 900px) {
-  .tpl-demo.se-demo[data-skin] { grid-template-columns: minmax(0, 1fr); }
+  .tpl-demo.se-demo[data-look] { grid-template-columns: minmax(0, 1fr); }
 }
 @media (width < 540px) {
-  .se-demo[data-skin] > .tpl-stage { padding-inline: 10px; }
+  .se-demo[data-look] > .tpl-stage { padding-inline: 10px; }
   .se-stats, .se-rewards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .se-demo .tpl-stage .tpl-btn { min-width: 0; }
+}
+
+.se-look {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  padding: 2px;
+  margin-bottom: 6px;
+  border: 1px solid var(--skin-border);
+  border-radius: var(--skin-radius);
+}
+.se-demo .se-look .tpl-btn {
+  min-height: 24px;
+  padding: 2px;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.se-demo .se-look [aria-pressed="true"] {
+  background: var(--skin-accent);
+  border-color: var(--skin-accent);
+  color: var(--skin-accent-ink);
+}
+
+/* Honor: a raised stone plaque, inscribed courses and a round medallion. */
+.tpl-demo.se-demo[data-look="honor"],
+:root[data-theme="light"] .tpl-demo.se-demo[data-look="honor"] {
+  --skin-bg: #2c2019;
+  --skin-panel: #423127;
+  --skin-panel-2: #514032;
+  --skin-ink: #fff1d1;
+  --skin-muted: #e2c8a6;
+  --skin-accent: #e4bb72;
+  --skin-accent-ink: #332014;
+  --skin-border: #94724b;
+  --skin-btn-2: #5a4430;
+  --skin-radius: 3px;
+  --skin-font: Cormorant, Georgia, serif;
+  --se-rank: #ffe1a0;
+  --se-field-bg: #36271f;
+  color-scheme: dark;
+  background-image: repeating-linear-gradient(165deg, #fdd8a40d 0 1px, transparent 1px 6px);
+}
+.se-demo[data-look="honor"] > :is(.tpl-stage, .tpl-side) {
+  border: 3px double #9d794e;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 2px #241912, inset 0 0 28px #20130c99;
+}
+.se-demo[data-look="honor"] > .tpl-stage {
+  padding: 14px clamp(12px, 3vw, 40px);
+  background: linear-gradient(105deg, #36271e, #5e432c 46%, #37271d);
+}
+.se-demo[data-look="honor"] > .tpl-stage[data-outcome="defeat"] {
+  --se-rank: #d7b199;
+  --skin-accent: #ce9a7f;
+  background: linear-gradient(105deg, #302322, #58403a 46%, #312523);
+}
+.se-demo[data-look="honor"] .se-frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(96px, 22%);
+  align-items: center;
+  padding: 12px 14px;
+  border: 4px double #c99e60;
+  border-radius: 25px 25px 4px 4px;
+  background: repeating-linear-gradient(116deg, #ffe7b409 0 1px, transparent 1px 7px),
+    linear-gradient(150deg, #684c33, #35261e 75%);
+  box-shadow: inset 0 2px #ffde985c, inset 0 -4px #1d140eb0, 0 5px 9px #1b110a90;
+}
+.se-demo[data-look="honor"] [data-outcome="defeat"] .se-frame {
+  border-color: #ad8067;
+  background: linear-gradient(150deg, #62463a, #30221f);
+}
+.se-demo[data-look="honor"] .se-banner { text-align: start; padding-inline: 0 6px; }
+.se-demo[data-look="honor"] .se-banner h2 {
+  font: 600 clamp(26px, 4vw, 53px)/1 var(--skin-font);
+  text-shadow: 0 2px #25130e;
+}
+.se-demo[data-look="honor"] .se-rating { flex-direction: column; gap: 2px; margin: 0; }
+.se-demo[data-look="honor"] .se-grade {
+  width: 60px;
+  border: 4px double var(--se-rank);
+  border-radius: 50%;
+  background: radial-gradient(circle, #88623c, #3a271c 75%);
+  box-shadow: inset 0 0 0 2px #392419, 0 3px 5px #20140e;
+}
+.se-demo[data-look="honor"] .se-stars { font-size: 15px; letter-spacing: .04em; }
+.se-demo[data-look="honor"] :is(.se-stats, .se-loot) { grid-column: 1 / -1; margin-top: 7px; }
+.se-demo[data-look="honor"] .se-stats {
+  border-block: 3px double #95734d;
+  gap: 0;
+}
+.se-demo[data-look="honor"] .se-metric {
+  padding-block: 3px;
+  border: 0;
+  background: transparent;
+  text-align: center;
+}
+.se-demo[data-look="honor"] .se-reward {
+  background: #281c1477;
+  border-color: #8e6b47;
+  border-radius: 2px;
+}
+
+/* Report: a paper brief with a rubber grade stamp and short metric lines. */
+.tpl-demo.se-demo[data-look="report"],
+:root[data-theme="light"] .tpl-demo.se-demo[data-look="report"] {
+  --skin-bg: #554d43;
+  --skin-panel: #e7e0d0;
+  --skin-panel-2: #f4eee1;
+  --skin-ink: #2c2b23;
+  --skin-muted: #575449;
+  --skin-accent: #3f5043;
+  --skin-accent-ink: #fffcf1;
+  --skin-border: #9a907e;
+  --skin-btn-2: #ded6c4;
+  --skin-radius: 2px;
+  --skin-font: Georgia, serif;
+  --se-rank: #455644;
+  --se-field-bg: #f8f3e8;
+  --se-scheme: light;
+}
+.se-demo[data-look="report"] > :is(.tpl-stage, .tpl-side) {
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 3px #f8f3e788, 2px 3px #382e253d;
+}
+.se-demo[data-look="report"] > .tpl-stage {
+  padding: 14px clamp(12px, 3vw, 34px);
+  background: repeating-linear-gradient(95deg, #705a3510 0 1px, transparent 1px 5px), var(--skin-panel);
+}
+.se-demo[data-look="report"] > .tpl-stage[data-outcome="defeat"] {
+  --se-rank: #834237;
+  --skin-accent: #834237;
+}
+.se-demo[data-look="report"] .se-frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(90px, 18%);
+  align-items: center;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, #7e6b4e17, transparent 15px), var(--skin-panel-2);
+  box-shadow: 0 1px #afa18c, 1px 3px #f7efdc, 1px 4px #b9ae97, 2px 5px 8px #342d253a;
+}
+.se-demo[data-look="report"] .se-banner { text-align: start; padding-inline: 0 6px; }
+.se-demo[data-look="report"] .se-banner h2 {
+  font: 700 clamp(20px, 3vw, 38px)/1.12 Georgia, serif;
+  color: var(--skin-ink);
+}
+.se-demo[data-look="report"] .se-title { font: 500 17px/1.2 system-ui, sans-serif; }
+.se-demo[data-look="report"] .se-rating { flex-direction: column; gap: 4px; margin: 0; }
+.se-demo[data-look="report"] .se-grade {
+  width: 45px;
+  border: 3px double var(--se-rank);
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--skin-panel-2), inset 0 0 0 3px var(--se-rank);
+  rotate: -9deg;
+  font-size: 28px;
+}
+.se-demo[data-look="report"] .se-stars { font-size: 13px; letter-spacing: .03em; }
+.se-demo[data-look="report"] :is(.se-stats, .se-loot) { grid-column: 1 / -1; margin-top: 7px; }
+.se-demo[data-look="report"] .se-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--skin-border);
+  column-gap: 15px;
+  row-gap: 0;
+}
+.se-demo[data-look="report"] .se-metric {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px;
+}
+.se-demo[data-look="report"] :is(.se-metric, .se-reward) {
+  padding: 2px 0;
+  border: 0;
+  border-bottom: 1px dotted var(--skin-border);
+  border-radius: 0;
+  background: transparent;
+}
+.se-demo[data-look="report"] .se-metric b { font-size: 13px; }
+.se-demo[data-look="report"] .se-loot h3 { font-size: 15px; }
+.se-demo[data-look="report"] .tpl-stage .se-actions { justify-content: flex-start; }
+
+@media (width < 400px) {
+  .se-demo:is([data-look="honor"], [data-look="report"]) .se-frame { padding-inline: 8px; }
 }

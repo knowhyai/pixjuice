@@ -3,6 +3,7 @@
   "use strict";
 
   const OUTCOMES = Object.freeze(["victory", "defeat", "clear"]);
+  const LOOKS = Object.freeze(["rite", "honor", "report"]);
   const GRADES = Object.freeze(["S", "A", "B", "C", "D"]);
   const ROW_LIMIT = 12;
   const NUMBER_LIMIT = 999999999;
@@ -33,6 +34,7 @@
 
   const DEFAULT_CONFIG = Object.freeze({
     outcome: "victory",
+    look: "rite",
     title: "Ashwood Trial",
     subtitle: "Chapter 3 · Clear",
     grade: "",
@@ -111,13 +113,14 @@
 
   function validateConfig(raw = {}) {
     if (!isRecord(raw)) return { ok: false, error: "Expected a results object." };
-    const defaults = DEFAULT_CONFIG;
+    const defaults = outcomePreset(raw.outcome);
     const starMax = integer(raw.starMax, 1, 5, defaults.starMax);
     const grade = text(raw.grade, 8).toUpperCase();
     return {
       ok: true,
       config: {
-        outcome: OUTCOMES.includes(raw.outcome) ? raw.outcome : defaults.outcome,
+        outcome: defaults.outcome,
+        look: LOOKS.includes(raw.look) ? raw.look : defaults.look,
         title: text(raw.title, 64, defaults.title),
         subtitle: text(raw.subtitle, 80, defaults.subtitle),
         grade: GRADES.includes(grade) ? grade : "",
@@ -143,5 +146,5 @@
     };
   }
 
-  root.PixSettle = Object.freeze({ OUTCOMES, GRADES, ROW_LIMIT, NUMBER_LIMIT, DEFAULT_CONFIG, outcomePreset, applyOutcome, validateConfig, gradeFromScore, formatDuration });
+  root.PixSettle = Object.freeze({ OUTCOMES, LOOKS, GRADES, ROW_LIMIT, NUMBER_LIMIT, DEFAULT_CONFIG, outcomePreset, applyOutcome, validateConfig, gradeFromScore, formatDuration });
 })(globalThis);

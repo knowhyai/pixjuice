@@ -725,6 +725,8 @@ const en = {
     }
   },
   se: {
+    look: "Look",
+    looks: { rite: "Rite", honor: "Honor", report: "Report" },
     "hero": {
       "crumb": "Stage Results",
       "h1": "Stage Results — game UI template",
@@ -789,6 +791,8 @@ const en = {
     }
   },
   sv: {
+    look: "Look",
+    looks: { journal: "Journal", codex: "Codex", waystation: "Waystation" },
     "hero": {
       "crumb": "save / load",
       "h1": "Save / Load System — game UI template",

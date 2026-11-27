@@ -725,6 +725,8 @@ const ko: Partial<Dict> = {
     }
   },
   se: {
+    look: "스타일",
+    looks: { rite: "의식", honor: "서훈", report: "전보" },
     "hero": {
       "crumb": "스테이지 결과",
       "h1": "스테이지 결과 — 게임 UI 템플릿",
@@ -789,6 +791,8 @@ const ko: Partial<Dict> = {
     }
   },
   sv: {
+    look: "스타일",
+    looks: { journal: "수첩", codex: "전적", waystation: "역참" },
     "hero": {
       "crumb": "세이브/로드",
       "h1": "세이브/로드 시스템 — 게임 UI 템플릿",

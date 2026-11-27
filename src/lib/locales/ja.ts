@@ -725,6 +725,8 @@ const ja: Partial<Dict> = {
     }
   },
   se: {
+    look: "見た目",
+    looks: { rite: "典礼", honor: "叙勲", report: "戦報" },
     "hero": {
       "crumb": "ステージ結果",
       "h1": "ステージ結果 — ゲーム UI テンプレート",
@@ -789,6 +791,8 @@ const ja: Partial<Dict> = {
     }
   },
   sv: {
+    look: "見た目",
+    looks: { journal: "手帳", codex: "典籍", waystation: "宿場" },
     "hero": {
       "crumb": "セーブ/ロード",
       "h1": "セーブ/ロードシステム — ゲームUIテンプレート",

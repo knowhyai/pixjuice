@@ -30,6 +30,8 @@
   var lastTick = Date.now();
   var slotsN = 3;
   var autosave = true;
+  var LOOKS = ["journal", "codex", "waystation"];
+  var look = LOOKS[0];
   var AUTOSAVE_SEC = 30;
   var lastAuto = Date.now();
   var skin = "realistic";
@@ -71,7 +73,7 @@
       if (s) {
         if (typeof s.slotsN === "number" && s.slotsN >= 1 && s.slotsN <= 6) slotsN = s.slotsN;
         if (typeof s.autosave === "boolean") autosave = s.autosave;
-        if (S.isSkin(s.skin)) skin = s.skin;
+        if (LOOKS.includes(s.look)) look = s.look;
       }
       var g = P.sanitize(JSON.parse(ls.getItem(GAME_KEY) || "null"));
       if (g) game = g;
@@ -80,7 +82,7 @@
   }
   function persistGame() { ls.setItem(GAME_KEY, JSON.stringify(game)); }
   function persistSettings() {
-    ls.setItem(SETTINGS_KEY, JSON.stringify({ slotsN: slotsN, autosave: autosave, skin: skin }));
+    ls.setItem(SETTINGS_KEY, JSON.stringify({ slotsN: slotsN, autosave: autosave, look: look }));
   }
 
   // ---- dom helper ----------------------------------------------------------------
@@ -116,8 +118,8 @@
     "sv.reset": "Reset demo", "sv.resetDone": "Demo reset.", "sv.autosaved": "Auto-saved.",
     "sv.up": "Up", "sv.down": "Down", "sv.left": "Left", "sv.right": "Right",
     "sv.heroAria": "Game preview",
-    "tpl.skin": "Skin", "tpl.skin.realistic": "Semi-Realistic", "tpl.skin.stylized": "Stylized",
-    "tpl.skin.lowpoly": "Clean Low Poly", "tpl.skin.pixel": "Pixel Art",
+    "sv.look": "Look", "sv.looks.journal": "Journal",
+    "sv.looks.codex": "Codex", "sv.looks.waystation": "Waystation",
   };
   function defaultText(key) {
     if (typeof root.PixTranslate === "function") return root.PixTranslate(key);
@@ -147,6 +149,26 @@
   // ---- side panel ---------------------------------------------------------------------
 
   side.appendChild(h("h3", { text: "Settings", "data-i18n": "sv.settings" }));
+  var lookRow = h("div", { class: "sv-look", role: "group", "aria-label": "Look", "data-i18n-aria": "sv.look" });
+  var lookButtons = LOOKS.map(function (value) {
+    var key = "sv.looks." + value;
+    var button = h("button", {
+      class: "tpl-btn", type: "button", text: defaultText(key), "data-i18n": key,
+      onclick: function () { setLook(value); persistSettings(); },
+    });
+    lookRow.appendChild(button);
+    return button;
+  });
+  side.appendChild(lookRow);
+
+  function setLook(value) {
+    look = value;
+    demo.dataset.look = look;
+    lookButtons.forEach(function (button, index) {
+      button.setAttribute("aria-pressed", String(LOOKS[index] === look));
+    });
+  }
+
   side.appendChild(h("h4", { text: "Slot count", "data-i18n": "sv.slotsCfg" }));
   var slotsRow = h("label", { class: "gx-slider" });
   var slotsInput = h("input", { type: "range", min: "1", max: "6", step: "1", "aria-label": "Slot count" });
@@ -199,6 +221,7 @@
     ["s1","s2","s3","s4","s5","s6",P.AUTO_ID].forEach(function (id) { P.remove(ls, NS, id); });
     ls.removeItem(GAME_KEY);
     ls.removeItem(SETTINGS_KEY);
+    setLook(LOOKS[0]);
     game = P.newGame();
     spawnCoins();
     lastAuto = Date.now();
@@ -516,6 +539,7 @@
   // ---- boot -----------------------------------------------------------------------------------
 
   restore();
+  setLook(look);
   slotsInput.value = String(slotsN);
   slotsOut.textContent = String(slotsN);
   autoInput.checked = autosave;

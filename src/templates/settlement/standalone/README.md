@@ -2,7 +2,7 @@
 
 Extract the ZIP and open `index.html` in a browser. Edit the result in the right rail. Retry replays the reveal, and Continue and Return display feedback. Reduced-motion preferences skip the reveal animation.
 
-The editor saves normalized configuration under `pix-tpl-settlement-v1` in localStorage. Export JSON to move a configuration between browsers, or import `config.example.json` for the sample victory. Configuration stays in memory for the session if browser storage is unavailable.
+Choose Rite, Honor, or Report in the right rail. The editor saves normalized configuration, including `look`, under `pix-tpl-settlement-v2` in localStorage. Exported JSON includes the selected look. Missing or unknown looks use Rite. Export JSON to move a configuration between browsers, or import `config.example.json` for the sample victory. Configuration stays in memory for the session if browser storage is unavailable.
 
 ## Integration
 

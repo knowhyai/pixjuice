@@ -45,7 +45,7 @@
   }
 
   const demo = el("div", "tpl-demo se-demo");
-  demo.dataset.skin = window.PixSkins.SKINS[0];
+  demo.dataset.skin = "realistic";
   const stage = el("section", "tpl-stage");
   const reveal = el("div", "se-reveal");
   const actions = el("div", "se-actions");
@@ -136,10 +136,18 @@
     );
   }
 
+  function renderLook() {
+    demo.dataset.look = config.look;
+    side.querySelectorAll("[data-select-look]").forEach(node => {
+      node.setAttribute("aria-pressed", String(node.dataset.selectLook === config.look));
+    });
+  }
+
   function commit(raw, animate = false) {
     const result = P.validateConfig(raw);
     if (!result.ok) return false;
     config = result.config;
+    renderLook();
     status.textContent = "";
     try {
       localStorage.setItem(key, JSON.stringify(config));
@@ -274,11 +282,20 @@
       stars, max,
       field("score", config.score, update("score")),
     );
+    const looks = el("div", "se-look");
+    looks.setAttribute("role", "group");
+    looks.setAttribute("aria-label", t("look"));
+    for (const look of P.LOOKS) {
+      const choice = button("looks." + look, () => commit({ ...config, look }));
+      choice.dataset.selectLook = look;
+      looks.append(choice);
+    }
     side.replaceChildren(
-      el("h3", "", t("editor")), files, settings,
+      el("h3", "", t("editor")), looks, files, settings,
       editList("stats", [["label", { maxLength: 40 }], ["value", { maxLength: 40 }]], { label: "", value: "" }),
       editList("rewards", [["name", { maxLength: 40 }], ["count", {}], ["rarity", { maxLength: 12 }]], { name: "", count: 1 }),
     );
+    renderLook();
   }
 
   window.addEventListener("pixjuice-locale", () => {

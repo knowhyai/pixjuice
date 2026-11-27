@@ -9,7 +9,7 @@ Zero dependencies — plain HTML/CSS/JS. Double-click `index.html` and it runs.
 
 ```
 index.html          page shell (loads the three scripts below)
-styles.css          all demo styles + the Semi-Realistic dark gold skin
+styles.css          demo looks and shared cabinet styles
 js/save-core.js     save engine: slots, read/write, sanitize, export/import (no DOM)
 js/skins.js         shared skin registry (PixSkins global)
 js/main.js          demo UI (builds into #app)
@@ -46,6 +46,11 @@ LICENSE             CC0 — do anything, no attribution required
    talks to `PixSave`.
 
 ## Feature notes
+
+- **Look** — choose Journal, Codex, or Waystation under Settings. The demo stores
+  the selection with slot count and autosave in localStorage under
+  `pix-tpl-save-settings-v2`. Missing or unknown looks use Journal, and Reset
+  demo restores Journal.
 
 - **Slots** — ids are `s1…sN` plus `auto`. The demo exposes a slot-count setting;
   hard-code yours or keep the setting.
