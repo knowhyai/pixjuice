@@ -1,4 +1,5 @@
 import "../templates/gacha/strings.js";
+import "../templates/settlement/strings.js";
 // Tiny homemade i18n: nested dictionaries, English as the source of truth and the fallback
 // for every missing key. No runtime dependency, no URL routing — the canonical URLs stay
 // English (SEO), and a language pick only swaps visible text for that session.

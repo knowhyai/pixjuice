@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-// Load gacha-core and save-core into globalThis via vm
+// Load the template engines into globalThis via vm
 function loadToGlobal(path) {
   const code = fs.readFileSync(path, 'utf8');
   vm.runInThisContext(code, { filename: path });
@@ -11,6 +11,7 @@ function loadToGlobal(path) {
 
 loadToGlobal('./src/templates/gacha/gacha-core.js');
 loadToGlobal('./src/templates/save-load/save-core.js');
+loadToGlobal('./src/templates/settlement/settle-core.js');
 
 // Tests for PixGacha
 assert.ok(globalThis.PixGacha, 'PixGacha loaded');

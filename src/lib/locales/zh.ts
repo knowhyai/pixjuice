@@ -122,7 +122,8 @@ const zh: Partial<Dict> = {
     pa: "图片转像素画转换器 — 免费免上传 – PixJuice",
     nm: "法线贴图生成器 — 免费，面向 2D 精灵 – PixJuice",
     up: "像素画放大工具 — Scale2x、xBR 与最近邻 – PixJuice",
-    templates: "免费游戏 UI 模板 — 抽奖、存档等 – PixJuice",
+    templates: "免费游戏 UI 模板 — 抽奖、存档 · 关卡结算 – PixJuice",
+    settlement: "关卡结算 — 游戏 UI 模板 — PixJuice",
     gacha: "扭蛋 & 幸运转盘 UI 模板 — 免费，CC0 – PixJuice",
     save: "存档 / 读档系统 UI 模板 — 免费，CC0 – PixJuice",
     assets: "免费游戏素材 — 2D 精灵与 3D 模型 – PixJuice",
@@ -155,7 +156,7 @@ const zh: Partial<Dict> = {
     toolShD: "按网格或自动检测切表、预览、导出 GIF、ZIP、XML 和 JSON。",
     entryEffects: '特效库',
     entryEffectsD: '为 244 个像素技能特效重新配色、预览，并导出精灵表、GIF 与音效。免费，完全在浏览器中完成。',
-    entryTplD: '可试玩的扭蛋、开箱和存档界面，半写实暗金风格，并提供 CC0 下载。',
+    entryTplD: "试玩扭蛋、开箱、存档和关卡结算，并下载 CC0 代码。",
     entryAssetsD: '可商用的 CC0 二维精灵与三维模型。可在浏览器中预览、换装并下载。',
     entryFeel: "手感实验室",
     entryFeelD: "带着问题来——打击不狠、Boss 血条读不清——在实机演示上重调、与默认对照，直接粘贴 Godot／Unity 代码。",
@@ -176,7 +177,7 @@ const zh: Partial<Dict> = {
 <li><b>武器切换</b> — 已上线：武器切换时序实验室。</li>
 <li><b>换弹检查点</b> — 已上线：换弹检查点实验室。</li>
 <li><b>对话打字机</b> — 已上线：对话打字机实验室。</li>
-<li><b>玩法与系统机制</b> — 已上线：扭蛋与存档模板。以后：背包、对话、任务——还没有页面。</li>
+<li><b>玩法与系统机制</b> — 已上线：扭蛋、存档与关卡结算模板。以后：背包、对话、任务——还没有页面。</li>
 <li><b>角色操作与运动</b> — 已上线：跳跃宽容实验室与移动手感实验室（加速、制动、空中控制）。</li>
 <li><b>镜头</b> — 已上线：镜头跟随实验室可调整跟随、死区和边界，独立的镜头震动实验室可调整事件触发的震动幅度和时长。打击感配方也有自己的震屏效果。</li>
 <li><b>战斗反馈</b> — 已上线：打击感与 Boss 血条配方。</li>
@@ -653,7 +654,9 @@ const zh: Partial<Dict> = {
     "lede": "在浏览器里试玩模板，也可以下载到自己的游戏中使用。更多资源见 <a href=\"/free-assets/\">PixJuice 免费素材库</a>。",
     "live": "现已上线",
     "soon": "即将上线",
-    "soonLede": "和前两个一样：可玩演示、半写实暗金界面、独立 CC0 下载。筹备中：",
+    "soonLede": "库存、商店、任务、成就、每日登录、设置、对话、排行榜、属性面板和技能树仍在计划中。扭蛋与转盘、存档与读档、关卡结算现已提供。",
+    "faqNextQ": "接下来有哪些模板？",
+    "faqNextA": "库存、商店、任务、成就、每日登录、设置、对话、排行榜、属性面板和技能树仍在计划中。扭蛋与转盘、存档与读档、关卡结算现已提供。",
     "open": "打开演示 →",
     "soonBadge": "即将上线"
   },
@@ -721,6 +724,70 @@ const zh: Partial<Dict> = {
       "SSR": "传说"
     }
   },
+  se: {
+    "hero": {
+      "crumb": "关卡结算",
+      "h1": "关卡结算 — 游戏 UI 模板",
+      "lede": "编辑关卡结局、揭晓评级与奖励，并将结果导出为 JSON。"
+    },
+    "card": {
+      "h": "关卡结算",
+      "d": "用可编辑的统计和奖励制作胜利、失败或通关画面。"
+    },
+    "feat": {
+      "h": "模板内容",
+      "p": "独立运行的结算界面，支持按得分评级、编辑统计与奖励以及导入和导出 JSON。"
+    },
+    "faq": {
+      "q": "如何在游戏中使用关卡结算？",
+      "a": "将结算对象传给 PixSettle.validateConfig，再渲染规范化后的配置。演示会将修改保存到 localStorage，也可导出为 JSON。"
+    },
+    "victory": "胜利",
+    "defeat": "失败",
+    "clear": "通关",
+    "grade": "评级",
+    "stars": "星数",
+    "stats": "统计",
+    "rewards": "奖励",
+    "score": "得分",
+    "noRewards": "本局没有奖励。",
+    "retry": "再试一次",
+    "continue": "继续",
+    "return": "返回",
+    "retried": "已重播结算。",
+    "continued": "队伍前往下一关。",
+    "returned": "队伍返回营地。",
+    "storageUnavailable": "浏览器存储不可用，修改仅在本次会话有效。",
+    "addStat": "添加统计",
+    "addReward": "添加奖励",
+    "remove": "移除",
+    "invalid": "请选择小于 128 KB 的有效结算 JSON 文件。",
+    "imported": "已导入结算。",
+    "export": "导出 JSON",
+    "import": "导入 JSON",
+    "editor": "编辑结算",
+    "outcome": "结局",
+    "title": "关卡名称",
+    "subtitle": "副标题",
+    "starMax": "星数上限",
+    "auto": "按得分计算",
+    "label": "标签",
+    "value": "数值",
+    "name": "奖励名称",
+    "count": "数量",
+    "rarity": "稀有度（可选）",
+    "sample": {
+      "title": "灰木试炼",
+      "subtitle": "第三章 · 已通关",
+      "subtitleDefeat": "第三章 · 未通关",
+      "time": "用时",
+      "kills": "击倒敌人",
+      "hits": "受击",
+      "gold": "金币",
+      "herb": "灰叶草",
+      "relic": "山径遗物"
+    }
+  },
   sv: {
     "hero": {
       "crumb": "存档 / 读档",
@@ -735,7 +802,7 @@ const zh: Partial<Dict> = {
       "h": "包含什么",
       "p": "把进度存到不同档位，凭截图、章节和游玩时长找到想继续的存档。模板还支持自动存档和备份。"
     },
-    "game": "演示游戏",
+    "game": "当前进度",
     "hint": "用 WASD / 方向键或方向垫移动，收集金币——然后存档、读档、导出、导入。",
     "chapter": "章节",
     "level": "等级",
@@ -743,7 +810,7 @@ const zh: Partial<Dict> = {
     "playtime": "游玩时长",
     "slots": "存档位",
     "autoSlot": "自动存档",
-    "empty": "空",
+    "empty": "空白页",
     "autoBadge": "自动",
     "new": "新游戏",
     "save": "保存",
@@ -802,7 +869,7 @@ const zh: Partial<Dict> = {
     "downloadAll": "打包下载 (.zip)",
     "moreTemplates": "更多即将上线 →",
     "templatesCat": "游戏 UI 模板",
-    "templatesCatD": "扭蛋/转盘、存档/读档——可玩演示，附 CC0 代码下载。",
+    "templatesCatD": "试玩扭蛋、开箱、存档和关卡结算，并下载 CC0 代码。",
     "cat": {"props": "道具", "characters": "角色", "vehicles": "载具", "environment": "场景件"},
     "style": {
       "realistic": "半写实",

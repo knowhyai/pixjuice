@@ -122,7 +122,8 @@ const en = {
     pa: "Image to Pixel Art Converter — Free, No Upload – PixJuice",
     nm: "Normal Map Generator — Free, for 2D Sprites – PixJuice",
     up: "Pixel Art Upscaler — Scale2x, xBR & Nearest – PixJuice",
-    templates: "Free Game UI Templates — Gacha, Save/Load & more – PixJuice",
+    templates: "Free Game UI Templates — Gacha, Save/Load · Stage Results – PixJuice",
+    settlement: "Stage Results — game UI template — PixJuice",
     gacha: "Gacha System & Lucky Wheel UI Template — Free, CC0 – PixJuice",
     save: "Save / Load System UI Template — Free, CC0 – PixJuice",
     assets: "Free Game Assets — 2D Sprites & 3D Models, CC0 – PixJuice",
@@ -155,7 +156,7 @@ const en = {
     toolShD: "Slice a sheet by grid or auto-detect, preview, export GIF, ZIP, XML and JSON.",
     entryEffects: 'Effects library',
     entryEffectsD: 'Recolor, preview and export 244 pixel skill effects as sprite sheets, GIF and sound — free, in your browser.',
-    entryTplD: 'Playable gacha, crate opening and save/load UI in a dark-gold Semi-Realistic look, plus a CC0 download.',
+    entryTplD: "Try gacha, crate opening, save/load, and stage results with CC0 downloads.",
     entryAssetsD: 'CC0 2D sprites and 3D models for commercial use. Preview, swap parts and download in the browser.',
     entryFeel: "Game Feel Lab",
     entryFeelD: "Come with a problem — soft hits, an unreadable boss bar — retune the live recipe, compare it against its default, then paste the Godot/Unity code.",
@@ -176,7 +177,7 @@ const en = {
 <li><b>Weapon switching</b> — Live: the Weapon Switch Timing Lab.</li>
 <li><b>Reload checkpoints</b> — Live: the Reload Checkpoint Lab.</li>
 <li><b>Dialogue typewriter</b> — Live: the Dialogue Typewriter Lab.</li>
-<li><b>Gameplay &amp; systems</b> — live: gacha and save/load templates. Later: inventory, dialogue, quests — not pages yet.</li>
+<li><b>Gameplay &amp; systems</b> — live: gacha, save/load, and stage results templates. Later: inventory, dialogue, quests — not pages yet.</li>
 <li><b>Character control &amp; movement</b> — Live jump forgiveness and movement labs (acceleration, braking, and air control).</li>
 <li><b>Camera</b> — Live labs for camera follow, deadzone, and bounds, and for tuning the strength and duration of event-triggered camera shake. The hit recipe also has its own screen shake.</li>
 <li><b>Combat feedback</b> — live: hit feel and boss HP bar recipes.</li>
@@ -653,7 +654,9 @@ const en = {
     "lede": "Try each template in your browser and download it to use in your own game. Find more in the <a href=\"/free-assets/\">PixJuice free asset library</a>.",
     "live": "Ready now",
     "soon": "Coming soon",
-    "soonLede": "Same deal as the first two: playable demo, a Semi-Realistic design, standalone CC0 download. In the pipeline:",
+    "soonLede": "Inventory, shop, quests, achievements, daily login, settings, dialog, leaderboard, stats, and skill tree are planned. Gacha & Lucky Wheel, Save / Load, and Stage Results are available now.",
+    "faqNextQ": "Which templates are coming next?",
+    "faqNextA": "Inventory, shop, quests, achievements, daily login, settings, dialog, leaderboard, stats, and skill tree are planned. Gacha & Lucky Wheel, Save / Load, and Stage Results are available now.",
     "open": "Open demo →",
     "soonBadge": "coming soon"
   },
@@ -721,6 +724,70 @@ const en = {
       "SSR": "Legendary"
     }
   },
+  se: {
+    "hero": {
+      "crumb": "Stage Results",
+      "h1": "Stage Results — game UI template",
+      "lede": "Edit a stage outcome, reveal its rank and rewards, and export the result as JSON."
+    },
+    "card": {
+      "h": "Stage Results",
+      "d": "Build a victory, defeat, or clear screen with editable stats and rewards."
+    },
+    "feat": {
+      "h": "What’s inside",
+      "p": "A standalone results screen with score-based grades, editable stats and rewards, and JSON import and export."
+    },
+    "faq": {
+      "q": "How do I use Stage Results in my game?",
+      "a": "Pass a results object to PixSettle.validateConfig, then render the normalized config. The included demo saves edits to localStorage and exports them as JSON."
+    },
+    "victory": "Victory",
+    "defeat": "Defeat",
+    "clear": "Clear",
+    "grade": "Grade",
+    "stars": "Stars",
+    "stats": "Stats",
+    "rewards": "Rewards",
+    "score": "Score",
+    "noRewards": "No rewards this run.",
+    "retry": "Retry",
+    "continue": "Continue",
+    "return": "Return",
+    "retried": "Results replayed.",
+    "continued": "The party continues to the next stage.",
+    "returned": "The party returns to camp.",
+    "storageUnavailable": "Changes apply for this session. Browser storage is unavailable.",
+    "addStat": "Add stat",
+    "addReward": "Add reward",
+    "remove": "Remove",
+    "invalid": "Choose a valid results JSON file under 128 KB.",
+    "imported": "Results imported.",
+    "export": "Export JSON",
+    "import": "Import JSON",
+    "editor": "Edit results",
+    "outcome": "Outcome",
+    "title": "Stage name",
+    "subtitle": "Subtitle",
+    "starMax": "Maximum stars",
+    "auto": "From score",
+    "label": "Label",
+    "value": "Value",
+    "name": "Reward name",
+    "count": "Quantity",
+    "rarity": "Rarity (optional)",
+    "sample": {
+      "title": "Ashwood Trial",
+      "subtitle": "Chapter 3 · Clear",
+      "subtitleDefeat": "Chapter 3 · Failed",
+      "time": "Time",
+      "kills": "Foes downed",
+      "hits": "Hits taken",
+      "gold": "Gold",
+      "herb": "Ash Herb",
+      "relic": "Trail Relic"
+    }
+  },
   sv: {
     "hero": {
       "crumb": "save / load",
@@ -735,7 +802,7 @@ const en = {
       "h": "What's inside",
       "p": "Save your progress in several slots and recognize each one by its snapshot, chapter, and playtime. Automatic saves and portable backups are included."
     },
-    "game": "Demo game",
+    "game": "Current progress",
     "hint": "Move with WASD / arrows or the pad, collect coins — then save, load, export and import.",
     "chapter": "Chapter",
     "level": "Level",
@@ -743,7 +810,7 @@ const en = {
     "playtime": "Playtime",
     "slots": "Save slots",
     "autoSlot": "Auto-save",
-    "empty": "Empty",
+    "empty": "Blank page",
     "autoBadge": "Auto",
     "new": "New game",
     "save": "Save",
@@ -802,7 +869,7 @@ const en = {
     "downloadAll": "Download all (.zip)",
     "moreTemplates": "more coming →",
     "templatesCat": "Game UI templates",
-    "templatesCatD": "Gacha & lucky wheel, save/load system — playable demos with CC0 code downloads.",
+    "templatesCatD": "Try gacha, crate opening, save/load, and stage results with CC0 downloads.",
     "cat": {"props": "Props", "characters": "Characters", "vehicles": "Vehicles", "environment": "Scene / Environment"},
     "style": {
       "realistic": "Semi-Realistic",

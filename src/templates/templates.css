@@ -529,7 +529,7 @@ a.fa-file:hover {
 @media (min-width: 1080px) {
   .tpl-demo-hero .lede { flex-basis: auto; }
 }
-.tpl-library-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tpl-library-cards { grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
 #gx-developer { padding-block: 0; }
 #gx-developer .gx-lab { margin-top: 0; }
 @media (max-width: 600px) {

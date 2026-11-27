@@ -10,6 +10,7 @@ import { resolveRoute, createRoutingMiddleware } from '../scripts/preview-routin
 // with '' for en and /zh /ja /ko /es prefixes). These rules keep vite preview
 // and the generated dist/_redirects from ever serving the homepage at a wrong
 // URL: trailing-slash canonicalization, /en → unprefixed, unknown → 404.
+const templateDemos = ['templates/gacha', 'templates/save-load', 'templates/settlement'];
 const newTools = ['text-fit', 'audio-envelope', 'camera-shake', 'audio-scenes', 'weapon-switch', 'reload', 'typewriter', 'free-icons'];
 const pages = new Set([
   '/',
@@ -22,21 +23,20 @@ const pages = new Set([
   '/feel/camera/',
   '/feel/spring/',
   '/templates/',
-  '/templates/gacha/',
   '/free-assets/chest-wood/',
   '/zh/',
   '/zh/feel/',
   '/zh/feel/hit/',
   '/zh/feel/boss-hp/',
   '/ja/feel/hit/',
-  ...['', '/zh', '/ja', '/ko', '/es'].flatMap((prefix) => newTools.map((tool) => `${prefix}/${tool}/`)),
+  ...['', '/zh', '/ja', '/ko', '/es'].flatMap((prefix) => [...newTools, ...templateDemos].map((tool) => `${prefix}/${tool}/`)),
   ...['zh', 'ja', 'ko', 'es'].flatMap((locale) => [`/${locale}/feel/jump/`, `/${locale}/feel/move/`, `/${locale}/feel/camera/`, `/${locale}/feel/spring/`, `/${locale}/effects/`]),
 ]);
 const exists = (dir) => pages.has(dir);
 const resolves = (pathname) => resolveRoute(pathname, exists);
 
-test('routing: standalone tools have canonical paths in five locales', () => {
-  for (const tool of newTools) {
+test('routing: standalone tools and template demos have canonical paths in five locales', () => {
+  for (const tool of [...newTools, ...templateDemos]) {
     for (const prefix of ['', '/zh', '/ja', '/ko', '/es']) {
       const path = `${prefix}/${tool}/`;
       assert.deepEqual(resolves(path), { type: 'next' });

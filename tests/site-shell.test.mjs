@@ -25,7 +25,7 @@ test("localized pages have accurate license metadata, canonical links, and sitem
     "effects", "credits", "editor", "text-fit", "audio-envelope", "camera-shake",
     "audio-scenes", "weapon-switch", "reload", "typewriter", "image-to-pixel-art",
     "normal-map", "pixel-art-upscaler", "sprite-sheet", "templates", "templates/gacha",
-    "templates/save-load", "free-assets", iconDirectory, "feel", "feel/hit", "feel/boss-hp",
+    "templates/save-load", "templates/settlement", "free-assets", iconDirectory, "feel", "feel/hit", "feel/boss-hp",
     "feel/jump", "feel/move", "feel/camera", "feel/spring",
   ];
   const { assets } = JSON.parse(fs.readFileSync("public/free-assets/manifest.json", "utf8"));

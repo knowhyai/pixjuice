@@ -3,6 +3,7 @@ import {readFile,writeFile,mkdir,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import ts from 'typescript';
 await import('../src/templates/gacha/strings.js');
+await import('../src/templates/settlement/strings.js');
 const SITE='https://pixjuice.pages.dev';
 const outDir=process.env.PIXJUICE_OUTDIR || 'dist';
 const langs=['en','zh','ja','ko','es'];
@@ -20,7 +21,7 @@ const strip=s=>s.replace(/<[^>]*>/g,'');
 const manifest=JSON.parse(await readFile('public/free-assets/manifest.json','utf8'));
 const isPublicListing=a=>a&&a.style_tier==='realistic'&&!a.hidden&&!a.product_hidden&&!a.placeholder;
 const products=[...new Set(manifest.assets.map(a=>a.product_id).filter(Boolean))];
-const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','camera-shake/','audio-scenes/','weapon-switch/','reload/','typewriter/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','free-assets/','free-resources/','free-icons/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
+const paths=['','effects/','credits/','editor/','text-fit/','audio-envelope/','camera-shake/','audio-scenes/','weapon-switch/','reload/','typewriter/','image-to-pixel-art/','normal-map/','pixel-art-upscaler/','sprite-sheet/','templates/','templates/gacha/','templates/save-load/','templates/settlement/','free-assets/','free-resources/','free-icons/','feel/','feel/hit/','feel/boss-hp/','feel/jump/','feel/move/','feel/camera/','feel/spring/',...manifest.assets.map(a=>`free-assets/${a.id}/`),...products.map(id=>`free-assets/${id}/`)];
 const listedPaths=paths.filter(path=>{
   if(!path.startsWith('free-assets/')||path==='free-assets/')return true;
   const id=path.slice('free-assets/'.length).replace(/\/$/,'');
@@ -80,14 +81,17 @@ for(const path of paths) {
  const original=await readFile(join(outDir,path,'index.html'),'utf8');
  const tool=TOOL_SEO[path];
  for(const lang of langs) {
-  const d=seo[lang],key=path==='templates/gacha/'?'gx':path==='templates/save-load/'?'sv':path==='templates/'?'tplIndex':path==='free-resources/'?'fr':path==='free-icons/'?'fi':path==='feel/'?'feelIndex':path==='feel/hit/'?'feelHit':path==='feel/boss-hp/'?'feelBoss':path==='feel/jump/'?'jump':path==='feel/move/'?'move':path==='feel/camera/'?'camera':path==='feel/spring/'?'spring':path==='effects/'?'effects':tool?.copy?'lab':'fa';
+  const d=seo[lang],key=path==='templates/gacha/'?'gx':path==='templates/save-load/'?'sv':path==='templates/settlement/'?'se':path==='templates/'?'tplIndex':path==='free-resources/'?'fr':path==='free-icons/'?'fi':path==='feel/'?'feelIndex':path==='feel/hit/'?'feelHit':path==='feel/boss-hp/'?'feelBoss':path==='feel/jump/'?'jump':path==='feel/move/'?'move':path==='feel/camera/'?'camera':path==='feel/spring/'?'spring':path==='effects/'?'effects':tool?.copy?'lab':'fa';
   const asset=manifest.assets.find(a=>path===`free-assets/${a.id}/`) || manifest.assets.find(a=>path===`free-assets/${a.product_id}/`);
   const styleKey={realistic:'tpl.skin.realistic',stylized:'tpl.skin.stylized','clean-low-poly':'tpl.skin.lowpoly','pixel-art':'tpl.skin.pixel'};
   const name=asset?(asset.product_id === "chest-wood"?[translate(lang,'v3.product'),...(path===`free-assets/${asset.product_id}/`?[]:[translate(lang,styleKey[asset.style_tier]),translate(lang,'v3.'+asset.palette),translate(lang,'v3.'+asset.state)])].join(' · '):(lang==='zh'?asset.name.zh||asset.name.en:asset.name.en)):null;
-  let title=asset?`${name} — ${d.assetTitle}`:translate(lang,key==='gx'||key==='sv'?key+'.hero.h1':key+'.h1');
+  let title=asset?`${name} — ${d.assetTitle}`:translate(lang,['gx','sv','se'].includes(key)?key+'.hero.h1':key+'.h1');
   if (lang === "en" && key === "gx") title = "Gacha System Template & Loot Box UI — Spin Wheel Game Template";
   if (lang === "en" && key === "sv") title = "Save Load System UI — Game Save Menu Template";
-  let desc=asset?`${name} — ${d.assetDesc}`:strip(translate(lang,key==='gx'||key==='sv'?key+'.hero.lede':key+'.lede'));
+  if (lang === "en" && key === "se") title = "Stage Results UI Template — Game Victory and Defeat Screen";
+  if (key === "tplIndex") title = translate(lang, "title.templates");
+  let desc=asset?`${name} — ${d.assetDesc}`:strip(translate(lang,['gx','sv','se'].includes(key)?key+'.hero.lede':key+'.lede'));
+  if (key === "tplIndex") desc = translate(lang, "home.entryTplD");
   if(path===''){title=translate(lang,'title.home');desc=strip(translate(lang,'home.heroLede'));}
   if(key==='fi'){title=translate(lang,'title.freeIcons');desc=translate(lang,'title.freeIconsDesc');}
   if(TOOL_SEO[path]){
@@ -134,7 +138,7 @@ for(const path of paths) {
    .replace(/(<meta property="og:description" content=")[^"]*(")/,`$1${esc(desc)}$2`)
    .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'')
    .replace(/<link\b(?=[^>]*\srel="canonical")[^>]*>|<link\b(?=[^>]*\srel="alternate")(?=[^>]*\shreflang=")[^>]*>/gi,'');
-  const questions=key==='lab'||path===''||key==='jump'||key==='move'||key==='camera'||key==='spring'||key==='effects'?[]:asset?[[`${name} — ${translate(lang,'v3.license')}`,d.assetA]]:(key==='fr'||key==='fi')?[[translate(lang,key+'.q'),translate(lang,key+'.a')]]:key==='feelIndex'||key==='feelHit'?[[translate(lang,'feel.faq1q'),translate(lang,'feel.faq1a')],[translate(lang,'feel.faq2q'),translate(lang,'feel.faq2a')],[translate(lang,'feel.faq3q'),translate(lang,'feel.faq3a')]]:key==='feelBoss'?[[translate(lang,'boss.faq1q'),translate(lang,'boss.faq1a')],[translate(lang,'boss.faq2q'),translate(lang,'boss.faq2a')],[translate(lang,'boss.faq3q'),translate(lang,'boss.faq3a')]]:TOOL_SEO[path]?[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
+  const questions=key==='se'?[[translate(lang,'se.faq.q'),translate(lang,'se.faq.a')],[d.q1,d.a1]]:key==='tplIndex'?[[d.q1,d.a1],[d.q2,d.a2],[translate(lang,'tplIndex.faqNextQ'),translate(lang,'tplIndex.faqNextA')]]:key==='lab' ||path===''||key==='jump'||key==='move'||key==='camera'||key==='spring'||key==='effects'?[]:asset?[[`${name} — ${translate(lang,'v3.license')}`,d.assetA]]:(key==='fr'||key==='fi')?[[translate(lang,key+'.q'),translate(lang,key+'.a')]]:key==='feelIndex'||key==='feelHit'?[[translate(lang,'feel.faq1q'),translate(lang,'feel.faq1a')],[translate(lang,'feel.faq2q'),translate(lang,'feel.faq2a')],[translate(lang,'feel.faq3q'),translate(lang,'feel.faq3a')]]:key==='feelBoss'?[[translate(lang,'boss.faq1q'),translate(lang,'boss.faq1a')],[translate(lang,'boss.faq2q'),translate(lang,'boss.faq2a')],[translate(lang,'boss.faq3q'),translate(lang,'boss.faq3a')]]:TOOL_SEO[path]?[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]]:key==='fa'?[[d.assetQ,d.assetA]]:[[d.q1,d.a1],[d.q2,d.a2],[d.q3,d.a3]];
   const json=[{'@context':'https://schema.org','@type':path===''||key==='fr'||key==='fi'?'CollectionPage':'CreativeWork',name:title,description:desc,url:url(lang,path),inLanguage:lang,isAccessibleForFree:true,license:asset?.license.file?`${SITE}/free-assets/${asset.license.file}`:undefined}];
   if(questions.length) json.push({'@context':'https://schema.org','@type':'FAQPage',inLanguage:lang,mainEntity:questions.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))});
   const unpublished=asset? !isPublicListing(asset) && !(path===`free-assets/${asset.product_id}/` && manifest.assets.some(a=>a.product_id===asset.product_id&&isPublicListing(a))) : path.startsWith('free-assets/') && path!=='free-assets/' && !listedPaths.includes(path);

@@ -287,12 +287,12 @@
   letter-spacing: normal;
 }
 @media (min-width: 900px) {
-  .tpl-demo:is(.gx-demo, .sv-demo) {
+  .tpl-demo:is(.gx-demo, .sv-demo, .se-demo) {
     height: 840px;
     align-items: stretch;
     grid-template-rows: minmax(0, 1fr);
   }
-  .tpl-demo:is(.gx-demo, .sv-demo) > :is(.tpl-side, .tpl-stage, .tpl-record) {
+  .tpl-demo:is(.gx-demo, .sv-demo, .se-demo) > :is(.tpl-side, .tpl-stage, .tpl-record) {
     max-height: 100%;
     min-height: 0;
     overflow: auto;

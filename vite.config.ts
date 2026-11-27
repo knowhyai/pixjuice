@@ -13,7 +13,7 @@ import { createRoutingMiddleware } from "./scripts/preview-routing.mjs";
 //   /pixel-art-upscaler/  pixel art upscaler (pixel-art-upscaler/index.html)
 //   /credits/             attribution + licenses (credits/index.html)
 //   /templates/           game template library (templates/index.html)
-//   /templates/<slug>/    one template demo page (gacha, save-load)
+//   /templates/<slug>/    one template demo page (gacha, save-load, settlement)
 //   /free-assets/         2D/3D asset library (free-assets/index.html)
 //   /free-assets/<id>/    one asset detail page per manifest entry (generated)
 //   /404.html             served by Cloudflare Pages for unknown routes
@@ -68,6 +68,7 @@ export default defineConfig({
         templates: "templates/index.html",
         gacha: "templates/gacha/index.html",
         save: "templates/save-load/index.html",
+        settlement: "templates/settlement/index.html",
         assets: "free-assets/index.html",
         resources: "free-resources/index.html",
         freeicons: "free-icons/index.html",

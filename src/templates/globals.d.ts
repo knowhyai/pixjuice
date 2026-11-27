@@ -103,3 +103,33 @@ interface Window {
   PixTranslate?: (key: string, vars?: Record<string, string | number>) => string;
   PixI18nRefresh?: () => void;
 }
+
+interface PixSettleConfig {
+  outcome: "victory" | "defeat" | "clear";
+  title: string;
+  subtitle: string;
+  grade: "" | "S" | "A" | "B" | "C" | "D";
+  stars: number;
+  starMax: number;
+  score: number;
+  stats: { id: string; label: string; value: string | number }[];
+  rewards: { id: string; name: string; count: number; rarity?: string }[];
+}
+
+interface PixSettle {
+  OUTCOMES: readonly PixSettleConfig["outcome"][];
+  GRADES: readonly Exclude<PixSettleConfig["grade"], "">[];
+  ROW_LIMIT: number;
+  NUMBER_LIMIT: number;
+  DEFAULT_CONFIG: Readonly<Omit<PixSettleConfig, "stats" | "rewards">> & {
+    stats: readonly Readonly<PixSettleConfig["stats"][number]>[];
+    rewards: readonly Readonly<PixSettleConfig["rewards"][number]>[];
+  };
+  validateConfig(raw?: unknown): { ok: true; config: PixSettleConfig } | { ok: false; error: string };
+  gradeFromScore(score: number): Exclude<PixSettleConfig["grade"], "">;
+  formatDuration(seconds: number): string;
+}
+
+interface Window {
+  PixSettle: PixSettle;
+}

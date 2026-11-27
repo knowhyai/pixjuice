@@ -122,7 +122,8 @@ const es: Partial<Dict> = {
     pa: "Convertidor de imagen a pixel art — Gratis, sin subidas – PixJuice",
     nm: "Generador de normal maps — Gratis, para sprites 2D – PixJuice",
     up: "Escalador de pixel art — Scale2x, xBR y nearest – PixJuice",
-    templates: "Plantillas de UI para juegos gratis — Gacha, Guardar/Cargar y más – PixJuice",
+    templates: "Plantillas de UI para juegos gratis — Gacha, Guardar/Cargar · Resultados de fase – PixJuice",
+    settlement: "Resultados de fase — plantilla de interfaz para juegos — PixJuice",
     gacha: "Plantilla de UI de Gacha y Ruleta — Gratis, CC0 – PixJuice",
     save: "Plantilla de UI de Guardado/Carga — Gratis, CC0 – PixJuice",
     assets: "Recursos de juego gratis — Sprites 2D y modelos 3D – PixJuice",
@@ -155,7 +156,7 @@ const es: Partial<Dict> = {
     toolShD: "Corta por cuadrícula o autodetección, previsualiza y exporta GIF, ZIP, XML y JSON.",
     entryEffects: 'Biblioteca de efectos',
     entryEffectsD: 'Recolorea, previsualiza y exporta 244 efectos de habilidades en pixel art como hojas de sprites, GIF y sonido. Gratis, en el navegador.',
-    entryTplD: 'UI jugable de gacha, apertura de cofres y guardado/carga, con un aspecto semirrealista oro oscuro y descarga CC0.',
+    entryTplD: "Prueba el gacha, los cofres, el guardado y los resultados de fase con descargas CC0.",
     entryAssetsD: 'Sprites 2D y modelos 3D en CC0 de uso comercial. Previsualiza, intercambia piezas y descarga en el navegador.',
     entryFeel: "Laboratorio de Game Feel",
     entryFeelD: "Llega con un problema — golpes flojos, barra de jefe ilegible — reajusta la receta en la demo, compárala con su valor por defecto y pega el código Godot/Unity.",
@@ -176,7 +177,7 @@ const es: Partial<Dict> = {
 <li><b>Cambio de arma</b> — Disponible: el Laboratorio de cambio de arma.</li>
 <li><b>Recarga por puntos de control</b> — Disponible: el Laboratorio de recarga por puntos.</li>
 <li><b>Efecto máquina de escribir</b> — Disponible: el Laboratorio de efecto máquina de escribir.</li>
-<li><b>Jugabilidad y sistemas</b> — en vivo: gacha y guardar/cargar. Después: inventario, diálogo, misiones — aún no hay páginas.</li>
+<li><b>Jugabilidad y sistemas</b> — en vivo: gacha, guardar/cargar y resultados de fase. Después: inventario, diálogo, misiones — aún no hay páginas.</li>
 <li><b>Control y movimiento</b> — Disponibles: el laboratorio de tolerancia del salto y el de movimiento (aceleración, frenado y control en el aire).</li>
 <li><b>Cámara</b> — Disponibles: el laboratorio de seguimiento, zona muerta y límites de cámara, y otro laboratorio para ajustar la intensidad y duración de las sacudidas de cámara activadas por eventos. La receta de impacto también tiene su propia sacudida de pantalla.</li>
 <li><b>Feedback de combate</b> — en vivo: recetas de hit feel y barra de jefe.</li>
@@ -653,7 +654,9 @@ const es: Partial<Dict> = {
     "lede": "Prueba las plantillas en el navegador y descárgalas para tu propio juego. Encontrarás más recursos en la <a href=\"/free-assets/\">biblioteca gratuita de PixJuice</a>.",
     "live": "Listas ahora",
     "soon": "Próximamente",
-    "soonLede": "Lo mismo que las dos primeras: demo jugable, cuatro pieles, descarga CC0 standalone. En el horno:",
+    "soonLede": "Están previstos el inventario, la tienda, las misiones, los logros, el inicio de sesión diario, los ajustes, los diálogos, la clasificación, los atributos y el árbol de habilidades. Gacha y ruleta, Guardar/Cargar y Resultados de fase ya están disponibles.",
+    "faqNextQ": "¿Qué plantillas están previstas?",
+    "faqNextA": "Están previstos el inventario, la tienda, las misiones, los logros, el inicio de sesión diario, los ajustes, los diálogos, la clasificación, los atributos y el árbol de habilidades. Gacha y ruleta, Guardar/Cargar y Resultados de fase ya están disponibles.",
     "open": "Abrir demo →",
     "soonBadge": "próximamente"
   },
@@ -721,6 +724,70 @@ const es: Partial<Dict> = {
       "SSR": "Legendario"
     }
   },
+  se: {
+    "hero": {
+      "crumb": "Resultados de fase",
+      "h1": "Resultados de fase — plantilla de interfaz para juegos",
+      "lede": "Edita el desenlace de la fase, revela el rango y las recompensas y exporta los resultados en JSON."
+    },
+    "card": {
+      "h": "Resultados de fase",
+      "d": "Crea pantallas de victoria, derrota o fase completada con estadísticas y recompensas editables."
+    },
+    "feat": {
+      "h": "Qué incluye",
+      "p": "Una pantalla de resultados independiente con rangos por puntuación, estadísticas y recompensas editables e importación y exportación en JSON."
+    },
+    "faq": {
+      "q": "¿Cómo integro los resultados de fase en mi juego?",
+      "a": "Pasa un objeto de resultados a PixSettle.validateConfig y muestra la configuración normalizada. La demo guarda los cambios en localStorage y permite exportarlos en JSON."
+    },
+    "victory": "Victoria",
+    "defeat": "Derrota",
+    "clear": "Completado",
+    "grade": "Rango",
+    "stars": "Estrellas",
+    "stats": "Estadísticas",
+    "rewards": "Recompensas",
+    "score": "Puntuación",
+    "noRewards": "Esta partida no dio recompensas.",
+    "retry": "Reintentar",
+    "continue": "Continuar",
+    "return": "Volver",
+    "retried": "Se repitió la presentación de resultados.",
+    "continued": "El grupo continúa a la siguiente fase.",
+    "returned": "El grupo vuelve al campamento.",
+    "storageUnavailable": "El almacenamiento del navegador no está disponible. Los cambios se aplican durante esta sesión.",
+    "addStat": "Añadir estadística",
+    "addReward": "Añadir recompensa",
+    "remove": "Quitar",
+    "invalid": "Elige un JSON de resultados válido de menos de 128 KB.",
+    "imported": "Resultados importados.",
+    "export": "Exportar JSON",
+    "import": "Importar JSON",
+    "editor": "Editar resultados",
+    "outcome": "Desenlace",
+    "title": "Nombre de la fase",
+    "subtitle": "Subtítulo",
+    "starMax": "Máximo de estrellas",
+    "auto": "Según puntuación",
+    "label": "Etiqueta",
+    "value": "Valor",
+    "name": "Nombre de la recompensa",
+    "count": "Cantidad",
+    "rarity": "Rareza (opcional)",
+    "sample": {
+      "title": "Prueba del Bosque de Fresno",
+      "subtitle": "Capítulo 3 · Completado",
+      "subtitleDefeat": "Capítulo 3 · Fallido",
+      "time": "Tiempo",
+      "kills": "Enemigos abatidos",
+      "hits": "Golpes recibidos",
+      "gold": "Oro",
+      "herb": "Hierba de fresno",
+      "relic": "Reliquia del sendero"
+    }
+  },
   sv: {
     "hero": {
       "crumb": "guardar / cargar",
@@ -735,7 +802,7 @@ const es: Partial<Dict> = {
       "h": "Qué incluye",
       "p": "Guarda en varias ranuras e identifica cada partida por su captura, capítulo y tiempo de juego. Incluye guardado automático y copias de seguridad."
     },
-    "game": "Juego de demo",
+    "game": "Progreso actual",
     "hint": "Muévete con WASD / flechas o el pad, recoge monedas — luego guarda, carga, exporta e importa.",
     "chapter": "Capítulo",
     "level": "Nivel",
@@ -743,7 +810,7 @@ const es: Partial<Dict> = {
     "playtime": "Tiempo de juego",
     "slots": "Ranuras de guardado",
     "autoSlot": "Autoguardado",
-    "empty": "Vacía",
+    "empty": "Página en blanco",
     "autoBadge": "Auto",
     "new": "Nueva partida",
     "save": "Guardar",
@@ -802,7 +869,7 @@ const es: Partial<Dict> = {
     "downloadAll": "Descargar todo (.zip)",
     "moreTemplates": "más en camino →",
     "templatesCat": "Plantillas de UI para juegos",
-    "templatesCatD": "Gacha y ruleta, guardar/cargar — demos jugables con descargas de código CC0.",
+    "templatesCatD": "Prueba el gacha, los cofres, el guardado y los resultados de fase con descargas CC0.",
     "cat": {"props": "Objetos", "characters": "Personajes", "vehicles": "Vehículos", "environment": "Entorno"},
     "style": {
       "realistic": "Semirrealista",

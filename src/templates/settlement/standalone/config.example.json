@@ -1,0 +1,44 @@
+{
+  "outcome": "victory",
+  "title": "Ashwood Trial",
+  "subtitle": "Chapter 3 · Clear",
+  "grade": "",
+  "stars": 3,
+  "starMax": 3,
+  "score": 12840,
+  "stats": [
+    {
+      "id": "time",
+      "label": "Time",
+      "value": "04:12"
+    },
+    {
+      "id": "kills",
+      "label": "Foes downed",
+      "value": 37
+    },
+    {
+      "id": "hits",
+      "label": "Hits taken",
+      "value": 2
+    }
+  ],
+  "rewards": [
+    {
+      "id": "gold",
+      "name": "Gold",
+      "count": 250
+    },
+    {
+      "id": "herb",
+      "name": "Ash Herb",
+      "count": 3
+    },
+    {
+      "id": "relic",
+      "name": "Trail Relic",
+      "count": 1,
+      "rarity": "SR"
+    }
+  ]
+}

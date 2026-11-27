@@ -100,9 +100,9 @@
     return e;
   }
   var EN = {
-    "sv.game": "Demo game", "sv.hint": "Move with WASD / arrows or the pad, collect coins — then save, load, export and import.",
+    "sv.game": "Current progress", "sv.hint": "Move with WASD / arrows or the pad, collect coins — then save, load, export and import.",
     "sv.chapter": "Chapter", "sv.level": "Level", "sv.gold": "Gold", "sv.playtime": "Playtime",
-    "sv.slots": "Save slots", "sv.autoSlot": "Auto-save", "sv.empty": "Empty", "sv.autoBadge": "Auto",
+    "sv.slots": "Save slots", "sv.autoSlot": "Auto-save", "sv.empty": "Blank page", "sv.autoBadge": "Auto",
     "sv.new": "New game", "sv.save": "Save", "sv.load": "Load", "sv.del": "Delete", "sv.export": "Export",
     "sv.import": "Import save file", "sv.saveHere": "Save here",
     "sv.confirmDel": "Delete this save? This cannot be undone.",
@@ -129,11 +129,9 @@
   function say(key, vars) {
     var t = defaultText(key);
     if (vars) for (var k in vars) t = t.replace("{" + k + "}", String(vars[k]));
-    var el = h("div", { class: "tpl-toast", role: "status", "data-i18n": key, "data-i18n-vars": JSON.stringify(vars || {}), text: t });
-    demo.appendChild(el);
-    refreshI18n();
-    requestAnimationFrame(function () { el.classList.add("on"); });
-    setTimeout(function () { el.classList.remove("on"); setTimeout(function () { el.remove(); }, 350); }, 2400);
+    status.textContent = t;
+    status.setAttribute("data-i18n", key);
+    status.setAttribute("data-i18n-vars", JSON.stringify(vars || {}));
   }
 
   // ---- layout ----------------------------------------------------------------------
@@ -142,17 +140,13 @@
   var demo = h("div", { class: "tpl-demo sv-demo", "data-skin": skin });
   var side = h("aside", { class: "tpl-side" });
   var stage = h("section", { class: "tpl-stage" });
-  demo.appendChild(side);
   demo.appendChild(stage);
+  demo.appendChild(side);
   host.appendChild(demo);
 
   // ---- side panel ---------------------------------------------------------------------
 
   side.appendChild(h("h3", { text: "Settings", "data-i18n": "sv.settings" }));
-  var skinRow = h("div", { class: "gx-skins", role: "group" });
-
-
-
   side.appendChild(h("h4", { text: "Slot count", "data-i18n": "sv.slotsCfg" }));
   var slotsRow = h("label", { class: "gx-slider" });
   var slotsInput = h("input", { type: "range", min: "1", max: "6", step: "1", "aria-label": "Slot count" });
@@ -218,7 +212,8 @@
 
   // ---- stage: game ---------------------------------------------------------------------
 
-  stage.appendChild(h("h3", { text: "Demo game", "data-i18n": "sv.game" }));
+  var progress = h("section", { class: "sv-progress" });
+  progress.appendChild(h("h3", { text: "Current progress", "data-i18n": "sv.game" }));
   var hud = h("div", { class: "sv-hud" });
   var hudChapter = h("span", {});
   var hudLevel = h("span", {});
@@ -228,24 +223,23 @@
   hud.appendChild(hudLevel);
   hud.appendChild(hudGold);
   hud.appendChild(hudTime);
-  stage.appendChild(hud);
+  progress.appendChild(hud);
 
   var gameWrap = h("div", { class: "sv-game" });
   var cv = h("canvas", { width: String(COLS * CELL), height: String(ROWS * CELL), "aria-label": "Game preview" });
   gameWrap.appendChild(cv);
   var pad = h("div", { class: "sv-pad", "aria-label": "Movement" });
-  var padBtns = {};
   [["up", "▲", 0, -1], ["left", "◀", -1, 0], ["right", "▶", 1, 0], ["down", "▼", 0, 1]].forEach(function (d) {
     var b = h("button", {
       class: "sv-pad-btn sv-pad-" + d[0], type: "button", "aria-label": defaultText("sv." + d[0]),
       "data-i18n-aria": "sv." + d[0], text: d[1],
       onclick: function () { step(d[2], d[3]); },
     });
-    padBtns[d[0]] = b;
     pad.appendChild(b);
   });
   gameWrap.appendChild(pad);
-  stage.appendChild(gameWrap);
+  progress.appendChild(gameWrap);
+  side.prepend(progress);
 
   var KEYS = { ArrowUp: [0, -1], w: [0, -1], W: [0, -1], ArrowDown: [0, 1], s: [0, 1], S: [0, 1], ArrowLeft: [-1, 0], a: [-1, 0], A: [-1, 0], ArrowRight: [1, 0], d: [1, 0], D: [1, 0] };
   var lastStep = 0;
@@ -352,6 +346,8 @@
   stage.appendChild(h("h3", { text: "Save slots", "data-i18n": "sv.slots" }));
   var slotsGrid = h("div", { class: "sv-slots" });
   stage.appendChild(slotsGrid);
+  var status = h("p", { class: "sv-status", role: "status" });
+  stage.appendChild(status);
 
   function renderSlots() {
     slotsGrid.innerHTML = "";
@@ -366,7 +362,7 @@
       card.appendChild(head);
 
       if (!e) {
-        card.appendChild(h("p", { class: "sv-slot-empty", "data-i18n": "sv.empty", text: "Empty" }));
+        card.appendChild(h("p", { class: "sv-slot-empty", "data-i18n": "sv.empty", text: "Blank page" }));
         card.appendChild(h("button", { class: "tpl-btn tpl-btn-accent", type: "button", "data-i18n": "sv.saveHere", text: "Save here", onclick: function () { writeSlot(id, false); } }));
         slotsGrid.appendChild(card);
         return;
@@ -376,8 +372,8 @@
       if (e.thumb) body.appendChild(h("img", { class: "sv-thumb pix-crisp", src: e.thumb, alt: "" }));
       else body.appendChild(h("div", { class: "sv-thumb sv-thumb-none", "aria-hidden": "true" }));
       var meta = h("div", { class: "sv-slot-meta" });
-      meta.appendChild(h("b", { text: e.name }));
-      meta.appendChild(h("span", { text: defaultText("sv.chapter") + " " + e.chapter + " · " + defaultText("sv.level") + " " + e.level }));
+      meta.appendChild(h("b", { text: defaultText("sv.chapter") + " " + e.chapter }));
+      meta.appendChild(h("span", { text: e.name + " · " + defaultText("sv.level") + " " + e.level }));
       meta.appendChild(h("span", { text: defaultText("sv.gold") + " " + e.gold + " · " + defaultText("sv.playtime") + " " + P.formatPlaytime(e.playtime) }));
       meta.appendChild(h("time", { text: e.ts ? new Date(e.ts).toLocaleString() : "—" }));
       body.appendChild(meta);
@@ -513,9 +509,6 @@
     if (!S.isSkin(s)) return;
     skin = s;
     demo.setAttribute("data-skin", s);
-    Array.prototype.forEach.call(skinRow.children, function (b) {
-      b.classList.toggle("on", b.getAttribute("data-skin-id") === s);
-    });
     persistSettings();
     drawGame();
   }
